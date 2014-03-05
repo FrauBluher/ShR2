@@ -1,0 +1,7 @@
+This folder contains a spice simulation of a signal conditioning
+circuit which will pass transients at .001V 20dB higher than the
+60Hz carrier (attenuated by -60dB).  This circuit also accuarately
+models the nonlinearity of the isolation transformer which can be
+found in the datasheets folder. (Newavatech S22230)  An anti-aliasing
+filter will need to be added as well as a few other trivial components
+whose requirements will be dictated by the desired sample rate.
