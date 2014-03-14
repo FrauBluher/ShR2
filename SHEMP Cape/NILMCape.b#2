@@ -1497,24 +1497,12 @@ design rules under a new name.</description>
 <contactref element="U$1" pad="92"/>
 <contactref element="U$1" pad="2"/>
 <contactref element="U$1" pad="1"/>
-<contactref element="U3" pad="5"/>
-<contactref element="R10" pad="2"/>
-<contactref element="U3" pad="3"/>
-<contactref element="R5" pad="2"/>
-<contactref element="R2" pad="1"/>
-<contactref element="C3" pad="1"/>
 <wire x1="52.705" y1="72.39" x2="52.705" y2="74.93" width="0" layer="19" extent="1-1"/>
 <wire x1="50.165" y1="74.93" x2="52.705" y2="74.93" width="0" layer="19" extent="1-1"/>
 <wire x1="50.165" y1="72.39" x2="52.705" y2="72.39" width="0" layer="19" extent="1-1"/>
-<wire x1="38.88" y1="53.635" x2="50.165" y2="72.39" width="0" layer="19" extent="1-1"/>
-<wire x1="34.78" y1="54.285" x2="38.88" y2="53.635" width="0" layer="19" extent="1-1"/>
-<wire x1="28.31" y1="52.07" x2="34.78" y2="54.285" width="0" layer="19" extent="1-1"/>
-<wire x1="26.67" y1="47.995" x2="28.31" y2="52.07" width="0" layer="19" extent="1-1"/>
-<wire x1="26.67" y1="44.185" x2="26.67" y2="47.995" width="0" layer="19" extent="1-1"/>
-<wire x1="38.1" y1="44.185" x2="34.78" y2="54.285" width="0" layer="19" extent="1-1"/>
-<wire x1="50.165" y1="19.05" x2="38.1" y2="44.185" width="0" layer="19" extent="1-1"/>
-<wire x1="52.705" y1="19.05" x2="50.165" y2="19.05" width="0" layer="19" extent="1-1"/>
-<wire x1="4.445" y1="19.05" x2="26.67" y2="44.185" width="0" layer="19" extent="1-1"/>
+<wire x1="52.705" y1="19.05" x2="52.705" y2="72.39" width="0" layer="19" extent="1-1"/>
+<wire x1="50.165" y1="19.05" x2="52.705" y2="19.05" width="0" layer="19" extent="1-1"/>
+<wire x1="4.445" y1="19.05" x2="50.165" y2="19.05" width="0" layer="19" extent="1-1"/>
 <wire x1="1.905" y1="19.05" x2="4.445" y2="19.05" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
@@ -1611,6 +1599,8 @@ design rules under a new name.</description>
 </signal>
 <signal name="HVSS">
 <contactref element="U5" pad="7"/>
+<contactref element="U1" pad="1"/>
+<wire x1="27.5844" y1="27.0002" x2="31.2166" y2="38.0492" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$6">
 <contactref element="U1" pad="25"/>
@@ -1623,9 +1613,6 @@ design rules under a new name.</description>
 </signal>
 <signal name="N$12">
 <contactref element="U1" pad="5"/>
-</signal>
-<signal name="N$17">
-<contactref element="U1" pad="1"/>
 </signal>
 <signal name="N$19">
 <contactref element="U1" pad="15"/>
@@ -1659,6 +1646,19 @@ design rules under a new name.</description>
 </signal>
 <signal name="N$29">
 <contactref element="U1" pad="62"/>
+</signal>
+<signal name="AGND">
+<contactref element="R2" pad="1"/>
+<contactref element="R5" pad="2"/>
+<contactref element="C3" pad="1"/>
+<contactref element="U3" pad="3"/>
+<contactref element="R10" pad="2"/>
+<contactref element="U3" pad="5"/>
+<wire x1="34.78" y1="54.285" x2="38.88" y2="53.635" width="0" layer="19" extent="1-1"/>
+<wire x1="28.31" y1="52.07" x2="34.78" y2="54.285" width="0" layer="19" extent="1-1"/>
+<wire x1="26.67" y1="47.995" x2="28.31" y2="52.07" width="0" layer="19" extent="1-1"/>
+<wire x1="26.67" y1="44.185" x2="26.67" y2="47.995" width="0" layer="19" extent="1-1"/>
+<wire x1="38.1" y1="44.185" x2="38.88" y2="53.635" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>

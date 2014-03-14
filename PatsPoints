@@ -1,0 +1,3 @@
+- Make sure to characterize the amplitude response of the filtering circuit.  An RMS voltage calculation of the carrier should be able to be calculated off of the noise data!
+	- This can be achieved by feeding in the unfiltered 60Hz tone into one of the other ADCs.
+

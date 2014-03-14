@@ -1,0 +1,40 @@
+* H:\Desktop\ShR2\SPICE Simulations\Isolation.asc
+V1 Vin 0 AC 1
+L1 0 N005 .002
+L2 0 N006 .001992
+R2 N005 Vin .0008
+R3 N007 N006 .001
+R4 Vsd N007 100k tol=5
+R1 Vsd 0 9.07k tol=1
+XU2 0 N001 VCC N012 N002 LTC6082
+R5 N008 Vsd 8.2k
+R6 N009 N008 8.2k
+R7 0 N014 4.1k
+C1 N008 0 .66µF
+C2 N014 Vsd .33µF
+C3 N009 N014 .33µF
+R8 N001 N009 1k
+V3 VCC 0 5
+R14 N002 N001 10k
+V4 N012 0 -5v
+R9 N010 N002 8.2k
+R10 N011 N010 8.2k
+R11 0 N015 4.1k
+C4 N010 0 .66µF
+C5 N015 N002 .33µF
+C6 N011 N015 .33µF
+XU1 0 N003 VCC N013 N004 LTC6082
+R12 N004 N003 20k
+V5 N013 0 -5v
+R13 N003 N011 1k
+;tran 0 .2 .1 startup uic
+K L1 L2 1
+* This is a circuit simulation of a galvanically isolated\nsignal conditioning circuit designed to separate\ntransients from the 60Hz carrier of wall-juice, and\nto buffer the input properly for a high speed ADC.
+* The output supports transients up to 10V with a\n100kHz bandwidth (limit of transformer), and at \nleast a few LSB within .001V.
+* 60Hz Main
+* 60-Hz Low-Q Twin T Notch
+* 60-Hz Low-Q Twin T Notch
+.ac dec 30 60 100k
+.lib LTC6.lib
+.backanno
+.end

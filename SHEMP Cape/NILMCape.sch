@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.4">
+<eagle version="6.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -2548,7 +2548,7 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <instance part="LED2" gate="G$1" x="154.94" y="246.38"/>
 <instance part="U3" gate="G$1" x="208.28" y="104.14" rot="MR180"/>
 <instance part="U3" gate="G$2" x="276.86" y="101.6" rot="MR180"/>
-<instance part="U3" gate="G$3" x="208.28" y="83.82"/>
+<instance part="U3" gate="G$3" x="213.36" y="76.2"/>
 <instance part="U2" gate="A" x="38.1" y="223.52"/>
 <instance part="U2" gate="B" x="68.58" y="220.98" rot="R90"/>
 <instance part="U4" gate="G$1" x="45.72" y="193.04"/>
@@ -2856,12 +2856,12 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <segment>
 <pinref part="R2" gate="G$1" pin="1"/>
 <wire x1="144.78" y1="91.44" x2="144.78" y2="68.58" width="0.1524" layer="91"/>
-<label x="144.78" y="68.58" size="1.778" layer="95" rot="R180"/>
+<label x="147.32" y="68.58" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
 <pinref part="R5" gate="G$1" pin="2"/>
 <wire x1="170.18" y1="76.2" x2="170.18" y2="68.58" width="0.1524" layer="91"/>
-<label x="170.18" y="68.58" size="1.778" layer="95" rot="R180"/>
+<label x="172.72" y="68.58" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
 <pinref part="C3" gate="G$1" pin="1"/>
@@ -2877,13 +2877,13 @@ Standard 0603 ceramic capacitor, and 0.1" leaded capacitor.</description>
 <segment>
 <pinref part="R10" gate="G$1" pin="2"/>
 <wire x1="241.3" y1="73.66" x2="241.3" y2="68.58" width="0.1524" layer="91"/>
-<label x="241.3" y="68.58" size="1.778" layer="95" rot="R180"/>
+<label x="243.84" y="68.58" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
 <pinref part="U3" gate="G$2" pin="+IN"/>
 <wire x1="271.78" y1="99.06" x2="266.7" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="266.7" y1="99.06" x2="266.7" y2="68.58" width="0.1524" layer="91"/>
-<label x="266.7" y="68.58" size="1.778" layer="95" rot="R180"/>
+<label x="269.24" y="68.58" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 <net name="DGND" class="0">
