@@ -1,69 +1,24 @@
-Circuit: * H:\Desktop\ShR2\SPICE Simulations\Isolation.asc
+Circuit: * Z:\home\pavlo\Documents\ShR2\SPICE Simulations\Isolation.asc
 
-Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
-Starting Gmin stepping
-Gmin = 10
-Gmin = 1.07374
-Gmin = 0.115292
-Gmin = 0.0123794
-Gmin = 0.00132923
-Gmin = 0.000142725
-Gmin = 1.5325e-005
-Gmin = 1.6455e-006
-Gmin = 1.76685e-007
-vernier = 0.5
-Gmin = 2.96428e-008
-vernier = 0.25
-vernier = 0.125
-vernier = 0.0625
-vernier = 0.03125
-vernier = 0.015625
-Gmin = 2.90705e-008
-vernier = 0.0208333
-vernier = 0.0277778
-Gmin = 2.74091e-008
-vernier = 0.037037
-vernier = 0.0493827
-Gmin = 2.4958e-008
-vernier = 0.0658435
-Gmin = 2.15452e-008
-vernier = 0.0877914
-vernier = 0.117055
-Gmin = 1.68528e-008
-vernier = 0.156073
-vernier = 0.208098
-Gmin = 1.14242e-008
-vernier = 0.277464
-Gmin = 6.23685e-009
-vernier = 0.369952
-vernier = 0.493269
-Gmin = 2.30386e-009
-vernier = 0.657691
-vernier = 0.876922
-Gmin = 4.92737e-010
-vernier = 1
-Gmin = 5.84537e-011
-Gmin = 6.27641e-012
-Gmin = 6.73925e-013
-Gmin = 0
-Gmin stepping succeeded in finding the operating point.
+V2: Missing value, assumed 0V @ DC
+Per .tran options, skipping operating point for transient analysis.
 
-
-Date: Fri Mar 14 09:55:35 2014
-Total elapsed time: 0.097 seconds.
+Date: Mon Mar 31 14:41:44 2014
+Total elapsed time: 0.937 seconds.
 
 tnom = 27
 temp = 27
-method = trap
-totiter = 1212
-traniter = 0
-tranpoints = 0
-accept = 0
-rejected = 0
-matrix size = 38
-fillins = 53
+method = modified trap
+totiter = 44031
+traniter = 44031
+tranpoints = 21720
+accept = 21155
+rejected = 565
+matrix size = 34
+fillins = 35
 solver = Normal
-Matrix Compiler1:     229 opcodes
-Matrix Compiler2: off  [1.1]/1.8/3.0
+Thread vector: 47.6/28.2[3] 8.6/5.3[3] 4.3/3.5[2] 0.7/1.6[1]  2592/500
+Matrix Compiler1: 3.45 KB object code size  2.5/1.2/[0.9]
+Matrix Compiler2: 3.69 KB object code size  1.1/1.4/[0.6]
 
 
