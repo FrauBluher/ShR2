@@ -5120,6 +5120,11 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <wire x1="302.26" y1="220.98" x2="302.26" y2="218.44" width="0.1524" layer="91"/>
 <junction x="302.26" y="218.44"/>
 </segment>
+<segment>
+<pinref part="U7" gate="A" pin="INPUT"/>
+<wire x1="299.72" y1="172.72" x2="309.88" y2="172.72" width="0.1524" layer="91"/>
+<label x="309.88" y="172.72" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="N$37" class="0">
 <segment>
@@ -5325,13 +5330,6 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <wire x1="218.44" y1="93.98" x2="218.44" y2="91.44" width="0.1524" layer="91"/>
 <junction x="218.44" y="91.44"/>
 <pinref part="R24" gate="G$1" pin="2"/>
-</segment>
-</net>
-<net name="N$39" class="0">
-<segment>
-<pinref part="U7" gate="A" pin="INPUT"/>
-<wire x1="299.72" y1="172.72" x2="309.88" y2="172.72" width="0.1524" layer="91"/>
-<label x="309.88" y="172.72" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="VDD3V3_D" class="0">

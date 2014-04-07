@@ -7473,6 +7473,54 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <wire x1="243.84" y1="203.2" x2="259.08" y2="203.2" width="0.1524" layer="91"/>
 </segment>
 </net>
+<net name="N$93" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO1_16"/>
+<wire x1="187.96" y1="129.54" x2="175.26" y2="129.54" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$94" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO0_7"/>
+<wire x1="243.84" y1="96.52" x2="259.08" y2="96.52" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$95" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART2_TXD"/>
+<wire x1="187.96" y1="121.92" x2="175.26" y2="121.92" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$96" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART2_RXD"/>
+<wire x1="243.84" y1="121.92" x2="259.08" y2="121.92" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$97" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART4_RXD"/>
+<wire x1="187.96" y1="134.62" x2="175.26" y2="134.62" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$98" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART4_TXD"/>
+<wire x1="187.96" y1="132.08" x2="175.26" y2="132.08" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$99" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="SPI1_DO"/>
+<wire x1="187.96" y1="111.76" x2="175.26" y2="111.76" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$100" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="SPI1_SCLK"/>
+<wire x1="187.96" y1="109.22" x2="175.26" y2="109.22" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>

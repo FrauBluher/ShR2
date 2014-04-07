@@ -7185,6 +7185,16 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <instance part="U$1" gate="G$1" x="215.9" y="152.4"/>
 </instances>
 <busses>
+<bus name="BB_DB[0..15]">
+<segment>
+<wire x1="154.94" y1="137.16" x2="154.94" y2="106.68" width="0.762" layer="92"/>
+<label x="154.94" y="137.16" size="1.778" layer="95" rot="R90"/>
+</segment>
+<segment>
+<wire x1="266.7" y1="137.16" x2="266.7" y2="93.98" width="0.762" layer="92"/>
+<label x="266.7" y="137.16" size="1.778" layer="95" rot="R90"/>
+</segment>
+</bus>
 </busses>
 <nets>
 <net name="N$39" class="0">
@@ -7427,30 +7437,6 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <wire x1="187.96" y1="182.88" x2="175.26" y2="182.88" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$86" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="GPIO1_28"/>
-<wire x1="243.84" y1="134.62" x2="259.08" y2="134.62" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$87" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="GPIO3_19"/>
-<wire x1="187.96" y1="114.3" x2="175.26" y2="114.3" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$88" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="GPIO3_21"/>
-<wire x1="187.96" y1="116.84" x2="175.26" y2="116.84" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$89" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="GPIO1_17"/>
-<wire x1="187.96" y1="119.38" x2="175.26" y2="119.38" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$77" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="TIMER4"/>
@@ -7475,52 +7461,100 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <wire x1="243.84" y1="203.2" x2="259.08" y2="203.2" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$93" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="GPIO1_16"/>
-<wire x1="187.96" y1="129.54" x2="175.26" y2="129.54" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$94" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="GPIO0_7"/>
-<wire x1="243.84" y1="96.52" x2="259.08" y2="96.52" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$95" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="UART2_TXD"/>
-<wire x1="187.96" y1="121.92" x2="175.26" y2="121.92" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$96" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="UART2_RXD"/>
-<wire x1="243.84" y1="121.92" x2="259.08" y2="121.92" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$97" class="0">
+<net name="BB_DB0" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="UART4_RXD"/>
-<wire x1="187.96" y1="134.62" x2="175.26" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="134.62" x2="187.96" y2="134.62" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$98" class="0">
+<net name="BB_DB1" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="UART4_TXD"/>
-<wire x1="187.96" y1="132.08" x2="175.26" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="132.08" x2="187.96" y2="132.08" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$99" class="0">
+<net name="BB_DB2" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO1_16"/>
+<wire x1="154.94" y1="129.54" x2="187.96" y2="129.54" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB3" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART2_TXD"/>
+<wire x1="154.94" y1="121.92" x2="187.96" y2="121.92" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB4" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO1_17"/>
+<wire x1="154.94" y1="119.38" x2="187.96" y2="119.38" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB5" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO3_21"/>
+<wire x1="154.94" y1="116.84" x2="187.96" y2="116.84" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB6" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO3_19"/>
+<wire x1="154.94" y1="114.3" x2="187.96" y2="114.3" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB7" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="SPI1_DO"/>
-<wire x1="187.96" y1="111.76" x2="175.26" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="111.76" x2="187.96" y2="111.76" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$100" class="0">
+<net name="BB_DB8" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="SPI1_SCLK"/>
-<wire x1="187.96" y1="109.22" x2="175.26" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="109.22" x2="187.96" y2="109.22" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB9" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO1_28"/>
+<wire x1="243.84" y1="134.62" x2="266.7" y2="134.62" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB10" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="EHRPWM1A"/>
+<wire x1="243.84" y1="132.08" x2="266.7" y2="132.08" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB11" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="EHRPWM1B"/>
+<wire x1="243.84" y1="129.54" x2="266.7" y2="129.54" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB12" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART2_RXD"/>
+<wire x1="243.84" y1="121.92" x2="266.7" y2="121.92" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB13" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART1_TXD"/>
+<wire x1="243.84" y1="119.38" x2="266.7" y2="119.38" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB14" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="UART1_RXD"/>
+<wire x1="243.84" y1="116.84" x2="266.7" y2="116.84" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="BB_DB15" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="GPIO0_7"/>
+<wire x1="243.84" y1="96.52" x2="266.7" y2="96.52" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

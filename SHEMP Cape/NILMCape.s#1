@@ -5237,6 +5237,7 @@ Basic schematic elements and footprints for 0603, 1206, and PTH resistors.</desc
 <sheet>
 <plain>
 <text x="200.66" y="266.7" size="5.08" layer="91">60Hz Filter</text>
+<text x="264.16" y="175.26" size="1.778" layer="91">Digital Pot Goes Here</text>
 </plain>
 <instances>
 <instance part="R3" gate="G$1" x="127" y="167.64" rot="R180"/>

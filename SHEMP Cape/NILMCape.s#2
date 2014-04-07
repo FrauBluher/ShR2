@@ -7176,6 +7176,7 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <wire x1="252.222" y1="154.94" x2="179.324" y2="154.94" width="0.1524" layer="94"/>
 <wire x1="179.324" y1="154.94" x2="179.324" y2="181.356" width="0.1524" layer="94"/>
 <text x="211.836" y="182.372" size="1.778" layer="94">LCD</text>
+<text x="160.02" y="266.7" size="6.4516" layer="91">BeagleBone Header Interface</text>
 </plain>
 <instances>
 <instance part="FRAME5" gate="G$1" x="0" y="0"/>
