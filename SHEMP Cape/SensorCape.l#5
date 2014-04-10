@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -5523,29 +5523,28 @@ Ends up being a square 6.6mm package.</description>
 <smd name="14" x="2.6924" y="1.905" dx="1.5494" dy="0.6096" layer="1"/>
 <smd name="15" x="2.6924" y="3.175" dx="1.5494" dy="0.6096" layer="1"/>
 <smd name="16" x="2.6924" y="4.445" dx="1.5494" dy="0.6096" layer="1"/>
-<wire x1="-1.651" y1="-4.953" x2="1.651" y2="-4.953" width="0.1524" layer="51"/>
 <wire x1="1.651" y1="4.953" x2="0.3048" y2="4.953" width="0.1524" layer="51"/>
-<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0.1524" layer="51"/>
 <wire x1="-0.3048" y1="4.953" x2="-1.651" y2="4.953" width="0.1524" layer="51"/>
 <wire x1="-4.2926" y1="4.445" x2="-4.445" y2="4.445" width="0.1524" layer="51" curve="-180"/>
 <wire x1="-4.445" y1="4.445" x2="-4.2926" y2="4.445" width="0.1524" layer="51" curve="-180"/>
 <wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0.1524" layer="51" curve="-180"/>
-<text x="-3.2766" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">RefDes</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">DEV</text>
-<text x="-1.143" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">PN</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">DEV</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">VAL</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">TOL</text>
+<wire x1="1.9558" y1="4.953" x2="0.3048" y2="4.953" width="0" layer="21"/>
+<wire x1="-0.3048" y1="4.953" x2="-1.9558" y2="4.953" width="0" layer="21"/>
+<wire x1="-4.2926" y1="4.445" x2="-4.445" y2="4.445" width="0" layer="21" curve="-180"/>
+<wire x1="-4.445" y1="4.445" x2="-4.2926" y2="4.445" width="0" layer="21" curve="-180"/>
+<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0" layer="21" curve="-180"/>
+<wire x1="-1.651" y1="-4.953" x2="1.651" y2="-4.953" width="0.1524" layer="51"/>
+<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0.1524" layer="51"/>
+<wire x1="-4.2926" y1="4.445" x2="-4.445" y2="4.445" width="0.1524" layer="51" curve="-180"/>
+<wire x1="-4.445" y1="4.445" x2="-4.2926" y2="4.445" width="0.1524" layer="51" curve="-180"/>
+<wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0.1524" layer="51" curve="-180"/>
 <wire x1="-1.9558" y1="-4.953" x2="1.9558" y2="-4.953" width="0" layer="21"/>
 <wire x1="1.9558" y1="-4.953" x2="1.9558" y2="4.953" width="0" layer="21"/>
-<wire x1="1.9558" y1="4.953" x2="0.3048" y2="4.953" width="0" layer="21"/>
 <wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0" layer="21"/>
-<wire x1="-0.3048" y1="4.953" x2="-1.9558" y2="4.953" width="0" layer="21"/>
 <wire x1="-1.9558" y1="4.953" x2="-1.9558" y2="-4.953" width="0" layer="21"/>
 <wire x1="-4.2926" y1="4.445" x2="-4.445" y2="4.445" width="0" layer="21" curve="-180"/>
 <wire x1="-4.445" y1="4.445" x2="-4.2926" y2="4.445" width="0" layer="21" curve="-180"/>
 <wire x1="0.3048" y1="4.953" x2="-0.3048" y2="4.953" width="0" layer="21" curve="-180"/>
-<text x="-3.8354" y="-0.635" size="1.27" layer="21" ratio="6" rot="SR0">RefDes2</text>
 </package>
 </packages>
 <symbols>
@@ -6260,6 +6259,30 @@ Ends up being a square 6.6mm package.</description>
 <wire x1="20.32" y1="-12.7" x2="22.86" y2="-10.16" width="0.254" layer="94"/>
 <wire x1="22.86" y1="-10.16" x2="22.86" y2="-12.7" width="0.254" layer="94"/>
 <wire x1="22.86" y1="-12.7" x2="27.94" y2="-12.7" width="0.254" layer="94"/>
+</symbol>
+<symbol name="SI8660_SOIC-16">
+<pin name="VDD1" x="0" y="0" direction="pas"/>
+<pin name="A1" x="0" y="-2.54" direction="pas"/>
+<pin name="A2" x="0" y="-5.08" direction="pas"/>
+<pin name="A3" x="0" y="-7.62" direction="pas"/>
+<pin name="A4" x="0" y="-10.16" direction="pas"/>
+<pin name="A5" x="0" y="-12.7" direction="pas"/>
+<pin name="A6" x="0" y="-15.24" direction="pas"/>
+<pin name="GND1" x="0" y="-17.78" direction="pas"/>
+<pin name="GND2" x="60.96" y="-17.78" direction="pas" rot="R180"/>
+<pin name="B6" x="60.96" y="-15.24" direction="pas" rot="R180"/>
+<pin name="B5" x="60.96" y="-12.7" direction="pas" rot="R180"/>
+<pin name="B4" x="60.96" y="-10.16" direction="pas" rot="R180"/>
+<pin name="B3" x="60.96" y="-7.62" direction="pas" rot="R180"/>
+<pin name="B2" x="60.96" y="-5.08" direction="pas" rot="R180"/>
+<pin name="B1" x="60.96" y="-2.54" direction="pas" rot="R180"/>
+<pin name="VDD2" x="60.96" y="0" direction="pas" rot="R180"/>
+<wire x1="7.62" y1="5.08" x2="7.62" y2="-22.86" width="0.127" layer="94"/>
+<wire x1="7.62" y1="-22.86" x2="53.34" y2="-22.86" width="0.127" layer="94"/>
+<wire x1="53.34" y1="-22.86" x2="53.34" y2="5.08" width="0.127" layer="94"/>
+<wire x1="53.34" y1="5.08" x2="7.62" y2="5.08" width="0.127" layer="94"/>
+<text x="25.1206" y="9.1186" size="2.0828" layer="95" ratio="6" rot="SR0">REFDES</text>
+<text x="26.6954" y="6.5786" size="2.0828" layer="96" ratio="6" rot="SR0">TYPE</text>
 </symbol>
 </symbols>
 <devicesets>
@@ -7857,6 +7880,36 @@ These are standard SMD and PTH capacitors. Normally 10uF, 47uF, and 100uF in ele
 <deviceset name="SI8663BC-B-IS1" prefix="U">
 <gates>
 <gate name="A" symbol="SI8663_SOIC-16" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SOIC-16">
+<connects>
+<connect gate="A" pin="A1" pad="2"/>
+<connect gate="A" pin="A2" pad="3"/>
+<connect gate="A" pin="A3" pad="4"/>
+<connect gate="A" pin="A4" pad="5"/>
+<connect gate="A" pin="A5" pad="6"/>
+<connect gate="A" pin="A6" pad="7"/>
+<connect gate="A" pin="B1" pad="15"/>
+<connect gate="A" pin="B2" pad="14"/>
+<connect gate="A" pin="B3" pad="13"/>
+<connect gate="A" pin="B4" pad="12"/>
+<connect gate="A" pin="B5" pad="11"/>
+<connect gate="A" pin="B6" pad="10"/>
+<connect gate="A" pin="GND1" pad="8"/>
+<connect gate="A" pin="GND2" pad="9"/>
+<connect gate="A" pin="VDD1" pad="1"/>
+<connect gate="A" pin="VDD2" pad="16"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="SI8660BC-B-IS1" prefix="U">
+<gates>
+<gate name="A" symbol="SI8660_SOIC-16" x="0" y="0"/>
 </gates>
 <devices>
 <device name="" package="SOIC-16">

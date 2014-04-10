@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="inch" unit="mil" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -6212,11 +6212,54 @@ Ends up being a square 6.6mm package.</description>
 <pin name="B1" x="60.96" y="-2.54" direction="pas" rot="R180"/>
 <pin name="VDD2" x="60.96" y="0" direction="pas" rot="R180"/>
 <wire x1="7.62" y1="5.08" x2="7.62" y2="-22.86" width="0.127" layer="94"/>
-<wire x1="7.62" y1="-22.86" x2="53.34" y2="-22.86" width="0.127" layer="94"/>
+<wire x1="7.62" y1="-22.86" x2="30.48" y2="-22.86" width="0.127" layer="94"/>
+<wire x1="30.48" y1="-22.86" x2="53.34" y2="-22.86" width="0.127" layer="94"/>
 <wire x1="53.34" y1="-22.86" x2="53.34" y2="5.08" width="0.127" layer="94"/>
-<wire x1="53.34" y1="5.08" x2="7.62" y2="5.08" width="0.127" layer="94"/>
+<wire x1="53.34" y1="5.08" x2="30.48" y2="5.08" width="0.127" layer="94"/>
 <text x="25.1206" y="9.1186" size="2.0828" layer="95" ratio="6" rot="SR0">REFDES</text>
 <text x="26.6954" y="6.5786" size="2.0828" layer="96" ratio="6" rot="SR0">TYPE</text>
+<wire x1="30.48" y1="5.08" x2="7.62" y2="5.08" width="0.127" layer="94"/>
+<wire x1="40.64" y1="-12.7" x2="35.56" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-12.7" x2="35.56" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-10.16" x2="33.02" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="33.02" y1="-12.7" x2="35.56" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-15.24" x2="35.56" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-5.08" x2="25.4" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="25.4" y1="-5.08" x2="25.4" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="25.4" y1="-2.54" x2="27.94" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="27.94" y1="-5.08" x2="25.4" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="25.4" y1="-7.62" x2="25.4" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="30.48" y1="5.08" x2="30.48" y2="-22.86" width="0.254" layer="94"/>
+<wire x1="45.72" y1="-10.16" x2="40.64" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-10.16" x2="40.64" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-12.7" x2="40.64" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-15.24" x2="45.72" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-5.08" x2="20.32" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-2.54" x2="15.24" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-5.08" x2="20.32" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-7.62" x2="15.24" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-5.08" x2="15.24" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-12.7" x2="45.72" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="45.72" y1="-7.62" x2="40.64" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-7.62" x2="40.64" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-5.08" x2="40.64" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-2.54" x2="45.72" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-5.08" x2="45.72" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="38.1" y1="-2.54" x2="40.64" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="40.64" y1="-5.08" x2="38.1" y2="-7.62" width="0.254" layer="94"/>
+<wire x1="38.1" y1="-7.62" x2="38.1" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="38.1" y1="-2.54" x2="38.1" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="38.1" y1="-5.08" x2="33.02" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="15.24" y1="-10.16" x2="20.32" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-10.16" x2="20.32" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-12.7" x2="20.32" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-15.24" x2="15.24" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-12.7" x2="15.24" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="22.86" y1="-12.7" x2="22.86" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="22.86" y1="-15.24" x2="20.32" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="20.32" y1="-12.7" x2="22.86" y2="-10.16" width="0.254" layer="94"/>
+<wire x1="22.86" y1="-10.16" x2="22.86" y2="-12.7" width="0.254" layer="94"/>
+<wire x1="22.86" y1="-12.7" x2="27.94" y2="-12.7" width="0.254" layer="94"/>
 </symbol>
 </symbols>
 <devicesets>
