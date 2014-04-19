@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<blockRegMap version="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cypress.com/xsd/cyblockregmap cyblockregmap.xsd" xmlns="http://cypress.com/xsd/cyblockregmap">
+  <block name="ADC_SAR_1" BASE="0x0" SIZE="0x0" desc="SAR ADC" visible="true">
+    <block name="ZeroTerminal_7" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_6" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="theACLK" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_8" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_5" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Clock_VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="vRef_1024" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="noconnect" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_4" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ADC_SAR" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="Bypass" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="noconnect_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="cy_analog_virtualmux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <block name="IRQ" BASE="0x0" SIZE="0x0" desc="" visible="true" />
+    <register name="SAR_TR0" address="0x40004616" bitWidth="8" desc="SAR trim register" />
+    <register name="SAR_CSR0" address="0x40005908" bitWidth="8" desc="SAR status and control register 0" />
+    <register name="SAR_CSR1" address="0x40005909" bitWidth="8" desc="SAR status and control register 1" />
+    <register name="SAR_CSR2" address="0x4000590A" bitWidth="8" desc="SAR status and control register 2" />
+    <register name="SAR_CSR3" address="0x4000590B" bitWidth="8" desc="SAR status and control register 3" />
+    <register name="SAR_CSR4" address="0x4000590C" bitWidth="8" desc="SAR status and control register 4" />
+    <register name="SAR_CSR5" address="0x4000590D" bitWidth="8" desc="SAR status and control register 5" />
+    <register name="SAR_CSR6" address="0x4000590E" bitWidth="8" desc="SAR status and control register 6" />
+    <register name="SAR_SW0" address="0x40005B28" bitWidth="8" desc="SAR Analog Routing Register 0" />
+    <register name="SAR_SW2" address="0x40005B2A" bitWidth="8" desc="SAR Analog Routing Register 2" />
+    <register name="SAR_SW3" address="0x40005B2B" bitWidth="8" desc="SAR Analog Routing Register 3" />
+    <register name="SAR_SW4" address="0x40005B2C" bitWidth="8" desc="SAR Analog Routing Register 4" />
+    <register name="SAR_SW6" address="0x40005B2E" bitWidth="8" desc="SAR Analog Routing Register 6" />
+    <register name="SAR_CLK" address="0x40005B2F" bitWidth="8" desc="SAR Clock Selection Register" />
+    <register name="SAR_WRK" address="0x40005BA2" bitWidth="16" desc="SAR working register" />
+  </block>
+</blockRegMap>
