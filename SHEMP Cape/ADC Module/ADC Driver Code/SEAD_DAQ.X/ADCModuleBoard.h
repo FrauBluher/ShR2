@@ -94,7 +94,51 @@
 #define DB14_PORT    PORTEbits.RE3
 #define DB15_PORT    PORTEbits.RE4
 
-//TODO: Fill in all of the rest of the digital IO...  BUSY, CONVST_A/B/C/D, etc...
+/**
+ * @brief SPI tristate registers and SS latch.
+ */
+#define SPI_SCK_TRIS    TRISDbits.TRISD10
+#define SPI_MOSI_TRIS   TRISDbits.TRISD0
+#define SPI_MISO_TRIS   TRISCbits.TRISC4
+#define SPI_SS_TRIS     TRISCbits.TRISC3
+#define SPI_SS_LAT      LATCbits.LATC3
+
+/**
+ * @brief ADS85x8 control lines - tristates.
+ */
+#define BUSY_TRIS   TRISDbits.TRISD14
+#define CS_TRIS     TRISFbits.TRISF12
+#define RD_TRIS     TRISBbits.TRISB12
+#define WR_TRIS     TRISBbits.TRISB13
+#define CONV_A_TRIS TRISBbits.TRISB15
+#define CONV_B_TRIS TRISBbits.TRISB14
+/*
+ * #define CONV_C_TRIS 
+ * #define CONV_D_TRIS
+ * UNUSED FOR THE ADC MODULE TESTER BOARD AS OF NOW 
+ */
+
+/**
+ * @brief ADS85x8 control lines - latches.
+ */
+#define BUSY_LAT   LATDbits.LATD14
+#define CS_LAT     LATFbits.LATF12
+#define RD_LAT     LATBbits.LATB12
+#define WR_LAT     LATBbits.LATB13
+#define CONV_A_LAT LATBbits.LATB15
+#define CONV_B_LAT LATBbits.LATB14
+/*
+ * #define CONV_C_LAT 
+ * #define CONV_D_LAT
+ * UNUSED FOR THE ADC MODULE TESTER BOARD AS OF NOW 
+ */
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Methods~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/**
+ * @brief Sets up the board with the peripherals defined in the header.
+ */
+void ADCModuleBoard_Init(void);
 
 #endif	/* ADCMODULEBOARD_H */
 
