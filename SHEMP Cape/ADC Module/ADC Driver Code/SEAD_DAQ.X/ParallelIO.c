@@ -40,23 +40,23 @@ static PARALLEL_PORT_TRISTATE tristateReg;
 
 void Parallel_IO_Init(PARALLEL_PORT_WRITE latRegisters, PARALLEL_PORT_READ portRegisters, PARALLEL_PORT_TRISTATE trisRegisters)
 {
-    readReg = portRegisters;
-    writeReg = latRegisters;
-    tristateReg = trisRegisters;
+	readReg = portRegisters;
+	writeReg = latRegisters;
+	tristateReg = trisRegisters;
 
-    writeReg.wholeRegister = 0;
-    tristateReg.wholeRegister = 0;
+	writeReg.wholeRegister = 0;
+	tristateReg.wholeRegister = 0;
 }
 
 void Parallel_IO_Write(uint16_t parallelRegister)
 {
-    tristateReg.wholeRegister = 0;
-    writeReg.wholeRegister = parallelRegister;
+	tristateReg.wholeRegister = 0;
+	writeReg.wholeRegister = parallelRegister;
 }
 
 uint16_t Parallel_IO_Read(void)
 {
-    tristateReg.wholeRegister = 0xFFFF;
-    return(readReg.wholeRegister);
+	tristateReg.wholeRegister = 0xFFFF;
+	return(readReg.wholeRegister);
 }
 

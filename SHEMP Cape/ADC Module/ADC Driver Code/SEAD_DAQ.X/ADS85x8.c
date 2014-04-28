@@ -46,44 +46,44 @@ static ADS85x8_Info *passedInfoStruct;
  */
 uint8_t ADS85x8_Init(ADS85x8_Info *DS85x8Info)
 {
-    ADS85x8_CONFIGREGISTER response;
+	ADS85x8_CONFIGREGISTER response;
 
-    DS85x8Info->configRegister.BUSY_INT = BUSY_INT_BUSY;
-    DS85x8Info->configRegister.BUSY_POL = BUSY_INT_ACTIVE_HIGH;
-    DS85x8Info->configRegister.CLKOUT = CLKOUT_DISABLE;
-    DS85x8Info->configRegister.CLKSEL = CLKSEL_INTERNAL;
-    DS85x8Info->configRegister.PD_B = PD_B_DISABLE;
-    DS85x8Info->configRegister.PD_C = PD_C_DISABLE;
-    DS85x8Info->configRegister.PD_D = PD_D_DISABLE;
-    DS85x8Info->configRegister.RANGE_A = RANGE_A_4_VREF;
-    DS85x8Info->configRegister.RANGE_B = RANGE_B_4_VREF;
-    DS85x8Info->configRegister.RANGE_C = RANGE_C_4_VREF;
-    DS85x8Info->configRegister.RANGE_D = RANGE_D_4_VREF;
-    DS85x8Info->configRegister.READ_EN = READ_EN_CONFIG;
-    DS85x8Info->configRegister.REFBUF = REFBUF_ENABLE;
-    DS85x8Info->configRegister.REFDAC = REFDAC_3_0V;
-    DS85x8Info->configRegister.REF_EN = REF_EN_ENABLE;
-    DS85x8Info->configRegister.STBY = STBY_DISABLED
-    DS85x8Info->configRegister.VREF = VREF_3_0;
-    DS85x8Info->configRegister.WRITE_EN = WRITE_EN_CONTENT_UPDATE_ENABLED;
+	DS85x8Info->configRegister.BUSY_INT = BUSY_INT_BUSY;
+	DS85x8Info->configRegister.BUSY_POL = BUSY_INT_ACTIVE_HIGH;
+	DS85x8Info->configRegister.CLKOUT = CLKOUT_DISABLE;
+	DS85x8Info->configRegister.CLKSEL = CLKSEL_INTERNAL;
+	DS85x8Info->configRegister.PD_B = PD_B_DISABLE;
+	DS85x8Info->configRegister.PD_C = PD_C_DISABLE;
+	DS85x8Info->configRegister.PD_D = PD_D_DISABLE;
+	DS85x8Info->configRegister.RANGE_A = RANGE_A_4_VREF;
+	DS85x8Info->configRegister.RANGE_B = RANGE_B_4_VREF;
+	DS85x8Info->configRegister.RANGE_C = RANGE_C_4_VREF;
+	DS85x8Info->configRegister.RANGE_D = RANGE_D_4_VREF;
+	DS85x8Info->configRegister.READ_EN = READ_EN_CONFIG;
+	DS85x8Info->configRegister.REFBUF = REFBUF_ENABLE;
+	DS85x8Info->configRegister.REFDAC = REFDAC_3_0V;
+	DS85x8Info->configRegister.REF_EN = REF_EN_ENABLE;
+	DS85x8Info->configRegister.STBY = STBY_DISABLED
+		DS85x8Info->configRegister.VREF = VREF_3_0;
+	DS85x8Info->configRegister.WRITE_EN = WRITE_EN_CONTENT_UPDATE_ENABLED;
 
 
 
-    //WAIT OR WHATEVER AND CLOCK STUFF...
-    //CHIP SELECT AND WR* LOW
-    //WAIT AT LEAST 15ns
-    //SEND BITS 31:16 HIGH FOR AT LEAST 5ns
-    Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0xFF00) >> 16);
-    Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0x00FF));
-    //WR* HIGH FOR AT LEAST 15ns
-    //SEND BITS 15:0 HIGH FOR AT LEAST 5ns
-    // WR* and CS* BOTH GO HIGH
+	//WAIT OR WHATEVER AND CLOCK STUFF...
+	//CHIP SELECT AND WR* LOW
+	//WAIT AT LEAST 15ns
+	//SEND BITS 31:16 HIGH FOR AT LEAST 5ns
+	Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0xFF00) >> 16);
+	Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0x00FF));
+	//WR* HIGH FOR AT LEAST 15ns
+	//SEND BITS 15:0 HIGH FOR AT LEAST 5ns
+	// WR* and CS* BOTH GO HIGH
 
-    //READ TWO 16 bit words AND COMPARE TO SET CONFIG
-    //IF CONFIG MATCHES, RETURN SUCCESS.
+	//READ TWO 16 bit words AND COMPARE TO SET CONFIG
+	//IF CONFIG MATCHES, RETURN SUCCESS.
 
-    passedInfoStruct = DS85x8Info;
-    return(EXIT_SUCCESS)
+	passedInfoStruct = DS85x8Info;
+	return(EXIT_SUCCESS)
 }
 
 /**
@@ -92,5 +92,5 @@ uint8_t ADS85x8_Init(ADS85x8_Info *DS85x8Info)
  */
 void ADS85x8_GetSamples(void)
 {
-    //See page 11 of datasheet for ads8568...
+	//See page 11 of datasheet for ads8568...
 }

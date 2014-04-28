@@ -32,7 +32,6 @@
 #ifndef PARALLELIO_H
 #define	PARALLELIO_H
 
-
 /**
  * @brief Used to map different LAT registers to one 16 bit word for writing.
  */
@@ -62,7 +61,6 @@ typedef struct {
     };
 } PARALLEL_PORT_WRITE;
 
-
 /**
  * @brief Used to map different PORT registers to one 16 bit word for reading.
  */
@@ -91,7 +89,6 @@ typedef struct {
         };
     };
 } PARALLEL_PORT_READ;
-
 
 /**
  * @brief Used to map different TRIS registers to one 16 bit word for tristate manipulation.
