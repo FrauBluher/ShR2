@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="6.4">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -3898,19 +3898,20 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 </net>
 <net name="HVSS_12A" class="0">
 <segment>
+<pinref part="C56" gate="G$1" pin="2"/>
+<pinref part="C57" gate="G$1" pin="2"/>
+<wire x1="398.78" y1="149.86" x2="386.08" y2="149.86" width="0.1524" layer="91"/>
+<junction x="386.08" y="149.86"/>
+<pinref part="U1" gate="A" pin="HVDD"/>
+<wire x1="261.62" y1="149.86" x2="386.08" y2="149.86" width="0.1524" layer="91"/>
+<wire x1="398.78" y1="149.86" x2="401.32" y2="149.86" width="0.1524" layer="91"/>
+<label x="401.32" y="149.86" size="1.778" layer="95"/>
+<junction x="398.78" y="149.86"/>
+</segment>
+<segment>
 <pinref part="JP5" gate="G$1" pin="1"/>
 <wire x1="63.5" y1="187.96" x2="66.04" y2="187.96" width="0.1524" layer="91"/>
 <label x="66.04" y="187.96" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="U1" gate="A" pin="HVSS"/>
-<wire x1="165.1" y1="190.5" x2="157.48" y2="190.5" width="0.1524" layer="91"/>
-<pinref part="C55" gate="G$1" pin="2"/>
-<junction x="157.48" y="190.5"/>
-<wire x1="157.48" y1="190.5" x2="144.78" y2="190.5" width="0.1524" layer="91"/>
-<pinref part="C54" gate="G$1" pin="2"/>
-<wire x1="144.78" y1="190.5" x2="142.24" y2="190.5" width="0.1524" layer="91"/>
-<label x="142.24" y="190.5" size="1.778" layer="95" rot="R90"/>
 </segment>
 </net>
 <net name="ADC_DB0" class="0">
@@ -4408,20 +4409,19 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 </net>
 <net name="HVDD_12A" class="0">
 <segment>
+<pinref part="U1" gate="A" pin="HVSS"/>
+<wire x1="165.1" y1="190.5" x2="157.48" y2="190.5" width="0.1524" layer="91"/>
+<pinref part="C55" gate="G$1" pin="2"/>
+<junction x="157.48" y="190.5"/>
+<wire x1="157.48" y1="190.5" x2="144.78" y2="190.5" width="0.1524" layer="91"/>
+<pinref part="C54" gate="G$1" pin="2"/>
+<wire x1="144.78" y1="190.5" x2="142.24" y2="190.5" width="0.1524" layer="91"/>
+<label x="142.24" y="190.5" size="1.778" layer="95" rot="R90"/>
+</segment>
+<segment>
 <wire x1="63.5" y1="185.42" x2="66.04" y2="185.42" width="0.1524" layer="91"/>
 <label x="66.04" y="185.42" size="1.778" layer="95"/>
 <pinref part="JP5" gate="G$1" pin="2"/>
-</segment>
-<segment>
-<pinref part="C56" gate="G$1" pin="2"/>
-<pinref part="C57" gate="G$1" pin="2"/>
-<wire x1="398.78" y1="149.86" x2="386.08" y2="149.86" width="0.1524" layer="91"/>
-<junction x="386.08" y="149.86"/>
-<pinref part="U1" gate="A" pin="HVDD"/>
-<wire x1="261.62" y1="149.86" x2="386.08" y2="149.86" width="0.1524" layer="91"/>
-<wire x1="398.78" y1="149.86" x2="401.32" y2="149.86" width="0.1524" layer="91"/>
-<label x="401.32" y="149.86" size="1.778" layer="95"/>
-<junction x="398.78" y="149.86"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -4534,16 +4534,12 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <wire x1="228.6" y1="195.58" x2="228.6" y2="198.12" width="0.1524" layer="91"/>
 <label x="226.06" y="193.04" size="1.778" layer="95"/>
 <pinref part="U$3" gate="A" pin="3P2V"/>
-<wire x1="228.6" y1="198.12" x2="228.6" y2="205.74" width="0.1524" layer="91"/>
-<wire x1="228.6" y1="205.74" x2="228.6" y2="208.28" width="0.1524" layer="91"/>
+<wire x1="228.6" y1="198.12" x2="228.6" y2="208.28" width="0.1524" layer="91"/>
 <wire x1="236.22" y1="208.28" x2="228.6" y2="208.28" width="0.1524" layer="91"/>
 <pinref part="U$3" gate="A" pin="0P4V"/>
 <wire x1="236.22" y1="198.12" x2="228.6" y2="198.12" width="0.1524" layer="91"/>
 <junction x="228.6" y="208.28"/>
 <junction x="228.6" y="198.12"/>
-<pinref part="U$3" gate="A" pin="GND"/>
-<wire x1="236.22" y1="205.74" x2="228.6" y2="205.74" width="0.1524" layer="91"/>
-<junction x="228.6" y="205.74"/>
 </segment>
 <segment>
 <label x="314.96" y="187.96" size="1.778" layer="95"/>
@@ -4599,6 +4595,11 @@ AND LOGIC VOLTAGE SUPPLY</text>
 </segment>
 </net>
 <net name="HVDD_12A" class="0">
+<segment>
+<pinref part="U$3" gate="A" pin="OUT_1"/>
+<wire x1="297.18" y1="218.44" x2="302.26" y2="218.44" width="0.1524" layer="91"/>
+<label x="302.26" y="218.44" size="1.778" layer="95"/>
+</segment>
 <segment>
 <pinref part="U$3" gate="A" pin="IN"/>
 <wire x1="297.18" y1="205.74" x2="299.72" y2="205.74" width="0.1524" layer="91"/>
@@ -4669,11 +4670,6 @@ AND LOGIC VOLTAGE SUPPLY</text>
 <junction x="180.34" y="220.98"/>
 <pinref part="C5" gate="G$1" pin="1"/>
 <junction x="170.18" y="220.98"/>
-</segment>
-<segment>
-<pinref part="U$3" gate="A" pin="OUT_1"/>
-<wire x1="297.18" y1="218.44" x2="302.26" y2="218.44" width="0.1524" layer="91"/>
-<label x="302.26" y="218.44" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
