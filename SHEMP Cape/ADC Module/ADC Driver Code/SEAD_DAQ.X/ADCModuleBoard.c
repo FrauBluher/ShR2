@@ -32,8 +32,9 @@
 #include "ADCModuleBoard.h"
 #include "ParallelIO.h"
 #include "plib.h"
+#include "SPI_DMA_Transfer.h"
 
-#if defined (__32MX360F512L__) || (__32MX460F512L__) || (__32MX795F512L__) || (__32MX430F064L__) || (__32MX450F256L__) || (__32MX470F512L__)
+#if defined (__32MX360F512L__) || (__32MX460F512L__) || (__32MX795F512L__) || (__32MX430F064L__) || (__32MX450F256L__) || (__32MX470F512L__) || (__32MX320F128L__)
 // Configuration Bit settings
 // SYSCLK = 80 MHz (8MHz Crystal / FPLLIDIV * FPLLMUL / FPLLODIV)
 // PBCLK = 80 MHz (SYSCLK / FPBDIV)
@@ -136,5 +137,5 @@ void ADCModuleBoard_Init(void)
 void DMA_SPI_Transfer_Init(SampleBuffer BufferA, SampleBuffer BufferB)
 {
 	DmaChnOpen(DMA_CHANNEL1, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
-	DmaChnSetTxfer(DMA_CHANNEL2, (void*) &SPI1BUF, BufferA->, 1, sizeof(txferRxBuff), 1);
+	DmaChnSetTxfer(DMA_CHANNEL2, (void*) &SPI1BUF, BufferA->, 1, sizeof(BufferA->BufferArray), 1);
 }

@@ -32,7 +32,11 @@
 #ifndef ADCMODULEBOARD_H
 #define	ADCMODULEBOARD_H
 
+#define MAX32
+
 #include <xc.h>
+
+#ifndef (MAX32) //Used for the ADC Module
 
 /**
  * @brief Pound defines for databit latch registers.
@@ -132,6 +136,109 @@
  * #define CONV_D_LAT
  * UNUSED FOR THE ADC MODULE TESTER BOARD AS OF NOW 
  */
+
+#endif
+
+#ifdef (MAX32) //Used for the tester board implemented with the Max32.
+/**
+ * @brief Pound defines for databit latch registers.
+ */
+#define DB0_LAT     LATDbits.LATD13
+#define DB1_LAT     LATDbits.LATD5
+#define DB2_LAT     LATFbits.LATF0
+#define DB3_LAT     LATFbits.LATF1
+#define DB4_LAT     LATGbits.LATG0
+#define DB5_LAT     LATGbits.LATG1
+#define DB6_LAT     LATAbits.LATA6
+#define DB7_LAT     LATAbits.LATA7
+#define DB8_LAT     LATEbits.LATE0
+#define DB9_LAT     LATEbits.LATE9
+#define DB10_LAT    LATGbits.LATG14
+#define DB11_LAT    LATGbits.LATG12
+#define DB12_LAT    LATGbits.LATG13
+#define DB13_LAT    LATEbits.LATE2
+#define DB14_LAT    LATEbits.LATE3
+#define DB15_LAT    LATEbits.LATE4
+
+/**
+ * @brief Pound defines for databit tri-state registers.
+ */
+#define DB0_TRIS     TRISDbits.TRISD13
+#define DB1_TRIS     TRISDbits.TRISD5
+#define DB2_TRIS     TRISFbits.TRISF0
+#define DB3_TRIS     TRISFbits.TRISF1
+#define DB4_TRIS     TRISGbits.TRISG0
+#define DB5_TRIS     TRISGbits.TRISG1
+#define DB6_TRIS     TRISAbits.TRISA6
+#define DB7_TRIS     TRISAbits.TRISA7
+#define DB8_TRIS     TRISEbits.TRISE0
+#define DB9_TRIS     TRISEbits.TRISE9
+#define DB10_TRIS    TRISGbits.TRISG14
+#define DB11_TRIS    TRISGbits.TRISG12
+#define DB12_TRIS    TRISGbits.TRISG13
+#define DB13_TRIS    TRISEbits.TRISE2
+#define DB14_TRIS    TRISEbits.TRISE3
+#define DB15_TRIS    TRISEbits.TRISE4
+
+/**
+ * @brief Pound defines for databit port registers.
+ */
+#define DB0_PORT     PORTDbits.RD13
+#define DB1_PORT     PORTDbits.RD5
+#define DB2_PORT     PORTFbits.RF0
+#define DB3_PORT     PORTFbits.RF1
+#define DB4_PORT     PORTGbits.RG0
+#define DB5_PORT     PORTGbits.RG1
+#define DB6_PORT     PORTAbits.RA6
+#define DB7_PORT     PORTAbits.RA7
+#define DB8_PORT     PORTEbits.RE0
+#define DB9_PORT     PORTEbits.RE9
+#define DB10_PORT    PORTGbits.RG14
+#define DB11_PORT    PORTGbits.RG12
+#define DB12_PORT    PORTGbits.RG13
+#define DB13_PORT    PORTEbits.RE2
+#define DB14_PORT    PORTEbits.RE3
+#define DB15_PORT    PORTEbits.RE4
+
+/**
+ * @brief SPI tristate registers and SS latch.
+ */
+#define SPI_SCK_TRIS    TRISDbits.TRISD10
+#define SPI_MOSI_TRIS   TRISDbits.TRISD0
+#define SPI_MISO_TRIS   TRISCbits.TRISC4
+#define SPI_SS_TRIS     TRISCbits.TRISC3
+#define SPI_SS_LAT      LATCbits.LATC3
+
+/**
+ * @brief ADS85x8 control lines - tristates.
+ */
+#define BUSY_TRIS   TRISDbits.TRISD14
+#define CS_TRIS     TRISFbits.TRISF12
+#define RD_TRIS     TRISBbits.TRISB12
+#define WR_TRIS     TRISBbits.TRISB13
+#define CONV_A_TRIS TRISBbits.TRISB15
+#define CONV_B_TRIS TRISBbits.TRISB14
+/*
+ * #define CONV_C_TRIS
+ * #define CONV_D_TRIS
+ * UNUSED FOR THE ADC MODULE TESTER BOARD AS OF NOW
+ */
+
+/**
+ * @brief ADS85x8 control lines - latches.
+ */
+#define BUSY_LAT   LATDbits.LATD14
+#define CS_LAT     LATFbits.LATF12
+#define RD_LAT     LATBbits.LATB12
+#define WR_LAT     LATBbits.LATB13
+#define CONV_A_LAT LATBbits.LATB15
+#define CONV_B_LAT LATBbits.LATB14
+/*
+ * #define CONV_C_LAT
+ * #define CONV_D_LAT
+ * UNUSED FOR THE ADC MODULE TESTER BOARD AS OF NOW
+ */
+#ifdef
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Methods~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
