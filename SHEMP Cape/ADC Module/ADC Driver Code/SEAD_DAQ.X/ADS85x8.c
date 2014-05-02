@@ -63,8 +63,8 @@ uint8_t ADS85x8_Init(ADS85x8_Info *DS85x8Info)
 	DS85x8Info->configRegister.REFBUF = REFBUF_ENABLE;
 	DS85x8Info->configRegister.REFDAC = REFDAC_3_0V;
 	DS85x8Info->configRegister.REF_EN = REF_EN_ENABLE;
-	DS85x8Info->configRegister.STBY = STBY_DISABLED
-		DS85x8Info->configRegister.VREF = VREF_3_0;
+	DS85x8Info->configRegister.STBY = STBY_DISABLED;
+	DS85x8Info->configRegister.VREF = VREF_3_0;
 	DS85x8Info->configRegister.WRITE_EN = WRITE_EN_CONTENT_UPDATE_ENABLED;
 
 
@@ -83,7 +83,7 @@ uint8_t ADS85x8_Init(ADS85x8_Info *DS85x8Info)
 	//IF CONFIG MATCHES, RETURN SUCCESS.
 
 	passedInfoStruct = DS85x8Info;
-	return(EXIT_SUCCESS)
+	return(EXIT_SUCCESS);
 }
 
 /**

@@ -32,6 +32,8 @@
 #ifndef PARALLELIO_H
 #define	PARALLELIO_H
 
+#include <stdint.h>
+
 /**
  * @brief Used to map different LAT registers to one 16 bit word for writing.
  */

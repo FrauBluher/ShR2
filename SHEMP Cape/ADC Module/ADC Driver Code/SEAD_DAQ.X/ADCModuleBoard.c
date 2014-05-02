@@ -44,13 +44,21 @@
 #pragma config FPLLMUL = MUL_20, FPLLIDIV = DIV_2, FPLLODIV = DIV_1, FWDTEN = OFF
 #pragma config POSCMOD = HS, FNOSC = PRIPLL, FPBDIV = DIV_1
 #define SYS_FREQ (80000000L)
+#define	GetPeripheralClock()		(SYS_FREQ/(1 << OSCCONbits.PBDIV))
+#define UART_MODULE_ID 1
 #endif
+
+// Period needed for timer 1 to trigger an interrupt every 1 second
+// (10MHz PBCLK / 256 = 39,062KHz Timer 1 clock)
+#define PERIOD  50000
 
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
-void ADCModuleBoard_Init(void)
+void ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 {
+	SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
+
 	PARALLEL_PORT_READ rd;
 	PARALLEL_PORT_WRITE wr;
 	PARALLEL_PORT_TRISTATE trs;
@@ -112,13 +120,17 @@ void ADCModuleBoard_Init(void)
 	trs.BIT14 = DB14_TRIS;
 	trs.BIT15 = DB15_TRIS;
 
-	Parallel_IO_Init(rd, trs, wr);
+	Parallel_IO_Init(wr, rd, trs);
 
 	//SPI Tristate setup
 	SPI_MISO_TRIS = 1;
 	SPI_MOSI_TRIS = 0;
 	SPI_SCK_TRIS = 0;
 	SPI_SS_TRIS = 0;
+
+	//UART tristate setup
+	UART_TX_TRIS = 0;
+	UART_RX_TRIS = 1;
 
 	//ADC tristate setup
 	BUSY_TRIS = 1;
@@ -128,14 +140,28 @@ void ADCModuleBoard_Init(void)
 	CONV_A_TRIS = 0;
 	CONV_B_TRIS = 0;
 
-	SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
 
-	SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_MSTEN | SPI_OPEN_MODE16 | SPI_OPEN_SMP_END, 2);
+	UARTConfigure(UART1, UART_ENABLE_PINS_TX_RX_ONLY);
+	UARTSetLineControl(UART1, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
+	UARTSetDataRate(UART1, GetPeripheralClock(), 115200);
+	UARTEnable(UART1, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX)); // selected baud rate, 8-N-1
 
-}
+	BufferToUART_Init(BufferA, BufferB);
 
-void DMA_SPI_Transfer_Init(SampleBuffer BufferA, SampleBuffer BufferB)
-{
-	DmaChnOpen(DMA_CHANNEL1, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
-	DmaChnSetTxfer(DMA_CHANNEL2, (void*) &SPI1BUF, BufferA->, 1, sizeof(BufferA->BufferArray), 1);
+	// Configure Timer 1 using PBCLK as input, 1:256 prescaler
+	// Period matches the Timer 1 frequency, so the interrupt handler
+	// will trigger every one second...
+	OpenTimer1(T1_ON | T1_SOURCE_INT | T1_PS_1_256, PERIOD);
+
+	// Set up the timer interrupt with a priority of 2
+	INTEnable(INT_T1, INT_ENABLED);
+	INTSetVectorPriority(INT_TIMER_1_VECTOR, INT_PRIORITY_LEVEL_2);
+	INTSetVectorSubPriority(INT_TIMER_1_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
+
+
+	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
+	INTEnableInterrupts();
+
+	putsUART1("System initialized...\r\n");
+
 }
