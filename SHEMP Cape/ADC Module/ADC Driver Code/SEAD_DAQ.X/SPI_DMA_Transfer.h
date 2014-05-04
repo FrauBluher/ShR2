@@ -5,12 +5,14 @@
 #define MAX32
 
 #include <stdint.h>
+#define BUFFERLENGTH 64
 
 //8 bit integer should be changed to 16 bits for SPI testing.
 typedef struct {
-    int8_t BufferArray[30000];
+    int8_t BufferArray[BUFFERLENGTH];
     uint8_t bufferFull;
     uint8_t txStarted;
+    uint16_t index;
 } SampleBuffer;
 
 int BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);

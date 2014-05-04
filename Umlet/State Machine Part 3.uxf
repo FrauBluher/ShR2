@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.1">
+  <zoom_level>8</zoom_level>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>24</x>
+      <y>56</y>
+      <w>144</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Entry State
+--
+entry / set init state
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.InitialState</type>
+    <coordinates>
+      <x>48</x>
+      <y>16</y>
+      <w>16</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>40</x>
+      <y>0</y>
+      <w>72</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>56;56;56;24;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>144</x>
+      <y>48</y>
+      <w>136</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+LIGHT</panel_attributes>
+    <additional_attributes>120;120;88;120;88;24;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>128</x>
+      <y>472</y>
+      <w>560</w>
+      <h>376</h>
+    </coordinates>
+    <panel_attributes>Hiding
+--
+entry / Turn off motors.
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>72</y>
+      <w>144</w>
+      <h>592</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+DARK</panel_attributes>
+    <additional_attributes>128;576;40;576;40;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>608</x>
+      <y>88</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>BackRight
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>608</x>
+      <y>160</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>BackLeft
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>608</x>
+      <y>232</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>ForwardRight
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>608</x>
+      <y>304</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>ForwardLeft
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>336</x>
+      <y>80</y>
+      <w>288</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+FRONT LEFT BUMPER</panel_attributes>
+    <additional_attributes>272;40;88;40;88;72</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>432</x>
+      <y>144</y>
+      <w>192</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+FRONT RIGHT BUMPER</panel_attributes>
+    <additional_attributes>176;48;96;48;96;24;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>400</x>
+      <y>184</y>
+      <w>224</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+BACK LEFT BUMPER</panel_attributes>
+    <additional_attributes>208;80;128;80;128;40;24;40;24;32</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>368</x>
+      <y>192</y>
+      <w>256</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+BACK RIGHT BUMPER</panel_attributes>
+    <additional_attributes>240;144;96;144;96;72;24;72;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>264</x>
+      <y>0</y>
+      <w>560</w>
+      <h>440</h>
+    </coordinates>
+    <panel_attributes>Running
+--
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>312</x>
+      <y>152</y>
+      <w>144</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Forward
+--
+entry / Both motors on
+           and set dance
+           timer.
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>320</x>
+      <y>16</y>
+      <w>464</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+TIMER EXPIRED</panel_attributes>
+    <additional_attributes>24;136;24;40;448;40;448;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>744</x>
+      <y>32</y>
+      <w>40</w>
+      <h>328</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>24;24;24;88;24;312</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>264</x>
+      <y>416</y>
+      <w>76</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+DARK</panel_attributes>
+    <additional_attributes>40;56;40;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>192</x>
+      <y>192</y>
+      <w>88</w>
+      <h>296</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+LIGHT</panel_attributes>
+    <additional_attributes>72;40;40;40;40;280</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>504</x>
+      <y>552</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>BackRight
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>504</x>
+      <y>624</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>BackLeft
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>504</x>
+      <y>696</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>ForwardRight
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>504</x>
+      <y>768</y>
+      <w>160</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>ForwardLeft
+--
+entry / veer back and right.
+           and set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>256</x>
+      <y>544</y>
+      <w>264</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+FRONT LEFT BUMPER</panel_attributes>
+    <additional_attributes>248;40;88;40;88;72</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>328</x>
+      <y>608</y>
+      <w>192</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+FRONT RIGHT BUMPER</panel_attributes>
+    <additional_attributes>176;48;96;48;96;24;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>296</x>
+      <y>640</y>
+      <w>224</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+BACK LEFT BUMPER</panel_attributes>
+    <additional_attributes>208;88;128;88;128;48;24;48;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>264</x>
+      <y>640</y>
+      <w>256</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+BACK RIGHT BUMPER</panel_attributes>
+    <additional_attributes>240;160;96;160;96;88;24;88;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>208</x>
+      <y>616</y>
+      <w>144</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>Wait
+--
+entry / Both motors off
+        set entry state
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>248</x>
+      <y>480</y>
+      <w>432</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+TIMER EXPIRED</panel_attributes>
+    <additional_attributes>24;136;24;40;416;40;416;96</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>640</x>
+      <y>496</y>
+      <w>40</w>
+      <h>328</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>24;24;24;88;24;312</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>40</x>
+      <y>176</y>
+      <w>240</w>
+      <h>472</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+LIGHT</panel_attributes>
+    <additional_attributes>224;24;40;24;40;456;88;456</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>720</x>
+      <y>472</y>
+      <w>176</w>
+      <h>376</h>
+    </coordinates>
+    <panel_attributes>Dance
+--
+entry / none
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>688</x>
+      <y>416</y>
+      <w>124</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Timer Expired</panel_attributes>
+    <additional_attributes>64;56;64;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>736</x>
+      <y>552</y>
+      <w>144</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>Go Right
+--
+entry / Left Motor Off
+		           set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.InitialState</type>
+    <coordinates>
+      <x>280</x>
+      <y>192</y>
+      <w>16</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.InitialState</type>
+    <coordinates>
+      <x>136</x>
+      <y>632</y>
+      <w>16</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>120</x>
+      <y>616</y>
+      <w>104</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>88;24;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>264</x>
+      <y>176</y>
+      <w>64</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>48;24;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.InitialState</type>
+    <coordinates>
+      <x>760</x>
+      <y>512</y>
+      <w>16</w>
+      <h>16</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>744</x>
+      <y>496</y>
+      <w>40</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>24;56;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>736</x>
+      <y>632</y>
+      <w>144</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>Go Right
+--
+entry / Left On Right Off
+              set Timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>696</x>
+      <y>584</y>
+      <w>134</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+TIMER_EXPIRED</panel_attributes>
+    <additional_attributes>72;48;72;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>736</x>
+      <y>712</y>
+      <w>144</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>Go Right
+--
+entry / Left Motor Off
+		           set timer.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>696</x>
+      <y>664</y>
+      <w>134</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+TIMER_EXPIRED</panel_attributes>
+    <additional_attributes>72;48;72;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>664</x>
+      <y>600</y>
+      <w>76</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+DARK</panel_attributes>
+    <additional_attributes>24;40;56;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>800</x>
+      <y>296</y>
+      <w>110</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+LIGHT</panel_attributes>
+    <additional_attributes>24;40;72;40;72;176</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.UseCase</type>
+    <coordinates>
+      <x>832</x>
+      <y>8</y>
+      <w>128</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>LIGHT and DARK
+are reported on
+transitions.
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

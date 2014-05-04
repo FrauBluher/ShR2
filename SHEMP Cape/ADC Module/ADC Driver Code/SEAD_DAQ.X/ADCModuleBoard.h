@@ -35,6 +35,7 @@
 #define MAX32
 
 #include <xc.h>
+#include <stdint.h>
 #include "SPI_DMA_Transfer.h"
 
 #ifndef MAX32 //Used for the ADC Module
@@ -226,8 +227,9 @@
 
 /**
  * @brief ADS85x8 control lines - latches.
+ * BUSY is read only so it's a PORT reg.
  */
-#define BUSY_LAT   LATDbits.LATD2 //8
+#define BUSY_PORT  PORTDbits.RD2 //8
 #define CS_LAT     LATAbits.LATA6 //80
 #define RD_LAT     LATGbits.LATG0 //79
 #define WR_LAT     LATGbits.LATG1 //78
@@ -251,7 +253,7 @@
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
-void ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
+uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
 
 #endif	/* ADCMODULEBOARD_H */
 

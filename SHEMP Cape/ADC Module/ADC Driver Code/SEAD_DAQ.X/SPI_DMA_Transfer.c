@@ -1,4 +1,5 @@
 //TODO: ADD DOCUMENTATION AND LICENSE
+//TODO: RENAME TO DMA_Transfer.c/.h
 
 #include <xc.h>
 #include "SPI_DMA_Transfer.h"
@@ -15,6 +16,8 @@ int BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 	if (!inited) {
 		BufA = BufferA;
 		BufB = BufferB;
+		
+		BufA->index = 0;
 
 		chn = DMA_CHANNEL1; // DMA channel to use for our example
 

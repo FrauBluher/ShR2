@@ -33,6 +33,7 @@
 #include "ParallelIO.h"
 #include "plib.h"
 #include "SPI_DMA_Transfer.h"
+#include "ADS85x8.h"
 
 #if defined (__32MX360F512L__) || (__32MX460F512L__) || (__32MX795F512L__) || (__32MX430F064L__) || (__32MX450F256L__) || (__32MX470F512L__) || (__32MX320F128L__)
 // Configuration Bit settings
@@ -55,7 +56,7 @@
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
-void ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
+uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 {
 	SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
 
@@ -140,6 +141,13 @@ void ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 	CONV_A_TRIS = 0;
 	CONV_B_TRIS = 0;
 
+	CONV_A_LAT = 0;
+	CONV_B_LAT = 0;
+
+	//CS and RD are active low...
+	CS_LAT = 1;
+	RD_LAT = 1;
+
 
 	UARTConfigure(UART1, UART_ENABLE_PINS_TX_RX_ONLY);
 	UARTSetLineControl(UART1, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
@@ -148,15 +156,15 @@ void ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 
 	BufferToUART_Init(BufferA, BufferB);
 
-	// Configure Timer 1 using PBCLK as input, 1:256 prescaler
-	// Period matches the Timer 1 frequency, so the interrupt handler
-	// will trigger every one second...
-	OpenTimer1(T1_ON | T1_SOURCE_INT | T1_PS_1_256, PERIOD);
-
-	// Set up the timer interrupt with a priority of 2
-	INTEnable(INT_T1, INT_ENABLED);
-	INTSetVectorPriority(INT_TIMER_1_VECTOR, INT_PRIORITY_LEVEL_2);
-	INTSetVectorSubPriority(INT_TIMER_1_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
+	//	// Configure Timer 1 using PBCLK as input, 1:256 prescaler
+	//	// Period matches the Timer 1 frequency, so the interrupt handler
+	//	// will trigger every one second...
+	//	OpenTimer1(T1_ON | T1_SOURCE_INT | T1_PS_1_256, PERIOD);
+	//
+	//	// Set up the timer interrupt with a priority of 2
+	//	INTEnable(INT_T1, INT_ENABLED);
+	//	INTSetVectorPriority(INT_TIMER_1_VECTOR, INT_PRIORITY_LEVEL_2);
+	//	INTSetVectorSubPriority(INT_TIMER_1_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
 
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
@@ -164,4 +172,5 @@ void ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 
 	putsUART1("System initialized...\r\n");
 
+	return(EXIT_SUCCESS);
 }
