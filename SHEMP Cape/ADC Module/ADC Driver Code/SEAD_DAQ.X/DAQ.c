@@ -86,8 +86,9 @@ int main(void)
 	while (1) {
 		//For debugging the effective sample rate can be lowered by putting a delay before
 		//the switch statement, i.e. here.
-		for(temp = 0; temp < 10000; temp++) {
+		for (temp = 0; temp < 148; temp++) {
 			Nop();
+			//LATAbits.LATA1 = 1;
 		}
 
 
@@ -95,6 +96,7 @@ int main(void)
 		switch (FSMInfo.nextState) {
 		case DAQ_INIT:
 			if (ADCModuleBoard_Init(&BufferA, &BufferB) == EXIT_SUCCESS) {
+				flag = 1;
 				FSMInfo.nextState = DAQ_START_CONVERSION;
 			} else {
 				FSMInfo.nextState = DAQ_FATAL_ERROR;
@@ -104,8 +106,8 @@ int main(void)
 		case DAQ_START_CONVERSION:
 			CONV_A_LAT = 1;
 			CONV_B_LAT = 1;
-			RD_LAT = 1; //Ensure RD is high.
-			CS_LAT = 1; //Ensure CS is high.
+			RD_LAT = 0; //Ensure RD is low.
+			CS_LAT = 0; //Ensure CS is low.
 
 			/*
 			 * The CONV_X High to BUSY High delay is maximally 25ns, which means
@@ -129,10 +131,18 @@ int main(void)
 				for (i = 0; i < 8; i++) {
 					RD_LAT = 0;
 					Nop();
-					temp = Parallel_IO_Read();
-					BufferA.BufferArray[BufferA.index] = (temp & 0xFF00 >> 8);
+
+					//					temp = Parallel_IO_Read();
+					//					BufferA.BufferArray[BufferA.index] = (temp & 0xFF00) >> 8;
+					//					BufferA.index++;
+					//					BufferA.BufferArray[BufferA.index] = (temp & 0x00FF);
+					//					BufferA.index++;
+
+					BufferA.BufferArray[BufferA.index] = 'A';
 					BufferA.index++;
-					BufferA.BufferArray[BufferA.index] = (temp & 0x00FF);
+					BufferA.BufferArray[BufferA.index] = 'A';
+					BufferA.index++;
+
 					Nop();
 					Nop();
 					RD_LAT = 1;
@@ -160,10 +170,19 @@ int main(void)
 				for (i = 0; i < 8; i++) {
 					RD_LAT = 0;
 					Nop();
-					temp = Parallel_IO_Read();
-					BufferB.BufferArray[BufferB.index] = (temp & 0xFF00 >> 8);
+
+					//					temp = Parallel_IO_Read();
+					//					BufferB.BufferArray[BufferB.index] = (temp & 0xFF00 >> 8);
+					//					BufferB.index++;
+					//					BufferB.BufferArray[BufferB.index] = (temp & 0x00FF);
+					//					BufferB.index++;
+
+					BufferB.BufferArray[BufferB.index] = 'B';
 					BufferB.index++;
-					BufferB.BufferArray[BufferB.index] = (temp & 0x00FF);
+					BufferB.BufferArray[BufferB.index] = 'B';
+					BufferB.index++;
+
+
 					Nop();
 					Nop();
 					RD_LAT = 1;
@@ -181,17 +200,34 @@ int main(void)
 			break;
 
 		case DAQ_SEND_BUFFER_A:
-			//There needs to be some error checking done here.
-			BufferToUART_TransferA(BufferA.index);
-			FSMInfo.currentBuffer = BUFFER_B;
-			FSMInfo.nextState = DAQ_START_CONVERSION;
+			if (DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE || flag) {
+				flag = 0;
+				BufferToUART_TransferA(BufferA.index);
+				BufferA.index = 0;
+				FSMInfo.currentBuffer = BUFFER_B;
+				FSMInfo.nextState = DAQ_START_CONVERSION;
+
+				DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+			} else {
+				FSMInfo.nextState = DAQ_FATAL_ERROR;
+			}
+
 			break;
 
 		case DAQ_SEND_BUFFER_B:
-			//There needs to be some error checking done here.
-			BufferToUART_TransferB(BufferB.index);
-			FSMInfo.currentBuffer = BUFFER_A;
-			FSMInfo.nextState = DAQ_START_CONVERSION;
+			if (DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE) {
+				BufferToUART_TransferB(BufferB.index);
+				BufferB.index = 0;
+				FSMInfo.currentBuffer = BUFFER_A;
+				FSMInfo.nextState = DAQ_START_CONVERSION;
+
+				DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+			} else {
+				FSMInfo.nextState = DAQ_FATAL_ERROR;
+			}
+
+			break;
+
 			break;
 
 		case DAQ_WAIT_FOR_CONVERSION:
@@ -216,7 +252,9 @@ int main(void)
 			 * part of the FSM on buffer overflows (I.E. Buffer A fills up while
 			 * buffer B is still transmitting.  Crash and burn.
 			 */
-			while (1); //Until something better this will have to suffice.
+			while (1){
+				Nop();
+			}//Until something better this will have to suffice.
 			break;
 
 		default:
@@ -224,23 +262,6 @@ int main(void)
 			break;
 		}
 	}
-
-	//Code should never reach this point...
-
-
-	//	//Depricated example code starts here, will be removed when finished with the FSM.
-	//	ADCModuleBoard_Init(&BufferA, &BufferB);
-	//
-	//	int i;
-	//	for (i = 0; i < 301; i++) {
-	//		BufferA.BufferArray[i] = 'A';
-	//		BufferB.BufferArray[i] = 'B';
-	//	}
-	//
-	//	BufferA.bufferFull = 1;
-	//
-	//	while (1);
-
 }
 
 void InitFSM(void)

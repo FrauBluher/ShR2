@@ -151,7 +151,7 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 
 	UARTConfigure(UART1, UART_ENABLE_PINS_TX_RX_ONLY);
 	UARTSetLineControl(UART1, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
-	UARTSetDataRate(UART1, GetPeripheralClock(), 115200);
+	UARTSetDataRate(UART1, GetPeripheralClock(), 3000000);
 	UARTEnable(UART1, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX)); // selected baud rate, 8-N-1
 
 	BufferToUART_Init(BufferA, BufferB);

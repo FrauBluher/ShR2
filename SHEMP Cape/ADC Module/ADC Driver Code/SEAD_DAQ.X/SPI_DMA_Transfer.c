@@ -132,14 +132,14 @@ void __ISR(_DMA1_VECTOR, ipl5) DmaHandler1(void)
 
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL1)); // release the interrupt in the INT controller, we're servicing int
 
-	evFlags = DmaChnGetEvFlags(DMA_CHANNEL1); // get the event flags
-
-	if (evFlags & DMA_EV_BLOCK_DONE) { // just a sanity check. we enabled just the DMA_EV_BLOCK_DONE transfer done interrupt
-		if (BufA->txStarted) {
-			BufA->txStarted = 0;
-		} else {
-			BufB->txStarted = 0;
-		}
-		DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
-	}
+//	evFlags = DmaChnGetEvFlags(DMA_CHANNEL1); // get the event flags
+//
+//	if (evFlags & DMA_EV_BLOCK_DONE) { // just a sanity check. we enabled just the DMA_EV_BLOCK_DONE transfer done interrupt
+//		if (BufA->txStarted) {
+//			BufA->txStarted = 0;
+//		} else {
+//			BufB->txStarted = 0;
+//		}
+//		//DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+//	}
 }
