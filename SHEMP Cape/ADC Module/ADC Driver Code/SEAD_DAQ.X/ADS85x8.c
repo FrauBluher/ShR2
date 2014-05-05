@@ -31,11 +31,10 @@
  */
 
 #include "ADS85x8.h"
+#include "ADCModuleBoard.h"
 #include "ParallelIO.h"
 #include <stdint.h>
 
-#define EXIT_SUCCESS 1
-#define EXIT_FAILURE 0
 
 static ADS85x8_Info *passedInfoStruct;
 
@@ -71,16 +70,48 @@ uint8_t ADS85x8_Init(ADS85x8_Info *DS85x8Info)
 
 	//WAIT OR WHATEVER AND CLOCK STUFF...
 	//CHIP SELECT AND WR* LOW
-	//WAIT AT LEAST 15ns
-	//SEND BITS 31:16 HIGH FOR AT LEAST 5ns
-	Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0xFF00) >> 16);
-	Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0x00FF));
-	//WR* HIGH FOR AT LEAST 15ns
-	//SEND BITS 15:0 HIGH FOR AT LEAST 5ns
-	// WR* and CS* BOTH GO HIGH
+	CS_LAT = 0;
+	RD_LAT = 1;
+	WR_LAT = 0;
+	Nop();
+	Nop();
+	Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0xFFFF0000) >> 16);
+	Nop();
+	Nop();
+	WR_LAT = 1;
+	Nop();
+	Nop();
+	WR_LAT = 0;
+	Nop();
+	Nop();
+	Parallel_IO_Write((DS85x8Info->configRegister.wholeRegister & 0x0000FFFF));
+	Nop();
+	Nop();
+	CS_LAT = 1;
+	WR_LAT = 1;
+	Nop();
+	Nop();
+	Nop();
+	Nop();
+	CS_LAT = 0;
+	RD_LAT = 0;
+	Nop();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+	Nop();
+	Nop();
+	RD_LAT = 0;
+	Nop();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	CS_LAT = 1;
 
-	//READ TWO 16 bit words AND COMPARE TO SET CONFIG
-	//IF CONFIG MATCHES, RETURN SUCCESS.
+
+
+	//Do a read here to check that the config register is correct.
 
 	passedInfoStruct = DS85x8Info;
 	return(EXIT_SUCCESS);
@@ -92,5 +123,86 @@ uint8_t ADS85x8_Init(ADS85x8_Info *DS85x8Info)
  */
 void ADS85x8_GetSamples(void)
 {
-	//See page 11 of datasheet for ads8568...
+	//Note this is set up for UART capture.
+	CS_LAT = 0;
+
+	//Channel A0 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChA0 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	//Channel A1 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChA1 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	//Channel B0 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChB0 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	//Channel B1 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChB1 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	//Channel C0 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChC0 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	//Channel C1 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChC1 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	//Channel D0 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChD0 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	//Channel D1 read.
+	RD_LAT = 0;
+	Nop();
+	passedInfoStruct->sampledDataChD1 = Parallel_IO_Read();
+	Nop();
+	Nop();
+	RD_LAT = 1;
+	Nop();
+
+	passedInfoStruct->newData = 1;
+
+	CS_LAT = 1;
+	Nop();
+	Nop();
+	Nop();
+	Nop();
 }

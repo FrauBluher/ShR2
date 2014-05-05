@@ -46,6 +46,7 @@
 #include <plib.h>
 #include "ADCModuleBoard.h"
 #include "ParallelIO.h"
+#include "ADS85x8.h"
 
 SampleBuffer BufferA;
 SampleBuffer BufferB;
@@ -74,6 +75,7 @@ typedef struct {
 	uint8_t generalFlag;
 } DAQFSMInfo;
 
+static ADS85x8_Info ADCInfo;
 static DAQFSMInfo FSMInfo;
 
 int main(void)
@@ -83,10 +85,15 @@ int main(void)
 
 	InitFSM();
 
+	//Some delay for the ADC to power up.  This can be fixed a little later.
+	for (temp = 0; temp < 10000; temp++) {
+		Nop();
+	}
+
 	while (1) {
 		//For debugging the effective sample rate can be lowered by putting a delay before
 		//the switch statement, i.e. here.
-		for (temp = 0; temp < 148; temp++) {
+		for (temp = 0; temp < 10000; temp++) {
 			Nop();
 			//LATAbits.LATA1 = 1;
 		}
@@ -95,7 +102,7 @@ int main(void)
 		//TODO: Put bit toggling into functions somewhere else as to not clutter up the FSM.
 		switch (FSMInfo.nextState) {
 		case DAQ_INIT:
-			if (ADCModuleBoard_Init(&BufferA, &BufferB) == EXIT_SUCCESS) {
+			if (ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo) == EXIT_SUCCESS) {
 				flag = 1;
 				FSMInfo.nextState = DAQ_START_CONVERSION;
 			} else {
@@ -104,98 +111,77 @@ int main(void)
 			break;
 
 		case DAQ_START_CONVERSION:
-			CONV_A_LAT = 1;
-			CONV_B_LAT = 1;
-			RD_LAT = 0; //Ensure RD is low.
-			CS_LAT = 0; //Ensure CS is low.
-
 			/*
 			 * The CONV_X High to BUSY High delay is maximally 25ns, which means
 			 * that we need to wait at least 25ns before using it in a state transition
 			 * case. Each Nop() should provide 12.5nS of delay
 			 */
-			Nop();
-			Nop();
-			Nop();
+			RD_LAT = 1; //Ensure RD is high.
+			CS_LAT = 1; //Ensure CS is high.
+			CONV_A_LAT = 1;
+			CONV_B_LAT = 1;
+			//Nop();
 			FSMInfo.nextState = DAQ_WAIT_FOR_CONVERSION;
+			while (!BUSY_PORT); // Until I figure out tight timings we wait for BUSY to go high for testing.
+			CONV_A_LAT = 0;
+			CONV_B_LAT = 0;
 			break;
 
 		case DAQ_SAMPLES_TO_BUFFER_A:
 			//For UART we split the 16 bit long value into two bytes...
-
-			//The index number needs to be changed to something more realistic
-			//after the driver code is tested to work...
 			if (BufferA.index < BUFFERLENGTH - 8) {
-				CS_LAT = 0;
-
-				for (i = 0; i < 8; i++) {
-					RD_LAT = 0;
-					Nop();
-
-					//					temp = Parallel_IO_Read();
-					//					BufferA.BufferArray[BufferA.index] = (temp & 0xFF00) >> 8;
-					//					BufferA.index++;
-					//					BufferA.BufferArray[BufferA.index] = (temp & 0x00FF);
-					//					BufferA.index++;
-
-					BufferA.BufferArray[BufferA.index] = 'A';
+				ADS85x8_GetSamples();
+				if (ADCInfo.newData) {
+					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
 					BufferA.index++;
-					BufferA.BufferArray[BufferA.index] = 'A';
+					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
 					BufferA.index++;
 
-					Nop();
-					Nop();
-					RD_LAT = 1;
-					Nop();
+					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA1 & 0xFF00) >> 8;
+					BufferA.index++;
+					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA1 & 0x00FF);
+					BufferA.index++;
+
+					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
+					BufferA.index++;
+					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
+					BufferA.index++;
+
+					FSMInfo.nextState = DAQ_START_CONVERSION;
+				} else {
+					FSMInfo.nextState = DAQ_SEND_BUFFER_A;
 				}
-				CS_LAT = 1;
-				Nop();
-				Nop();
-				Nop();
-				Nop();
-				FSMInfo.nextState = DAQ_START_CONVERSION;
 			} else {
-				FSMInfo.nextState = DAQ_SEND_BUFFER_A;
+				FSMInfo.nextState = DAQ_FATAL_ERROR;
 			}
 			break;
 
 		case DAQ_SAMPLES_TO_BUFFER_B:
 			//For UART we split the 16 bit long value into two bytes...
-
-			//The index number needs to be changed to something more realistic
-			//after the driver code is tested to work...
 			if (BufferB.index < BUFFERLENGTH - 8) {
-				CS_LAT = 0;
-
-				for (i = 0; i < 8; i++) {
-					RD_LAT = 0;
-					Nop();
-
-					//					temp = Parallel_IO_Read();
-					//					BufferB.BufferArray[BufferB.index] = (temp & 0xFF00 >> 8);
-					//					BufferB.index++;
-					//					BufferB.BufferArray[BufferB.index] = (temp & 0x00FF);
-					//					BufferB.index++;
-
-					BufferB.BufferArray[BufferB.index] = 'B';
+				ADS85x8_GetSamples();
+				if (ADCInfo.newData) {
+					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
 					BufferB.index++;
-					BufferB.BufferArray[BufferB.index] = 'B';
+					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
 					BufferB.index++;
 
+					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA1 & 0xFF00) >> 8;
+					BufferB.index++;
+					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA1 & 0x00FF);
+					BufferB.index++;
 
-					Nop();
-					Nop();
-					RD_LAT = 1;
-					Nop();
+					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
+					BufferB.index++;
+					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
+					BufferB.index++;
+
+					FSMInfo.nextState = DAQ_START_CONVERSION;
+				} else {
+					FSMInfo.nextState = DAQ_SEND_BUFFER_B;
 				}
-				CS_LAT = 1;
-				Nop();
-				Nop();
-				Nop();
-				Nop();
-				FSMInfo.nextState = DAQ_START_CONVERSION;
 			} else {
-				FSMInfo.nextState = DAQ_SEND_BUFFER_B;
+				FSMInfo.nextState = DAQ_FATAL_ERROR;
 			}
 			break;
 
@@ -210,6 +196,7 @@ int main(void)
 				DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
 			} else {
 				FSMInfo.nextState = DAQ_FATAL_ERROR;
+				//FSMInfo.nextState = DAQ_START_CONVERSION;
 			}
 
 			break;
@@ -224,6 +211,7 @@ int main(void)
 				DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
 			} else {
 				FSMInfo.nextState = DAQ_FATAL_ERROR;
+				//FSMInfo.nextState = DAQ_START_CONVERSION;
 			}
 
 			break;
@@ -252,7 +240,7 @@ int main(void)
 			 * part of the FSM on buffer overflows (I.E. Buffer A fills up while
 			 * buffer B is still transmitting.  Crash and burn.
 			 */
-			while (1){
+			while (1) {
 				Nop();
 			}//Until something better this will have to suffice.
 			break;

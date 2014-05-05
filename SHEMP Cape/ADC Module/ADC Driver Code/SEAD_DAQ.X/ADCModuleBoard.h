@@ -37,6 +37,7 @@
 #include <xc.h>
 #include <stdint.h>
 #include "SPI_DMA_Transfer.h"
+#include "ADS85x8.h"
 
 #ifndef MAX32 //Used for the ADC Module
 
@@ -213,7 +214,7 @@
 /**
  * @brief ADS85x8 control lines - tristates.
  */
-#define BUSY_TRIS   TRISDbits.TRISD2 //8
+#define BUSY_TRIS   TRISDbits.TRISD12 //8
 #define CS_TRIS     TRISAbits.TRISA6 //80
 #define RD_TRIS     TRISGbits.TRISG0 //79
 #define WR_TRIS     TRISGbits.TRISG1 //78
@@ -229,7 +230,7 @@
  * @brief ADS85x8 control lines - latches.
  * BUSY is read only so it's a PORT reg.
  */
-#define BUSY_PORT  PORTDbits.RD2 //8
+#define BUSY_PORT  PORTDbits.RD12 //8
 #define CS_LAT     LATAbits.LATA6 //80
 #define RD_LAT     LATGbits.LATG0 //79
 #define WR_LAT     LATGbits.LATG1 //78
@@ -253,7 +254,7 @@
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
-uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
+uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x8_Info *DS85x8Info);
 
 #endif	/* ADCMODULEBOARD_H */
 

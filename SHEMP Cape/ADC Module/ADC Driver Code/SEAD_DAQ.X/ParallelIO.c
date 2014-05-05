@@ -52,6 +52,7 @@ void Parallel_IO_Write(uint16_t parallelRegister)
 {
 	tristateReg.wholeRegister = 0;
 	writeReg.wholeRegister = parallelRegister;
+	tristateReg.wholeRegister = 0xFFFF;
 }
 
 uint16_t Parallel_IO_Read(void)

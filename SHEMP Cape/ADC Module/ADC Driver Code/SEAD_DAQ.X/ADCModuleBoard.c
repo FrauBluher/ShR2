@@ -56,7 +56,7 @@
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
-uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
+uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x8_Info *DS85x8Info)
 {
 	SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
 
@@ -166,6 +166,7 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 	//	INTSetVectorPriority(INT_TIMER_1_VECTOR, INT_PRIORITY_LEVEL_2);
 	//	INTSetVectorSubPriority(INT_TIMER_1_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
 
+	ADS85x8_Init(DS85x8Info);
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 	INTEnableInterrupts();
