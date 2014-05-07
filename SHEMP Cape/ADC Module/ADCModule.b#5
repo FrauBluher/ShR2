@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="6.4">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1558,7 +1558,7 @@ design rules under a new name.</description>
 <element name="C3" library="SensorCape" package="0805" value="10uF" x="21.0566" y="54.7624" rot="R90"/>
 <element name="C4" library="SensorCape" package="0805" value="10uF" x="22.9362" y="54.7624" rot="R90"/>
 <element name="C5" library="SensorCape" package="0805" value="10uF" x="24.7904" y="54.7624" rot="R90"/>
-<element name="C6" library="SensorCape" package="0805" value="10uF" x="11.7602" y="49.6062" rot="R180"/>
+<element name="C6" library="SensorCape" package="0805" value="10uF" x="11.0998" y="50.0888"/>
 <element name="C7" library="SensorCape" package="0805" value="10uF" x="8.89" y="23.495" rot="R180"/>
 <element name="JP3" library="ASL" package="SCREWTERMINAL-3.5MM-3_LOCK.007S" value="M03SCREW_LOCK" x="34.29" y="60.96"/>
 <element name="JP4" library="ASL" package="1X06" value="" x="37.465" y="53.975" rot="R180"/>
@@ -1669,7 +1669,11 @@ design rules under a new name.</description>
 <wire x1="12.584" y1="33.528" x2="14.0716" y2="33.528" width="0.254" layer="1"/>
 <wire x1="14.0716" y1="33.528" x2="14.1478" y2="33.4518" width="0.254" layer="1"/>
 <contactref element="U$3" pad="20"/>
-<wire x1="13.8176" y1="53.3146" x2="12.7254" y2="52.2224" width="0" layer="19" extent="1-1"/>
+<wire x1="13.8176" y1="53.3146" x2="13.97" y2="53.3146" width="0.254" layer="1"/>
+<wire x1="13.97" y1="53.3146" x2="13.97" y2="52.705" width="0.254" layer="1"/>
+<wire x1="13.97" y1="52.705" x2="13.335" y2="52.07" width="0.254" layer="1"/>
+<wire x1="13.335" y1="52.07" x2="12.8778" y2="52.07" width="0.254" layer="1"/>
+<wire x1="12.8778" y1="52.07" x2="12.7254" y2="52.2224" width="0.254" layer="1"/>
 </signal>
 <signal name="HVSS_12A">
 <contactref element="JP5" pad="1"/>
@@ -2121,12 +2125,6 @@ design rules under a new name.</description>
 <wire x1="10.1346" y1="52.2224" x2="3.6576" y2="52.2224" width="0.254" layer="1"/>
 <wire x1="3.6576" y1="52.2224" x2="2.54" y2="53.34" width="0.254" layer="1"/>
 <wire x1="10.1346" y1="52.2224" x2="10.1346" y2="51.3588" width="0.254" layer="1"/>
-<wire x1="10.1346" y1="51.3588" x2="10.4902" y2="51.0032" width="0.254" layer="1"/>
-<wire x1="10.4902" y1="51.0032" x2="12.5476" y2="51.0032" width="0.254" layer="1"/>
-<wire x1="12.5476" y1="51.0032" x2="12.7" y2="51.1556" width="0.254" layer="1"/>
-<wire x1="12.7" y1="51.1556" x2="12.7" y2="52.197" width="0.254" layer="1"/>
-<wire x1="12.6602" y1="49.6062" x2="12.6602" y2="50.8906" width="0.254" layer="1"/>
-<wire x1="12.6602" y1="50.8906" x2="12.5476" y2="51.0032" width="0.254" layer="1"/>
 <contactref element="C56" pad="2"/>
 <contactref element="C57" pad="2"/>
 <contactref element="U1" pad="48"/>
@@ -2148,6 +2146,8 @@ design rules under a new name.</description>
 <wire x1="11.43" y1="26.67" x2="11.43" y2="26.035" width="0.4064" layer="16"/>
 <wire x1="4.445" y1="52.07" x2="3.175" y2="53.34" width="0.4064" layer="16"/>
 <wire x1="3.175" y1="53.34" x2="2.54" y2="53.34" width="0.4064" layer="16"/>
+<wire x1="10.1346" y1="51.3588" x2="10.1998" y2="51.3588" width="0.254" layer="1"/>
+<wire x1="10.1998" y1="51.3588" x2="10.1998" y2="50.0888" width="0.254" layer="1"/>
 </signal>
 <signal name="N$7">
 <contactref element="U1" pad="56"/>
