@@ -640,26 +640,26 @@ chip</description>
 <text x="-2" y="-3.4" size="0.4064" layer="27">&gt;VALUE</text>
 </package>
 <package name="RGW20_3P15X3P15">
-<smd name="1" x="-2.3876" y="1.2954" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="2" x="-2.3876" y="0.6604" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="3" x="-2.3876" y="0" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="4" x="-2.3876" y="-0.6604" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="5" x="-2.3876" y="-1.2954" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="6" x="-1.2954" y="-2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="7" x="-0.6604" y="-2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="8" x="0" y="-2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="9" x="0.6604" y="-2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="10" x="1.2954" y="-2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="11" x="2.3876" y="-1.2954" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="12" x="2.3876" y="-0.6604" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="13" x="2.3876" y="0" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="14" x="2.3876" y="0.6604" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="15" x="2.3876" y="1.2954" dx="0.3556" dy="0.9906" layer="1" rot="R270"/>
-<smd name="16" x="1.2954" y="2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="17" x="0.6604" y="2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="18" x="0" y="2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="19" x="-0.6604" y="2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
-<smd name="20" x="-1.2954" y="2.3876" dx="0.3556" dy="0.9906" layer="1" rot="R180"/>
+<smd name="1" x="-2.5176" y="1.2954" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="2" x="-2.5176" y="0.6604" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="3" x="-2.5176" y="0" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="4" x="-2.5176" y="-0.6604" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="5" x="-2.5176" y="-1.2954" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="6" x="-1.2954" y="-2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="7" x="-0.6604" y="-2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="8" x="0" y="-2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="9" x="0.6604" y="-2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="10" x="1.2954" y="-2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="11" x="2.5176" y="-1.2954" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="12" x="2.5176" y="-0.6604" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="13" x="2.5176" y="0" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="14" x="2.5176" y="0.6604" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="15" x="2.5176" y="1.2954" dx="0.3556" dy="1.25" layer="1" rot="R270"/>
+<smd name="16" x="1.2954" y="2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="17" x="0.6604" y="2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="18" x="0" y="2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="19" x="-0.6604" y="2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
+<smd name="20" x="-1.2954" y="2.5176" dx="0.3556" dy="1.25" layer="1" rot="R180"/>
 <smd name="21" x="0" y="0" dx="3.1496" dy="3.1496" layer="1"/>
 <wire x1="-2.8194" y1="-2.8194" x2="-1.7986" y2="-2.8194" width="0.1524" layer="51"/>
 <wire x1="2.8194" y1="-2.8194" x2="2.8194" y2="-1.8034" width="0.1524" layer="51"/>
@@ -1167,12 +1167,6 @@ Ends up being a square 6.6mm package.</description>
 <wire x1="5.9944" y1="5.2324" x2="5.9944" y2="5.9944" width="0.1524" layer="51"/>
 <wire x1="-5.2324" y1="5.9944" x2="-5.9944" y2="5.9944" width="0.1524" layer="51"/>
 <text x="-8.5598" y="4.7498" size="1.27" layer="51" ratio="6" rot="SR0">*</text>
-<text x="-3.2766" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">RefDes</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">DEV</text>
-<text x="-1.143" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">PN</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">DEV</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">VAL</text>
-<text x="-1.7272" y="-0.635" size="1.27" layer="51" ratio="6" rot="SR0">TOL</text>
 <wire x1="4.6736" y1="5.9944" x2="4.9022" y2="5.9944" width="0" layer="21"/>
 <wire x1="4.9022" y1="5.9944" x2="4.9022" y2="7.0104" width="0" layer="21"/>
 <wire x1="4.9022" y1="7.0104" x2="4.6736" y2="7.0104" width="0" layer="21"/>
@@ -1581,7 +1575,6 @@ Ends up being a square 6.6mm package.</description>
 <wire x1="5.9944" y1="5.9944" x2="-5.9944" y2="5.9944" width="0" layer="21"/>
 <wire x1="-5.9944" y1="5.9944" x2="-5.9944" y2="-5.9944" width="0" layer="21"/>
 <text x="-8.5598" y="4.7498" size="1.27" layer="21" ratio="6" rot="SR0">*</text>
-<text x="-3.8354" y="-0.635" size="1.27" layer="21" ratio="6" rot="SR0">RefDes2</text>
 </package>
 <package name="AXIAL-0.3">
 <wire x1="-2.54" y1="0.762" x2="2.54" y2="0.762" width="0.2032" layer="21"/>

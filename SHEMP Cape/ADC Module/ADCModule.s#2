@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="6.4">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -6208,6 +6208,20 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 <pinref part="U$1" gate="A" pin="VCAP/VDDCORE"/>
 <pinref part="C8" gate="G$1" pin="2"/>
 <wire x1="111.76" y1="73.66" x2="106.68" y2="73.66" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="TX1A" class="0">
+<segment>
+<pinref part="U$1" gate="A" pin="SCL1A/SDO1A/U1ATX/RF8"/>
+<wire x1="335.28" y1="88.9" x2="342.9" y2="88.9" width="0.1524" layer="91"/>
+<label x="342.9" y="88.9" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="RX1A" class="0">
+<segment>
+<pinref part="U$1" gate="A" pin="SDA1A/SDI1A/U1ARX/RF2"/>
+<wire x1="335.28" y1="81.28" x2="342.9" y2="81.28" width="0.1524" layer="91"/>
+<label x="342.9" y="81.28" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

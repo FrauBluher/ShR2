@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.4">
+<eagle version="6.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -3205,27 +3205,6 @@ will be further integrated into the Sparkfun Library for other footprints.  It c
 <hole x="2.54" y="0" drill="1.4732"/>
 <hole x="5.08" y="0" drill="1.4732"/>
 </package>
-<package name="SCREWTERMINAL-5MM-3">
-<wire x1="-3.1" y1="4.2" x2="13.1" y2="4.2" width="0.2032" layer="21"/>
-<wire x1="13.1" y1="4.2" x2="13.1" y2="-2.3" width="0.2032" layer="21"/>
-<wire x1="13.1" y1="-2.3" x2="13.1" y2="-3.3" width="0.2032" layer="21"/>
-<wire x1="13.1" y1="-3.3" x2="-3.1" y2="-3.3" width="0.2032" layer="21"/>
-<wire x1="-3.1" y1="-3.3" x2="-3.1" y2="-2.3" width="0.2032" layer="21"/>
-<wire x1="-3.1" y1="-2.3" x2="-3.1" y2="4.2" width="0.2032" layer="21"/>
-<wire x1="13.1" y1="-2.3" x2="-3.1" y2="-2.3" width="0.2032" layer="21"/>
-<wire x1="-3.1" y1="-1.35" x2="-3.7" y2="-1.35" width="0.2032" layer="51"/>
-<wire x1="-3.7" y1="-1.35" x2="-3.7" y2="-2.35" width="0.2032" layer="51"/>
-<wire x1="-3.7" y1="-2.35" x2="-3.1" y2="-2.35" width="0.2032" layer="51"/>
-<wire x1="13.1" y1="4" x2="13.7" y2="4" width="0.2032" layer="51"/>
-<wire x1="13.7" y1="4" x2="13.7" y2="3" width="0.2032" layer="51"/>
-<wire x1="13.7" y1="3" x2="13.1" y2="3" width="0.2032" layer="51"/>
-<circle x="2.5" y="3.7" radius="0.2828" width="0.127" layer="51"/>
-<pad name="1" x="0" y="0" drill="1.3" diameter="2.032" shape="square" thermals="no"/>
-<pad name="2" x="5" y="0" drill="1.3" diameter="2.032" thermals="no"/>
-<pad name="3" x="10" y="0" drill="1.3" diameter="2.032" thermals="no"/>
-<text x="-1.27" y="2.54" size="0.4064" layer="25">&gt;NAME</text>
-<text x="-1.27" y="1.27" size="0.4064" layer="27">&gt;VALUE</text>
-</package>
 <package name="1X03_LOCK_NO_SILK">
 <pad name="1" x="0" y="0.127" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="2" x="2.54" y="-0.127" drill="1.016" diameter="1.8796" rot="R90"/>
@@ -4201,6 +4180,27 @@ Source: http://www.onsemi.co.jp .. LM317M-D.PDF</description>
 <text x="1.102" y="1.129" size="0.4064" layer="27">&gt;VALUE</text>
 <text x="-2.238" y="-2.445" size="1.27" layer="25" ratio="15">&gt;NAME</text>
 </package>
+<package name="SCREWTERMINAL-5MM-3">
+<wire x1="-3.1" y1="4.2" x2="13.1" y2="4.2" width="0.2032" layer="21"/>
+<wire x1="13.1" y1="4.2" x2="13.1" y2="-2.3" width="0.2032" layer="21"/>
+<wire x1="13.1" y1="-2.3" x2="13.1" y2="-3.3" width="0.2032" layer="21"/>
+<wire x1="13.1" y1="-3.3" x2="-3.1" y2="-3.3" width="0.2032" layer="21"/>
+<wire x1="-3.1" y1="-3.3" x2="-3.1" y2="-2.3" width="0.2032" layer="21"/>
+<wire x1="-3.1" y1="-2.3" x2="-3.1" y2="4.2" width="0.2032" layer="21"/>
+<wire x1="13.1" y1="-2.3" x2="-3.1" y2="-2.3" width="0.2032" layer="21"/>
+<wire x1="-3.1" y1="-1.35" x2="-3.7" y2="-1.35" width="0.2032" layer="51"/>
+<wire x1="-3.7" y1="-1.35" x2="-3.7" y2="-2.35" width="0.2032" layer="51"/>
+<wire x1="-3.7" y1="-2.35" x2="-3.1" y2="-2.35" width="0.2032" layer="51"/>
+<wire x1="13.1" y1="4" x2="13.7" y2="4" width="0.2032" layer="51"/>
+<wire x1="13.7" y1="4" x2="13.7" y2="3" width="0.2032" layer="51"/>
+<wire x1="13.7" y1="3" x2="13.1" y2="3" width="0.2032" layer="51"/>
+<circle x="2.5" y="3.7" radius="0.2828" width="0.127" layer="51"/>
+<pad name="1" x="0" y="0" drill="1.3" diameter="2.032" shape="square"/>
+<pad name="2" x="5" y="0" drill="1.3" diameter="2.032"/>
+<pad name="3" x="10" y="0" drill="1.3" diameter="2.032"/>
+<text x="-1.27" y="2.54" size="0.4064" layer="25">&gt;NAME</text>
+<text x="-1.27" y="1.27" size="0.4064" layer="27">&gt;VALUE</text>
+</package>
 </packages>
 <symbols>
 <symbol name="GND">
@@ -4968,7 +4968,6 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 <part name="C5" library="SensorCape" deviceset="CAP" device="0805" value="10uF"/>
 <part name="C6" library="SensorCape" deviceset="CAP" device="0805" value="10uF"/>
 <part name="C7" library="SensorCape" deviceset="CAP" device="0805" value="10uF"/>
-<part name="JP3" library="ASL" deviceset="M03" device="SCREW_LOCK"/>
 <part name="JP4" library="ASL" deviceset="M06" device="SIP"/>
 <part name="U2" library="ASL" deviceset="LP2950" device="ACZ" technology="-3.3"/>
 <part name="JP5" library="ASL" deviceset="M03" device="PTH"/>
@@ -4992,6 +4991,7 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 <part name="JP6" library="ASL" deviceset="M06" device="SIP_LOCK"/>
 <part name="LED1" library="ASL" deviceset="LED" device="0805"/>
 <part name="R3" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
+<part name="JP1" library="ASL" deviceset="M03" device="-SCREW-5MM"/>
 </parts>
 <sheets>
 <sheet>
@@ -5042,9 +5042,9 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 <instance part="C72" gate="G$1" x="337.82" y="154.94"/>
 <instance part="C73" gate="G$1" x="347.98" y="137.16"/>
 <instance part="C74" gate="G$1" x="360.68" y="144.78" rot="R180"/>
-<instance part="JP3" gate="G$1" x="355.6" y="109.22" rot="R180"/>
 <instance part="JP4" gate="G$1" x="340.36" y="93.98" rot="R90"/>
 <instance part="JP5" gate="G$1" x="55.88" y="185.42"/>
+<instance part="JP1" gate="G$1" x="355.6" y="109.22" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -5480,26 +5480,26 @@ Standard schematic elements and footprints for 5mm, 3mm, 1206, and 0603 sized LE
 </net>
 <net name="N$1" class="0">
 <segment>
-<pinref part="JP3" gate="G$1" pin="3"/>
 <wire x1="347.98" y1="111.76" x2="335.28" y2="111.76" width="0.1524" layer="91"/>
 <pinref part="JP4" gate="G$1" pin="2"/>
 <wire x1="335.28" y1="111.76" x2="335.28" y2="99.06" width="0.1524" layer="91"/>
+<pinref part="JP1" gate="G$1" pin="3"/>
 </segment>
 </net>
 <net name="N$2" class="0">
 <segment>
-<pinref part="JP3" gate="G$1" pin="2"/>
 <wire x1="347.98" y1="109.22" x2="340.36" y2="109.22" width="0.1524" layer="91"/>
 <pinref part="JP4" gate="G$1" pin="4"/>
 <wire x1="340.36" y1="109.22" x2="340.36" y2="99.06" width="0.1524" layer="91"/>
+<pinref part="JP1" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$3" class="0">
 <segment>
-<pinref part="JP3" gate="G$1" pin="1"/>
 <wire x1="347.98" y1="106.68" x2="345.44" y2="106.68" width="0.1524" layer="91"/>
 <pinref part="JP4" gate="G$1" pin="6"/>
 <wire x1="345.44" y1="106.68" x2="345.44" y2="99.06" width="0.1524" layer="91"/>
+<pinref part="JP1" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="PMP15" class="0">
