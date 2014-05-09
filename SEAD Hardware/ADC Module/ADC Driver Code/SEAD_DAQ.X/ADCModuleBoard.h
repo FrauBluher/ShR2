@@ -153,7 +153,7 @@
 #define DB4_LAT     LATGbits.LATG7 //29
 #define DB5_LAT     LATEbits.LATE6 //31
 #define DB6_LAT     LATEbits.LATE4 //33
-#define DB7_LAT     LATFbits.LATF3 //25
+#define DB7_LAT     LATEbits.LATE2 //35
 #define DB8_LAT     LATEbits.LATE3 //34
 #define DB9_LAT     LATEbits.LATE5 //32
 #define DB10_LAT    LATEbits.LATE7 //30
@@ -172,13 +172,13 @@
 #define DB4_TRIS     TRISGbits.TRISG7 //29
 #define DB5_TRIS     TRISEbits.TRISE6 //31
 #define DB6_TRIS     TRISEbits.TRISE4 //33
-#define DB7_TRIS     TRISFbits.TRISF3 //25
+#define DB7_TRIS     TRISEbits.TRISE2 //35
 #define DB8_TRIS     TRISEbits.TRISE3 //34
 #define DB9_TRIS     TRISEbits.TRISE5 //32
 #define DB10_TRIS    TRISEbits.TRISE7 //30
 #define DB11_TRIS    TRISGbits.TRISG15 //28
 #define DB12_TRIS    TRISGbits.TRISG3 //26
-#define DB13_TRIS    TRISCbits.TRISC13 // 75
+#define DB13_TRIS    TRISCbits.TRISC13 // 75 ----------------- THERE'S A PROBLEM WITH THIS PIN ON THE MAX32 LOOK INTO IT...
 #define DB14_TRIS    TRISDbits.TRISD13 // 76
 #define DB15_TRIS    TRISDbits.TRISD7 // 77
 
@@ -192,7 +192,7 @@
 #define DB4_PORT     PORTGbits.RG7 //29
 #define DB5_PORT     PORTEbits.RE6 //31
 #define DB6_PORT     PORTEbits.RE4 //33
-#define DB7_PORT     PORTFbits.RF3 //25
+#define DB7_PORT     PORTEbits.RE2 //35
 #define DB8_PORT     PORTEbits.RE3 //34
 #define DB9_PORT     PORTEbits.RE5 //32
 #define DB10_PORT    PORTEbits.RE7 //30

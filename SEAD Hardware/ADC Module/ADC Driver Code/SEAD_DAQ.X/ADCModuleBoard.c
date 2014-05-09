@@ -123,6 +123,15 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x
 
 	Parallel_IO_Init(wr, rd, trs);
 
+	LATA = 0;
+	LATB = 0;
+	LATC = 0;
+	LATD = 0;
+	LATE = 0;
+	LATF = 0;
+	LATG = 0;
+	AD1PCFG = 0xFFFFFFFF;
+
 	//SPI Tristate setup
 	SPI_MISO_TRIS = 1;
 	SPI_MOSI_TRIS = 0;
@@ -147,11 +156,12 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x
 	//CS and RD are active low...
 	CS_LAT = 1;
 	RD_LAT = 1;
+	WR_LAT = 1;
 
 
 	UARTConfigure(UART1, UART_ENABLE_PINS_TX_RX_ONLY);
 	UARTSetLineControl(UART1, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
-	UARTSetDataRate(UART1, GetPeripheralClock(), 3000000);
+	UARTSetDataRate(UART1, GetPeripheralClock(), 115200);
 	UARTEnable(UART1, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX)); // selected baud rate, 8-N-1
 
 	BufferToUART_Init(BufferA, BufferB);
@@ -172,6 +182,5 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x
 	INTEnableInterrupts();
 
 	putsUART1("System initialized...\r\n");
-
 	return(EXIT_SUCCESS);
 }

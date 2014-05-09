@@ -23,6 +23,7 @@
  */
 
 #include "ParallelIO.h"
+#include "ADCModuleBoard.h"
 
 
 /**
@@ -57,7 +58,16 @@ void Parallel_IO_Write(uint16_t parallelRegister)
 
 uint16_t Parallel_IO_Read(void)
 {
+	uint16_t returnVal = 0;
 	tristateReg.wholeRegister = 0xFFFF;
-	return(readReg.wholeRegister);
+	returnVal = ((returnVal | (DB0_PORT)) | (returnVal | (DB1_PORT << 1)) |
+		(returnVal | (DB2_PORT << 2)) | (returnVal | (DB3_PORT << 3)) |
+		(returnVal | (DB4_PORT << 4)) | (returnVal | (DB5_PORT << 5)) |
+		(returnVal | (DB6_PORT << 6)) | (returnVal | (DB7_PORT << 7)) |
+		(returnVal | (DB8_PORT << 8)) | (returnVal | (DB9_PORT << 9)) |
+		(returnVal | (DB10_PORT << 10)) | (returnVal | (DB11_PORT << 11)) |
+		(returnVal | (DB12_PORT << 12)) | (returnVal | (DB13_PORT << 13)) |
+		(returnVal | (DB14_PORT << 14)) | (returnVal | (DB15_PORT << 15)));
+	return(returnVal);
 }
 

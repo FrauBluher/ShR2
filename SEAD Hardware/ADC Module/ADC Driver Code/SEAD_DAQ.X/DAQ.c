@@ -1,48 +1,3 @@
-/*********************************************************************
- *
- *     DMA Uart Echo Example
- *
- *********************************************************************
- * FileName:        uart_echo.c
- * Dependencies:    plib.h
- *
- * Processor:       PIC32MX
- *
- * Complier:        MPLAB C32 v1 or higher
- *                  MPLAB IDE v8 or higher
- * Company:         Microchip Technology Inc.
- *
- * Software License Agreement
- *
- * The software supplied herewith by Microchip Technology Incorporated
- * (the ?Company?) for its PIC Microcontroller is intended
- * and supplied to you, the Company?s customer, for use solely and
- * exclusively on Microchip PIC Microcontroller products.
- * The software is owned by the Company and/or its supplier, and is
- * protected under applicable copyright laws. All rights are reserved.
- * Any use in violation of the foregoing restrictions may subject the
- * user to criminal sanctions under applicable laws, as well as to
- * civil liability for the breach of the terms and conditions of this
- * license.
- *
- * THIS SOFTWARE IS PROVIDED IN AN ?AS IS? CONDITION. NO WARRANTIES,
- * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
- * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
- * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *********************************************************************
- * $Id: dma_api_example.c 4261 2007-08-22 16:32:28Z aura $
- *********************************************************************
- * Platform: Explorer-16 with PIC32MX PIM
- *
- * Description:
- *      Receives data from the UART module and echoes it back using
- *      the DMA Peripheral Lib. The received data is expected to end
- *      with a CR and has to be less than DmaGetMaxTxferSize() bytes
- *      in length. We'll enable the DMA interrupts to signal to us
- *      when the transfer is done.
- ********************************************************************/
 #include <plib.h>
 #include "ADCModuleBoard.h"
 #include "ParallelIO.h"
@@ -81,12 +36,13 @@ static DAQFSMInfo FSMInfo;
 int main(void)
 {
 	int16_t temp;
+	uint16_t yo = 0;
 	uint8_t i;
 
 	InitFSM();
 
 	//Some delay for the ADC to power up.  This can be fixed a little later.
-	for (temp = 0; temp < 10000; temp++) {
+	for (temp = 0; temp < 5000; temp++) {
 		Nop();
 	}
 
@@ -122,66 +78,84 @@ int main(void)
 			CONV_B_LAT = 1;
 			//Nop();
 			FSMInfo.nextState = DAQ_WAIT_FOR_CONVERSION;
-			while (!BUSY_PORT); // Until I figure out tight timings we wait for BUSY to go high for testing.
+			//while (!BUSY_PORT); // Until I figure out tight timings we wait for BUSY to go high for testing.
+			for (temp = 0; temp < 500; temp++) {
+				Nop();
+			}
 			CONV_A_LAT = 0;
 			CONV_B_LAT = 0;
 			break;
 
 		case DAQ_SAMPLES_TO_BUFFER_A:
 			//For UART we split the 16 bit long value into two bytes...
-			if (BufferA.index < BUFFERLENGTH - 8) {
+			if (BufferA.index < BUFFERLENGTH - 10) {
 				ADS85x8_GetSamples();
 				if (ADCInfo.newData) {
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
 					BufferA.index++;
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
 					BufferA.index++;
+					BufferA.BufferArray[BufferA.index] = ',';
+					BufferA.index++;
+
 
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA1 & 0xFF00) >> 8;
 					BufferA.index++;
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA1 & 0x00FF);
+					BufferA.index++;
+					BufferA.BufferArray[BufferA.index] = ',';
 					BufferA.index++;
 
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
 					BufferA.index++;
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
 					BufferA.index++;
+					BufferA.BufferArray[BufferA.index] = '\n';
+					BufferA.index++;
 
 					FSMInfo.nextState = DAQ_START_CONVERSION;
 				} else {
-					FSMInfo.nextState = DAQ_SEND_BUFFER_A;
+					FSMInfo.nextState = DAQ_FATAL_ERROR;
 				}
 			} else {
-				FSMInfo.nextState = DAQ_FATAL_ERROR;
+				BufferB.BufferArray[BufferB.index] = 'A';
+				FSMInfo.nextState = DAQ_SEND_BUFFER_A;
 			}
 			break;
 
 		case DAQ_SAMPLES_TO_BUFFER_B:
 			//For UART we split the 16 bit long value into two bytes...
-			if (BufferB.index < BUFFERLENGTH - 8) {
+			if (BufferB.index < BUFFERLENGTH - 10) {
 				ADS85x8_GetSamples();
 				if (ADCInfo.newData) {
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
 					BufferB.index++;
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
 					BufferB.index++;
+					BufferB.BufferArray[BufferB.index] = ',';
+					BufferB.index++;
 
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA1 & 0xFF00) >> 8;
 					BufferB.index++;
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA1 & 0x00FF);
+					BufferB.index++;
+					BufferB.BufferArray[BufferB.index] = ',';
 					BufferB.index++;
 
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
 					BufferB.index++;
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
 					BufferB.index++;
+					BufferB.BufferArray[BufferB.index] = '\n';
+					BufferB.index++;
 
 					FSMInfo.nextState = DAQ_START_CONVERSION;
 				} else {
-					FSMInfo.nextState = DAQ_SEND_BUFFER_B;
+					FSMInfo.nextState = DAQ_FATAL_ERROR;
 				}
 			} else {
-				FSMInfo.nextState = DAQ_FATAL_ERROR;
+				BufferB.BufferArray[BufferB.index] = 'B';
+				FSMInfo.nextState = DAQ_SEND_BUFFER_B;
 			}
 			break;
 
