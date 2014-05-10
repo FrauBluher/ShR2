@@ -49,7 +49,7 @@ int main(void)
 	while (1) {
 		//For debugging the effective sample rate can be lowered by putting a delay before
 		//the switch statement, i.e. here.
-		for (temp = 0; temp < 10000; temp++) {
+		for (temp = 0; temp < 2500; temp++) {
 			Nop();
 			//LATAbits.LATA1 = 1;
 		}
@@ -88,7 +88,7 @@ int main(void)
 
 		case DAQ_SAMPLES_TO_BUFFER_A:
 			//For UART we split the 16 bit long value into two bytes...
-			if (BufferA.index < BUFFERLENGTH - 10) {
+			if (BufferA.index < BUFFERLENGTH - 9) {
 				ADS85x8_GetSamples();
 				if (ADCInfo.newData) {
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
@@ -118,7 +118,6 @@ int main(void)
 					FSMInfo.nextState = DAQ_FATAL_ERROR;
 				}
 			} else {
-				BufferB.BufferArray[BufferB.index] = 'A';
 				FSMInfo.nextState = DAQ_SEND_BUFFER_A;
 			}
 			break;
@@ -154,7 +153,6 @@ int main(void)
 					FSMInfo.nextState = DAQ_FATAL_ERROR;
 				}
 			} else {
-				BufferB.BufferArray[BufferB.index] = 'B';
 				FSMInfo.nextState = DAQ_SEND_BUFFER_B;
 			}
 			break;
