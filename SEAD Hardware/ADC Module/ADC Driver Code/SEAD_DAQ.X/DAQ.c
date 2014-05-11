@@ -49,7 +49,7 @@ int main(void)
 	while (1) {
 		//For debugging the effective sample rate can be lowered by putting a delay before
 		//the switch statement, i.e. here.
-		for (temp = 0; temp < 2500; temp++) {
+		for (temp = 0; temp < 3500; temp++) {
 			Nop();
 			//LATAbits.LATA1 = 1;
 		}
@@ -79,7 +79,7 @@ int main(void)
 			//Nop();
 			FSMInfo.nextState = DAQ_WAIT_FOR_CONVERSION;
 			//while (!BUSY_PORT); // Until I figure out tight timings we wait for BUSY to go high for testing.
-			for (temp = 0; temp < 500; temp++) {
+			for (temp = 0; temp < 200; temp++) {
 				Nop();
 			}
 			CONV_A_LAT = 0;
@@ -88,7 +88,7 @@ int main(void)
 
 		case DAQ_SAMPLES_TO_BUFFER_A:
 			//For UART we split the 16 bit long value into two bytes...
-			if (BufferA.index < BUFFERLENGTH - 9) {
+			if (BufferA.index < BUFFERLENGTH - 6) {
 				ADS85x8_GetSamples();
 				if (ADCInfo.newData) {
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
@@ -103,15 +103,15 @@ int main(void)
 					BufferA.index++;
 					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA1 & 0x00FF);
 					BufferA.index++;
-					BufferA.BufferArray[BufferA.index] = ',';
-					BufferA.index++;
-
-					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
-					BufferA.index++;
-					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
-					BufferA.index++;
 					BufferA.BufferArray[BufferA.index] = '\n';
 					BufferA.index++;
+
+//					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
+//					BufferA.index++;
+//					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
+//					BufferA.index++;
+//					BufferA.BufferArray[BufferA.index] = '\n';
+//					BufferA.index++;
 
 					FSMInfo.nextState = DAQ_START_CONVERSION;
 				} else {
@@ -124,7 +124,7 @@ int main(void)
 
 		case DAQ_SAMPLES_TO_BUFFER_B:
 			//For UART we split the 16 bit long value into two bytes...
-			if (BufferB.index < BUFFERLENGTH - 10) {
+			if (BufferB.index < BUFFERLENGTH - 6) {
 				ADS85x8_GetSamples();
 				if (ADCInfo.newData) {
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
@@ -138,15 +138,15 @@ int main(void)
 					BufferB.index++;
 					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA1 & 0x00FF);
 					BufferB.index++;
-					BufferB.BufferArray[BufferB.index] = ',';
-					BufferB.index++;
-
-					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
-					BufferB.index++;
-					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
-					BufferB.index++;
 					BufferB.BufferArray[BufferB.index] = '\n';
 					BufferB.index++;
+
+//					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0xFF00) >> 8;
+//					BufferB.index++;
+//					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChB1 & 0x00FF);
+//					BufferB.index++;
+//					BufferB.BufferArray[BufferB.index] = '\n';
+//					BufferB.index++;
 
 					FSMInfo.nextState = DAQ_START_CONVERSION;
 				} else {

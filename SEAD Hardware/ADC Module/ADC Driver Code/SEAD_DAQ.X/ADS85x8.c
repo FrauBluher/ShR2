@@ -34,6 +34,7 @@
 #include "ADCModuleBoard.h"
 #include "ParallelIO.h"
 #include <stdint.h>
+#include <stdlib.h>
 
 
 static ADS85x8_Info *passedInfoStruct;
