@@ -1357,7 +1357,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <instance part="C20" gate="G$1" x="320.04" y="-10.16"/>
 <instance part="R22" gate="G$1" x="358.14" y="-17.78"/>
 <instance part="R23" gate="G$1" x="378.46" y="-38.1"/>
-<instance part="JP1" gate="G$1" x="-35.56" y="116.84"/>
+<instance part="JP1" gate="G$1" x="60.96" y="93.98"/>
 </instances>
 <busses>
 </busses>
@@ -1371,6 +1371,11 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <wire x1="66.04" y1="15.24" x2="60.96" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="60.96" y1="15.24" x2="60.96" y2="38.1" width="0.1524" layer="91"/>
 <label x="48.26" y="38.1" size="1.778" layer="95"/>
+</segment>
+<segment>
+<wire x1="68.58" y1="96.52" x2="73.66" y2="96.52" width="0.1524" layer="91"/>
+<label x="73.66" y="96.52" size="1.778" layer="95"/>
+<pinref part="JP1" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -1854,14 +1859,11 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <label x="289.56" y="55.88" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$1" class="0">
+<net name="VDD_L" class="0">
 <segment>
-<wire x1="-27.94" y1="119.38" x2="0" y2="119.38" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$4" class="0">
-<segment>
-<wire x1="-27.94" y1="116.84" x2="0" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="68.58" y1="93.98" x2="73.66" y2="93.98" width="0.1524" layer="91"/>
+<label x="73.66" y="93.98" size="1.778" layer="95"/>
+<pinref part="JP1" gate="G$1" pin="2"/>
 </segment>
 </net>
 </nets>
