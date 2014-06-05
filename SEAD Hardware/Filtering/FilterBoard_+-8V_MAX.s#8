@@ -3284,6 +3284,9 @@ General Instrument, Semikron, Diotec, Fagor&lt;p&gt;
 <wire x1="142.24" y1="170.18" x2="142.24" y2="162.56" width="0.1524" layer="91"/>
 <wire x1="93.98" y1="157.48" x2="93.98" y2="167.64" width="0.1524" layer="91"/>
 <label x="144.78" y="162.56" size="1.778" layer="95" rot="R90"/>
+<label x="66.04" y="167.64" size="1.778" layer="95"/>
+<wire x1="76.2" y1="167.64" x2="93.98" y2="167.64" width="0.1524" layer="91"/>
+<junction x="93.98" y="167.64"/>
 </segment>
 </net>
 <net name="N$35" class="0">
@@ -3449,12 +3452,6 @@ General Instrument, Semikron, Diotec, Fagor&lt;p&gt;
 <wire x1="121.92" y1="172.72" x2="121.92" y2="177.8" width="0.1524" layer="91"/>
 <wire x1="121.92" y1="177.8" x2="93.98" y2="177.8" width="0.1524" layer="91"/>
 <wire x1="93.98" y1="177.8" x2="93.98" y2="170.18" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="VDD_L_CHOKE" class="0">
-<segment>
-<label x="66.04" y="167.64" size="1.778" layer="95"/>
-<wire x1="76.2" y1="167.64" x2="93.98" y2="167.64" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="HVSS_15D" class="0">

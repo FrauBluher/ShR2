@@ -6408,12 +6408,21 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <segment>
 <pinref part="U$2" gate="A" pin="6P4V2"/>
 <wire x1="350.52" y1="193.04" x2="342.9" y2="193.04" width="0.1524" layer="91"/>
-<wire x1="342.9" y1="175.26" x2="342.9" y2="185.42" width="0.1524" layer="91"/>
+<wire x1="342.9" y1="175.26" x2="342.9" y2="180.34" width="0.1524" layer="91"/>
 <label x="340.36" y="172.72" size="1.778" layer="95"/>
 <pinref part="U$2" gate="A" pin="GND"/>
-<wire x1="342.9" y1="185.42" x2="342.9" y2="193.04" width="0.1524" layer="91"/>
+<wire x1="342.9" y1="180.34" x2="342.9" y2="185.42" width="0.1524" layer="91"/>
+<wire x1="342.9" y1="185.42" x2="342.9" y2="187.96" width="0.1524" layer="91"/>
+<wire x1="342.9" y1="187.96" x2="342.9" y2="193.04" width="0.1524" layer="91"/>
 <wire x1="350.52" y1="185.42" x2="342.9" y2="185.42" width="0.1524" layer="91"/>
 <junction x="342.9" y="185.42"/>
+<pinref part="U$2" gate="A" pin="3P2V"/>
+<wire x1="350.52" y1="187.96" x2="342.9" y2="187.96" width="0.1524" layer="91"/>
+<pinref part="U$2" gate="A" pin="0P8V"/>
+<wire x1="350.52" y1="180.34" x2="342.9" y2="180.34" width="0.1524" layer="91"/>
+<junction x="342.9" y="180.34"/>
+<junction x="342.9" y="187.96"/>
+<junction x="342.9" y="193.04"/>
 </segment>
 <segment>
 <pinref part="U$2" gate="A" pin="0P2V"/>

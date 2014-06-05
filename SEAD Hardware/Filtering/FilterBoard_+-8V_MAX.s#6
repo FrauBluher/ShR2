@@ -4510,10 +4510,13 @@ General Instrument, Semikron, Diotec, Fagor&lt;p&gt;
 <pinref part="C33" gate="G$1" pin="1"/>
 <wire x1="396.24" y1="-20.32" x2="403.86" y2="-20.32" width="0.1524" layer="91"/>
 <wire x1="393.7" y1="2.54" x2="403.86" y2="2.54" width="0.1524" layer="91"/>
-<wire x1="403.86" y1="2.54" x2="403.86" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="403.86" y1="2.54" x2="403.86" y2="-17.78" width="0.1524" layer="91"/>
 <pinref part="U6" gate="G$1" pin="-IN"/>
 <pinref part="U6" gate="G$1" pin="OUT"/>
 <junction x="396.24" y="-20.32"/>
+<pinref part="R22" gate="G$1" pin="1"/>
+<wire x1="403.86" y1="-17.78" x2="403.86" y2="-20.32" width="0.1524" layer="91"/>
+<junction x="403.86" y="-17.78"/>
 </segment>
 </net>
 <net name="N$20" class="0">

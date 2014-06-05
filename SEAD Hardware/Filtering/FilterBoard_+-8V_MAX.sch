@@ -6552,13 +6552,7 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <segment>
 <pinref part="R30" gate="G$1" pin="1"/>
 <wire x1="485.14" y1="116.84" x2="485.14" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="485.14" y1="66.04" x2="492.76" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="492.76" y1="66.04" x2="543.56" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="543.56" y1="66.04" x2="581.66" y2="66.04" width="0.1524" layer="91"/>
-<pinref part="C46" gate="G$1" pin="2"/>
-<wire x1="492.76" y1="73.66" x2="492.76" y2="66.04" width="0.1524" layer="91"/>
-<junction x="492.76" y="66.04"/>
-<junction x="543.56" y="66.04"/>
+<wire x1="485.14" y1="66.04" x2="581.66" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="A" pin="GND"/>
 <wire x1="533.4" y1="119.38" x2="543.56" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="C38" gate="G$1" pin="2"/>
@@ -6589,9 +6583,6 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="601.98" y="119.38" size="1.778" layer="95"/>
 <wire x1="581.66" y1="66.04" x2="581.66" y2="119.38" width="0.1524" layer="91"/>
 <junction x="581.66" y="119.38"/>
-<pinref part="U$1" gate="A" pin="RT"/>
-<wire x1="533.4" y1="81.28" x2="543.56" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="543.56" y1="81.28" x2="543.56" y2="66.04" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="R28" gate="G$1" pin="1"/>
@@ -6888,6 +6879,15 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <pinref part="U$1" gate="A" pin="A_VOUT"/>
 <wire x1="518.16" y1="73.66" x2="518.16" y2="71.12" width="0.1524" layer="91"/>
 <label x="515.62" y="71.12" size="1.778" layer="95"/>
+<pinref part="U$1" gate="A" pin="STSEL"/>
+<wire x1="502.92" y1="81.28" x2="502.92" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="502.92" y1="73.66" x2="518.16" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="A" pin="RT"/>
+<wire x1="533.4" y1="81.28" x2="543.56" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="543.56" y1="81.28" x2="543.56" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="543.56" y1="73.66" x2="518.16" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="C46" gate="G$1" pin="2"/>
+<wire x1="492.76" y1="73.66" x2="502.92" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="HVDD_15D" class="0">
