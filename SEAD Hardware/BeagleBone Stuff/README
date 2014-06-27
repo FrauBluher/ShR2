@@ -1,0 +1,20 @@
+Notes on modification of the DAQ program.
+
+If you want to re-compile the DAQ program from its source make sure to 
+use the following commands for compilation:
+
+gcc DAQ-BBB.c -o DAQ-BBB
+
+chmod +x DAQ-BBB
+
+TO START ACQUISITION...
+
+* Run StartAcquisition.sh, it should set everything up for you.
+
+sudo ./StartAcquisition.sh
+
+TO STOP ACQUISITION...
+
+* CTRL - C
+
+Acquired Data will be available in AcquiredDataRaw in hexadecimal format. 

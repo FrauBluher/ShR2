@@ -25,7 +25,6 @@
 #include "ParallelIO.h"
 #include "ADCModuleBoard.h"
 
-
 /**
  * @file	ParallelIO.c
  * @author 	Pavlo Milo Manovi
@@ -35,9 +34,16 @@
  *              registers.
  */
 
+enum {
+	INPUT,
+	OUTPUT
+};
+
 static PARALLEL_PORT_READ readReg;
 static PARALLEL_PORT_WRITE writeReg;
 static PARALLEL_PORT_TRISTATE tristateReg;
+
+void SetTris(uint8_t io);
 
 void Parallel_IO_Init(PARALLEL_PORT_WRITE latRegisters, PARALLEL_PORT_READ portRegisters, PARALLEL_PORT_TRISTATE trisRegisters)
 {
@@ -51,15 +57,33 @@ void Parallel_IO_Init(PARALLEL_PORT_WRITE latRegisters, PARALLEL_PORT_READ portR
 
 void Parallel_IO_Write(uint16_t parallelRegister)
 {
-	tristateReg.wholeRegister = 0;
+	SetTris(OUTPUT);
+
 	writeReg.wholeRegister = parallelRegister;
-	tristateReg.wholeRegister = 0xFFFF;
+
+	DB0_PORT = (writeReg.wholeRegister & 0x0001);
+	DB1_PORT = (writeReg.wholeRegister & 0x0002) >> 1;
+	DB2_PORT = (writeReg.wholeRegister & 0x0004) >> 2;
+	DB3_PORT = (writeReg.wholeRegister & 0x0008) >> 3;
+	DB4_PORT = (writeReg.wholeRegister & 0x0010) >> 4;
+	DB5_PORT = (writeReg.wholeRegister & 0x0020) >> 5;
+	DB6_PORT = (writeReg.wholeRegister & 0x0040) >> 6;
+	DB7_PORT = (writeReg.wholeRegister & 0x0080) >> 7;
+	DB8_PORT = (writeReg.wholeRegister & 0x0100) >> 8;
+	DB9_PORT = (writeReg.wholeRegister & 0x0200) >> 9;
+	DB10_PORT = (writeReg.wholeRegister & 0x0400) >> 10;
+	DB11_PORT = (writeReg.wholeRegister & 0x0800) >> 11;
+	DB12_PORT = (writeReg.wholeRegister & 0x1000) >> 12;
+	DB13_PORT = (writeReg.wholeRegister & 0x2000) >> 13;
+	DB14_PORT = (writeReg.wholeRegister & 0x4000) >> 14;
+	DB15_PORT = (writeReg.wholeRegister & 0x8000) >> 15;
 }
 
 uint16_t Parallel_IO_Read(void)
 {
 	uint16_t returnVal = 0;
-	tristateReg.wholeRegister = 0xFFFF;
+	SetTris(INPUT);
+
 	returnVal = ((returnVal | (DB0_PORT)) | (returnVal | (DB1_PORT << 1)) |
 		(returnVal | (DB2_PORT << 2)) | (returnVal | (DB3_PORT << 3)) |
 		(returnVal | (DB4_PORT << 4)) | (returnVal | (DB5_PORT << 5)) |
@@ -71,3 +95,41 @@ uint16_t Parallel_IO_Read(void)
 	return(returnVal);
 }
 
+void SetTris(uint8_t io)
+{
+	if (io == INPUT) {
+		DB0_TRIS = 1;
+		DB1_TRIS = 1;
+		DB2_TRIS = 1;
+		DB3_TRIS = 1;
+		DB4_TRIS = 1;
+		DB5_TRIS = 1;
+		DB6_TRIS = 1;
+		DB7_TRIS = 1;
+		DB8_TRIS = 1;
+		DB9_TRIS = 1;
+		DB10_TRIS = 1;
+		DB11_TRIS = 1;
+		DB12_TRIS = 1;
+		DB13_TRIS = 1;
+		DB14_TRIS = 1;
+		DB15_TRIS = 1;
+	} else {
+		DB0_TRIS = 0;
+		DB1_TRIS = 0;
+		DB2_TRIS = 0;
+		DB3_TRIS = 0;
+		DB4_TRIS = 0;
+		DB5_TRIS = 0;
+		DB6_TRIS = 0;
+		DB7_TRIS = 0;
+		DB8_TRIS = 0;
+		DB9_TRIS = 0;
+		DB10_TRIS = 0;
+		DB11_TRIS = 0;
+		DB12_TRIS = 0;
+		DB13_TRIS = 0;
+		DB14_TRIS = 0;
+		DB15_TRIS = 0;
+	}
+}

@@ -7,7 +7,7 @@
       <itemPath>ADCModuleBoard.h</itemPath>
       <itemPath>ADS85x8.h</itemPath>
       <itemPath>ParallelIO.h</itemPath>
-      <itemPath>SPI_DMA_Transfer.h</itemPath>
+      <itemPath>DMA_Transfer.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,8 +19,8 @@
       <itemPath>ADCModuleBoard.c</itemPath>
       <itemPath>ADS85x8.c</itemPath>
       <itemPath>ParallelIO.c</itemPath>
-      <itemPath>SPI_DMA_Transfer.c</itemPath>
       <itemPath>DAQ.c</itemPath>
+      <itemPath>DMA_Transfer.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

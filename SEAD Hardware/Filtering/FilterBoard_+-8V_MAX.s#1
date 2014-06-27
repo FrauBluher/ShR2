@@ -3539,6 +3539,7 @@ Operational amplifiers,  comparators, voltage regulators, ADCs, DACs, etc.&lt;p&
 <rectangle x1="3.565" y1="2" x2="4.055" y2="3.1" layer="51"/>
 <rectangle x1="2.295" y1="2" x2="2.785" y2="3.1" layer="51"/>
 <rectangle x1="1.025" y1="2" x2="1.515" y2="3.1" layer="51"/>
+<text x="-5.08" y="-5.08" size="1.27" layer="21">*</text>
 </package>
 </packages>
 <symbols>
@@ -5729,28 +5730,28 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <part name="C10" library="SensorCape" deviceset="CAP" device="1206" value="22nF"/>
 <part name="R8" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="121k"/>
 <part name="R9" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="121k"/>
-<part name="C11" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="C12" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="C13" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="C14" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="C15" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="C16" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="C17" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="R10" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R11" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R12" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R13" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R14" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R15" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R16" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R17" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R19" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="C18" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="R20" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R21" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="C19" library="SensorCape" deviceset="CAP" device="1206"/>
+<part name="C11" library="SensorCape" deviceset="CAP" device="1206" value="680p"/>
+<part name="C12" library="SensorCape" deviceset="CAP" device="1206" value="2.2n"/>
+<part name="C13" library="SensorCape" deviceset="CAP" device="1206" value="1.5n"/>
+<part name="C14" library="SensorCape" deviceset="CAP" device="1206" value="6.8n"/>
+<part name="C15" library="SensorCape" deviceset="CAP" device="1206" value="100p"/>
+<part name="C16" library="SensorCape" deviceset="CAP" device="1206" value="100p"/>
+<part name="C17" library="SensorCape" deviceset="CAP" device="1206" value="470p"/>
+<part name="R10" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="10.5k"/>
+<part name="R11" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="6.98k"/>
+<part name="R12" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="10.5k"/>
+<part name="R13" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="1.05k"/>
+<part name="R14" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="15.8k"/>
+<part name="R15" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="4.87k"/>
+<part name="R16" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="11k"/>
+<part name="R17" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="1k"/>
+<part name="R19" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="10.5k"/>
+<part name="C18" library="SensorCape" deviceset="CAP" device="1206" value="1n"/>
+<part name="R20" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="3.83k"/>
+<part name="R21" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="13.3k"/>
+<part name="C19" library="SensorCape" deviceset="CAP" device="1206" value="2.2n"/>
 <part name="C20" library="SensorCape" deviceset="CAP" device="1206"/>
-<part name="R22" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
+<part name="R22" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="1k"/>
 <part name="JP1" library="ASL" deviceset="M03" device="-SCREW-5MM"/>
 <part name="U7" library="SensorCape" deviceset="TPS7A3301_RGW_20" device=""/>
 <part name="U$2" library="SensorCape" deviceset="TPS7A4700_RGW_20" device=""/>
@@ -5771,9 +5772,9 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <part name="C29" library="ASL" deviceset="CAP" device="0805" value="10uF"/>
 <part name="C32" library="ASL" deviceset="CAP" device="0805" value="10uF"/>
 <part name="C34" library="SensorCape" deviceset="CAP" device="1206" value="10uF"/>
-<part name="R25" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="R26" library="SensorCape" deviceset="RESISTOR" device="0805-RES"/>
-<part name="C33" library="SensorCape" deviceset="CAP" device="1206"/>
+<part name="R25" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="1.47k"/>
+<part name="R26" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="4.99k"/>
+<part name="C33" library="SensorCape" deviceset="CAP" device="1206" value="15n"/>
 <part name="C35" library="SensorCape" deviceset="CAP" device="1206"/>
 <part name="C36" library="SensorCape" deviceset="CAP_POL" device="PTH3"/>
 <part name="C37" library="SensorCape" deviceset="CAP_POL" device="PTH3"/>
@@ -6552,13 +6553,7 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <segment>
 <pinref part="R30" gate="G$1" pin="1"/>
 <wire x1="485.14" y1="116.84" x2="485.14" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="485.14" y1="66.04" x2="492.76" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="492.76" y1="66.04" x2="543.56" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="543.56" y1="66.04" x2="581.66" y2="66.04" width="0.1524" layer="91"/>
-<pinref part="C46" gate="G$1" pin="2"/>
-<wire x1="492.76" y1="73.66" x2="492.76" y2="66.04" width="0.1524" layer="91"/>
-<junction x="492.76" y="66.04"/>
-<junction x="543.56" y="66.04"/>
+<wire x1="485.14" y1="66.04" x2="581.66" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="A" pin="GND"/>
 <wire x1="533.4" y1="119.38" x2="543.56" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="C38" gate="G$1" pin="2"/>
@@ -6589,9 +6584,6 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="601.98" y="119.38" size="1.778" layer="95"/>
 <wire x1="581.66" y1="66.04" x2="581.66" y2="119.38" width="0.1524" layer="91"/>
 <junction x="581.66" y="119.38"/>
-<pinref part="U$1" gate="A" pin="RT"/>
-<wire x1="533.4" y1="81.28" x2="543.56" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="543.56" y1="81.28" x2="543.56" y2="66.04" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="R28" gate="G$1" pin="1"/>
@@ -6888,6 +6880,15 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <pinref part="U$1" gate="A" pin="A_VOUT"/>
 <wire x1="518.16" y1="73.66" x2="518.16" y2="71.12" width="0.1524" layer="91"/>
 <label x="515.62" y="71.12" size="1.778" layer="95"/>
+<pinref part="U$1" gate="A" pin="STSEL"/>
+<wire x1="502.92" y1="81.28" x2="502.92" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="502.92" y1="73.66" x2="518.16" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="A" pin="RT"/>
+<wire x1="533.4" y1="81.28" x2="543.56" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="543.56" y1="81.28" x2="543.56" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="543.56" y1="73.66" x2="518.16" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="C46" gate="G$1" pin="2"/>
+<wire x1="492.76" y1="73.66" x2="502.92" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="HVDD_15D" class="0">

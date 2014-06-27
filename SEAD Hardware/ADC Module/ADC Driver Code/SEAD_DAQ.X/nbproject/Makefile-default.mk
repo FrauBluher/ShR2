@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=ADCModuleBoard.c ADS85x8.c ParallelIO.c SPI_DMA_Transfer.c DAQ.c
+SOURCEFILES_QUOTED_IF_SPACED=ADCModuleBoard.c ADS85x8.c ParallelIO.c DAQ.c DMA_Transfer.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/ADS85x8.o ${OBJECTDIR}/ParallelIO.o ${OBJECTDIR}/SPI_DMA_Transfer.o ${OBJECTDIR}/DAQ.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/ADCModuleBoard.o.d ${OBJECTDIR}/ADS85x8.o.d ${OBJECTDIR}/ParallelIO.o.d ${OBJECTDIR}/SPI_DMA_Transfer.o.d ${OBJECTDIR}/DAQ.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/ADS85x8.o ${OBJECTDIR}/ParallelIO.o ${OBJECTDIR}/DAQ.o ${OBJECTDIR}/DMA_Transfer.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/ADCModuleBoard.o.d ${OBJECTDIR}/ADS85x8.o.d ${OBJECTDIR}/ParallelIO.o.d ${OBJECTDIR}/DAQ.o.d ${OBJECTDIR}/DMA_Transfer.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/ADS85x8.o ${OBJECTDIR}/ParallelIO.o ${OBJECTDIR}/SPI_DMA_Transfer.o ${OBJECTDIR}/DAQ.o
+OBJECTFILES=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/ADS85x8.o ${OBJECTDIR}/ParallelIO.o ${OBJECTDIR}/DAQ.o ${OBJECTDIR}/DMA_Transfer.o
 
 # Source Files
-SOURCEFILES=ADCModuleBoard.c ADS85x8.c ParallelIO.c SPI_DMA_Transfer.c DAQ.c
+SOURCEFILES=ADCModuleBoard.c ADS85x8.c ParallelIO.c DAQ.c DMA_Transfer.c
 
 
 CFLAGS=
@@ -109,17 +109,17 @@ ${OBJECTDIR}/ParallelIO.o: ParallelIO.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/ParallelIO.o 
 	@${FIXDEPS} "${OBJECTDIR}/ParallelIO.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/ParallelIO.o.d" -o ${OBJECTDIR}/ParallelIO.o ParallelIO.c   
 	
-${OBJECTDIR}/SPI_DMA_Transfer.o: SPI_DMA_Transfer.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/SPI_DMA_Transfer.o.d 
-	@${RM} ${OBJECTDIR}/SPI_DMA_Transfer.o 
-	@${FIXDEPS} "${OBJECTDIR}/SPI_DMA_Transfer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/SPI_DMA_Transfer.o.d" -o ${OBJECTDIR}/SPI_DMA_Transfer.o SPI_DMA_Transfer.c   
-	
 ${OBJECTDIR}/DAQ.o: DAQ.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/DAQ.o.d 
 	@${RM} ${OBJECTDIR}/DAQ.o 
 	@${FIXDEPS} "${OBJECTDIR}/DAQ.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/DAQ.o.d" -o ${OBJECTDIR}/DAQ.o DAQ.c   
+	
+${OBJECTDIR}/DMA_Transfer.o: DMA_Transfer.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/DMA_Transfer.o.d 
+	@${RM} ${OBJECTDIR}/DMA_Transfer.o 
+	@${FIXDEPS} "${OBJECTDIR}/DMA_Transfer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/DMA_Transfer.o.d" -o ${OBJECTDIR}/DMA_Transfer.o DMA_Transfer.c   
 	
 else
 ${OBJECTDIR}/ADCModuleBoard.o: ADCModuleBoard.c  nbproject/Makefile-${CND_CONF}.mk
@@ -140,17 +140,17 @@ ${OBJECTDIR}/ParallelIO.o: ParallelIO.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/ParallelIO.o 
 	@${FIXDEPS} "${OBJECTDIR}/ParallelIO.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/ParallelIO.o.d" -o ${OBJECTDIR}/ParallelIO.o ParallelIO.c   
 	
-${OBJECTDIR}/SPI_DMA_Transfer.o: SPI_DMA_Transfer.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/SPI_DMA_Transfer.o.d 
-	@${RM} ${OBJECTDIR}/SPI_DMA_Transfer.o 
-	@${FIXDEPS} "${OBJECTDIR}/SPI_DMA_Transfer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/SPI_DMA_Transfer.o.d" -o ${OBJECTDIR}/SPI_DMA_Transfer.o SPI_DMA_Transfer.c   
-	
 ${OBJECTDIR}/DAQ.o: DAQ.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/DAQ.o.d 
 	@${RM} ${OBJECTDIR}/DAQ.o 
 	@${FIXDEPS} "${OBJECTDIR}/DAQ.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/DAQ.o.d" -o ${OBJECTDIR}/DAQ.o DAQ.c   
+	
+${OBJECTDIR}/DMA_Transfer.o: DMA_Transfer.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/DMA_Transfer.o.d 
+	@${RM} ${OBJECTDIR}/DMA_Transfer.o 
+	@${FIXDEPS} "${OBJECTDIR}/DMA_Transfer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/DMA_Transfer.o.d" -o ${OBJECTDIR}/DMA_Transfer.o DMA_Transfer.c   
 	
 endif
 

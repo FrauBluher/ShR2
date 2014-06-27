@@ -23,16 +23,17 @@
  */
 
 /**
- * @file	ADS85x8.h
+ * @file	ADCModuleBoard.c
  * @author 	Pavlo Milo Manovi
  * @date	April, 2014
- * @brief 	This library is used to set up the peripherals of the pic.
+ * @brief 	Provides implementation to methods which set up the board for
+ *		data acquisition.
  */
 
 #include "ADCModuleBoard.h"
 #include "ParallelIO.h"
-#include "plib.h"
-#include "SPI_DMA_Transfer.h"
+#include <plib.h>
+#include "DMA_Transfer.h"
 #include "ADS85x8.h"
 
 #if defined (__32MX360F512L__) || (__32MX460F512L__) || (__32MX795F512L__) || (__32MX430F064L__) || (__32MX450F256L__) || (__32MX470F512L__) || (__32MX320F128L__)
@@ -42,16 +43,29 @@
 // Primary Osc w/PLL (XT+,HS+,EC+PLL)
 // WDT OFF
 // Other options are don't care
-#pragma config FPLLMUL = MUL_20, FPLLIDIV = DIV_2, FPLLODIV = DIV_1, FWDTEN = OFF
-#pragma config POSCMOD = HS, FNOSC = PRIPLL, FPBDIV = DIV_1
+#pragma config FNOSC = FRC // Oscillator Selection Bits (Fast RC Osc //(FRC))
+#pragma config FSOSCEN = ON // Secondary Oscillator Enable (Enabled)
+#pragma config IESO = OFF // Internal/External Switch Over (Disabled)
+#pragma config POSCMOD = OFF // Primary Oscillator Configuration (Primary //osc disabled)
+
+#pragma config FPLLIDIV = DIV_2
+#pragma config FPLLMUL = MUL_20
+#pragma config FPLLODIV = DIV_1
+
+#pragma config OSCIOFNC = OFF // CLKO Output Signal Active on the OSCO Pin //(Disabled)
+#pragma config FPBDIV = DIV_1 // Peripheral Clock Divisor (Pb_Clk is //Sys_Clk/8)
+#pragma config FCKSM = CSDCMD // Clock Switching and Monitor Selection//(Clock Switch Disable, FSCM Disabled)
+#pragma config FWDTEN = OFF // Watchdog Timer Enable (WDT Disabled (SWDTEN //Bit Controls))
+#pragma config ICESEL = ICS_PGx1 // ICE/ICD Comm Channel Select (Communicate on //PGEC1/PGED1)
+#pragma config PWP = OFF // Program Flash Write Protect (Disable)
+#pragma config BWP = OFF // Boot Flash Write Protect bit (Protection //Disabled)
+#pragma config CP = OFF // Code Protect (Protection Disabled)
+
+
 #define SYS_FREQ (80000000L)
 #define	GetPeripheralClock()		(SYS_FREQ/(1 << OSCCONbits.PBDIV))
 #define UART_MODULE_ID 1
 #endif
-
-// Period needed for timer 1 to trigger an interrupt every 1 second
-// (10MHz PBCLK / 256 = 39,062KHz Timer 1 clock)
-#define PERIOD  50000
 
 /**
  * @brief Sets up the board with the peripherals defined in the header.
@@ -159,28 +173,19 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x
 	WR_LAT = 1;
 
 
-	UARTConfigure(UART1, UART_ENABLE_PINS_TX_RX_ONLY);
-	UARTSetLineControl(UART1, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
-	UARTSetDataRate(UART1, GetPeripheralClock(), 115200);
-	UARTEnable(UART1, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX)); // selected baud rate, 8-N-1
+	/*
+	 * Depending on if you want to use a DMA transfer and what peripheral you
+	 * want to transmit data on you use the following:
+	 * - BufferToUART_Init(BufferA, BufferB);
+	 * - BufferToSpi_Init(BufferA, BufferB)
+	 */
 
-	BufferToUART_Init(BufferA, BufferB);
-
-	//	// Configure Timer 1 using PBCLK as input, 1:256 prescaler
-	//	// Period matches the Timer 1 frequency, so the interrupt handler
-	//	// will trigger every one second...
-	//	OpenTimer1(T1_ON | T1_SOURCE_INT | T1_PS_1_256, PERIOD);
-	//
-	//	// Set up the timer interrupt with a priority of 2
-	//	INTEnable(INT_T1, INT_ENABLED);
-	//	INTSetVectorPriority(INT_TIMER_1_VECTOR, INT_PRIORITY_LEVEL_2);
-	//	INTSetVectorSubPriority(INT_TIMER_1_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
-
+	BufferToSpi_Init(BufferA, BufferB);
 	ADS85x8_Init(DS85x8Info);
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 	INTEnableInterrupts();
 
-	putsUART1("System initialized...\r\n");
+	//System Initialized Successfully
 	return(EXIT_SUCCESS);
 }
