@@ -17,4 +17,13 @@ TO STOP ACQUISITION...
 
 * CTRL - C
 
-Acquired Data will be available in AcquiredDataRaw in hexadecimal format. 
+Acquired Data will be available in AcquiredDataRaw in hexadecimal format.
+
+After acquiring the data use parseADC to convert the twos complement acquired raw data
+into signed decimal ascii encoded values that MATLAB can import easily.
+
+./parseADC AcquiredDataRaw "output file name here"
+
+To modify or build parseADC run:
+
+gcc parseADC.c -o parseADC
