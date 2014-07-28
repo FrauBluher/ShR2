@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 		if (conVal > 0x7fff) {
 			conVal -= 0x1000;
 		}
-		printf("%i\r\n", conVal);
+		fprintf(output, "%i\r\n", conVal);
 	}
 	fclose(input);
 	fclose(output);
