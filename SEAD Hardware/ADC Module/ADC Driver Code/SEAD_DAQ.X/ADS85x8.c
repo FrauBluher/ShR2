@@ -65,7 +65,7 @@ uint8_t ADS85x8_Init(ADS85x8_Info *DS85x8Info)
 	DS85x8Info->configRegister.REF_EN = REF_EN_ENABLE;
 	DS85x8Info->configRegister.STBY = STBY_DISABLED;
 	DS85x8Info->configRegister.VREF = VREF_3_0;
-	DS85x8Info->configRegister.WRITE_EN = WRITE_EN_CONTENT_UPDATE_ENABLED;
+	DS85x8Info->configRegister.WRITE_EN = WRITE_EN_CONTENT_UPDATE_DISABLED;
 
 
 
@@ -184,69 +184,69 @@ void ADS85x8_GetSamples(void)
 	Nop();
 	RD_LAT = 1;
 	Nop();
-
-	//Channel A1 read.
-	RD_LAT = 0;
-	Nop();
-	passedInfoStruct->sampledDataChA1 = Parallel_IO_Read();
-	Nop();
-	Nop();
-	RD_LAT = 1;
-	Nop();
-
-	//Channel B0 read.
-	RD_LAT = 0;
-	Nop();
-	passedInfoStruct->sampledDataChB0 = Parallel_IO_Read();
-	Nop();
-	Nop();
-	RD_LAT = 1;
-	Nop();
-
-	//Channel B1 read.
-	RD_LAT = 0;
-	Nop();
-	passedInfoStruct->sampledDataChB1 = Parallel_IO_Read();
-	Nop();
-	Nop();
-	RD_LAT = 1;
-	Nop();
-
-	//Channel C0 read.
-	RD_LAT = 0;
-	Nop();
-	passedInfoStruct->sampledDataChC0 = Parallel_IO_Read();
-	Nop();
-	Nop();
-	RD_LAT = 1;
-	Nop();
-
-	//Channel C1 read.
-	RD_LAT = 0;
-	Nop();
-	passedInfoStruct->sampledDataChC1 = Parallel_IO_Read();
-	Nop();
-	Nop();
-	RD_LAT = 1;
-	Nop();
-
-	//Channel D0 read.
-	RD_LAT = 0;
-	Nop();
-	passedInfoStruct->sampledDataChD0 = Parallel_IO_Read();
-	Nop();
-	Nop();
-	RD_LAT = 1;
-	Nop();
-
-	//Channel D1 read.
-	RD_LAT = 0;
-	Nop();
-	passedInfoStruct->sampledDataChD1 = Parallel_IO_Read();
-	Nop();
-	Nop();
-	RD_LAT = 1;
-	Nop();
+//
+//	//Channel A1 read.
+//	RD_LAT = 0;
+//	Nop();
+//	passedInfoStruct->sampledDataChA1 = Parallel_IO_Read();
+//	Nop();
+//	Nop();
+//	RD_LAT = 1;
+//	Nop();
+//
+//	//Channel B0 read.
+//	RD_LAT = 0;
+//	Nop();
+//	passedInfoStruct->sampledDataChB0 = Parallel_IO_Read();
+//	Nop();
+//	Nop();
+//	RD_LAT = 1;
+//	Nop();
+//
+//	//Channel B1 read.
+//	RD_LAT = 0;
+//	Nop();
+//	passedInfoStruct->sampledDataChB1 = Parallel_IO_Read();
+//	Nop();
+//	Nop();
+//	RD_LAT = 1;
+//	Nop();
+//
+//	//Channel C0 read.
+//	RD_LAT = 0;
+//	Nop();
+//	passedInfoStruct->sampledDataChC0 = Parallel_IO_Read();
+//	Nop();
+//	Nop();
+//	RD_LAT = 1;
+//	Nop();
+//
+//	//Channel C1 read.
+//	RD_LAT = 0;
+//	Nop();
+//	passedInfoStruct->sampledDataChC1 = Parallel_IO_Read();
+//	Nop();
+//	Nop();
+//	RD_LAT = 1;
+//	Nop();
+//
+//	//Channel D0 read.
+//	RD_LAT = 0;
+//	Nop();
+//	passedInfoStruct->sampledDataChD0 = Parallel_IO_Read();
+//	Nop();
+//	Nop();
+//	RD_LAT = 1;
+//	Nop();
+//
+//	//Channel D1 read.
+//	RD_LAT = 0;
+//	Nop();
+//	passedInfoStruct->sampledDataChD1 = Parallel_IO_Read();
+//	Nop();
+//	Nop();
+//	RD_LAT = 1;
+//	Nop();
 
 	passedInfoStruct->newData = 1;
 

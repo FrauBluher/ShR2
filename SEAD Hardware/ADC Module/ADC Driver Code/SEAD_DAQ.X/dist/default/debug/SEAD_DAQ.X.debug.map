@@ -1,37 +1,37 @@
 Archive member included because of file (symbol)
 
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
-                              build/default/production/ADCModuleBoard.o (CheKseg0CacheOn)
+                              build/default/debug/ADCModuleBoard.o (CheKseg0CacheOn)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
-                              build/default/production/ADCModuleBoard.o (INTConfigureSystem)
+                              build/default/debug/ADCModuleBoard.o (INTConfigureSystem)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
-                              build/default/production/ADCModuleBoard.o (INTEnableInterrupts)
+                              build/default/debug/ADCModuleBoard.o (INTEnableInterrupts)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_disable_interrupts_lib.o)
-                              build/default/production/ADCModuleBoard.o (INTDisableInterrupts)
+                              build/default/debug/ADCModuleBoard.o (INTDisableInterrupts)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_restore_interrupts_lib.o)
-                              build/default/production/ADCModuleBoard.o (INTRestoreInterrupts)
+                              build/default/debug/ADCModuleBoard.o (INTRestoreInterrupts)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_tbl_lib.o)
-                              build/default/production/DMA_Transfer.o (INTClearFlag)
+                              build/default/debug/DMA_Transfer.o (INTClearFlag)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_chn_open_lib.o)
-                              build/default/production/DMA_Transfer.o (SpiChnOpen)
+                              build/default/debug/DMA_Transfer.o (SpiChnOpen)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_io_tbl_libp.o)
                               /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_chn_open_lib.o) (_SpiIoTbl)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_map_tbl_libp.o)
                               /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_chn_open_lib.o) (_SpiMapTbl)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_ev_enable_flags_lib.o)
-                              build/default/production/DMA_Transfer.o (DmaChnSetEvEnableFlags)
+                              build/default/debug/DMA_Transfer.o (DmaChnSetEvEnableFlags)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_clr_ev_flags_lib.o)
-                              build/default/production/DAQ.o (DmaChnClrEvFlags)
+                              build/default/debug/DAQ.o (DmaChnClrEvFlags)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_open_lib.o)
-                              build/default/production/DMA_Transfer.o (DmaChnOpen)
+                              build/default/debug/DMA_Transfer.o (DmaChnOpen)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_get_ev_flags_lib.o)
-                              build/default/production/DAQ.o (DmaChnGetEvFlags)
+                              build/default/debug/DAQ.o (DmaChnGetEvFlags)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_write_event_control_flags_lib.o)
-                              build/default/production/DMA_Transfer.o (DmaChnWriteEventControlFlags)
+                              build/default/debug/DMA_Transfer.o (DmaChnWriteEventControlFlags)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_txfer_lib.o)
-                              build/default/production/DMA_Transfer.o (DmaChnSetTxfer)
+                              build/default/debug/DMA_Transfer.o (DmaChnSetTxfer)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_start_txfer_lib.o)
-                              build/default/production/DMA_Transfer.o (DmaChnStartTxfer)
+                              build/default/debug/DMA_Transfer.o (DmaChnStartTxfer)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_reg_map_tbl_lib.o)
                               /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_ev_enable_flags_lib.o) (_DmaMapTbl)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_in_lib.o)
@@ -41,7 +41,7 @@ Archive member included because of file (symbol)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(_ports_tbl_libp.o)
                               /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_in_lib.o) (PortRegTbl)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(uart_lib.o)
-                              build/default/production/DMA_Transfer.o (UARTEnable)
+                              build/default/debug/DMA_Transfer.o (UARTEnable)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-bootstrap-exception-handler.o)
                               /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/crt0.o (_bootstrap_exception_handler)
 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-reset.o)
@@ -186,11 +186,11 @@ Archive member included because of file (symbol)
 Allocating common symbols
 Common symbol       size              file
 
-BufferB             0x2004            build/default/production/DAQ.o
-chn                 0x4               build/default/production/DMA_Transfer.o
-BufB                0x4               build/default/production/DMA_Transfer.o
-BufA                0x4               build/default/production/DMA_Transfer.o
-BufferA             0x2004            build/default/production/DAQ.o
+BufferB             0x2004            build/default/debug/DAQ.o
+chn                 0x4               build/default/debug/DMA_Transfer.o
+BufB                0x4               build/default/debug/DMA_Transfer.o
+BufA                0x4               build/default/debug/DMA_Transfer.o
+BufferA             0x2004            build/default/debug/DAQ.o
 
 Microchip PIC32 Memory-Usage Report
 
@@ -338,10 +338,10 @@ section                    address  length [bytes]      (dec)  Description
 kseg1 Data-Memory Usage
 section                    address  length [bytes]      (dec)  Description
 -------                 ----------  -------------------------  -----------
-.sdata                  0xa0000000            0x4           4  Small init data 
-.sbss                   0xa0000004           0x28          40  Small uninit data 
-.bss                    0xa000002c         0x4008       16392  Uninitialized data 
-.bss                    0xa0004034           0x18          24  Uninitialized data 
+.sdata                  0xa0000200            0x4           4  Small init data 
+.sbss                   0xa0000204           0x28          40  Small uninit data 
+.bss                    0xa000022c         0x4008       16392  Uninitialized data 
+.bss                    0xa0004234           0x18          24  Uninitialized data 
          Total kseg1_data_mem used  :      0x404c       16460  12.6% of 0x20000
         --------------------------------------------------------------------------
             Total Data Memory used  :      0x404c       16460  12.6% of 0x20000
@@ -351,24 +351,24 @@ section                    address  length [bytes]      (dec)  Description
 Dynamic Data-Memory Reservation
 section                    address  length [bytes]      (dec)  Description
 -------                 ----------  -------------------------  -----------
-heap                    0xa0004050           0x10          16  Reserved for heap 
-stack                   0xa0004078        0x1bf78      114552  Reserved for stack 
+heap                    0xa0004250           0x10          16  Reserved for heap 
+stack                   0xa0004278        0x1bd78      114040  Reserved for stack 
 
         --------------------------------------------------------------------------
 
 Discarded input sections
 
  .pdr           0x00000000       0xa0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/crt0.o
- .reginfo       0x00000000       0x18 build/default/production/ADCModuleBoard.o
- .pdr           0x00000000       0x20 build/default/production/ADCModuleBoard.o
- .reginfo       0x00000000       0x18 build/default/production/ADS85x8.o
- .pdr           0x00000000       0x40 build/default/production/ADS85x8.o
- .reginfo       0x00000000       0x18 build/default/production/ParallelIO.o
- .pdr           0x00000000       0x80 build/default/production/ParallelIO.o
- .reginfo       0x00000000       0x18 build/default/production/DAQ.o
- .pdr           0x00000000       0x40 build/default/production/DAQ.o
- .reginfo       0x00000000       0x18 build/default/production/DMA_Transfer.o
- .pdr           0x00000000      0x100 build/default/production/DMA_Transfer.o
+ .reginfo       0x00000000       0x18 build/default/debug/ADCModuleBoard.o
+ .pdr           0x00000000       0x20 build/default/debug/ADCModuleBoard.o
+ .reginfo       0x00000000       0x18 build/default/debug/ADS85x8.o
+ .pdr           0x00000000       0x40 build/default/debug/ADS85x8.o
+ .reginfo       0x00000000       0x18 build/default/debug/ParallelIO.o
+ .pdr           0x00000000       0x80 build/default/debug/ParallelIO.o
+ .reginfo       0x00000000       0x18 build/default/debug/DAQ.o
+ .pdr           0x00000000       0x40 build/default/debug/DAQ.o
+ .reginfo       0x00000000       0x18 build/default/debug/DMA_Transfer.o
+ .pdr           0x00000000      0x100 build/default/debug/DMA_Transfer.o
  .reginfo       0x00000000       0x18 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/./proc/32MX795F512L/default_isr_vectors.o
  .pdr           0x00000000        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/./proc/32MX795F512L/default_isr_vectors.o
  .discard       0x00000000      0x100 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/./proc/32MX795F512L/default_isr_vectors.o
@@ -577,12 +577,17 @@ configsfrs       0xbfc02ff0         0x00000010
 Linker script and memory map
 
 LOAD /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/crt0.o
-LOAD build/default/production/ADCModuleBoard.o
-LOAD build/default/production/ADS85x8.o
-LOAD build/default/production/ParallelIO.o
-LOAD build/default/production/DAQ.o
-LOAD build/default/production/DMA_Transfer.o
+                0x00000001                _DEBUGGER = 0x1
+LOAD build/default/debug/ADCModuleBoard.o
+LOAD build/default/debug/ADS85x8.o
+LOAD build/default/debug/ParallelIO.o
+LOAD build/default/debug/DAQ.o
+LOAD build/default/debug/DMA_Transfer.o
                 0x00000001                __MPLAB_BUILD = 0x1
+                0x00000001                __ICD2RAM = 0x1
+                0x00000001                __MPLAB_DEBUG = 0x1
+                0x00000001                __DEBUG = 0x1
+                0x00000001                __MPLAB_DEBUGGER_PK3 = 0x1
 LOAD /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/./proc/32MX795F512L/default_isr_vectors.o
                 0x00000400                PROVIDE (_min_stack_size, 0x400)
 LOAD /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/./proc/32MX795F512L/processor.o
@@ -608,19 +613,19 @@ END GROUP
                 0xbfc02ff4        0x4
  *(.config_BFC02FF4)
  .config_BFC02FF4
-                0xbfc02ff4        0x4 build/default/production/ADCModuleBoard.o
+                0xbfc02ff4        0x4 build/default/debug/ADCModuleBoard.o
 
 .config_BFC02FF8
                 0xbfc02ff8        0x4
  *(.config_BFC02FF8)
  .config_BFC02FF8
-                0xbfc02ff8        0x4 build/default/production/ADCModuleBoard.o
+                0xbfc02ff8        0x4 build/default/debug/ADCModuleBoard.o
 
 .config_BFC02FFC
                 0xbfc02ffc        0x4
  *(.config_BFC02FFC)
  .config_BFC02FFC
-                0xbfc02ffc        0x4 build/default/production/ADCModuleBoard.o
+                0xbfc02ffc        0x4 build/default/debug/ADCModuleBoard.o
                 0xbfc02000                PROVIDE (_DBG_CODE_ADDR, 0xbfc02000)
                 0x00000ff0                PROVIDE (_DBG_CODE_SIZE, 0xff0)
 
@@ -636,11 +641,13 @@ END GROUP
  *(.bev_handler)
  .bev_handler   0xbfc00380       0x10 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/crt0.o
 
-.dbg_excpt      0xbfc00480        0x0
+.dbg_excpt      0xbfc00480        0x8
                 0xbfc00480                . = (. + DEFINED (_DEBUGGER)?0x8:0x0)
+ *fill*         0xbfc00480        0x8 00
 
-.dbg_code       0xbfc02000        0x0
+.dbg_code       0xbfc02000      0xff0
                 0xbfc02000                . = (. + DEFINED (_DEBUGGER)?_DBG_CODE_SIZE:0x0)
+ *fill*         0xbfc02000      0xff0 00
 
 .app_excpt      0x9fc01180       0x10
  *(.gen_handler)
@@ -870,7 +877,7 @@ END GROUP
 
 .vector_37      0x9fc016a0        0x8
  *(.vector_37)
- .vector_37     0x9fc016a0        0x8 build/default/production/DMA_Transfer.o
+ .vector_37     0x9fc016a0        0x8 build/default/debug/DMA_Transfer.o
                 0x9fc016a0                __vector_dispatch_37
                 0x00000001                ASSERT (((_vector_spacing == 0x0) || (SIZEOF (.vector_37) <= (_vector_spacing << 0x5))), function at exception vector 37 too large)
 
@@ -1114,84 +1121,85 @@ END GROUP
  *(.gcc_except_table .gcc_except_table.*)
                 0x9fc00490                . = ALIGN (0x4)
 
-.dbg_data       0xa0000000        0x0
+.dbg_data       0xa0000000      0x200
                 0xa0000000                . = (. + DEFINED (_DEBUGGER)?0x200:0x0)
+ *fill*         0xa0000000      0x200 00
 
-.jcr            0xa0000000        0x0
+.jcr            0xa0000200        0x0
  *(.jcr)
-                0xa0000000                . = ALIGN (0x4)
+                0xa0000200                . = ALIGN (0x4)
 
 .eh_frame
  *(.eh_frame)
-                0xa0000000                . = ALIGN (0x4)
+                0xa0000200                . = ALIGN (0x4)
 
 .gcc_except_table
  *(.gcc_except_table .gcc_except_table.*)
-                0xa0000000                . = ALIGN (0x4)
+                0xa0000200                . = ALIGN (0x4)
 
-.persist        0xa0000000        0x0
-                0xa0000000                _persist_begin = .
+.persist        0xa0000200        0x0
+                0xa0000200                _persist_begin = .
  *(.persist .persist.*)
  *(.pbss .pbss.*)
-                0xa0000000                . = ALIGN (0x4)
-                0xa0000000                _persist_end = .
+                0xa0000200                . = ALIGN (0x4)
+                0xa0000200                _persist_end = .
 
-.data           0xa0000000        0x0
+.data           0xa0000200        0x0
  *(.gnu.linkonce.d.*)
  *(.data1)
-                0xa0000000                . = ALIGN (0x4)
-                0xa0000000                . = .
-                0xa0007ff0                _gp = (ALIGN (0x10) + 0x7ff0)
+                0xa0000200                . = ALIGN (0x4)
+                0xa0000200                . = .
+                0xa00081f0                _gp = (ALIGN (0x10) + 0x7ff0)
 
-.got            0xa0000000        0x0
+.got            0xa0000200        0x0
  *(.got.plt)
  *(.got)
-                0xa0000000                . = ALIGN (0x4)
+                0xa0000200                . = ALIGN (0x4)
 
-.sdata          0xa0000000        0x4
-                0xa0000000                _sdata_begin = .
+.sdata          0xa0000200        0x4
+                0xa0000200                _sdata_begin = .
  *(.sdata .sdata.* .gnu.linkonce.s.*)
- .sdata         0xa0000000        0x1 build/default/production/DMA_Transfer.o
-                0xa0000004                . = ALIGN (0x4)
- *fill*         0xa0000001        0x3 00
-                0xa0000004                _sdata_end = .
+ .sdata         0xa0000200        0x1 build/default/debug/DMA_Transfer.o
+                0xa0000204                . = ALIGN (0x4)
+ *fill*         0xa0000201        0x3 00
+                0xa0000204                _sdata_end = .
 
 .lit8
  *(.lit8)
 
 .lit4
  *(.lit4)
-                0xa0000004                . = ALIGN (0x4)
-                0xa0000004                _data_end = .
-                0xa0000004                _bss_begin = .
+                0xa0000204                . = ALIGN (0x4)
+                0xa0000204                _data_end = .
+                0xa0000204                _bss_begin = .
 
-.sbss           0xa0000004       0x28
-                0xa0000004                _sbss_begin = .
+.sbss           0xa0000204       0x28
+                0xa0000204                _sbss_begin = .
  *(.dynsbss)
  *(.sbss .sbss.* .gnu.linkonce.sb.*)
- .sbss          0xa0000004        0x4 build/default/production/ADS85x8.o
- .sbss          0xa0000008        0xc build/default/production/ParallelIO.o
- .sbss          0xa0000014        0x8 build/default/production/DAQ.o
- .sbss          0xa000001c        0x1 build/default/production/DMA_Transfer.o
+ .sbss          0xa0000204        0x4 build/default/debug/ADS85x8.o
+ .sbss          0xa0000208        0xc build/default/debug/ParallelIO.o
+ .sbss          0xa0000214        0x8 build/default/debug/DAQ.o
+ .sbss          0xa000021c        0x1 build/default/debug/DMA_Transfer.o
  *(.scommon)
- *fill*         0xa000001d        0x3 00
- .scommon       0xa0000020        0xc build/default/production/DMA_Transfer.o
-                0xa0000020                chn
-                0xa0000024                BufB
-                0xa0000028                BufA
-                0xa000002c                _sbss_end = .
-                0xa000002c                . = ALIGN (0x4)
+ *fill*         0xa000021d        0x3 00
+ .scommon       0xa0000220        0xc build/default/debug/DMA_Transfer.o
+                0xa0000220                chn
+                0xa0000224                BufB
+                0xa0000228                BufA
+                0xa000022c                _sbss_end = .
+                0xa000022c                . = ALIGN (0x4)
 
-.bss            0xa000002c     0x4008
+.bss            0xa000022c     0x4008
  *(.dynbss)
  *(COMMON)
- COMMON         0xa000002c     0x4008 build/default/production/DAQ.o
-                0xa000002c                BufferB
-                0xa0002030                BufferA
-                0xa0004034                . = ALIGN ((. != 0x0)?0x4:0x1)
-                0xa0004034                . = ALIGN (0x4)
-                0xa0004034                _end = .
-                0xa0004034                _bss_end = .
+ COMMON         0xa000022c     0x4008 build/default/debug/DAQ.o
+                0xa000022c                BufferB
+                0xa0002230                BufferA
+                0xa0004234                . = ALIGN ((. != 0x0)?0x4:0x1)
+                0xa0004234                . = ALIGN (0x4)
+                0xa0004234                _end = .
+                0xa0004234                _bss_end = .
                 0x00020000                _bmxdudba_address = 0x20000
                 0x00020000                _bmxdupba_address = 0x20000
 
@@ -1212,39 +1220,39 @@ END GROUP
  *(.gptab.bss)
  *(.gptab.sbss)
 
-.mdebug.abi32   0xa0004034        0x0
+.mdebug.abi32   0xa0004234        0x0
  *(.mdebug.abi32)
- .mdebug.abi32  0xa0004034        0x0 build/default/production/ADCModuleBoard.o
- .mdebug.abi32  0xa0004034        0x0 build/default/production/ADS85x8.o
- .mdebug.abi32  0xa0004034        0x0 build/default/production/ParallelIO.o
- .mdebug.abi32  0xa0004034        0x0 build/default/production/DAQ.o
- .mdebug.abi32  0xa0004034        0x0 build/default/production/DMA_Transfer.o
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_disable_interrupts_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_restore_interrupts_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_tbl_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_chn_open_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_io_tbl_libp.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_map_tbl_libp.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_ev_enable_flags_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_clr_ev_flags_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_open_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_get_ev_flags_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_write_event_control_flags_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_txfer_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_start_txfer_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_reg_map_tbl_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_in_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_out_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(_ports_tbl_libp.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(uart_lib.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-bootstrap-exception-handler.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-reset.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-bootstrap.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-general-exception-handler.o)
- .mdebug.abi32  0xa0004034        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(defaultinterrupt.o)
+ .mdebug.abi32  0xa0004234        0x0 build/default/debug/ADCModuleBoard.o
+ .mdebug.abi32  0xa0004234        0x0 build/default/debug/ADS85x8.o
+ .mdebug.abi32  0xa0004234        0x0 build/default/debug/ParallelIO.o
+ .mdebug.abi32  0xa0004234        0x0 build/default/debug/DAQ.o
+ .mdebug.abi32  0xa0004234        0x0 build/default/debug/DMA_Transfer.o
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_disable_interrupts_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_restore_interrupts_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_tbl_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_chn_open_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_io_tbl_libp.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_map_tbl_libp.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_ev_enable_flags_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_clr_ev_flags_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_open_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_get_ev_flags_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_write_event_control_flags_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_txfer_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_start_txfer_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_reg_map_tbl_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_in_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_out_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(_ports_tbl_libp.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(uart_lib.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-bootstrap-exception-handler.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-reset.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-bootstrap.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-general-exception-handler.o)
+ .mdebug.abi32  0xa0004234        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(defaultinterrupt.o)
 
 .mdebug.abiN32
  *(.mdebug.abiN32)
@@ -1287,12 +1295,12 @@ END GROUP
 
 .comment        0x00000000       0x78
  *(.comment)
- .comment       0x00000000       0x3c build/default/production/ADCModuleBoard.o
+ .comment       0x00000000       0x3c build/default/debug/ADCModuleBoard.o
                                  0x3d (size before relaxing)
- .comment       0x00000000       0x3d build/default/production/ADS85x8.o
- .comment       0x00000000       0x3d build/default/production/ParallelIO.o
- .comment       0x00000000       0x3d build/default/production/DAQ.o
- .comment       0x00000000       0x3d build/default/production/DMA_Transfer.o
+ .comment       0x00000000       0x3d build/default/debug/ADS85x8.o
+ .comment       0x00000000       0x3d build/default/debug/ParallelIO.o
+ .comment       0x00000000       0x3d build/default/debug/DAQ.o
+ .comment       0x00000000       0x3d build/default/debug/DMA_Transfer.o
  .comment       0x0000003c       0x3c /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
                                  0x3d (size before relaxing)
  .comment       0x00000000       0x3d /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
@@ -1336,15 +1344,15 @@ END GROUP
 .debug_aranges  0x00000000      0x3e0
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x20 build/default/production/ADCModuleBoard.o
+                0x00000000       0x20 build/default/debug/ADCModuleBoard.o
  .debug_aranges
-                0x00000020       0x20 build/default/production/ADS85x8.o
+                0x00000020       0x20 build/default/debug/ADS85x8.o
  .debug_aranges
-                0x00000040       0x20 build/default/production/ParallelIO.o
+                0x00000040       0x20 build/default/debug/ParallelIO.o
  .debug_aranges
-                0x00000060       0x20 build/default/production/DAQ.o
+                0x00000060       0x20 build/default/debug/DAQ.o
  .debug_aranges
-                0x00000080       0x20 build/default/production/DMA_Transfer.o
+                0x00000080       0x20 build/default/debug/DMA_Transfer.o
  .debug_aranges
                 0x000000a0       0x28 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .debug_aranges
@@ -1394,15 +1402,15 @@ END GROUP
                 0x00000000      0x694
  *(.debug_pubnames)
  .debug_pubnames
-                0x00000000       0x2a build/default/production/ADCModuleBoard.o
+                0x00000000       0x2a build/default/debug/ADCModuleBoard.o
  .debug_pubnames
-                0x0000002a       0x3a build/default/production/ADS85x8.o
+                0x0000002a       0x3a build/default/debug/ADS85x8.o
  .debug_pubnames
-                0x00000064       0x5e build/default/production/ParallelIO.o
+                0x00000064       0x5e build/default/debug/ParallelIO.o
  .debug_pubnames
-                0x000000c2       0x3f build/default/production/DAQ.o
+                0x000000c2       0x3f build/default/debug/DAQ.o
  .debug_pubnames
-                0x00000101       0xd1 build/default/production/DMA_Transfer.o
+                0x00000101       0xd1 build/default/debug/DMA_Transfer.o
  .debug_pubnames
                 0x000001d2       0x3b /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .debug_pubnames
@@ -1448,47 +1456,47 @@ END GROUP
  .debug_pubnames
                 0x0000066c       0x28 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(defaultinterrupt.o)
 
-.debug_info     0x00000000     0xaa76
+.debug_info     0x00000000     0xaa92
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000     0x37e7 build/default/production/ADCModuleBoard.o
- .debug_info    0x000037e7      0x7e6 build/default/production/ADS85x8.o
- .debug_info    0x00003fcd     0x1539 build/default/production/ParallelIO.o
- .debug_info    0x00005506     0x1fd5 build/default/production/DAQ.o
- .debug_info    0x000074db     0x2394 build/default/production/DMA_Transfer.o
- .debug_info    0x0000986f       0xbf /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
- .debug_info    0x0000992e       0xb2 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
- .debug_info    0x000099e0       0xb4 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
- .debug_info    0x00009a94       0xb6 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_disable_interrupts_lib.o)
- .debug_info    0x00009b4a       0xb6 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_restore_interrupts_lib.o)
- .debug_info    0x00009c00      0x196 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_tbl_lib.o)
- .debug_info    0x00009d96       0xa2 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_chn_open_lib.o)
- .debug_info    0x00009e38        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_io_tbl_libp.o)
- .debug_info    0x00009e38        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_map_tbl_libp.o)
- .debug_info    0x00009e38       0xbd /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_ev_enable_flags_lib.o)
- .debug_info    0x00009ef5       0xb0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_clr_ev_flags_lib.o)
- .debug_info    0x00009fa5       0xb5 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_open_lib.o)
- .debug_info    0x0000a05a       0xb0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_get_ev_flags_lib.o)
- .debug_info    0x0000a10a       0xc9 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_write_event_control_flags_lib.o)
- .debug_info    0x0000a1d3       0xbc /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_txfer_lib.o)
- .debug_info    0x0000a28f       0xc8 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_start_txfer_lib.o)
- .debug_info    0x0000a357        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_reg_map_tbl_lib.o)
- .debug_info    0x0000a357       0xba /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_in_lib.o)
- .debug_info    0x0000a411       0xbc /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_out_lib.o)
- .debug_info    0x0000a4cd        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(_ports_tbl_libp.o)
- .debug_info    0x0000a4cd      0x175 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(uart_lib.o)
- .debug_info    0x0000a642       0xe8 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-bootstrap-exception-handler.o)
- .debug_info    0x0000a72a       0xc2 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-reset.o)
- .debug_info    0x0000a7ec       0xca /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-bootstrap.o)
- .debug_info    0x0000a8b6       0xe4 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-general-exception-handler.o)
- .debug_info    0x0000a99a       0xdc /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(defaultinterrupt.o)
+ .debug_info    0x00000000     0x37e5 build/default/debug/ADCModuleBoard.o
+ .debug_info    0x000037e5      0x7ea build/default/debug/ADS85x8.o
+ .debug_info    0x00003fcf     0x1541 build/default/debug/ParallelIO.o
+ .debug_info    0x00005510     0x1fd9 build/default/debug/DAQ.o
+ .debug_info    0x000074e9     0x23a2 build/default/debug/DMA_Transfer.o
+ .debug_info    0x0000988b       0xbf /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
+ .debug_info    0x0000994a       0xb2 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
+ .debug_info    0x000099fc       0xb4 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
+ .debug_info    0x00009ab0       0xb6 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_disable_interrupts_lib.o)
+ .debug_info    0x00009b66       0xb6 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_restore_interrupts_lib.o)
+ .debug_info    0x00009c1c      0x196 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_tbl_lib.o)
+ .debug_info    0x00009db2       0xa2 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_chn_open_lib.o)
+ .debug_info    0x00009e54        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_io_tbl_libp.o)
+ .debug_info    0x00009e54        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(spi_map_tbl_libp.o)
+ .debug_info    0x00009e54       0xbd /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_ev_enable_flags_lib.o)
+ .debug_info    0x00009f11       0xb0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_clr_ev_flags_lib.o)
+ .debug_info    0x00009fc1       0xb5 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_open_lib.o)
+ .debug_info    0x0000a076       0xb0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_get_ev_flags_lib.o)
+ .debug_info    0x0000a126       0xc9 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_write_event_control_flags_lib.o)
+ .debug_info    0x0000a1ef       0xbc /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_set_txfer_lib.o)
+ .debug_info    0x0000a2ab       0xc8 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_chn_start_txfer_lib.o)
+ .debug_info    0x0000a373        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(dma_reg_map_tbl_lib.o)
+ .debug_info    0x0000a373       0xba /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_in_lib.o)
+ .debug_info    0x0000a42d       0xbc /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(port_set_pins_digital_out_lib.o)
+ .debug_info    0x0000a4e9        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(_ports_tbl_libp.o)
+ .debug_info    0x0000a4e9      0x175 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(uart_lib.o)
+ .debug_info    0x0000a65e       0xe8 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-bootstrap-exception-handler.o)
+ .debug_info    0x0000a746       0xc2 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-reset.o)
+ .debug_info    0x0000a808       0xca /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-on-bootstrap.o)
+ .debug_info    0x0000a8d2       0xe4 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-general-exception-handler.o)
+ .debug_info    0x0000a9b6       0xdc /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(defaultinterrupt.o)
 
 .debug_abbrev   0x00000000      0xd08
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x317 build/default/production/ADCModuleBoard.o
- .debug_abbrev  0x00000317      0x133 build/default/production/ADS85x8.o
- .debug_abbrev  0x0000044a      0x133 build/default/production/ParallelIO.o
- .debug_abbrev  0x0000057d      0x20e build/default/production/DAQ.o
- .debug_abbrev  0x0000078b      0x20b build/default/production/DMA_Transfer.o
+ .debug_abbrev  0x00000000      0x317 build/default/debug/ADCModuleBoard.o
+ .debug_abbrev  0x00000317      0x133 build/default/debug/ADS85x8.o
+ .debug_abbrev  0x0000044a      0x133 build/default/debug/ParallelIO.o
+ .debug_abbrev  0x0000057d      0x20e build/default/debug/DAQ.o
+ .debug_abbrev  0x0000078b      0x20b build/default/debug/DMA_Transfer.o
  .debug_abbrev  0x00000996       0x25 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .debug_abbrev  0x000009bb       0x25 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
  .debug_abbrev  0x000009e0       0x25 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
@@ -1518,11 +1526,11 @@ END GROUP
 
 .debug_line     0x00000000     0x16c7
  *(.debug_line)
- .debug_line    0x00000000      0x345 build/default/production/ADCModuleBoard.o
- .debug_line    0x00000345      0x1aa build/default/production/ADS85x8.o
- .debug_line    0x000004ef      0x1dc build/default/production/ParallelIO.o
- .debug_line    0x000006cb      0x290 build/default/production/DAQ.o
- .debug_line    0x0000095b      0x29e build/default/production/DMA_Transfer.o
+ .debug_line    0x00000000      0x345 build/default/debug/ADCModuleBoard.o
+ .debug_line    0x00000345      0x1aa build/default/debug/ADS85x8.o
+ .debug_line    0x000004ef      0x1dc build/default/debug/ParallelIO.o
+ .debug_line    0x000006cb      0x290 build/default/debug/DAQ.o
+ .debug_line    0x0000095b      0x29e build/default/debug/DMA_Transfer.o
  .debug_line    0x00000bf9       0x62 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .debug_line    0x00000c5b       0x71 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
  .debug_line    0x00000ccc       0x72 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
@@ -1552,11 +1560,11 @@ END GROUP
 
 .debug_frame    0x00000000      0x628
  *(.debug_frame)
- .debug_frame   0x00000000       0x2c build/default/production/ADCModuleBoard.o
- .debug_frame   0x0000002c       0x4c build/default/production/ADS85x8.o
- .debug_frame   0x00000078       0x80 build/default/production/ParallelIO.o
- .debug_frame   0x000000f8       0x48 build/default/production/DAQ.o
- .debug_frame   0x00000140       0xfc build/default/production/DMA_Transfer.o
+ .debug_frame   0x00000000       0x2c build/default/debug/ADCModuleBoard.o
+ .debug_frame   0x0000002c       0x4c build/default/debug/ADS85x8.o
+ .debug_frame   0x00000078       0x80 build/default/debug/ParallelIO.o
+ .debug_frame   0x000000f8       0x48 build/default/debug/DAQ.o
+ .debug_frame   0x00000140       0xfc build/default/debug/DMA_Transfer.o
  .debug_frame   0x0000023c       0x30 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .debug_frame   0x0000026c       0x20 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
  .debug_frame   0x0000028c       0x20 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
@@ -1582,11 +1590,11 @@ END GROUP
 
 .debug_str      0x00000000      0x529
  *(.debug_str)
- .debug_str     0x00000000      0x200 build/default/production/ADCModuleBoard.o
- .debug_str     0x00000200       0x12 build/default/production/ADS85x8.o
- .debug_str     0x00000212       0x72 build/default/production/ParallelIO.o
- .debug_str     0x00000284      0x15f build/default/production/DAQ.o
- .debug_str     0x000003e3      0x146 build/default/production/DMA_Transfer.o
+ .debug_str     0x00000000      0x200 build/default/debug/ADCModuleBoard.o
+ .debug_str     0x00000200       0x12 build/default/debug/ADS85x8.o
+ .debug_str     0x00000212       0x72 build/default/debug/ParallelIO.o
+ .debug_str     0x00000284      0x15f build/default/debug/DAQ.o
+ .debug_str     0x000003e3      0x146 build/default/debug/DMA_Transfer.o
  .debug_str     0x00000529        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .debug_str     0x00000529        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
  .debug_str     0x00000529        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
@@ -1614,8 +1622,13 @@ END GROUP
  .debug_str     0x00000529        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(default-general-exception-handler.o)
  .debug_str     0x00000529        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(defaultinterrupt.o)
 
-.debug_loc
+.debug_loc      0x00000000      0x2c4
  *(.debug_loc)
+ .debug_loc     0x00000000       0x2e build/default/debug/ADCModuleBoard.o
+ .debug_loc     0x0000002e       0x58 build/default/debug/ADS85x8.o
+ .debug_loc     0x00000086       0xb0 build/default/debug/ParallelIO.o
+ .debug_loc     0x00000136       0x58 build/default/debug/DAQ.o
+ .debug_loc     0x0000018e      0x136 build/default/debug/DMA_Transfer.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -1636,19 +1649,19 @@ END GROUP
                 0x00000000      0x799
  *(.debug_pubtypes)
  .debug_pubtypes
-                0x00000000      0x2e6 build/default/production/ADCModuleBoard.o
+                0x00000000      0x2e6 build/default/debug/ADCModuleBoard.o
  .debug_pubtypes
-                0x000002e6       0x8b build/default/production/ADS85x8.o
+                0x000002e6       0x8b build/default/debug/ADS85x8.o
  .debug_pubtypes
-                0x00000371      0x12d build/default/production/ParallelIO.o
+                0x00000371      0x12d build/default/debug/ParallelIO.o
  .debug_pubtypes
-                0x0000049e      0x1c5 build/default/production/DAQ.o
+                0x0000049e      0x1c5 build/default/debug/DAQ.o
  .debug_pubtypes
-                0x00000663      0x136 build/default/production/DMA_Transfer.o
+                0x00000663      0x136 build/default/debug/DMA_Transfer.o
 
 .debug_ranges   0x00000000      0x210
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x30 build/default/production/ADCModuleBoard.o
+ .debug_ranges  0x00000000       0x30 build/default/debug/ADCModuleBoard.o
  .debug_ranges  0x00000030       0x18 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .debug_ranges  0x00000048       0x10 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_configure_system_lib.o)
  .debug_ranges  0x00000058       0x10 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(int_enable_interrupts_lib.o)
@@ -1676,15 +1689,15 @@ END GROUP
                 0x00000000       0x10
  *(.gnu.attributes)
  .gnu.attributes
-                0x00000000       0x10 build/default/production/ADCModuleBoard.o
+                0x00000000       0x10 build/default/debug/ADCModuleBoard.o
  .gnu.attributes
-                0x00000010       0x10 build/default/production/ADS85x8.o
+                0x00000010       0x10 build/default/debug/ADS85x8.o
  .gnu.attributes
-                0x00000020       0x10 build/default/production/ParallelIO.o
+                0x00000020       0x10 build/default/debug/ParallelIO.o
  .gnu.attributes
-                0x00000030       0x10 build/default/production/DAQ.o
+                0x00000030       0x10 build/default/debug/DAQ.o
  .gnu.attributes
-                0x00000040       0x10 build/default/production/DMA_Transfer.o
+                0x00000040       0x10 build/default/debug/DMA_Transfer.o
  .gnu.attributes
                 0x00000050       0x10 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libmchp_peripheral_32MX795F512L.a(pcache.o)
  .gnu.attributes
@@ -1750,18 +1763,18 @@ LOAD /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/
 LOAD /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a
 END GROUP
 LOAD /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/libgcc.a
-OUTPUT(dist/default/production/SEAD_DAQ.X.production.elf elf32-tradlittlemips)
+OUTPUT(dist/default/debug/SEAD_DAQ.X.debug.elf elf32-tradlittlemips)
 LOAD stack
 LOAD data_init
 
 .reginfo        0x9d000000       0x18
  .reginfo       0x9d000000       0x18 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/crt0.o
 
-.stack          0xa0004078      0x400
- .stack         0xa0004078      0x400 stack
+.stack          0xa0004278      0x400
+ .stack         0xa0004278      0x400 stack
 
-.bss            0xa0004034       0x18
- .bss           0xa0004034       0x18 build/default/production/DAQ.o
+.bss            0xa0004234       0x18
+ .bss           0xa0004234       0x18 build/default/debug/DAQ.o
 
 .bss%z1         0x00000000        0x0
  .bss           0x00000000        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/libpic32.a(defaultinterrupt.o)
@@ -2322,31 +2335,31 @@ LOAD data_init
  .data          0x00000000        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/./proc/32MX795F512L/default_isr_vectors.o
 
 .bss%z187       0x00000000        0x0
- .bss           0x00000000        0x0 build/default/production/DMA_Transfer.o
+ .bss           0x00000000        0x0 build/default/debug/DMA_Transfer.o
 
 .data%z188      0x00000000        0x0
- .data          0x00000000        0x0 build/default/production/DMA_Transfer.o
+ .data          0x00000000        0x0 build/default/debug/DMA_Transfer.o
 
 .data%z189      0x00000000        0x0
- .data          0x00000000        0x0 build/default/production/DAQ.o
+ .data          0x00000000        0x0 build/default/debug/DAQ.o
 
 .bss%z190       0x00000000        0x0
- .bss           0x00000000        0x0 build/default/production/ParallelIO.o
+ .bss           0x00000000        0x0 build/default/debug/ParallelIO.o
 
 .data%z191      0x00000000        0x0
- .data          0x00000000        0x0 build/default/production/ParallelIO.o
+ .data          0x00000000        0x0 build/default/debug/ParallelIO.o
 
 .bss%z192       0x00000000        0x0
- .bss           0x00000000        0x0 build/default/production/ADS85x8.o
+ .bss           0x00000000        0x0 build/default/debug/ADS85x8.o
 
 .data%z193      0x00000000        0x0
- .data          0x00000000        0x0 build/default/production/ADS85x8.o
+ .data          0x00000000        0x0 build/default/debug/ADS85x8.o
 
 .bss%z194       0x00000000        0x0
- .bss           0x00000000        0x0 build/default/production/ADCModuleBoard.o
+ .bss           0x00000000        0x0 build/default/debug/ADCModuleBoard.o
 
 .data%z195      0x00000000        0x0
- .data          0x00000000        0x0 build/default/production/ADCModuleBoard.o
+ .data          0x00000000        0x0 build/default/debug/ADCModuleBoard.o
 
 .bss%z196       0x00000000        0x0
  .bss           0x00000000        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/crt0.o
@@ -2355,9 +2368,9 @@ LOAD data_init
  .data          0x00000000        0x0 /opt/microchip/xc32/v1.21/bin/../lib/gcc/pic32mx/4.5.2/../../../../pic32mx/lib/crt0.o
 
 .text           0x9d000020     0x1278
- .text          0x9d000020      0x9f0 build/default/production/ADCModuleBoard.o
+ .text          0x9d000020      0x9f0 build/default/debug/ADCModuleBoard.o
                 0x9d000020                ADCModuleBoard_Init
- .text          0x9d000a10      0x888 build/default/production/ParallelIO.o
+ .text          0x9d000a10      0x888 build/default/debug/ParallelIO.o
                 0x9d000a10                Parallel_IO_Init
                 0x9d000a5c                Parallel_IO_Write
                 0x9d000d24                Parallel_IO_Read
@@ -2369,10 +2382,10 @@ LOAD data_init
                 0x9d0017b4                __IntVectorTbl
 
 .text           0x9d001a6c      0xf84
- .text          0x9d001a6c      0x5d4 build/default/production/DAQ.o
+ .text          0x9d001a6c      0x5d4 build/default/debug/DAQ.o
                 0x9d001a6c                main
                 0x9d002010                InitFSM
- .text          0x9d002040      0x56c build/default/production/DMA_Transfer.o
+ .text          0x9d002040      0x56c build/default/debug/DMA_Transfer.o
                 0x9d002040                BufferToUART_Init
                 0x9d002164                BufferToSpi_Init
                 0x9d002238                BufferToSpi_TransferA
@@ -2380,7 +2393,7 @@ LOAD data_init
                 0x9d002360                BufferToUART_TransferA
                 0x9d0023f4                BufferToUART_TransferB
                 0x9d002488                DmaHandler1
- .text          0x9d0025ac      0x444 build/default/production/ADS85x8.o
+ .text          0x9d0025ac      0x444 build/default/debug/ADS85x8.o
                 0x9d0025ac                ADS85x8_Init
                 0x9d00293c                ADS85x8_GetSamples
 

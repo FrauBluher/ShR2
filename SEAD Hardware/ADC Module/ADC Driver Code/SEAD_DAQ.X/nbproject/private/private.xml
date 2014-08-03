@@ -1,3 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/home/pavlo/Documents/ShR2/SEAD%20Hardware/ADC%20Module/ADC%20Driver%20Code/SEAD_DAQ.X/DAQ.c</file>
+        <file>file:/home/pavlo/Documents/ShR2/SEAD%20Hardware/ADC%20Module/ADC%20Driver%20Code/SEAD_DAQ.X/ADCModuleBoard.c</file>
+        <file>file:/home/pavlo/Documents/ShR2/SEAD%20Hardware/ADC%20Module/ADC%20Driver%20Code/SEAD_DAQ.X/ADS85x8.c</file>
+        <file>file:/home/pavlo/Documents/ShR2/SEAD%20Hardware/ADC%20Module/ADC%20Driver%20Code/SEAD_DAQ.X/ParallelIO.c</file>
+        <file>file:/home/pavlo/Documents/ShR2/SEAD%20Hardware/ADC%20Module/ADC%20Driver%20Code/SEAD_DAQ.X/DMA_Transfer.c</file>
+        <file>file:/home/pavlo/Documents/ShR2/SEAD%20Hardware/ADC%20Module/ADC%20Driver%20Code/SEAD_DAQ.X/DMA_Transfer.h</file>
+        <file>file:/home/pavlo/Documents/ShR2/SEAD%20Hardware/ADC%20Module/ADC%20Driver%20Code/SEAD_DAQ.X/ADS85x8.h</file>
+    </open-files>
 </project-private>

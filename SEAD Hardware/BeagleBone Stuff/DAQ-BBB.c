@@ -11,10 +11,9 @@
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
-#include <iolib.h>
 #include <signal.h>
 
-#define ARRAY_SIZE 1025
+#define ARRAY_SIZE 1024
 
 static void pabort(const char *s)
 {
@@ -31,7 +30,7 @@ void intHandler(int dummy) {
 static const char *device = "/dev/spidev1.0";
 static uint8_t mode = 3;
 static uint8_t bits = 8;
-static uint32_t speed = 10000000;
+static uint32_t speed = 1000000;
 static uint16_t delay;
 uint8_t *tx;
 uint8_t *rx;
@@ -55,7 +54,7 @@ static void transfer(int fd)
 	//.len greater than 1024 bytes.  For this reason we'll just
 	// call it multiple times to handle the buffer size.
 	uint8_t i;
-	for(i = 0; i < 4; i++) {
+	for(i = 0; i < 8; i++) {
 		ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 		if (ret == 1) {
 			pabort("can't send spi message");
@@ -64,7 +63,7 @@ static void transfer(int fd)
 		for (ret = 0; ret < ARRAY_SIZE; ret++) {
 			if (!(ret % 2))
 			fprintf(output, "\r\n");
-			fprintf(output, "%X", rx[ret]);
+			fprintf(output, "%02X", rx[ret]);
 		}
 	}
 }
@@ -97,7 +96,9 @@ int main(int argc, char *argv[])
 O_NONBLOCK);
 	fr = open("/sys/class/gpio/gpio14/value", O_WRONLY);
 	fd = open(device, O_RDWR);
-	output = fopen("/home/super/AcquiredDataRaw", "w");
+	output = fopen("/home/root/SEAD/AcquiredDataRaw", "w");
+	if (output == NULL) 
+		pabort("Can't open file handle.\r\n");
 	if (fd < 0)
 		pabort("can't open device");
 
@@ -150,7 +151,6 @@ O_NONBLOCK);
 	fprintf(output, "START\r\n");
 	while (keepRunning) {
 		pread(fs, &currentLevel, 1, 0);
-		
 		if((currentLevel == '1') && (lastLevel == '0')) {
 			transfer(fd);
 		}
@@ -168,3 +168,4 @@ O_NONBLOCK);
 	free(tx);
 	return ret;
 }
+

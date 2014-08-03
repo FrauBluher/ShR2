@@ -57,6 +57,8 @@ int main(void)
 				if (ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo) == EXIT_SUCCESS) {
 					flag = 1;
 					FSMInfo.nextState = DAQ_START_CONVERSION;
+					TRISBbits.TRISB6 = 0;
+					LATBbits.LATB6 = 1;
 				} else {
 					FSMInfo.nextState = DAQ_FATAL_ERROR;
 				}
@@ -74,7 +76,9 @@ int main(void)
 				CONV_B_LAT = 1;
 				//Nop();
 				FSMInfo.nextState = DAQ_WAIT_FOR_CONVERSION;
-				while (!BUSY_PORT); // Until I figure out tight timings we wait for BUSY to go high for testing.
+				//while (!BUSY_PORT); // Until I figure out tight timings we wait for BUSY to go high for testing.
+				uint8_t i;
+				for(i = 0; i < 16; i++);
 				_RF8 = 0;
 				CONV_A_LAT = 0;
 				CONV_B_LAT = 0;
@@ -173,6 +177,7 @@ int main(void)
 				 * buffer B is still transmitting.  Crash and burn.
 				 */
 				while (1) {
+					LATBbits.LATB6 = 0;
 					Nop();
 				}//Until something better this will have to suffice.
 				break;

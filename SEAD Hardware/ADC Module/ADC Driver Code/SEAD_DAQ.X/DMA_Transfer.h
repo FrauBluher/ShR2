@@ -36,7 +36,7 @@
 #define MAX32
 
 #include <stdint.h>
-#define BUFFERLENGTH 4096
+#define BUFFERLENGTH 8192
 
 //8 bit integer should be changed to 16 bits for SPI testing.
 typedef struct {
