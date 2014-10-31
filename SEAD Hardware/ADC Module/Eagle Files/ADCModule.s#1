@@ -6841,7 +6841,7 @@ Source: www.kingbright.com</description>
 <wire x1="96.52" y1="63.5" x2="96.52" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="VDD1V8_D" class="0">
+<net name="VCC1V8_D" class="0">
 <segment>
 <pinref part="IC1" gate="G$1" pin="VREGOUT"/>
 <wire x1="182.88" y1="203.2" x2="172.72" y2="203.2" width="0.1524" layer="91"/>
@@ -7037,7 +7037,7 @@ Source: www.kingbright.com</description>
 <wire x1="289.56" y1="149.86" x2="289.56" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="VCC3V3_D" class="0">
+<net name="VDD3V3_D" class="0">
 <segment>
 <pinref part="C25" gate="G$1" pin="2"/>
 <pinref part="C26" gate="G$1" pin="2"/>

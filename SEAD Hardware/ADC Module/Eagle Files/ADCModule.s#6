@@ -6641,30 +6641,6 @@ Source: www.kingbright.com</description>
 <label x="154.94" y="177.8" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="USB1" gate="USB" pin="GND"/>
-<wire x1="58.42" y1="195.58" x2="63.5" y2="195.58" width="0.1524" layer="91"/>
-<wire x1="63.5" y1="195.58" x2="63.5" y2="200.66" width="0.1524" layer="91"/>
-<label x="63.5" y="208.28" size="1.778" layer="95"/>
-<pinref part="C6" gate="G$1" pin="1"/>
-<wire x1="63.5" y1="200.66" x2="63.5" y2="208.28" width="0.1524" layer="91"/>
-<junction x="63.5" y="200.66"/>
-<wire x1="58.42" y1="195.58" x2="58.42" y2="203.2" width="0.1524" layer="91"/>
-<wire x1="58.42" y1="203.2" x2="53.34" y2="203.2" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="203.2" x2="53.34" y2="198.12" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="203.2" x2="48.26" y2="203.2" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="203.2" x2="48.26" y2="198.12" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="182.88" x2="53.34" y2="177.8" width="0.1524" layer="91"/>
-<wire x1="53.34" y1="177.8" x2="48.26" y2="177.8" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="177.8" x2="40.64" y2="177.8" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="177.8" x2="40.64" y2="203.2" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="203.2" x2="48.26" y2="203.2" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="182.88" x2="48.26" y2="177.8" width="0.1524" layer="91"/>
-<junction x="48.26" y="177.8"/>
-<junction x="53.34" y="177.8"/>
-<junction x="48.26" y="203.2"/>
-<junction x="53.34" y="203.2"/>
-</segment>
-<segment>
 <pinref part="C19" gate="G$1" pin="1"/>
 <wire x1="177.8" y1="45.72" x2="177.8" y2="38.1" width="0.1524" layer="91"/>
 <label x="175.26" y="35.56" size="1.778" layer="95"/>
@@ -7109,6 +7085,17 @@ Source: www.kingbright.com</description>
 <pinref part="R11" gate="G$1" pin="1"/>
 <pinref part="LED3" gate="G$1" pin="C"/>
 <wire x1="289.56" y1="149.86" x2="289.56" y2="147.32" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$24" class="0">
+<segment>
+<pinref part="C6" gate="G$1" pin="1"/>
+<wire x1="63.5" y1="200.66" x2="63.5" y2="208.28" width="0.1524" layer="91"/>
+<junction x="63.5" y="200.66"/>
+<wire x1="63.5" y1="195.58" x2="63.5" y2="200.66" width="0.1524" layer="91"/>
+<pinref part="USB1" gate="USB" pin="GND"/>
+<wire x1="58.42" y1="195.58" x2="63.5" y2="195.58" width="0.1524" layer="91"/>
+<label x="63.5" y="208.28" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

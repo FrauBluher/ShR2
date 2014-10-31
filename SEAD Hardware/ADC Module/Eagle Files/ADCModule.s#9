@@ -6501,8 +6501,8 @@ Source: www.kingbright.com</description>
 <part name="FRAME2" library="SensorCape" deviceset="FRAME_B_L" device=""/>
 <part name="X1" library="SensorCape" deviceset="52885-0374" device=""/>
 <part name="IC1" library="SensorCape" deviceset="IC_FT2232H" device=""/>
-<part name="C1" library="SensorCape" deviceset="CAP" device="0805" value="36pF"/>
-<part name="C2" library="SensorCape" deviceset="CAP" device="0805" value="36pF"/>
+<part name="C1" library="SensorCape" deviceset="CAP" device="0805" value="20pF"/>
+<part name="C2" library="SensorCape" deviceset="CAP" device="0805" value="20pF"/>
 <part name="U$2" library="SensorCape" deviceset="ABM3B-8.000MHZ-10-1-U-T" device=""/>
 <part name="C3" library="SensorCape" deviceset="CAP" device="0805" value="20pF"/>
 <part name="C4" library="SensorCape" deviceset="CAP" device="0805" value="20pF"/>
