@@ -6526,6 +6526,10 @@ Source: www.kingbright.com</description>
 <part name="R11" library="SensorCape" deviceset="RESISTOR" device="0805-RES" value="470"/>
 <part name="LED2" library="led" deviceset="LED" device="CHIP-LED0805"/>
 <part name="LED3" library="led" deviceset="LED" device="CHIP-LED0805"/>
+<part name="C25" library="SensorCape" deviceset="CAP" device="0805" value=".1uF"/>
+<part name="C26" library="SensorCape" deviceset="CAP" device="0805" value=".1uF"/>
+<part name="C27" library="SensorCape" deviceset="CAP" device="0805" value=".1uF"/>
+<part name="C28" library="SensorCape" deviceset="CAP" device="0805" value=".1uF"/>
 </parts>
 <sheets>
 <sheet>
@@ -6563,6 +6567,10 @@ Source: www.kingbright.com</description>
 <instance part="R11" gate="G$1" x="289.56" y="142.24" rot="R270"/>
 <instance part="LED2" gate="G$1" x="281.94" y="154.94"/>
 <instance part="LED3" gate="G$1" x="289.56" y="154.94"/>
+<instance part="C25" gate="G$1" x="231.14" y="241.3" rot="R180"/>
+<instance part="C26" gate="G$1" x="238.76" y="241.3" rot="R180"/>
+<instance part="C27" gate="G$1" x="246.38" y="241.3" rot="R180"/>
+<instance part="C28" gate="G$1" x="254" y="241.3" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -6685,6 +6693,16 @@ Source: www.kingbright.com</description>
 <pinref part="USB1" gate="USB" pin="GND"/>
 <wire x1="58.42" y1="195.58" x2="63.5" y2="195.58" width="0.1524" layer="91"/>
 <label x="63.5" y="208.28" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="C25" gate="G$1" pin="1"/>
+<pinref part="C26" gate="G$1" pin="1"/>
+<wire x1="231.14" y1="236.22" x2="238.76" y2="236.22" width="0.1524" layer="91"/>
+<pinref part="C27" gate="G$1" pin="1"/>
+<wire x1="238.76" y1="236.22" x2="246.38" y2="236.22" width="0.1524" layer="91"/>
+<pinref part="C28" gate="G$1" pin="1"/>
+<wire x1="246.38" y1="236.22" x2="254" y2="236.22" width="0.1524" layer="91"/>
+<label x="238.76" y="233.68" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -7094,6 +7112,18 @@ Source: www.kingbright.com</description>
 <pinref part="R11" gate="G$1" pin="1"/>
 <pinref part="LED3" gate="G$1" pin="C"/>
 <wire x1="289.56" y1="149.86" x2="289.56" y2="147.32" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="VCC3V3_D" class="0">
+<segment>
+<pinref part="C25" gate="G$1" pin="2"/>
+<pinref part="C26" gate="G$1" pin="2"/>
+<wire x1="231.14" y1="243.84" x2="238.76" y2="243.84" width="0.1524" layer="91"/>
+<pinref part="C27" gate="G$1" pin="2"/>
+<wire x1="246.38" y1="243.84" x2="238.76" y2="243.84" width="0.1524" layer="91"/>
+<pinref part="C28" gate="G$1" pin="2"/>
+<wire x1="254" y1="243.84" x2="246.38" y2="243.84" width="0.1524" layer="91"/>
+<label x="238.76" y="243.84" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

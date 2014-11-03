@@ -7289,10 +7289,6 @@ Source: www.kingbright.com</description>
 <label x="200.66" y="218.44" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="264.16" y1="218.44" x2="261.62" y2="218.44" width="0.1524" layer="91"/>
-<label x="259.08" y="218.44" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="X1" gate="-24" pin="S"/>
 <wire x1="231.14" y1="226.06" x2="228.6" y2="226.06" width="0.1524" layer="91"/>
 <label x="226.06" y="226.06" size="1.778" layer="95"/>
@@ -7447,10 +7443,6 @@ Source: www.kingbright.com</description>
 <label x="48.26" y="111.76" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="264.16" y1="236.22" x2="259.08" y2="236.22" width="0.1524" layer="91"/>
-<label x="264.16" y="236.22" size="1.778" layer="95" rot="MR0"/>
-</segment>
-<segment>
 <pinref part="X1" gate="-10" pin="S"/>
 <wire x1="231.14" y1="243.84" x2="228.6" y2="243.84" width="0.1524" layer="91"/>
 <label x="226.06" y="243.84" size="1.778" layer="95"/>
@@ -7465,10 +7457,6 @@ Source: www.kingbright.com</description>
 <segment>
 <wire x1="40.64" y1="116.84" x2="45.72" y2="116.84" width="0.1524" layer="91"/>
 <label x="48.26" y="116.84" size="1.778" layer="95"/>
-</segment>
-<segment>
-<wire x1="264.16" y1="241.3" x2="259.08" y2="241.3" width="0.1524" layer="91"/>
-<label x="259.08" y="241.3" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="X1" gate="-6" pin="S"/>
@@ -7487,10 +7475,6 @@ Source: www.kingbright.com</description>
 <label x="48.26" y="114.3" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="264.16" y1="243.84" x2="259.08" y2="243.84" width="0.1524" layer="91"/>
-<label x="259.08" y="243.84" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="X1" gate="-4" pin="S"/>
 <wire x1="231.14" y1="251.46" x2="228.6" y2="251.46" width="0.1524" layer="91"/>
 <label x="226.06" y="251.46" size="1.778" layer="95"/>
@@ -7505,10 +7489,6 @@ Source: www.kingbright.com</description>
 <segment>
 <wire x1="40.64" y1="119.38" x2="45.72" y2="119.38" width="0.1524" layer="91"/>
 <label x="48.26" y="119.38" size="1.778" layer="95"/>
-</segment>
-<segment>
-<wire x1="264.16" y1="238.76" x2="259.08" y2="238.76" width="0.1524" layer="91"/>
-<label x="259.08" y="238.76" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="X1" gate="-8" pin="S"/>
@@ -7646,21 +7626,6 @@ Source: www.kingbright.com</description>
 <pinref part="U$1" gate="A" pin="C1TX/ETXD0/PMD10/RF1"/>
 <wire x1="335.28" y1="177.8" x2="340.36" y2="177.8" width="0.1524" layer="91"/>
 <label x="340.36" y="177.8" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="N$3" class="0">
-<segment>
-<wire x1="259.08" y1="246.38" x2="264.16" y2="246.38" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$6" class="0">
-<segment>
-<wire x1="259.08" y1="248.92" x2="264.16" y2="248.92" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$7" class="0">
-<segment>
-<wire x1="259.08" y1="251.46" x2="264.16" y2="251.46" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="USB_UART_TX" class="0">
