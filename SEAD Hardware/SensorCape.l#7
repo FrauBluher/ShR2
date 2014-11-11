@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.05" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="yes"/>
@@ -6471,7 +6471,7 @@ Source: http://focus.ti.com/lit/ds/symlink/ths4211.pdf</description>
 <rectangle x1="-0.85" y1="-0.875" x2="0.85" y2="0.875" layer="29"/>
 <rectangle x1="-0.825" y1="-0.85" x2="0.825" y2="0.85" layer="31"/>
 </package>
-<package name="55091-0309">
+<package name="55091-0374">
 <description>&lt;b&gt;0.635 mm PITCH B TO B CONN.&lt;/b&gt;&lt;p&gt;
 Source: http://www.molex.com/pdm_docs/sd/550911609_sd.pdf</description>
 <wire x1="-7.3875" y1="3.1" x2="-6.6125" y2="3.1" width="0.2032" layer="21"/>
@@ -10033,7 +10033,7 @@ Source: http://www.molex.com/pdm_docs/sd/550911609_sd.pdf</description>
 <gate name="-30" symbol="F" x="10.16" y="78.74" addlevel="always" swaplevel="1"/>
 </gates>
 <devices>
-<device name="" package="55091-0309">
+<device name="" package="55091-0374">
 <connects>
 <connect gate="-1" pin="S" pad="1"/>
 <connect gate="-10" pin="S" pad="10"/>
