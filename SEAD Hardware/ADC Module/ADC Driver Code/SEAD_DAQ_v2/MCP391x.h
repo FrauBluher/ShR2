@@ -449,7 +449,7 @@ typedef struct {
             signed OFFCAL : 24;
         };
     };
-} MCP391x_OFFCAL_CH0_REG;
+} MCP391x_OFFCAL_REG;
 
 /******************************************************************************/
 
@@ -457,6 +457,9 @@ typedef struct {
  * @brief GAINCAL Register Address
  */
 #define GAINCAL_CH0 0x10
+#define GAINCAL_CH1 0x20
+#define GAINCAL_CH2 0x30
+#define GAINCAL_CH3 0x40
 
 /**
  * @brief GAINCAL Register Address Bit-Fields
@@ -486,211 +489,7 @@ typedef struct {
             signed GAINCAL : 24;
         };
     };
-} MCP391x_GAINCAL_CH0_REG;
-
-/******************************************************************************/
-
-/**
- * @brief Offset calibration register address.
- */
-#define OFFCAL_CH1 0x11
-
-/**
- * @brief Offset calibration register bit-field.
- *
- * bit 23-0
- *      OFFCAL_CHn:
- *          Digital Offset calibration value for the corresponding channel CHn.
- *          This register is simply added to the output code of the channel bit-
- *          by-bit. This register is 24-bit two's complement MSB first coding.
- *          CHn Output Code = OFFCAL_CHn + ADC CHn Output Code. This register is
- *          a Don't Care if EN_OFFCAL = 0 (Offset calibration disabled), but its
- *          value is not cleared by the EN_OFFCAL bit.
- */
-typedef struct {
-
-    union {
-        uint32_t wholeRegister;
-
-        struct {
-            signed : 8;
-            signed OFFCAL : 24;
-        };
-    };
-} MCP391x_OFFCAL_CH1_REG;
-
-/******************************************************************************/
-
-/**
- * @brief GAINCAL Register Address
- */
-#define GAINCAL_CH1 0x12
-
-/**
- * @brief GAINCAL Register Address Bit-Fields
- *
- * bit 23-0
- *      GAINCAL_CHn: Digital gain error calibration value for the corresponding
- *                   channel CHn. This register is 24-bit signed MSB first
- *                   coding with a range of -1x to +0.9999999x (from 0x800000
- *                   to 0x7FFFFF). The gain calibration adds 1x to this register
- *                   and multiplies it to the output code of the channel bit-by-
- *                   -bit, after offset calibration. The range of the gain
- *                   calibration is thus from 0x to 1.9999999x (from 0x800000 to
- *                   0x7FFFFF). The LSB corresponds to a 2-23 increment in the
- *                   multiplier. CHn Output Code = (GAINCAL_CHn + 1) * ADC CHn
- *                   Output Code. This register is a Don't Care if EN_GAINCAL =
- *                   0 (Gain calibration disabled) but its value is not cleared
- *                   by the EN_GAINCAL bit.
- *
- */
-typedef struct {
-
-    union {
-        uint32_t wholeRegister;
-
-        struct {
-            signed : 8;
-            signed GAINCAL : 24;
-        };
-    };
-} MCP391x_GAINCAL_CH1_REG;
-
-/******************************************************************************/
-
-/**
- * @brief Offset calibration register address.
- */
-#define OFFCAL_CH2 0x13
-
-/**
- * @brief Offset calibration register bit-field.
- *
- * bit 23-0
- *      OFFCAL_CHn:
- *          Digital Offset calibration value for the corresponding channel CHn.
- *          This register is simply added to the output code of the channel bit-
- *          by-bit. This register is 24-bit two's complement MSB first coding.
- *          CHn Output Code = OFFCAL_CHn + ADC CHn Output Code. This register is
- *          a Don't Care if EN_OFFCAL = 0 (Offset calibration disabled), but its
- *          value is not cleared by the EN_OFFCAL bit.
- */
-typedef struct {
-
-    union {
-        uint32_t wholeRegister;
-
-        struct {
-            signed : 8;
-            signed OFFCAL : 24;
-        };
-    };
-} MCP391x_OFFCAL_CH2_REG;
-
-/******************************************************************************/
-
-/**
- * @brief GAINCAL Register Address
- */
-#define GAINCAL_CH2 0x14
-
-/**
- * @brief GAINCAL Register Address Bit-Fields
- *
- * bit 23-0
- *      GAINCAL_CHn: Digital gain error calibration value for the corresponding
- *                   channel CHn. This register is 24-bit signed MSB first
- *                   coding with a range of -1x to +0.9999999x (from 0x800000
- *                   to 0x7FFFFF). The gain calibration adds 1x to this register
- *                   and multiplies it to the output code of the channel bit-by-
- *                   -bit, after offset calibration. The range of the gain
- *                   calibration is thus from 0x to 1.9999999x (from 0x800000 to
- *                   0x7FFFFF). The LSB corresponds to a 2-23 increment in the
- *                   multiplier. CHn Output Code = (GAINCAL_CHn + 1) * ADC CHn
- *                   Output Code. This register is a Don't Care if EN_GAINCAL =
- *                   0 (Gain calibration disabled) but its value is not cleared
- *                   by the EN_GAINCAL bit.
- *
- */
-typedef struct {
-
-    union {
-        uint32_t wholeRegister;
-
-        struct {
-            signed : 8;
-            signed GAINCAL : 24;
-        };
-    };
-} MCP391x_GAINCAL_CH2_REG;
-
-/******************************************************************************/
-
-/**
- * @brief Offset calibration register address.
- */
-#define OFFCAL_CH3 0x15
-
-/**
- * @brief Offset calibration register bit-field.
- *
- * bit 23-0
- *      OFFCAL_CHn:
- *          Digital Offset calibration value for the corresponding channel CHn.
- *          This register is simply added to the output code of the channel bit-
- *          by-bit. This register is 24-bit two's complement MSB first coding.
- *          CHn Output Code = OFFCAL_CHn + ADC CHn Output Code. This register is
- *          a Don't Care if EN_OFFCAL = 0 (Offset calibration disabled), but its
- *          value is not cleared by the EN_OFFCAL bit.
- */
-typedef struct {
-
-    union {
-        uint32_t wholeRegister;
-
-        struct {
-            signed : 8;
-            signed OFFCAL : 24;
-        };
-    };
-} MCP391x_OFFCAL_CH3_REG;
-
-/******************************************************************************/
-
-/**
- * @brief GAINCAL Register Address
- */
-#define GAINCAL_CH3 0x16
-
-/**
- * @brief GAINCAL Register Address Bit-Fields
- *
- * bit 23-0
- *      GAINCAL_CHn: Digital gain error calibration value for the corresponding
- *                   channel CHn. This register is 24-bit signed MSB first
- *                   coding with a range of -1x to +0.9999999x (from 0x800000
- *                   to 0x7FFFFF). The gain calibration adds 1x to this register
- *                   and multiplies it to the output code of the channel bit-by-
- *                   -bit, after offset calibration. The range of the gain
- *                   calibration is thus from 0x to 1.9999999x (from 0x800000 to
- *                   0x7FFFFF). The LSB corresponds to a 2-23 increment in the
- *                   multiplier. CHn Output Code = (GAINCAL_CHn + 1) * ADC CHn
- *                   Output Code. This register is a Don't Care if EN_GAINCAL =
- *                   0 (Gain calibration disabled) but its value is not cleared
- *                   by the EN_GAINCAL bit.
- *
- */
-typedef struct {
-
-    union {
-        uint32_t wholeRegister;
-
-        struct {
-            signed : 8;
-            signed GAINCAL : 24;
-        };
-    };
-} MCP391x_GAINCAL_CH3_REG;
+} MCP391x_GAINCAL_REG;
 
 /******************************************************************************/
 
@@ -769,12 +568,6 @@ typedef struct {
  * @return Returns EXIT_SUCCESS if the device responds with the set configuration.
  */
 uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo);
-
-/**
- * @brief Get sampled data from ADC with current configuration.
- * @return Updates MCP391x_Info with current information and sets newData to 1.
- */
-void MCP391x_GetSamples(void);
 
 #endif	/* ADS85XH_H */
 

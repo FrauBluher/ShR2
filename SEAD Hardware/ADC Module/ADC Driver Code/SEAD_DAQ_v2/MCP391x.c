@@ -36,7 +36,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-
 static MCP391x_Info *passedInfoStruct;
 
 /**
@@ -46,15 +45,25 @@ static MCP391x_Info *passedInfoStruct;
  */
 uint8_t MCP391x_Init(MCP391x_Info *DS85x8Info)
 {
+	MCP391x_CONFIG0_REG config0
+	MCP391x_CONFIG1_REG config1;
+	MCP391x_GAINCAL_CH0_REG gainCalCh0;
+	MCP391x_GAINCAL_CH1_REG gainCalCh1;
+	MCP391x_GAINCAL_CH2_REG gainCalCh2;
+	MCP391x_GAINCAL_CH3_REG gainCalCh3;
+	MCP391x_GAIN_REG gain;
+	MCP391x_LOCK_CRC_REG lockCrc;
+	MCP391x_MOD_REG mod;
+	MCP391x_OFFCAL_CH0_REG offsetCalCh0;
+	MCP391x_OFFCAL_CH1_REG offsetCalCh1;
+	MCP391x_OFFCAL_CH2_REG offsetCalCh2;
+	MCP391x_OFFCAL_CH3_REG offsetCalCh3;
+	MCP391x_PHASE_REG phase;
+	MCP391x_STATUSCOM_REG statusData;  //Read from the MCP3912
+	
+	//Setting bits for configuration of the MCP3912;
+	
+
 	passedInfoStruct = DS85x8Info;
 	return(EXIT_SUCCESS);
-}
-
-/**
- * @brief Get sampled data from ADC with current configuration.
- * @return Updates MCP391x_Info with current information and sets newData to 1.
- */
-void MCP391x_GetSamples(void)
-{
-	passedInfoStruct->newData = 1;
 }
