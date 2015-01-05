@@ -34,31 +34,22 @@
 #include "ParallelIO.h"
 #include <plib.h>
 #include "DMA_Transfer.h"
-#include "MCP391x.h"
+#include "ADS85x8.h"
 
 #if defined (__32MX360F512L__) || (__32MX460F512L__) || (__32MX795F512L__) || (__32MX430F064L__) || (__32MX450F256L__) || (__32MX470F512L__) || (__32MX320F128L__)
+// Configuration Bit settings
 // Configuration Bit settings
 // SYSCLK = 80 MHz (8MHz Crystal / FPLLIDIV * FPLLMUL / FPLLODIV)
 // PBCLK = 80 MHz (SYSCLK / FPBDIV)
 // Primary Osc w/PLL (XT+,HS+,EC+PLL)
 // WDT OFF
 // Other options are don't care
-
-
-//TODO: SET CONFIG FUSE BITS FOR EXTERNAL OSCILLATOR.
-#pragma config FNOSC = FRC // Oscillator Selection Bits (Fast RC Osc //(FRC))
-#pragma config FSOSCEN = ON // Secondary Oscillator Enable (Enabled)
-#pragma config IESO = OFF // Internal/External Switch Over (Disabled)
-#pragma config POSCMOD = OFF // Primary Oscillator Configuration (Primary //osc disabled)
-
-#pragma config FPLLIDIV = DIV_2
-#pragma config FPLLMUL = MUL_20
-#pragma config FPLLODIV = DIV_1
+#pragma config FPLLMUL = MUL_20, FPLLIDIV = DIV_2, FPLLODIV = DIV_1, FWDTEN = OFF
+#pragma config POSCMOD = HS, FNOSC = PRIPLL, FPBDIV = DIV_1
+#define SYS_FREQ (80000000L)
 
 #pragma config OSCIOFNC = OFF // CLKO Output Signal Active on the OSCO Pin //(Disabled)
-#pragma config FPBDIV = DIV_1 // Peripheral Clock Divisor (Pb_Clk is //Sys_Clk/8)
 #pragma config FCKSM = CSDCMD // Clock Switching and Monitor Selection//(Clock Switch Disable, FSCM Disabled)
-#pragma config FWDTEN = OFF // Watchdog Timer Enable (WDT Disabled (SWDTEN //Bit Controls))
 #pragma config ICESEL = ICS_PGx1 // ICE/ICD Comm Channel Select (Communicate on //PGEC1/PGED1)
 #pragma config PWP = OFF // Program Flash Write Protect (Disable)
 #pragma config BWP = OFF // Boot Flash Write Protect bit (Protection //Disabled)
@@ -73,47 +64,16 @@
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
-uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391x_Info *MCPInfo)
+uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x8_Info *DS85x8Info)
 {
 	SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
+        mOSCSetPBDIV( OSC_PB_DIV_1 );
 
-	LATA = 0;
-	LATB = 0;
-	LATC = 0;
-	LATD = 0;
-	LATE = 0;
-	LATF = 0;
-	LATG = 0;
 	AD1PCFG = 0xFFFFFFFF;
-
-	//Set up tristates for the dataports and R/W stuff for the FIFO interface
-
-	//SPI Tristate setup
-	SPI_MISO_TRIS = 1;
-	SPI_MOSI_TRIS = 0;
-	SPI_SCK_TRIS = 0;
-	SPI_SS_TRIS = 0;
 
 	//UART tristate setup
 	UART_TX_TRIS = 0;
 	UART_RX_TRIS = 1;
-
-	//ADC tristate setup
-	BUSY_TRIS = 1;
-	CS_TRIS = 0;
-	RD_TRIS = 0;
-	WR_TRIS = 0;
-	CONV_A_TRIS = 0;
-	CONV_B_TRIS = 0;
-
-	CONV_A_LAT = 0;
-	CONV_B_LAT = 0;
-
-	//CS and RD are active low...
-	CS_LAT = 1;
-	RD_LAT = 1;
-	WR_LAT = 1;
-
 
 	/*
 	 * Depending on if you want to use a DMA transfer and what peripheral you
@@ -122,8 +82,8 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	 * - BufferToSpi_Init(BufferA, BufferB)
 	 */
 
-	BufferToSpi_Init(BufferA, BufferB);
-	MCP391x_Init(MCPInfo);
+	//BufferToSpi_Init(BufferA, BufferB);
+        BufferToUART3_Init(BufferA, BufferB);
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 	INTEnableInterrupts();

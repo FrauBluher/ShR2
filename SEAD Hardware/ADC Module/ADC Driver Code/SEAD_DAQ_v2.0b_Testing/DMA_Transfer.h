@@ -23,45 +23,35 @@
  */
 
 /**
- * @file	
+ * @file	DMA_Transfer.h
  * @author 	Pavlo Milo Manovi
  * @date	April, 2014
- * @brief 	This library provides implementation of methods to init and read the MCP391x.
- *
+ * @brief 	This library provides methods to send data over UART and SPI using
+ *              non-blocking DMA.  See notes in the .c file for specifics and future
+ *              required work.
  */
 
-#include "MCP391x.h"
-#include "ADCModuleBoard.h"
-#include "ParallelIO.h"
+#ifndef SPI_DMA_TRANSFER_H
+#define	SPI_DMA_TRANSFER_H
+#define MAX32
+
 #include <stdint.h>
-#include <stdlib.h>
+#define BUFFERLENGTH 8192
 
-static MCP391x_Info *passedInfoStruct;
+//8 bit integer should be changed to 16 bits for SPI testing.
+typedef struct {
+    uint8_t BufferArray[BUFFERLENGTH];
+    uint8_t bufferFull;
+    uint8_t txStarted;
+    uint16_t index;
+} SampleBuffer;
 
-/**
- * @brief Sets up the MCP391x.
- * @param MCP391x_Params A pointer to a MCP391x_Info struct which will be updated.
- * @return Returns EXIT_SUCCESS if the device responds with the set configuration.
- */
-uint8_t MCP391x_Init(MCP391x_Info *DS85x8Info)
-{
-	MCP391x_Info MCP;
+int BufferToUART3_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
+int BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
+int BufferToSpi_TransferA(uint16_t transferSize);
+int BufferToSpi_TransferB(uint16_t transferSize);
+uint8_t BufferToUART3_TransferA(uint16_t transferSize);
+uint8_t BufferToUART3_TransferB(uint16_t transferSize);
 
-	//Setting bits for configuration of the MCP3912;
-	MCP.config0Reg;
-	MCP.config1Reg;
-	MCP.gainCalCh0Reg;
-	MCP.gainCalCh1Reg;
-	MCP.gainCalCh2Reg;
-	MCP.gainCalCh3Reg;
-	MCP.offCalCh0Reg;
-	MCP.offCalCh1Reg;
-	MCP.offCalCh2Reg;
-	MCP.offCalCh3Reg;
-	MCP.gainReg;
-	MCP.lockReg;
-	
+#endif	/* SPI_DMA_TRANSFER_H */
 
-	passedInfoStruct = DS85x8Info;
-	return(EXIT_SUCCESS);
-}

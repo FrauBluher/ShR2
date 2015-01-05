@@ -23,45 +23,18 @@
  */
 
 /**
- * @file	
+ * @file	Temp_BBB_SPI_Fix.c
  * @author 	Pavlo Milo Manovi
  * @date	April, 2014
- * @brief 	This library provides implementation of methods to init and read the MCP391x.
- *
+ * @brief 	This library is used to provide a temporary fix to handle the fact
+ *              that the beaglebone black doesn't support slave SPI without the PRU.
+ *              until I write an SPI driver with the PRU we'll have to deal with using
+ *              this blocking set of SPI calls with the BBB as the master.
  */
 
-#include "MCP391x.h"
-#include "ADCModuleBoard.h"
-#include "ParallelIO.h"
-#include <stdint.h>
-#include <stdlib.h>
+#include <plib.h>
 
-static MCP391x_Info *passedInfoStruct;
-
-/**
- * @brief Sets up the MCP391x.
- * @param MCP391x_Params A pointer to a MCP391x_Info struct which will be updated.
- * @return Returns EXIT_SUCCESS if the device responds with the set configuration.
- */
-uint8_t MCP391x_Init(MCP391x_Info *DS85x8Info)
-{
-	MCP391x_Info MCP;
-
-	//Setting bits for configuration of the MCP3912;
-	MCP.config0Reg;
-	MCP.config1Reg;
-	MCP.gainCalCh0Reg;
-	MCP.gainCalCh1Reg;
-	MCP.gainCalCh2Reg;
-	MCP.gainCalCh3Reg;
-	MCP.offCalCh0Reg;
-	MCP.offCalCh1Reg;
-	MCP.offCalCh2Reg;
-	MCP.offCalCh3Reg;
-	MCP.gainReg;
-	MCP.lockReg;
-	
-
-	passedInfoStruct = DS85x8Info;
-	return(EXIT_SUCCESS);
+void Init_BBB_SPI_Transfer(void) {
+	SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_MSTEN | SPI_OPEN_SMP_END | SPI_OPEN_MODE8, 4);
+	//SpiChnPutS(chn, (unsigned int*)slaveBuff, txferSize);
 }

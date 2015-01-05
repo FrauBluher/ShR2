@@ -23,12 +23,11 @@
  */
 
 /**
- * @file	ADCModuleBoard.h
+ * @file	ADS85x8.h
  * @author 	Pavlo Milo Manovi
- * @date	January, 2015
+ * @date	April, 2014
  * @brief 	This library is used to set up the peripherals of the pic and glue
- *              together all of the drivers in the library.  Pin pound defines can
- *              be found here.
+ *              together all of the drivers in the library.
  */
 
 #ifndef ADCMODULEBOARD_H
@@ -39,11 +38,10 @@
 #include <xc.h>
 #include <stdint.h>
 #include "DMA_Transfer.h"
-#include "MCP391x.h"
+#include "ADS85x8.h"
 
 /**
  * @brief Pound defines for databit latch registers.
- *  * CODE NEEDS UPDATING
  */
 #define DB0_LAT     LATDbits.LATD13
 #define DB1_LAT     LATDbits.LATD5
@@ -64,7 +62,6 @@
 
 /**
  * @brief Pound defines for databit tri-state registers.
- *  * CODE NEEDS UPDATING
  */
 #define DB0_TRIS     TRISDbits.TRISD13
 #define DB1_TRIS     TRISDbits.TRISD5
@@ -85,7 +82,6 @@
 
 /**
  * @brief Pound defines for databit port registers.
- *  * CODE NEEDS UPDATING
  */
 #define DB0_PORT     PORTDbits.RD13 
 #define DB1_PORT     PORTDbits.RD5 
@@ -106,7 +102,6 @@
 
 /**
  * @brief SPI tristate registers and SS latch.
- *  * CODE NEEDS UPDATING
  */
 #define SPI_SCK_TRIS    TRISDbits.TRISD10
 #define SPI_MOSI_TRIS   TRISDbits.TRISD0
@@ -116,9 +111,6 @@
 
 /**
  * @brief ADS85x8 control lines - tristates.
- *
- * DEPRICATED CODE
- * CODE NEEDS UPDATING
  */
 #define BUSY_TRIS   TRISDbits.TRISD14
 #define CS_TRIS     TRISFbits.TRISF12
@@ -126,10 +118,14 @@
 #define WR_TRIS     TRISBbits.TRISB13
 #define CONV_A_TRIS TRISBbits.TRISB15
 #define CONV_B_TRIS TRISBbits.TRISB14
+/*
+ * #define CONV_C_TRIS 
+ * #define CONV_D_TRIS
+ * Define these two when you actually start using them.
+ */
 
 /**
  * @brief ADS85x8 control lines - latches.
- *  * CODE NEEDS UPDATING
  */
 #define BUSY_PORT  PORTDbits.RD14
 #define CS_LAT     LATFbits.LATF12
@@ -137,13 +133,17 @@
 #define WR_LAT     LATBbits.LATB13
 #define CONV_A_LAT LATBbits.LATB15
 #define CONV_B_LAT LATBbits.LATB14
-
+/*
+ * #define CONV_C_LAT 
+ * #define CONV_D_LAT
+ * Define these two when you actually start using them.
+ */
 
 /**
  * @brief UART Pins for debugging on Max32
  */
-#define UART_TX_TRIS    TRISFbits.TRISF8
-#define UART_RX_TRIS    TRISFbits.TRISF2
+#define UART_TX_TRIS    TRISGbits.TRISG8
+#define UART_RX_TRIS    TRISGbits.TRISG7
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Methods~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -151,7 +151,7 @@
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
-uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391x_Info *MCPInfo);
+uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, ADS85x8_Info *DS85x8Info);
 
 #endif	/* ADCMODULEBOARD_H */
 

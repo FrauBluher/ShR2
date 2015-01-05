@@ -426,6 +426,9 @@ typedef struct {
  * @brief Offset calibration register address.
  */
 #define OFFCAL_CH0 0x0F
+#define OFFCAL_CH1 0x11
+#define OFFCAL_CH2 0x13
+#define OFFCAL_CH3 0x15
 
 /**
  * @brief Offset calibration register bit-field.
@@ -457,9 +460,9 @@ typedef struct {
  * @brief GAINCAL Register Address
  */
 #define GAINCAL_CH0 0x10
-#define GAINCAL_CH1 0x20
-#define GAINCAL_CH2 0x30
-#define GAINCAL_CH3 0x40
+#define GAINCAL_CH1 0x12
+#define GAINCAL_CH2 0x14
+#define GAINCAL_CH3 0x16
 
 /**
  * @brief GAINCAL Register Address Bit-Fields
@@ -546,17 +549,17 @@ typedef struct {
     MCP391x_ADC_DATA sampledDataCh3;
     MCP391x_CONFIG0_REG config0Reg;
     MCP391x_CONFIG1_REG config1Reg;
-    MCP391x_GAINCAL_CH0_REG gainCalCh0Reg;
-    MCP391x_GAINCAL_CH1_REG gainCalCh1Reg;
-    MCP391x_GAINCAL_CH2_REG gainCalCh2Reg;
-    MCP391x_GAINCAL_CH3_REG gainCalCh3Reg;
+    MCP391x_GAINCAL_REG gainCalCh0Reg;
+    MCP391x_GAINCAL_REG gainCalCh1Reg;
+    MCP391x_GAINCAL_REG gainCalCh2Reg;
+    MCP391x_GAINCAL_REG gainCalCh3Reg;
     MCP391x_GAIN_REG gainReg;
     MCP391x_LOCK_CRC_REG lockReg;
     MCP391x_MOD_REG modReg;
-    MCP391x_OFFCAL_CH0_REG gainCalCh0Reg;
-    MCP391x_OFFCAL_CH1_REG gainCalCh1Reg;
-    MCP391x_OFFCAL_CH2_REG gainCalCh2Reg;
-    MCP391x_OFFCAL_CH3_REG gainCalCh3Reg;
+    MCP391x_OFFCAL_REG offCalCh0Reg;
+    MCP391x_OFFCAL_REG offCalCh1Reg;
+    MCP391x_OFFCAL_REG offCalCh2Reg;
+    MCP391x_OFFCAL_REG offCalCh3Reg;
     MCP391x_PHASE_REG phaseReg;
     MCP391x_STATUSCOM_REG statusReg;
     uint8_t newData;

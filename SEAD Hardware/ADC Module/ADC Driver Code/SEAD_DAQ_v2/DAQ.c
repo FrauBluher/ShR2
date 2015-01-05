@@ -1,3 +1,35 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Pavlo Milo Manovi
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
+/**
+ * @file	DAQ.c
+ * @author 	Pavlo Milo Manovi
+ * @date	April, 2014
+ * @brief 	Main loop for the DAQ.
+ */
+
+
 #include "ADCModuleBoard.h"
 #include <plib.h>
 
@@ -28,13 +60,11 @@ typedef struct {
 	uint8_t generalFlag;
 } DAQFSMInfo;
 
-static ADS85x8_Info ADCInfo;
+static MCP391x_Info ADCInfo;
 static DAQFSMInfo FSMInfo;
 
 int main(void)
 {
-	int16_t temp;
-
 	InitFSM();
 	while (1) {
 		switch (FSMInfo.nextState) {
@@ -50,18 +80,18 @@ int main(void)
 			break;
 
 		case DAQ_GET_DATA:
-			//This state may need to be renamed, but this is where
+
 			FSMInfo.nextState = DAQ_WAIT_FOR_CONVERSION;
 			break;
 
 		case DAQ_SAMPLES_TO_BUFFER_A:
 			if (BufferA.index < BUFFERLENGTH - 1) {
-				ADS85x8_GetSamples();
+				//ADS85x8_GetSamples();
 				if (ADCInfo.newData) {
-					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
-					BufferA.index++;
-					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
-					BufferA.index++;
+//					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
+//					BufferA.index++;
+//					BufferA.BufferArray[BufferA.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
+//					BufferA.index++;
 
 					FSMInfo.nextState = DAQ_GET_DATA;
 				} else {
@@ -75,13 +105,13 @@ int main(void)
 		case DAQ_SAMPLES_TO_BUFFER_B:
 			//For UART we split the 16 bit long value into two bytes...
 			if (BufferB.index < BUFFERLENGTH - 1) {
-				ADS85x8_GetSamples();
+				//ADS85x8_GetSamples();
 				if (ADCInfo.newData) {
 
-					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
-					BufferB.index++;
-					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
-					BufferB.index++;
+					//					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0xFF00) >> 8;
+					//					BufferB.index++;
+					//					BufferB.BufferArray[BufferB.index] = (ADCInfo.sampledDataChA0 & 0x00FF);
+					//					BufferB.index++;
 
 					FSMInfo.nextState = DAQ_GET_DATA;
 				} else {
@@ -114,7 +144,6 @@ int main(void)
 				BufferB.index = 0;
 				FSMInfo.currentBuffer = BUFFER_A;
 				FSMInfo.nextState = DAQ_GET_DATA;
-				_RF8 = 1;
 
 				DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
 			} else {
@@ -156,8 +185,6 @@ int main(void)
 			FSMInfo.nextState = DAQ_FATAL_ERROR;
 			break;
 		}
-	} else {
-		Nop();
 	}
 }
 
