@@ -156,7 +156,7 @@ uint8_t BufferToUART_TransferB(uint16_t transferSize)
 
 // handler for the DMA channel 1 interrupt
 
-void __ISR(_DMA1_VECTOR, ipl5) DmaHandler1(void)
+void __ISR(_DMA1_VECTOR) DmaHandler1(void)
 {
 	_RF8 = 0;
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL1)); // release the interrupt in the INT controller, we're servicing int
