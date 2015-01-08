@@ -56,8 +56,8 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            unsigned : 8;
             signed DATA : 24;
+            unsigned : 8;
         };
     };
 } MCP391x_ADC_DATA;
@@ -90,23 +90,23 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            unsigned : 16;
-            unsigned COMP3_CH3 : 1;
-            unsigned COMP2_CH3 : 1;
-            unsigned COMP1_CH3 : 1;
-            unsigned COMP0_CH3 : 1;
-            unsigned COMP3_CH2 : 1;
-            unsigned COMP2_CH2 : 1;
-            unsigned COMP1_CH2 : 1;
-            unsigned COMP0_CH2 : 1;
-            unsigned COMP3_CH1 : 1;
-            unsigned COMP2_CH1 : 1;
-            unsigned COMP1_CH1 : 1;
-            unsigned COMP0_CH1 : 1;
-            unsigned COMP3_CH0 : 1;
-            unsigned COMP2_CH0 : 1;
-            unsigned COMP1_CH0 : 1;
             unsigned COMP0_CH0 : 1;
+            unsigned COMP1_CH0 : 1;
+            unsigned COMP2_CH0 : 1;
+            unsigned COMP3_CH0 : 1;
+            unsigned COMP0_CH1 : 1;
+            unsigned COMP1_CH1 : 1;
+            unsigned COMP2_CH1 : 1;
+            unsigned COMP3_CH1 : 1;
+            unsigned COMP0_CH2 : 1;
+            unsigned COMP1_CH2 : 1;
+            unsigned COMP2_CH2 : 1;
+            unsigned COMP3_CH2 : 1;
+            unsigned COMP0_CH3 : 1;
+            unsigned COMP1_CH3 : 1;
+            unsigned COMP2_CH3 : 1;
+            unsigned COMP3_CH3 : 1;
+            unsigned : 16;
         };
     };
 } MCP391x_MOD_REG;
@@ -135,9 +135,9 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            unsigned : 8;
-            unsigned PHASEB : 12;
             unsigned PHASEA : 12;
+            unsigned PHASEB : 12;
+            unsigned : 8;
         };
     };
 } MCP391x_PHASE_REG;
@@ -172,11 +172,11 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            unsigned : 24;
-            unsigned PHA_CH3 : 3;
-            unsigned PHA_CH2 : 3;
-            unsigned PHA_CH1 : 3;
             unsigned PHA_CH0 : 3;
+            unsigned PHA_CH1 : 3;
+            unsigned PHA_CH2 : 3;
+            unsigned PHA_CH3 : 3;
+            unsigned : 24;
         };
     };
 } MCP391x_GAIN_REG;
@@ -264,17 +264,17 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            unsigned : 8;
-            unsigned READ : 2;
-            unsigned WRITE : 1;
-            unsigned DR_HIZ : 1;
-            unsigned DR_LINK : 1;
-            unsigned WIDTH_CRC : 1;
-            unsigned WIDTH_DATA : 2;
-            unsigned EN_CRCCOM : 1;
-            unsigned EN_INT : 1;
-            unsigned : 10;
             unsigned DRSTATUS : 4;
+            unsigned : 10;
+            unsigned EN_INT : 1;
+            unsigned EN_CRCCOM : 1;
+            unsigned WIDTH_DATA : 2;
+            unsigned WIDTH_CRC : 1;
+            unsigned DR_LINK : 1;
+            unsigned DR_HIZ : 1;
+            unsigned WRITE : 1;
+            unsigned READ : 2;
+            unsigned : 8;
         };
     };
 } MCP391x_STATUSCOM_REG;
@@ -346,15 +346,15 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            signed : 8;
-            signed EN_OFFCAL : 1;
-            signed EN_GAINCAL : 1;
-            signed DITHER : 2;
-            signed BOOST : 2;
-            signed PRE : 2;
-            signed OSR : 3;
-            signed : 5;
             signed VREFCAL : 8;
+            signed : 5;
+            signed OSR : 3;
+            signed PRE : 2;
+            signed BOOST : 2;
+            signed DITHER : 2;
+            signed EN_GAINCAL : 1;
+            signed EN_OFFCAL : 1;
+            signed : 8;
         };
     };
 } MCP391x_CONFIG0_REG;
@@ -408,13 +408,13 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            signed : 12;
-            signed RESET : 4;
-            signed : 4;
-            signed SHUTDOWN : 4;
-            signed VREFEXT : 1;
-            signed CLKEXT : 1;
             signed : 6;
+            signed CLKEXT : 1;
+            signed VREFEXT : 1;
+            signed SHUTDOWN : 4;
+            signed : 4;
+            signed RESET : 4;
+            signed : 12;
         };
     };
 } MCP391x_CONFIG1_REG;
@@ -448,8 +448,8 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            signed : 8;
             signed OFFCAL : 24;
+            signed : 8;
         };
     };
 } MCP391x_OFFCAL_REG;
@@ -488,8 +488,8 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            signed : 8;
             signed GAINCAL : 24;
+            signed : 8;
         };
     };
 } MCP391x_GAINCAL_REG;
@@ -532,9 +532,9 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            signed : 8;
-            signed LOCK : 8;
             signed CRCREG : 16;
+            signed LOCK : 8;
+            signed : 8;
         };
     };
 } MCP391x_LOCK_CRC_REG;

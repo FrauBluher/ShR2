@@ -31,7 +31,6 @@
  */
 
 #include "ADCModuleBoard.h"
-#include "ParallelIO.h"
 #include <plib.h>
 #include "DMA_Transfer.h"
 #include "MCP391x.h"
@@ -98,22 +97,24 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	UART_TX_TRIS = 0;
 	UART_RX_TRIS = 1;
 
-	//ADC tristate setup
-	BUSY_TRIS = 1;
+	//MCP tristate setup
+	DR_TRIS = 1;
+	RESET_TRIS = 0;
+
+	//FIFO tristate setup
+	DB0_TRIS = 0;
+	DB1_TRIS = 0;
+	DB2_TRIS = 0;
+	DB3_TRIS = 0;
+	DB4_TRIS = 0;
+	DB5_TRIS = 0;
+	DB6_TRIS = 0;
+	DB7_TRIS = 0;
+
 	CS_TRIS = 0;
+	A0_TRIS = 0;
 	RD_TRIS = 0;
-	WR_TRIS = 0;
-	CONV_A_TRIS = 0;
-	CONV_B_TRIS = 0;
-
-	CONV_A_LAT = 0;
-	CONV_B_LAT = 0;
-
-	//CS and RD are active low...
-	CS_LAT = 1;
-	RD_LAT = 1;
-	WR_LAT = 1;
-
+	WR_LAT = 0;
 
 	/*
 	 * Depending on if you want to use a DMA transfer and what peripheral you
@@ -121,6 +122,9 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	 * - BufferToUART_Init(BufferA, BufferB);
 	 * - BufferToSpi_Init(BufferA, BufferB)
 	 */
+
+	RESET_LAT = 1;
+	SPI_SS_LAT = 1;
 
 	BufferToSpi_Init(BufferA, BufferB);
 	MCP391x_Init(MCPInfo);

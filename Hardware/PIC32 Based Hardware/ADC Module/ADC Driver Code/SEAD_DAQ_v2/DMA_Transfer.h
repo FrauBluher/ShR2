@@ -46,10 +46,11 @@ typedef struct {
     uint16_t index;
 } SampleBuffer;
 
-int BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
-int BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
-int BufferToSpi_TransferA(uint16_t transferSize);
-int BufferToSpi_TransferB(uint16_t transferSize);
+uint8_t BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
+uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
+uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize);
+uint8_t BufferToSpi_TransferA(uint16_t transferSize);
+uint8_t BufferToSpi_TransferB(uint16_t transferSize);
 uint8_t BufferToUART_TransferA(uint16_t transferSize);
 uint8_t BufferToUART_TransferB(uint16_t transferSize);
 

@@ -49,7 +49,7 @@ SampleBuffer *BufA;
 SampleBuffer *BufB;
 DmaChannel chn;
 
-int BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
+uint8_t BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 {
 	if (!inited) {
 		BufA = BufferA;
@@ -79,7 +79,7 @@ int BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 	}
 }
 
-int BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
+uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 {
 	if (!inited) {
 		BufA = BufferA;
@@ -109,7 +109,16 @@ int BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 	}
 }
 
-int BufferToSpi_TransferA(uint16_t transferSize)
+uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize)
+{
+	DmaChnSetTxfer(DMA_CHANNEL1, txBuffer, (void*) &SPI1BUF, transferSize, 1, 1);
+
+	DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE);
+
+	DmaChnStartTxfer(chn, DMA_WAIT_NOT, 0);
+}
+
+uint8_t BufferToSpi_TransferA(uint16_t transferSize)
 {
 	// set the transfer:
 	// source is our buffer, dest is the SPI transmit buffer
@@ -122,7 +131,7 @@ int BufferToSpi_TransferA(uint16_t transferSize)
 	DmaChnStartTxfer(chn, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
 }
 
-int BufferToSpi_TransferB(uint16_t transferSize)
+uint8_t BufferToSpi_TransferB(uint16_t transferSize)
 {
 	// set the transfer:
 	// source is our buffer, dest is the SPI transmit buffer

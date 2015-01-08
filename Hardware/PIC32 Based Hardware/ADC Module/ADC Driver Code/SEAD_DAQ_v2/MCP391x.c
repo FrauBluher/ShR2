@@ -35,6 +35,10 @@
 #include "ParallelIO.h"
 #include <stdint.h>
 #include <stdlib.h>
+#include <plib.h>
+#include "DMA_Transfer.h"
+
+void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData);
 
 static MCP391x_Info *passedInfoStruct;
 
@@ -73,7 +77,41 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.statusReg.WIDTH_CRC = 0;
 	MCP.statusReg.WRITE = 0;
 
+	//These calls are using DMA, but they'll be blocking to make sure this
+	//happens properly on startup.  TODO: Implement initialization as a
+	//single DMA transfer.  This will save up to 20 uS on initialization.
+
+	SPI_Write_Register(CONFIG0_ADDR, MCP.config0Reg.wholeRegister);
+	SPI_Write_Register(CONFIG1_ADDR, MCP.config1Reg.wholeRegister);
+	SPI_Write_Register(PHASE_ADDR, MCP.phaseReg.wholeRegister);
+	SPI_Write_Register(STATUSCOM_ADDR, MCP.statusReg.wholeRegister);
+
 	passedInfoStruct = MCP391xInfo;
-	passedInfoStruct = &MCP;
+	*passedInfoStruct = MCP;
+
 	return(EXIT_SUCCESS);
+}
+
+/****************************** PRIVATE FCNS **********************************/
+
+void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData)
+{
+	uint8_t txBuf[4];
+	//Toggle SS pin.
+	SPI_SS_LAT = 0;
+
+	//Blocking call to ensure proper initialization.
+	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE));
+
+	txBuf[0] = registerAddress << 1;
+	txBuf[0] &= ~(1 << 0); //Clear R/W* bit for Write operation.
+	txBuf[1] = (registerData & 0x000000FF);
+	txBuf[2] = (registerData & 0x0000FF00) >> 8;
+	txBuf[3] = (registerData & 0x00FF0000) >> 16;
+
+	BufferToSpi_Transfer(txBuf, 4);
+	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+
+	//Toggle CS pin here.
+	SPI_SS_LAT = 1;
 }

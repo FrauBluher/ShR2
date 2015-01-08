@@ -34,8 +34,6 @@
 #ifndef ADCMODULEBOARD_H
 #define	ADCMODULEBOARD_H
 
-//#define MAX32
-
 #include <xc.h>
 #include <stdint.h>
 #include "DMA_Transfer.h"
@@ -43,70 +41,49 @@
 
 /**
  * @brief Pound defines for databit latch registers.
- *  * CODE NEEDS UPDATING
  */
-#define DB0_LAT     LATDbits.LATD13
-#define DB1_LAT     LATDbits.LATD5
-#define DB2_LAT     LATFbits.LATF0
-#define DB3_LAT     LATFbits.LATF1
-#define DB4_LAT     LATGbits.LATG1 
-#define DB5_LAT     LATGbits.LATG0 
-#define DB6_LAT     LATAbits.LATA6
-#define DB7_LAT     LATAbits.LATA7
-#define DB8_LAT     LATEbits.LATE0
-#define DB9_LAT     LATEbits.LATE1 
-#define DB10_LAT    LATGbits.LATG14
-#define DB11_LAT    LATGbits.LATG12
-#define DB12_LAT    LATGbits.LATG13
-#define DB13_LAT    LATEbits.LATE2
-#define DB14_LAT    LATEbits.LATE3
-#define DB15_LAT    LATEbits.LATE4
+#define DB0_LAT     LATEbits.LATE0
+#define DB1_LAT     LATEbits.LATE1
+#define DB2_LAT     LATEbits.LATE2
+#define DB3_LAT     LATEbits.LATE3
+#define DB4_LAT     LATEbits.LATE4
+#define DB5_LAT     LATEbits.LATE5
+#define DB6_LAT     LATEbits.LATE6
+#define DB7_LAT     LATEbits.LATE7
 
 /**
  * @brief Pound defines for databit tri-state registers.
- *  * CODE NEEDS UPDATING
  */
-#define DB0_TRIS     TRISDbits.TRISD13
-#define DB1_TRIS     TRISDbits.TRISD5
-#define DB2_TRIS     TRISFbits.TRISF0
-#define DB3_TRIS     TRISFbits.TRISF1
-#define DB4_TRIS     TRISGbits.TRISG1 
-#define DB5_TRIS     TRISGbits.TRISG0 
-#define DB6_TRIS     TRISAbits.TRISA6
-#define DB7_TRIS     TRISAbits.TRISA7
-#define DB8_TRIS     TRISEbits.TRISE0
-#define DB9_TRIS     TRISEbits.TRISE1 
-#define DB10_TRIS    TRISGbits.TRISG14
-#define DB11_TRIS    TRISGbits.TRISG12
-#define DB12_TRIS    TRISGbits.TRISG13
-#define DB13_TRIS    TRISEbits.TRISE2
-#define DB14_TRIS    TRISEbits.TRISE3
-#define DB15_TRIS    TRISEbits.TRISE4
+#define DB0_TRIS     TRISEbits.TRISE0
+#define DB1_TRIS     TRISEbits.TRISE1
+#define DB2_TRIS     TRISEbits.TRISE2
+#define DB3_TRIS     TRISEbits.TRISE3
+#define DB4_TRIS     TRISEbits.TRISE4
+#define DB5_TRIS     TRISEbits.TRISE5
+#define DB6_TRIS     TRISEbits.TRISE6
+#define DB7_TRIS     TRISEbits.TRISE7
 
 /**
- * @brief Pound defines for databit port registers.
- *  * CODE NEEDS UPDATING
+ * @brief FIFO Control Lines - tristates.
  */
-#define DB0_PORT     PORTDbits.RD13 
-#define DB1_PORT     PORTDbits.RD5 
-#define DB2_PORT     PORTFbits.RF0 
-#define DB3_PORT     PORTFbits.RF1 
-#define DB4_PORT     PORTGbits.RG1 
-#define DB5_PORT     PORTGbits.RG0 
-#define DB6_PORT     PORTAbits.RA6 
-#define DB7_PORT     PORTAbits.RA7 
-#define DB8_PORT     PORTEbits.RE0 
-#define DB9_PORT     PORTEbits.RE1 
-#define DB10_PORT    PORTGbits.RG14
-#define DB11_PORT    PORTGbits.RG12
-#define DB12_PORT    PORTGbits.RG13
-#define DB13_PORT    PORTEbits.RE2 
-#define DB14_PORT    PORTEbits.RE3 
-#define DB15_PORT    PORTEbits.RE4 
+#define CS_TRIS TRISDbits.TRISD11
+#define A0_TRIS TRISBbits.TRISB15
+#define RD_TRIS TRISDbits.TRISD5
+#define WR_TRIS TRISDbits.TRISD4
+
+/**
+ * @brief FIFO Control Lines - latches.
+ */
+#define CS_LAT LATDbits.LATD11
+#define A0_LAT LATBbits.LATB15
+#define RD_LAT LATDbits.LATD5
+#define WR_LAT LATDbits.LATD4
+
+
+/******************************************************************************/
 
 /**
  * @brief SPI tristate registers and SS latch.
- *  * CODE NEEDS UPDATING
  */
 #define SPI_SCK_TRIS    TRISDbits.TRISD10
 #define SPI_MOSI_TRIS   TRISDbits.TRISD0
@@ -114,29 +91,21 @@
 #define SPI_SS_TRIS     TRISCbits.TRISC3
 #define SPI_SS_LAT      LATCbits.LATC3
 
-/**
- * @brief ADS85x8 control lines - tristates.
- *
- * DEPRICATED CODE
- * CODE NEEDS UPDATING
- */
-#define BUSY_TRIS   TRISDbits.TRISD14
-#define CS_TRIS     TRISFbits.TRISF12
-#define RD_TRIS     TRISBbits.TRISB12
-#define WR_TRIS     TRISBbits.TRISB13
-#define CONV_A_TRIS TRISBbits.TRISB15
-#define CONV_B_TRIS TRISBbits.TRISB14
+/******************************************************************************/
 
 /**
- * @brief ADS85x8 control lines - latches.
- *  * CODE NEEDS UPDATING
+ * @brief MCP3912 control lines - tristates.
  */
-#define BUSY_PORT  PORTDbits.RD14
-#define CS_LAT     LATFbits.LATF12
-#define RD_LAT     LATBbits.LATB12
-#define WR_LAT     LATBbits.LATB13
-#define CONV_A_LAT LATBbits.LATB15
-#define CONV_B_LAT LATBbits.LATB14
+#define DR_TRIS  TRISFbits.TRISF4 //Connected to pin sharing U3RX
+#define RESET_TRIS TRISFbits.TRISF5 //Connected to pin sharing U3TX
+
+/**
+ * @brief MCP3912 control lines - latches.
+ */
+#define DR_LAT LATFbits.LATF4
+#define RESET_LAT LATFbits.LATF5
+
+/******************************************************************************/
 
 
 /**
