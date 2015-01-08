@@ -1,0 +1,55 @@
+.DVSL-Menu nav a {
+    background-image: url(netchart-sprite.png);
+}
+
+/* Context menu */
+a.DVSL-NC-button-expand {background-position:0 0;}
+a.DVSL-NC-button-collapse {background-position:0 -35px;}
+a.DVSL-NC-button-focus {background-position:0 -135px;}
+a.DVSL-NC-button-unfocus {background-position:0 -169px;}
+a.DVSL-NC-button-lock {background-position:2px -103px;}
+a.DVSL-NC-button-unlock {background-position:0 -69px;}
+a.DVSL-NC-button-hide {background-position:1px -202px;}
+
+/* Zoom control */
+.DVSL-NC-zoom {
+    position:relative;
+	display:block;
+    left:15px;
+    width:4px;
+    height:100px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+	background:#ddd;
+}
+.DVSL-NC-zoom em {
+    position:absolute;
+    left:-9px;
+    width:22px;
+    height:20px;
+    -webkit-border-radius: 99px;
+    -moz-border-radius: 99px;
+    border-radius: 99px;
+    background: -moz-linear-gradient(top, rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.01) 1%, rgba(0,0,0,0.2) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.01)), color-stop(1%,rgba(0,0,0,0.01)), color-stop(100%,rgba(0,0,0,0.2)));
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: -o-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: -ms-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#03000000', endColorstr='#33000000',GradientType=0 );
+    background-color:#FFF;
+    border-bottom:1px solid rgba(255,255,255,.5);
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    cursor:pointer;
+}
+.DVSL-NC-zoom em:hover, .DVSL-NC-zoom em:active {
+	background-color:#ddd;
+	-webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    border-bottom:1px solid transparent;
+}
+

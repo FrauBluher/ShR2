@@ -1,0 +1,40 @@
+Zoomcharts javascript library.
+
+Copyright 2014, Data Visualization Tools Lab. All rights reserved.
+http://zoomcharts.com
+
+Version 1.2.3.2
+ * Fixed click event being fired after  a right click event on touch.
+ * Added valueFormatterFunction to valueAxis.
+
+See release notes of individual charts for detailed changes and known issues.
+
+====== Changelog ===========================
+
+Version 1.2.3.1
+ * Fixed assets_applyMethod not being respected in initial settings.
+
+Version 1.2.3
+* Time chart - added support for dashed lines.
+* Added HTML entity and <br> support in label text.
+
+Version 1.2.2
+* Net chart - cursor property and layout improvements.
+
+Version 1.2.1
+* Added support for touch on Internet Exporer 10 and 11.
+* Net chart - added margin and borderRadius for labels and items.
+
+Version 1.2.0
+* Net chart has new and improved auto zoom. The default zoom is now set to 1:1.
+* Reworked Facet Chart mouse/touch interaction.
+* Time Chart and Facet Chart now detect the clicked series, available via event.clickSeries and hoverSeries field.
+* Time Chart and Facet Chart now support fixed min and max for each value axis.
+* All charts now automatically follow the size of their container, eliminating the need to call updateSize.
+* Lots of bug fixes and small improvements.
+
+Version 1.1.0
+* Development version
+
+Version 1.0
+* Initial public release

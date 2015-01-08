@@ -1,0 +1,11 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %}SEADS - My Account{% endblock %}
+{% block page_class %}account-page{% endblock %}
+{% block content %}
+
+{% include "base/navbar.html" %}
+
+<h1>{{ user.get_username }}
+
+{% endblock content %}

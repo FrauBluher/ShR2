@@ -1,0 +1,23 @@
+
+devices = {
+   1  : 'Air Conditioner',
+   2  : 'Blender',
+   3  : 'Ceiling Fan',
+   4  : 'Clothes Dryer',
+   5  : 'Clothes Washer',
+   6  : 'Convection Oven',
+   7  : 'Computer',
+   8  : 'Dishwasher',
+   9  : 'Electric Fan',
+   10 : 'Freezer',
+   11 : 'Furnace',
+   12 : 'Iron',
+   13 : 'Lamp',
+   14 : 'Microwave Oven',
+   15 : 'Refrigerator',
+   16 : 'Stereo',
+   17 : 'Television',
+   18 : 'Toaster',
+   19 : 'Vacuum Cleaner',
+   20 : 'Water Heater',
+}

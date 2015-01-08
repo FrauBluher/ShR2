@@ -1,0 +1,8 @@
+.DVSL-PC-background-image {
+	background: center center cover no-repeat;
+	-webkit-background-size: cover;
+	-webkit-border-radius: 9999px;
+	-moz-border-radius: 9999px;
+	border-radius: 9999px;
+    background-position: center center;
+}

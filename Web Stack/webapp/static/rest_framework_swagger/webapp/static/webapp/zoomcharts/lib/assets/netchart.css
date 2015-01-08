@@ -1,0 +1,120 @@
+.DVSL-Menu nav a {
+    background-image: url(netchart-sprite.png);
+}
+
+a.DVSL-NC-button-expand {background-position:0 0;}
+a.DVSL-NC-button-collapse {background-position:0 -35px;}
+a.DVSL-NC-button-focus {background-position:0 -135px;}
+a.DVSL-NC-button-unfocus {background-position:0 -169px;}
+a.DVSL-NC-button-lock {background-position:2px -103px;}
+a.DVSL-NC-button-unlock {background-position:0 -69px;}
+a.DVSL-NC-button-hide {background-position:1px -202px;}
+
+.DVSL-NC-zoom {
+    position:absolute;
+    bottom:10px;
+    left:10px;
+    opacity:.4;
+    height:130px;
+    width:30px;
+}
+.DVSL-NC-zoom:hover {opacity:1;}
+.DVSL-NC-zoom nav {
+    position:absolute;
+    bottom:0;
+    left:0;
+    height:25px;
+    white-space:nowrap;
+}
+.DVSL-NC-zoom nav a {
+    width:25px;
+    height:25px;
+    display:inline-block;
+    text-indent:-9999px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background:url(netchart-sprite.png) 0 0 no-repeat;
+    opacity:.5;
+}
+.DVSL-NC-zoom nav a:hover {opacity:1}
+.DVSL-NC-zoom nav a.DVSL-NC-zoom-rearrange {background-position: 4px -260px;}
+.DVSL-NC-zoom nav a.DVSL-NC-zoom-lock-all {background-position: 0 -286px;}
+.DVSL-NC-zoom nav a.DVSL-NC-zoom-lock-all-active {background-position: 0 -314px;}
+.DVSL-NC-zoom nav a.DVSL-NC-zoom-fit, .DVSL-NC-zoom nav a.DVSL-NC-zoom-fit-active {
+    background: -moz-linear-gradient(top, rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.01) 1%, rgba(0,0,0,0.2) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.01)), color-stop(1%,rgba(0,0,0,0.01)), color-stop(100%,rgba(0,0,0,0.2)));
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: -o-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: -ms-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#03000000', endColorstr='#33000000',GradientType=0 );
+    background-color: #999;
+    opacity:1;
+}
+.DVSL-NC-zoom nav a.DVSL-NC-zoom-fit-active {
+    background-color: #09c;
+}
+.DVSL-NC-zoom nav a.DVSL-NC-zoom-fit:hover, .DVSL-NC-zoom nav a.DVSL-NC-zoom-fit-active:hover {
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8) inset;
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.8) inset;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.8) inset;
+}
+.DVSL-NC-zoom nav a.DVSL-NC-zoom-fit:after, .DVSL-NC-zoom nav a.DVSL-NC-zoom-fit-active:after {
+    content:"";
+    width:22px;
+    height:20px;
+    position:absolute;
+    left:3px;
+    top:4px;
+    background:url(netchart-sprite.png) 0 -236px no-repeat;
+    display:block;
+}
+.DVSL-NC-zoom span {
+    position:absolute;
+    left:10px;
+    bottom:32px;
+    width:6px;
+    height:100px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.8) inset;
+    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.8) inset;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.8) inset;
+}
+.DVSL-NC-zoom span em {
+    position:absolute;
+    left:-8px;
+    width:22px;
+    height:24px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: -moz-linear-gradient(top, rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.01) 1%, rgba(0,0,0,0.2) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.01)), color-stop(1%,rgba(0,0,0,0.01)), color-stop(100%,rgba(0,0,0,0.2)));
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: -o-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: -ms-linear-gradient(top, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.01) 1%,rgba(0,0,0,0.2) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#03000000', endColorstr='#33000000',GradientType=0 );
+    background-color:#FFF;
+    border-bottom:1px solid #FFF;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    cursor:pointer;
+}
+.DVSL-NC-zoom span em:after, .DVSL-NC-zoom span em:before {
+    content:"";
+    position:absolute;
+    left:0;right:0;
+    top:11px;
+    background:rgba(0,0,0,.1);
+    height:1px;
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+
+}
+.DVSL-NC-zoom span em:before {top:13px;}

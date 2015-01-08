@@ -1,0 +1,10 @@
+
+{% block content %}
+
+{% if not error_403 %}
+{% include "base/linechart.html" %}
+{% else %}
+<h4>No permission to view device (403)</h4>
+{% endif %}
+
+{% endblock content %}
