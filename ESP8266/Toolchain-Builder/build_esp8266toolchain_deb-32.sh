@@ -5,12 +5,15 @@ sudo mkdir /opt/Espressif
 sudo chown $USER /opt/Espressif/
 #xtensa crosstool-NG
 cd /opt/Espressif
-git cline -b lx106 git://github.com/jcmvbkbc/crosstool-NG.git
+git clone -b lx106 git://github.com/jcmvbkbc/crosstool-NG.git
 cd crosstool-NG
 ./bootstrap && ./configure --prefix=`pwd` && make && make install
 ./ct-ng xtensa-lx106-elf
 ./ct-ng build
-PATH=$PWD/builds/xtensa-lx106-elf/bin:$PATH
+PATH=/opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin:$PATH
+cd ~
+echo "export PATH=/opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin:$PATH" >> .bashrc
+source .bashrc
 #set up the espressif sdk
 cd /opt/Espressif
 mkdir ESP8266_SDK
@@ -38,9 +41,9 @@ sudo dpkg -i esptool_0.0.2-1_i386.deb
 #install esp upload tool
 cd /opt/Espressif
 git clone https://github.com/themadinventor/esptool esptool-py
-ln -s $PWD/esptool-py/esptool.py crosstool-NG/builds/xtensa-lx106-elf/bin/
+sudo ln -s /opt/Espressif/esptool-py/esptool.py /opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin/
 #put symlinks for upload tool, and crosstool-ng in /usr/bin
-ln -s $PWD/esptool-py/esptool.py /usr/bin/
+sudo ln -s /opt/Espressif/esptool-py/esptool.py /usr/bin/
 sudo ln -s /opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin/xtensa-lx106-elf-gcc /usr/bin/xt-xcc
 sudo ln -s /opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin/xtensa-lx106-elf-gcc-ar /usr/bin/xt-ar
 sudo ln -s /opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin/xtensa-lx106-elf-nm /usr/bin/xt-nm
