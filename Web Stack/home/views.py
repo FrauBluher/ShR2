@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from home.serializers import UserSerializer
@@ -72,3 +72,5 @@ def index(request):
 def gitupdate(request):
     if request.method == 'POST':
         call(["git", "pull"])
+        return HttpREsponse(status=201)
+    else: return HttpREsponse(status=401)
