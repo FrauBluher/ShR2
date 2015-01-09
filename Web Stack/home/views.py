@@ -14,6 +14,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from rest_framework.authtoken.models import Token
 
+from subprocess import call
+
 
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
@@ -66,3 +68,7 @@ def signout(request):
 
 def index(request):
     return render_to_response('base/index.html', context_instance=RequestContext(request))
+
+def gitupdate(request):
+    if request.method == 'POST':
+        call(["git", "pull"])
