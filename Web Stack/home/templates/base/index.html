@@ -13,9 +13,9 @@
         {% if user.is_authenticated %}
         <h1>Hello, {{ user.username }}!</h1>
         {% else %}
-        <h1>Hello, Git Webhook World!</h1>
+        <h1>Hello, World!</h1>
         {% endif %}
-        <p>This is a template for an informational website. Since we plan on having our data public, this will serve as the portal. Login authentication is supported to validate users.</p>
+        <p>If everything worked correctly, this line should have been added to the page by Github's webhook service. This is a template for an informational website. Since we plan on having our data public, this will serve as the portal. Login authentication is supported to validate users.</p>
         <p><a href="/data/" class="btn btn-primary btn-lg" role="button">Dashboard »</a></p>
       </div>
     </div>
@@ -23,21 +23,16 @@
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <div class="col-md-6">
+          <h2>Abstract</h2>
+          <p>The SEAD project aims to create a power system monitoring device which measures real/apparent power, power factor, and non-intrusively detects when devices are operational. While other non-intrusive load disaggregation techniques currently exist, our project will leverage cutting edge research and new embedded processing solutions to create a system capable interfacing with a cloud service without relying on said service for processing and analysis of data.</p>
           <p><a class="btn btn-default" href="javascript:void(0)" role="button">View details »</a></p>
         </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <div class="col-md-6">
+          <h2>Objective</h2>
+          <p>The objective of this project is to create a system which measures power usage in a system, and reports to an online database. This system will sample and buffer current and voltage data at a frequency at least 20kHz. Analysis of the spectral energy distribution as a stochastic source will be completed in the embedded system and fits of known device power signatures will be matched and reported on. These events are sent to an online database for aggregation and presentation to an end user. A database and web-app will be developed alongside the hardware to demonstrate/test the scalability of the system and API specifications.</p>
           <p><a class="btn btn-default" href="javascript:void(0)" role="button">View details »</a></p>
        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="javascript:void(0)" role="button">View details »</a></p>
-        </div>
       </div>
     </div>
 
