@@ -13,6 +13,7 @@ from django.contrib import messages
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
 
 from subprocess import call
 
@@ -69,6 +70,7 @@ def signout(request):
 def index(request):
     return render_to_response('base/index.html', context_instance=RequestContext(request))
 
+@csrf_exempt
 def gitupdate(request):
     if request.method == 'POST':
         call(["git", "pull"])
