@@ -72,5 +72,5 @@ def index(request):
 def gitupdate(request):
     if request.method == 'POST':
         call(["git", "pull"])
-        return HttpREsponse(status=201)
-    else: return HttpREsponse(status=401)
+        return HttpResponse(status=201)
+    else: return HttpResponse(status=401)
