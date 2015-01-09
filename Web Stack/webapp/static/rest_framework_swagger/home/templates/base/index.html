@@ -1,0 +1,45 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %}SEADS - Home{% endblock %}
+{% block page_class %}home-page{% endblock %}
+{% block content %}
+
+{% include "base/navbar.html" %}
+<!-- This code is taken from http://getbootstrap.com/examples/jumbotron/ -->
+</nav>
+
+    <div class="jumbotron">
+      <div class="container">
+        {% if user.is_authenticated %}
+        <h1>Hello, {{ user.username }}!</h1>
+        {% else %}
+        <h1>Hello, World!</h1>
+        {% endif %}
+        <p>This is a template for an informational website. Since we plan on having our data public, this will serve as the portal. Login authentication is supported to validate users.</p>
+        <p><a href="/data/" class="btn btn-primary btn-lg" role="button">Dashboard »</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="javascript:void(0)" role="button">View details »</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="javascript:void(0)" role="button">View details »</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-default" href="javascript:void(0)" role="button">View details »</a></p>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock %}

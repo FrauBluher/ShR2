@@ -1,0 +1,103 @@
+Time Chart javascript library.
+
+Copyright 2014, Data Visualization Tools Lab. All rights reserved.
+http://zoomcharts.com
+
+Version 2.7
+
+* Added dashed lines and columns.
+* Click events now have clickSeries associated with it.
+* Reworked noDataPolicy rendering for line series.
+
+====== Known issues ===========================
+
+====== Changelog ===========================
+
+Version 2.6
+* Added onHoverChange event.
+* Hovered series is now detected, available via event.hoverSeries.
+* Automatic canvas scaling on zoom in (desktop based browsers).
+* Fixed pointer position issues when position=fixed is used.
+* Chart now automatically resizes on container resize.
+* Fixed Safari crashes in iOS.
+
+Version 2.5.1
+* Fixed time axis rendering fix when display unit is 5 seconds
+* More precise control over unit sizes using settings.timeAxis.unitSizePolicy.
+
+Version 2.5
+* Series now support showInLegend = true,
+  data.valueFunction and data.aggregatedValueFunction.
+* Value axis can now have fixed minValue, maxValue and scaleStep.
+* Time axis now highlight holidays.
+
+Version 2.4.3
+* Touch recognition fixes
+
+Version 2.4.2
+* Fixed data caching bug that reset some periods to zero when prefetching is disabled.
+* Time chart can now have arbitrary number of value axis.
+
+Version 2.4.1
+* added new option data.minimizeRequests - if true, data requests are 
+  only send when scrolling is finished.
+
+Version 2.4.0
+* onTimeChanged event is deprecated, use onChartUpdate now. 
+  Old event is still supported.
+* Several event.origin fixes.
+
+Version 2.3.0
+* Reworked scrolling code.
+* Current time now has a seperate configuration section.
+* Fixed several zooming issues.
+                                    
+Version 2.2.3
+* Current time is now displayed in users time zone.
+* Data loading - fixed issue when only single value is returned.
+* Data loading - fixed issue when form/to in data was used to initial display period.
+
+Version 2.2.2
+* Improved swipe gesture detection.
+
+Version 2.2.1
+* Fixed time range detection in border cases.
+* series.minWidth, maxWidth moved to timeAxis.minUnitWidth, maxUnitWidth.
+* Fixed regression where column series minHeight was not respected.
+
+Version 2.2.0
+* Fixed smoothed line render performance issue with very sparse data
+* Added option to specify minimum value axis unit.
+
+Version 2.1.0
+* Implemented incremental data updating.
+* Fixed stacked column rendering with negative values.
+
+Version 2.0.0
+* Revised stacked series parameters
+* Now using monotone line smooting.
+* Better stacked area rendering.
+
+Version 1.0.96
+* Added onSettingsChange event.
+* Fixed value axis scaling bug when all values are equal.
+* Fixed extra padding on left and right sides.
+* Fixed chart scale computation for log scale.
+* Fixed bunch of other regressions.
+
+Version 1.0.95
+* Fixed value axis scaling bug
+* Chart container resize detection
+
+Version 1.0.9
+* Now supports multiple series
+* Now supports negative values
+* New series rendering engine
+
+Version 1.0.1
+* Fixed lin/log button not working in toobarBare mode.
+* Fixed display period screw up when scrolling to period with no data.
+* Smoother kinetic scrolling
+ 
+Version 1.0
+* Initial public release.

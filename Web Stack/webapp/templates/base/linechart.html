@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+	<script type="text/javascript">
+      chart = new TimeChart({
+         container: document.getElementById("line-chart"),
+         data:
+         {
+            unit: data.unit,
+            preloaded: preloaded
+         },
+         valueAxis:{
+            "default":{
+               title: "Power (W)"
+            }
+         },
+         series:[
+            {% cycle 'red' 'blue' 'green' 'yellow' as barcolors %}
+            {% for series in series_array %}
+            {
+               name:"{{ series }}",
+               id:"event{{ forloop.counter }}",
+               type:"columns",
+               data:{
+                  index:{{ forloop.counter }},
+                  aggregation:"avg"
+               },
+               stack: "default",
+               style:{
+                  fillColor:"{{ cycle barcolors %}"
+               }
+            },
+            {% endfor %}
+         ],
+         area: {
+            initialDisplayUnit: "1 d",
+            initialDisplayPeriod: "1 month",
+            initialDisplayAnchor: "newestData"
+         },
+         currentTime: {enabled: false}
+      });
+	</script>
+</html>

@@ -1,0 +1,47 @@
+Pie Chart javascript library.
+
+Copyright 2014, Data Visualization Tools Lab. All rights reserved.
+http://zoomcharts.com
+
+Version 1.1
+* Added margin and borderRadius for labels.
+* Added slice.minFraction setting to make very small slices bigger.
+
+====== Known issues ===========================
+
+====== Changelog ===========================
+
+Version 1.0
+* Added event.hoverLabel.
+* Bug fixes.
+* Chart now automatically resizes on container resize.
+
+Version 0.2.6
+* Labels can now have an optional balloon outline.
+
+Version 0.2.5
+* Now supports partial data loading by using offset. 
+  Configurable using settings.data.partialLoad (true by default).
+* onTimeChanged event is deprecated, use onChartUpdate now. 
+  Old event is still supported.
+* Several event.origin fixes.
+
+Version 0.2.4
+* Automatic label radius now takes labels into account.
+* Chart background is now transparent.	
+* Added simple option to set background color in settings: area.style.fillColor.
+                                      
+
+Version 0.2.3
+* Updated label placement - inside labels now are
+  placed outside even if no outside labels are defined.
+* Label connectors are highlighted on hover.
+
+Version 0.2.2
+* Fixed double click not firing.
+
+Version 0.2.1
+* Various bug fixes.
+
+Version 0.2
+* Initial testing release.

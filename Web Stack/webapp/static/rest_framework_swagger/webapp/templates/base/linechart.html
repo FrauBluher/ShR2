@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+	<script type="text/javascript">
+			var dataPoints = [];
+			var data = [];
+			var dataSeries = { type: "line" };
+			var dataPoints = [];
+
+			{% for event in event_array %}
+				dateTime = new Date({{ event.timestamp }} * 1000);
+				dataPoints.push({
+					x: dateTime,
+					y: {{ event.wattage }}
+				});
+			{% endfor %}
+
+			dataSeries.dataPoints = dataPoints;
+			data.push(dataSeries);
+
+			var chart = new CanvasJS.Chart("chartContainer",
+			{
+				zoomEnabled: true,
+				title:{
+					text: "{{ device.name }}"
+				},
+				axisX :{
+					labelAngle: -30,
+					title: "Timeline"
+				},
+	            axisY :{
+	              title: "Watts"
+				},
+				
+				data: data  
+
+			});
+
+			chart.render();
+	</script>
+	<body>
+		<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+	</body>
+</html>

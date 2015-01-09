@@ -1,0 +1,120 @@
+Zoomcharts javascript library.
+
+Copyright 2014, Data Visualization Tools Lab. All rights reserved.
+http://zoomcharts.com
+
+Version 1.3.1
+
+  Timechart fixes:
+   * display unit and period dropdown displays only available values
+   * stable zoom out stability fix
+   * zoom in on click limited to more reasonable zoom
+
+====== Known issues ===========================
+
+Net chart:
+ * ExpandNode and collapseNode API calls are not supported in "showall" navigation mode.
+ * OnChartUpdate event is not supported.
+
+====== Changelog ===========================
+
+Version 1.3.0
+ * legend introduced for all charts
+ * chart resizer bar now has option to lock chart aspect ratio
+ * long press now acts as right click on all platforms
+ * new chart.clearHistory - clears back history
+ * IE8 compatible rendering code, using ExplorerCanvas(trunk)
+ * many bug fixes.
+
+ Time chart and Facet chart:
+ * value axis introduced valueAxis.valueFormatterFunction for custom label formatting
+
+ Net chart:
+ * added object classes for easier styling
+ * loading symbol no longer loops forever on node image load error
+
+ Pie chart:
+ * label style is now per-slice configurable using slice.labelStyle and slice.insideLabelStyle
+
+
+Version 1.2.4.1
+ Time chart:
+ * added options to limit scroll area using interaction.scrolling.limitFrom and limitTo.
+
+Version 1.2.4
+ * added dashed lines support for every chart
+ * new toolbar for all charts, includes option to add user defined buttons.
+
+ Time chart:
+ * click events now have clickSeries associated with it
+ * reworked noDataPolicy rendering for line series.
+
+Version 1.2.3.1
+ * fixed assets_applyMethod not being respected in initial settings.
+
+Version 1.2.3
+ * no pixelization on zoom in via automatic canvas scaling (desktop based browsers)
+ * added HTML entity and <br> support in label text
+ * fixed pointer position issues when position=fixed is used
+ * fixed Safari crashes in iOS.
+
+ Net chart:
+ * fixed multi-link selection issues
+ * added label and item scaling with zoom, using item.scaleWithZoom property.
+ * link direction can now be controlled using link.direction attribute.
+
+ Time chart:
+ * added onHoverChange event
+ * hovered series is now detected, available via event.hoverSeries.
+
+Version 1.2.2
+  Net chart:
+  * added cursor property on nodes and links
+  * better layout auto-stop on some networks.
+
+Version 1.2.1
+  * added support for touch on Internet Exporer 10 and 11
+  * added margin and borderRadius for labels and items.
+
+  Pie chart:
+  * added slice.minFraction setting to make very small slices bigger.
+
+  Time chart:
+  * fixed time axis rendering fix when display unit is 5 seconds
+  * more precise control over time unit sizes using settings.timeAxis.unitSizePolicy.
+
+
+Version 1.2.0
+  * charts now automatically follow the size of their container, eliminating the need to call updateSize.
+
+  Pie chart:
+  * labels can now have an optional balloon outline
+  * added event.hoverLabel.
+
+  Net chart:
+  * has new and improved auto zoom. The default zoom is now set to 1:1
+    To restore old behavior use the following settings:
+    - interaction.zooming.autoZoomExtent: [0.1, 8] and
+    - style.nodeRadiusExtent: [10,50].
+  * Node.dataLinks now contains unfiltered links.
+    Filtered links now available at node.dataLinksFiltered (was node.dataLinks before).
+  * added chart.updateStyle() function to re-evaluate style after style function behavior changes
+  * added per node display mode using node.display field
+  * added node.opacity style parameter
+  * added node.imageCropping style option
+  * fixed image cropping filter for images with transparent background
+  * toolbar can now be disabled.
+
+  Facet chart and Time chart:
+  * value axis can now have fixed minValue, maxValue and scaleStep
+  * detect the clicked series, available via event.clickSeries and hoverSeries field.
+
+  Facet chart:
+  * reworked mouse/touch interaction.
+
+  Time chart:
+  * Time axis now highlight holidays
+  * Series now support showInLegend = true, data.valueFunction and data.aggregatedValueFunction.
+
+Version 1.0
+* Initial public release.

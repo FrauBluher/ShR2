@@ -1,0 +1,30 @@
+
+.DVSL-container.DVSL-gradient .DVSL-TC-timeAxis {
+    background: #cacaca; /* Old browsers */
+    background: -moz-linear-gradient(top,  #cacaca 0%, #989898 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cacaca), color-stop(100%,#989898)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #cacaca 0%,#989898 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #cacaca 0%,#989898 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #cacaca 0%,#989898 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #cacaca 0%,#989898 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cacaca', endColorstr='#989898',GradientType=0 ); /* IE6-9 */
+
+    border-top:1px solid #c9c9c9;
+
+    -webkit-box-shadow: 0 -2px 4px -1px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow:    0 -2px 4px -1px rgba(0, 0, 0, 0.5);
+    box-shadow:         0 -2px 4px -1px rgba(0, 0, 0, 0.5);
+
+    -webkit-border-bottom-right-radius: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -moz-border-radius-bottomright: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.DVSL-valueAxisInside .DVSL-TC-timeAxis.DVSL-gradient  {
+    -webkit-box-shadow: 0 -2px 4px -1px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow:    0 -2px 4px -1px rgba(0, 0, 0, 0.5);
+    box-shadow:         0 -2px 4px -1px rgba(0, 0, 0, 0.5);
+}

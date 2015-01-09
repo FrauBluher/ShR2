@@ -1,0 +1,217 @@
+@import "bar.css";
+
+.DVSL-bar-left, .DVSL-bar-right {position:absolute;list-style:none;padding:0;margin:0;} 
+
+.DVSL-bar-left > li, .DVSL-bar-right > li { /* menu item container */
+    position: relative;
+    list-style: none !important;
+	min-height:32px;
+    float: left;
+}
+.DVSL-bar-left.DVSL-bar-vertical > li { /* left-vertical menu items stack on each other */
+    clear: left;
+}
+.DVSL-bar-right.DVSL-bar-vertical > li { /* right-vertical li items stick to right */
+    float: right;
+}
+.DVSL-bar-right.DVSL-bar-vertical > li { /* right-vertical menu items stack on each other */
+    clear: right;
+}
+
+.DVSL-bar-left > li a, .DVSL-bar-right > li a { /* menu item */
+    font-family:Arial, Helvetica, sans-serif;
+	font-size:13px;
+	color:#333;
+    height:32px;
+    line-height:32px;
+    float:left;
+    padding:0 7px;
+	text-decoration:none;
+	cursor:pointer;
+	opacity:.6;
+	-webkit-transition:.5s; /* menu item animation */
+}
+.DVSL-bar-left > li a:hover, .DVSL-bar-right > li a:hover { /* menu item hover effects */
+	opacity:1;
+}
+
+.DVSL-bar-left li a p, .DVSL-bar-right li a p {  /* menu item icon and text */
+    background-image:	url(sprite.png);
+	background-repeat: no-repeat;
+    padding:0 0 0 18px;
+    margin:0;
+    float:left;
+    height:37px;
+    line-height:37px;
+    text-indent:4px;
+}
+.DVSL-bar-top > li a span, .DVSL-bar-bottom > li a span { /* triangle for dropdown */
+    padding:0 12px 0 0;
+    margin:0;
+    float:right;
+    height:37px;
+}
+.DVSL-bar-top > li a span { /* triangle for dropdown - top */
+    background:	url(sprite.png) right 2px no-repeat;
+}
+.DVSL-bar-bottom > li a span { /* triangle for dropdown - bottom */
+    background:	url(sprite.png) 3px 2px no-repeat;
+}
+
+.DVSL-bar-dropdown { /* dropdown menu styles */
+    z-index: 2;
+    position:absolute;
+    background:#FFF;
+    display:none;
+    border:1px solid #CCC;
+}
+.DVSL-bar-top.DVSL-bar-horizontal  .DVSL-bar-dropdown { /* top-horizontal positioned dropdown menu styles */
+    top:32px;
+}
+.DVSL-bar-bottom.DVSL-bar-horizontal  .DVSL-bar-dropdown { /* bottom-horizontal positioned dropdown menu styles */
+    bottom:32px;
+}
+.DVSL-bar-right.DVSL-bar-horizontal .DVSL-bar-dropdown { /* right-horizontal sided dropdown menu styles */
+	right:0;
+}
+.DVSL-bar-left.DVSL-bar-horizontal .DVSL-bar-dropdown { /* left-horizontal sided dropdown menu styles */
+	left:0;
+}
+.DVSL-bar-left.DVSL-bar-vertical .DVSL-bar-dropdown { /* left-vertical sided dropdown menu styles */
+	left:100%;
+}
+.DVSL-bar-right.DVSL-bar-vertical .DVSL-bar-dropdown { /* right-vertical sided dropdown menu styles */
+	right:100%;
+}
+.DVSL-bar-top.DVSL-bar-vertical  .DVSL-bar-dropdown { /* top-vertical positioned dropdown menu styles */
+    top:0px;
+}
+.DVSL-bar-bottom.DVSL-bar-vertical  .DVSL-bar-dropdown { /* bottom-vertical positioned dropdown menu styles */
+    bottom:0px;
+}
+
+.DVSL-bar-dropdown:after { /* dropdown menu triangle */
+    content: "";
+    position:absolute;
+    width: 0;
+    height: 0;
+}
+.DVSL-bar-top.DVSL-bar-horizontal .DVSL-bar-dropdown:after { /* top-horizontal positioned dropdown menu triangle */
+    top:-7px;
+    border-bottom: 7px solid #DDD;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+}
+.DVSL-bar-bottom.DVSL-bar-horizontal .DVSL-bar-dropdown:after { /* bottom-horizontal positioned dropdown menu triangle */
+    bottom:-7px;
+    border-top: 7px solid #DDD;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+}
+.DVSL-bar-right.DVSL-bar-horizontal .DVSL-bar-dropdown:after { /* right-horizontal sided dropdown menu triangle */
+    right:4px;
+}
+.DVSL-bar-left.DVSL-bar-horizontal .DVSL-bar-dropdown:after { /* left-horizontal sided dropdown menu triangle */
+    left:6px;
+}
+.DVSL-bar-left.DVSL-bar-vertical .DVSL-bar-dropdown:after { /* left-vertical positioned dropdown menu triangle */
+    left:-7px;
+    border-right: 7px solid #DDD;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+}
+.DVSL-bar-right.DVSL-bar-vertical .DVSL-bar-dropdown:after { /* right-vertical positioned dropdown menu triangle */
+    right:-7px;
+    border-left: 7px solid #DDD;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+}
+.DVSL-bar-top.DVSL-bar-vertical .DVSL-bar-dropdown:after { /* top-vertical sided dropdown menu triangle */
+    top:10px;
+}
+.DVSL-bar-bottom.DVSL-bar-vertical .DVSL-bar-dropdown:after { /* bottom-vertical sided dropdown menu triangle */
+    bottom:5px;
+}
+
+.DVSL-bar-dropdown ul { /* dropdown menu list container */
+    padding:0;
+    list-style:none;
+    overflow:hidden;
+    min-width:120px;
+}
+.DVSL-bar-dropdown ul li { /* dropdown menu list item and text alignment */
+    float:left;
+}
+.DVSL-bar-dropdown a { /* dropdown menu link styles */
+    float:none !important;
+    display:block;
+    background-image:none;
+    border-bottom:none;
+    border-top:none;
+    padding:4px 10px;
+    color:#666;
+    filter: none;
+    background:#FFF;
+    white-space:nowrap;
+    cursor:pointer;
+    opacity:1;
+}
+
+/* menu item icons - background image (sprite.pn)g positioning */
+a.DVSL-bar-btn-none p { /* use this class for an 'a' tag if no icon needed */
+    padding:0 0 0 0 !important;
+	background-image:none !important;
+}
+a.DVSL-bar-btn-image p {background-position:0 8px}
+
+a.DVSL-bar-btn-back p {
+    background-position: -4px -704px;
+}
+a.DVSL-bar-btn-zoomout p {
+    background-position: -4px -665px;
+}
+a.DVSL-bar-btn-fullscreen p {
+    background-position: -4px -994px;
+}
+a.DVSL-bar-btn-fullscreen-active p {
+    background-position: -4px -1058px;
+}
+a.DVSL-bar-btn-lin p {
+    background-position: -4px -66px;
+}
+a.DVSL-bar-btn-log p {
+    background-position: -4px -141px;
+}
+a.DVSL-bar-btn-day p {
+    background-position: -4px -217px;
+}
+a.DVSL-bar-btn-week p {
+    background-position: -4px -292px;
+}
+a.DVSL-bar-btn-month p {
+    background-position: -4px -368px;
+}
+a.DVSL-bar-btn-bars p {
+    background-position: -4px -445px;
+}
+a.DVSL-bar-btn-children p {
+    background-position: -4px -860px;
+}
+a.DVSL-bar-btn-export p {
+    background-position: -4px -928px;
+}
+a.DVSL-bar-btn-fit-active p {
+    background-position: -4px -1123px;
+}
+a.DVSL-bar-btn-fit p {
+    background-position: -4px -1427px;
+}
+a.DVSL-bar-btn-rearrange p {
+    background-position: -2px -1351px;
+}
+a.DVSL-bar-btn-lock-all p {
+    background-position: -2px -1272px;
+}
+a.DVSL-bar-btn-lock-all-active p {
+    background-position: -2px -1194px;
+}
