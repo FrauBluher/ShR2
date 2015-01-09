@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from home.serializers import UserSerializer
@@ -13,6 +13,9 @@ from django.contrib import messages
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
+
+import git
 
 
 # ViewSets define the view behavior.
@@ -66,3 +69,11 @@ def signout(request):
 
 def index(request):
     return render_to_response('base/index.html', context_instance=RequestContext(request))
+
+@csrf_exempt
+def gitupdate(request):
+    if request.method == 'POST':
+        g = git.cmd.Git("/home/ubuntu/seads-git/ShR2/")
+        g.pull()
+        return HttpResponse(status=201)
+    else: return HttpResponse(status=403)

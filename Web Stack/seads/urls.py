@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^data/$', 'webapp.views.landing'),
     url(r'^dashboard/$', 'webapp.views.dashboard'),
     url(r'^charts/device/(?P<serial>\d+)/(?P<unit>\w)$', 'webapp.views.charts'),
+    url(r'^gitupdate/$', 'home.views.gitupdate'),
 ]
