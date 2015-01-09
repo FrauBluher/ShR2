@@ -126,6 +126,9 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	RESET_LAT = 1;
 	SPI_SS_LAT = 1;
 
+	//Weak pull-downs for DR and MISO
+	CNPUE;
+
 	BufferToSpi_Init(BufferA, BufferB);
 	MCP391x_Init(MCPInfo);
 

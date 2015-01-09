@@ -89,9 +89,9 @@ uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 		BufB->index = 0;
 
 		// open and configure the SPI channel to use: master, no frame mode, 8 bit mode.
-		// we'll be using 80MHz/1 = 80MHz SPI peripheral base clock
-		SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_SLVEN | SPI_OPEN_SMP_END |
-			SPI_OPEN_CKP_HIGH | SPI_OPEN_MODE8, 1);
+		// we'll be using 80MHz/8 = 10MHz SPI peripheral base clock
+		SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_MSTEN | SPI_OPEN_SMP_END |
+			SPI_OPEN_CKP_HIGH | SPI_OPEN_MODE8, 2);
 
 		chn = DMA_CHANNEL1; // DMA channel to use for our example
 
@@ -120,10 +120,6 @@ uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize)
 
 uint8_t BufferToSpi_TransferA(uint16_t transferSize)
 {
-	// set the transfer:
-	// source is our buffer, dest is the SPI transmit buffer
-	// source size is the whole buffer, destination size is two bytes
-	// cell size is two bytes: we want one byte to be sent per each SPI TXBE event
 	DmaChnSetTxfer(DMA_CHANNEL1, BufA->BufferArray, (void*) &SPI1BUF, transferSize, 1, 1);
 
 	DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred

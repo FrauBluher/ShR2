@@ -98,10 +98,8 @@ void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData)
 {
 	uint8_t txBuf[4];
 	//Toggle SS pin.
+	int i;
 	SPI_SS_LAT = 0;
-
-	//Blocking call to ensure proper initialization.
-	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE));
 
 	txBuf[0] = registerAddress << 1;
 	txBuf[0] &= ~(1 << 0); //Clear R/W* bit for Write operation.
@@ -109,9 +107,12 @@ void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData)
 	txBuf[2] = (registerData & 0x0000FF00) >> 8;
 	txBuf[3] = (registerData & 0x00FF0000) >> 16;
 
-	BufferToSpi_Transfer(txBuf, 4);
-	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
 
-	//Toggle CS pin here.
+	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+	BufferToSpi_Transfer(txBuf, 4);
+
+
+	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
+		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
 	SPI_SS_LAT = 1;
 }
