@@ -15,7 +15,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 
-from subprocess import call
+import git
 
 
 # ViewSets define the view behavior.
@@ -73,6 +73,7 @@ def index(request):
 @csrf_exempt
 def gitupdate(request):
     if request.method == 'POST':
-        call(["git", "pull"])
+        g = git.cmd.Git("/home/ubuntu/seads-git/ShR2/")
+        g.pull()
         return HttpResponse(status=201)
-    else: return HttpResponse(status=401)
+    else: return HttpResponse(status=403)
