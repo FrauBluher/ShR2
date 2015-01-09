@@ -123,13 +123,22 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	 * - BufferToSpi_Init(BufferA, BufferB)
 	 */
 
-	RESET_LAT = 1;
+	//RESET_LAT = 1;
+	_TRISF5 = 0;
+	_RF5 = 1;
 	SPI_SS_LAT = 1;
 
 	//Weak pull-downs for DR and MISO
 	CNPUE;
 
 	BufferToSpi_Init(BufferA, BufferB);
+
+	int i;
+
+	for (i = 0; i < 40000; i++) { //TESTING STARUP DELAY
+		Nop();
+	}
+
 	MCP391x_Init(MCPInfo);
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
