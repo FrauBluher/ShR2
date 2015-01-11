@@ -91,7 +91,7 @@ uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 		// open and configure the SPI channel to use: master, no frame mode, 8 bit mode.
 		// we'll be using 80MHz/8 = 10MHz SPI peripheral base clock
 		SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_MSTEN | SPI_OPEN_SMP_END |
-			SPI_OPEN_CKE_REV | SPI_OPEN_MODE8, 2);
+			SPI_OPEN_CKE_REV | SPI_OPEN_MODE8, 4);
 
 		chn = DMA_CHANNEL1; // DMA channel to use for our example
 

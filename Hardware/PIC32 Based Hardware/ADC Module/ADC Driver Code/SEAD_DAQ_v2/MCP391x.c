@@ -39,12 +39,15 @@
 #include "DMA_Transfer.h"
 
 void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData);
-void SPI_Read_Register(uint8_t registerAddress);
+void SPI_Read__Result_Registers(void);
 void SPI_Read_All(void);
 void SPI_Write_All(void);
 
-static MCP391x_Info *passedInfoStruct;
+MCP391x_Info *passedInfoStruct;
 MCP391x_Info MCP;
+uint8_t adcBuf[13] = {};
+int i;
+int j;
 
 /**
  * @brief Sets up the MCP391x.
@@ -58,8 +61,8 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.config0Reg.DITHER = 0b11;
 	MCP.config0Reg.EN_GAINCAL = 0;
 	MCP.config0Reg.EN_OFFCAL = 0;
-	MCP.config0Reg.OSR = 0b010;
-	MCP.config0Reg.PRE = 0b11;
+	MCP.config0Reg.OSR = 0b011; //0b011
+	MCP.config0Reg.PRE = 0b00;
 	MCP.config0Reg.VREFCAL = 64;
 
 	MCP.config1Reg.CLKEXT = 0; //This should be set to zero for oscillator :: TESTING
@@ -82,31 +85,13 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	SPI_Write_All();
 	SPI_Read_All();
 
-	//	//These calls are using DMA, but they'll be blocking to make sure this
-	//	//happens properly on startup.  TODO: Implement initialization as a
-	//	//single DMA transfer.  This will save up to 20 uS on initialization.
-	//
-	//	SPI_Write_Register(STATUSCOM_ADDR, MCP.statusReg.wholeRegister);
-	//	SPI_Write_Register(CONFIG0_ADDR, MCP.config0Reg.wholeRegister);
-	//	SPI_Write_Register(CONFIG1_ADDR, MCP.config1Reg.wholeRegister);
-	//	SPI_Write_Register(PHASE_ADDR, MCP.phaseReg.wholeRegister);
-	//
-	//	//Testing Reading from the device.
-	//
-	//	SPI_Read_Register(STATUSCOM_ADDR);
-	//	SPI_Read_Register(CONFIG0_ADDR);
-	//	SPI_Read_Register(CONFIG1_ADDR);
-	//	SPI_Read_Register(PHASE_ADDR);
-	//
-	//	//
-	//
-	//	SPI_Read_Register(STATUSCOM_ADDR);
-	//	SPI_Read_Register(CONFIG0_ADDR);
-	//	SPI_Read_Register(CONFIG1_ADDR);
-	//	SPI_Read_Register(PHASE_ADDR);
-
 	passedInfoStruct = MCP391xInfo;
 	*passedInfoStruct = MCP;
+
+	// Setting up tx vectors.
+	adcBuf[0] = 0x40 | (CHANNEL0_DATA_ADDR << 1);
+	adcBuf[0] |= 1 << 0; //Clear R/W* bit for Write operation.
+
 
 	return(EXIT_SUCCESS);
 }
@@ -143,27 +128,25 @@ void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData)
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
+	for (i = 0; i < 2; i++) {
+		j++;
+	}
 	SPI_SS_LAT = 1;
 }
 
-void SPI_Read_Register(uint8_t registerAddress)
+void SPI_Read_Result_Registers(void)
 {
-	static uint8_t txBuf[5];
 	//Toggle SS pin.
 	SPI_SS_LAT = 0;
 
-	txBuf[0] = 0x40 | (registerAddress << 1);
-	txBuf[0] |= 1 << 0; //Clear R/W* bit for Write operation.
-	txBuf[1] = 0;
-	txBuf[2] = 0;
-	txBuf[3] = 0;
-
 	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
-	BufferToSpi_Transfer(txBuf, 4);
-
+	BufferToSpi_Transfer(adcBuf, 13);
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
+	for (i = 0; i < 2; i++) {
+		j++;
+	}
 	SPI_SS_LAT = 1;
 }
 
@@ -186,6 +169,9 @@ void SPI_Read_All(void)
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
+	for (i = 0; i < 2; i++) {
+		j++;
+	}
 	SPI_SS_LAT = 1;
 }
 
@@ -230,5 +216,16 @@ void SPI_Write_All(void)
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
+	for (i = 0; i < 2; i++) {
+		j++;
+	}
 	SPI_SS_LAT = 1;
+}
+
+void __ISR(_CHANGE_NOTICE_VECTOR) CNInterrupt(void)
+{
+	uint32_t temp;
+	SPI_Read_Result_Registers();
+	temp = mPORTFRead();
+	mCNClearIntFlag();
 }

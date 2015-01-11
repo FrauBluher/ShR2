@@ -44,20 +44,11 @@
 // Other options are don't care
 
 
-//TODO: SET CONFIG FUSE BITS FOR EXTERNAL OSCILLATOR.
-#pragma config FNOSC = FRC // Oscillator Selection Bits (Fast RC Osc //(FRC))
-#pragma config FSOSCEN = ON // Secondary Oscillator Enable (Enabled)
-#pragma config IESO = OFF // Internal/External Switch Over (Disabled)
-#pragma config POSCMOD = OFF // Primary Oscillator Configuration (Primary //osc disabled)
-
-#pragma config FPLLIDIV = DIV_2
-#pragma config FPLLMUL = MUL_20
-#pragma config FPLLODIV = DIV_1
+#pragma config FPLLMUL = MUL_20, FPLLIDIV = DIV_2, FPLLODIV = DIV_1, FWDTEN = OFF
+#pragma config POSCMOD = HS, FNOSC = PRIPLL, FPBDIV = DIV_1
+#define SYS_FREQ (80000000L)
 
 #pragma config OSCIOFNC = OFF // CLKO Output Signal Active on the OSCO Pin //(Disabled)
-#pragma config FPBDIV = DIV_1 // Peripheral Clock Divisor (Pb_Clk is //Sys_Clk/8)
-#pragma config FCKSM = CSDCMD // Clock Switching and Monitor Selection//(Clock Switch Disable, FSCM Disabled)
-#pragma config FWDTEN = OFF // Watchdog Timer Enable (WDT Disabled (SWDTEN //Bit Controls))
 #pragma config ICESEL = ICS_PGx1 // ICE/ICD Comm Channel Select (Communicate on //PGEC1/PGED1)
 #pragma config PWP = OFF // Program Flash Write Protect (Disable)
 #pragma config BWP = OFF // Boot Flash Write Protect bit (Protection //Disabled)
@@ -128,8 +119,12 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	_RF5 = 1;
 	SPI_SS_LAT = 1;
 
-	//Weak pull-downs for DR and MISO
-	CNPUE;
+	//Change Notification Enable
+	int temp;
+	mCNOpen(CN_ON | CN_IDLE_CON, CN17_ENABLE, CN17_PULLUP_ENABLE);
+	temp = mPORTFRead();
+	ConfigIntCN(CHANGE_INT_PRI_3 | CHANGE_INT_ON);
+	mCNClearIntFlag();
 
 	BufferToSpi_Init(BufferA, BufferB);
 
