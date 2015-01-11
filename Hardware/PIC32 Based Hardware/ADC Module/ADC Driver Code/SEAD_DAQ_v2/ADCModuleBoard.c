@@ -127,6 +127,7 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	mCNClearIntFlag();
 
 	BufferToSpi_Init(BufferA, BufferB);
+	BufferToUART_Init();
 
 	int i;
 

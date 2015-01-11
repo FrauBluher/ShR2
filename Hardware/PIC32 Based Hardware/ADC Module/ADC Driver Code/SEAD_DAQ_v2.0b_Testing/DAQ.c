@@ -20,14 +20,10 @@ int main(void) {
     _TRISB6 = 0;
     _RB6 = 1;
 
-    BufferA.index = sprintf((char *) BufferA.BufferArray, "Hello World!\r\n");
-
-    BufferToUART3_TransferA(BufferA.index);
-
     while (1) {
-        if (DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE) {
-            BufferToUART3_TransferA(BufferA.index);
-            DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
-        }
+//        if (DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE) {
+//            BufferToUART3_TransferA(BufferA.index);
+//            DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+//        }
     }
 }

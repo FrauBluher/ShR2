@@ -43,40 +43,37 @@
 #define SYS_FREQ (80000000L)
 #define	GetPeripheralClock()		(SYS_FREQ/(1 << OSCCONbits.PBDIV))
 
+enum {
+	BUFFER_A = 0,
+	BUFFER_B
+};
+
 static uint8_t DmaTxIntFlag = 1; // flag used in interrupts, signal that DMA transfer ended
 static uint8_t inited = 0;
+static uint8_t currentBuffer = BUFFER_A;
 SampleBuffer *BufA;
 SampleBuffer *BufB;
 DmaChannel chn;
+DmaChannel rxChn;
 
-uint8_t BufferToUART_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
+uint8_t BufferToUART_Init(void)
 {
-	if (!inited) {
-		BufA = BufferA;
-		BufB = BufferB;
+	UARTConfigure(UART3, UART_ENABLE_PINS_TX_RX_ONLY);
+	UARTSetLineControl(UART3, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
+	UARTSetDataRate(UART3, GetPeripheralClock(), 115200);
+	UARTEnable(UART3, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX));
 
-		BufA->index = 0;
-		BufB->index = 0;
+	chn = DMA_CHANNEL3; // DMA channel to use for our example
 
-		UARTConfigure(UART1, UART_ENABLE_PINS_TX_RX_ONLY);
-		UARTSetLineControl(UART1, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
-		UARTSetDataRate(UART1, GetPeripheralClock(), 115200);
-		UARTEnable(UART1, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX));
+	DmaChnOpen(chn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
 
-		chn = DMA_CHANNEL1; // DMA channel to use for our example
+	//DMA continues transfer after TX FIFO is emptied.
+	DmaChnSetEventControl(chn, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(_UART3_TX_IRQ));
 
-		DmaChnOpen(chn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
+	INTEnable(INT_SOURCE_DMA(chn), INT_ENABLED); // enable the chn interrupt in the INT controller
 
-		//DMA continues transfer after TX FIFO is emptied.
-		DmaChnSetEventControl(chn, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(_UART1_TX_IRQ));
-
-		INTEnable(INT_SOURCE_DMA(chn), INT_ENABLED); // enable the chn interrupt in the INT controller
-
-		inited = 1;
-		return(EXIT_SUCCESS);
-	} else {
-		return(EXIT_FAILURE);
-	}
+	inited = 1;
+	return(EXIT_SUCCESS);
 }
 
 uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
@@ -93,14 +90,33 @@ uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 		SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_MSTEN | SPI_OPEN_SMP_END |
 			SPI_OPEN_CKE_REV | SPI_OPEN_MODE8, 4);
 
-		chn = DMA_CHANNEL1; // DMA channel to use for our example
+		chn = DMA_CHANNEL1;
+		rxChn = DMA_CHANNEL2;
 
 		DmaChnOpen(chn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
+		DmaChnOpen(rxChn, DMA_CHN_PRI3, DMA_OPEN_DEFAULT);
 
 		//DMA continues transfer after TX FIFO is emptied.
-		DmaChnSetEventControl(chn, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(_SPI1_TX_IRQ));
+		DmaChnSetEventControl(chn, DMA_EV_START_IRQ_EN |
+			DMA_EV_START_IRQ(_SPI1_TX_IRQ));
 
-		INTEnable(INT_SOURCE_DMA(chn), INT_ENABLED); // enable the chn interrupt in the INT controller
+		DmaChnSetEventControl(rxChn, DMA_EV_START_IRQ_EN |
+			DMA_EV_START_IRQ(_SPI1_RX_IRQ));
+
+		DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE);
+		DmaChnSetEvEnableFlags(rxChn, DMA_EV_BLOCK_DONE);// | DMA_EV_DST_FULL); //Maybe needs an EV_BLOCK_DONE TOO...
+		
+		DmaChnSetIntPriority(rxChn, 5, 3);
+		DmaChnIntEnable(rxChn);
+		DmaChnClrIntFlag(rxChn);
+
+		DmaChnClrEvFlags(chn, DMA_EV_ALL_EVNTS);
+		DmaChnClrEvFlags(rxChn, DMA_EV_ALL_EVNTS);
+
+		DmaChnSetTxfer(rxChn, (void *) &SPI1BUF, BufA->BufferArray, 1, 8192, 1);
+
+		DmaChnEnable(rxChn);
+
 
 		inited = 1;
 		return(EXIT_SUCCESS);
@@ -113,56 +129,67 @@ uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize)
 {
 	DmaChnSetTxfer(DMA_CHANNEL1, txBuffer, (void*) &SPI1BUF, transferSize, 1, 1);
 
-	DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE);
-
-	DmaChnStartTxfer(chn, DMA_WAIT_NOT, 0);
-}
-
-uint8_t BufferToSpi_TransferA(uint16_t transferSize)
-{
-	DmaChnSetTxfer(DMA_CHANNEL1, BufA->BufferArray, (void*) &SPI1BUF, transferSize, 1, 1);
-
-	DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred
-
-	DmaChnStartTxfer(chn, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
-}
-
-uint8_t BufferToSpi_TransferB(uint16_t transferSize)
-{
-	// set the transfer:
-	// source is our buffer, dest is the SPI transmit buffer
-	// source size is the whole buffer, destination size is two bytes
-	// cell size is two bytes: we want one byte to be sent per each SPI TXBE event
-	DmaChnSetTxfer(DMA_CHANNEL1, BufB->BufferArray, (void*) &SPI1BUF, transferSize, 1, 1);
-
-	DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred
-
-	DmaChnStartTxfer(chn, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
+	DmaChnStartTxfer(DMA_CHANNEL1, DMA_WAIT_NOT, 0);
 }
 
 uint8_t BufferToUART_TransferA(uint16_t transferSize)
 {
 	// set the transfer source and dest addresses, source and dest size and cell size
-	DmaChnSetTxfer(DMA_CHANNEL1, BufA->BufferArray, (void*) &U1TXREG, transferSize, 1, 1);
+	DmaChnSetTxfer(DMA_CHANNEL3, BufA->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
 
-	DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred
+	DmaChnSetEvEnableFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred
 
-	DmaChnStartTxfer(chn, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
+	DmaChnStartTxfer(DMA_CHANNEL3, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
 }
 
 uint8_t BufferToUART_TransferB(uint16_t transferSize)
 {
-	DmaChnSetTxfer(DMA_CHANNEL1, BufB->BufferArray, (void*) &U1TXREG, transferSize, 1, 1);
+	DmaChnSetTxfer(DMA_CHANNEL3, BufB->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
 
-	DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: all the characters transferred
+	DmaChnSetEvEnableFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: all the characters transferred
 
-	DmaChnStartTxfer(chn, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
+	DmaChnStartTxfer(DMA_CHANNEL3, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
 }
 
-// handler for the DMA channel 1 interrupt
+// Here we handle the events being generated by our SPI TX DMA channel.
 
 void __ISR(_DMA1_VECTOR) DmaHandler1(void)
 {
-	_RF8 = 0;
-	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL1)); // release the interrupt in the INT controller, we're servicing int
+	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL1));
+}
+
+// Handle the case where we've filled up our destination address with data from the MCP
+// here we should change what buffer the ADC data is being written to, and start a DMA
+// transfer over uart (or eventually the USB FIFO when that's done).
+
+void __ISR(_DMA2_VECTOR) DmaHandler2(void)
+{
+	if (currentBuffer == BUFFER_A) {
+		DmaChnSetTxfer(rxChn, (void *) &SPI1BUF, BufB->BufferArray, 1, 8192, 1);
+
+		DmaChnStartTxfer(rxChn, DMA_WAIT_NOT, 0);
+
+		BufferToUART_TransferA(BUFFERLENGTH);
+		currentBuffer = BUFFER_B;
+	} else if (currentBuffer == BUFFER_B) {
+		DmaChnSetTxfer(rxChn, (void *) &SPI1BUF, BufA->BufferArray, 1, 8192, 1);
+
+		DmaChnStartTxfer(rxChn, DMA_WAIT_NOT, 0);
+
+		BufferToUART_TransferB(BUFFERLENGTH);
+		currentBuffer = BUFFER_A;
+	}
+
+	DmaChnClrEvFlags(DMA_CHANNEL2, DMA_EV_ALL_EVNTS);
+	DmaChnClrIntFlag(DMA_CHANNEL2);
+	mDmaChnClrIntFlag(2);
+}
+
+
+// Here we handle the events being generated by our UART TX DMA channel.
+
+void __ISR(_DMA3_VECTOR) DmaHandler3(void)
+{
+	DmaChnClrEvFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE);
+	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL3));
 }
