@@ -40,8 +40,11 @@
 
 void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData);
 void SPI_Read_Register(uint8_t registerAddress);
+void SPI_Read_All(void);
+void SPI_Write_All(void);
 
 static MCP391x_Info *passedInfoStruct;
+MCP391x_Info MCP;
 
 /**
  * @brief Sets up the MCP391x.
@@ -50,18 +53,16 @@ static MCP391x_Info *passedInfoStruct;
  */
 uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 {
-	MCP391x_Info MCP;
-
 	//Setting bits for configuration of the MCP3912;
 	MCP.config0Reg.BOOST = 0b11;
 	MCP.config0Reg.DITHER = 0b11;
 	MCP.config0Reg.EN_GAINCAL = 0;
 	MCP.config0Reg.EN_OFFCAL = 0;
 	MCP.config0Reg.OSR = 0b010;
-	MCP.config0Reg.PRE = 0b10;
+	MCP.config0Reg.PRE = 0b11;
 	MCP.config0Reg.VREFCAL = 64;
 
-	MCP.config1Reg.CLKEXT = 1; //This should be set to one for oscillator :: TESTING
+	MCP.config1Reg.CLKEXT = 0; //This should be set to zero for oscillator :: TESTING
 	MCP.config1Reg.RESET = 0b0000;
 	MCP.config1Reg.SHUTDOWN = 0b0000;
 	MCP.config1Reg.VREFEXT = 0;
@@ -70,37 +71,39 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.phaseReg.PHASEB = 0;
 
 	MCP.statusReg.WIDTH_DATA = 0b00;
-	MCP.statusReg.DR_HIZ = 0;
+	MCP.statusReg.DR_HIZ = 1;
 	MCP.statusReg.DR_LINK = 1;
 	MCP.statusReg.EN_CRCCOM = 0;
 	MCP.statusReg.EN_INT = 0;
-	MCP.statusReg.READ = 0b10;
+	MCP.statusReg.READ = 0b11;
 	MCP.statusReg.WIDTH_CRC = 0;
-	MCP.statusReg.WRITE = 0;
+	MCP.statusReg.WRITE = 1;
 
-	//Testing Reading from the device.
+	SPI_Write_All();
+	SPI_Read_All();
 
-	SPI_Read_Register(CONFIG0_ADDR);
-	SPI_Read_Register(CONFIG1_ADDR);
-	SPI_Read_Register(PHASE_ADDR);
-	SPI_Read_Register(STATUSCOM_ADDR);
-
-
-	//These calls are using DMA, but they'll be blocking to make sure this
-	//happens properly on startup.  TODO: Implement initialization as a
-	//single DMA transfer.  This will save up to 20 uS on initialization.
-
-	SPI_Write_Register(CONFIG0_ADDR, MCP.config0Reg.wholeRegister);
-	SPI_Write_Register(CONFIG1_ADDR, MCP.config1Reg.wholeRegister);
-	SPI_Write_Register(PHASE_ADDR, MCP.phaseReg.wholeRegister);
-	SPI_Write_Register(STATUSCOM_ADDR, MCP.statusReg.wholeRegister);
-
-	//Testing Reading from the device.
-
-	SPI_Read_Register(CONFIG0_ADDR);
-	SPI_Read_Register(CONFIG1_ADDR);
-	SPI_Read_Register(PHASE_ADDR);
-	SPI_Read_Register(STATUSCOM_ADDR);
+	//	//These calls are using DMA, but they'll be blocking to make sure this
+	//	//happens properly on startup.  TODO: Implement initialization as a
+	//	//single DMA transfer.  This will save up to 20 uS on initialization.
+	//
+	//	SPI_Write_Register(STATUSCOM_ADDR, MCP.statusReg.wholeRegister);
+	//	SPI_Write_Register(CONFIG0_ADDR, MCP.config0Reg.wholeRegister);
+	//	SPI_Write_Register(CONFIG1_ADDR, MCP.config1Reg.wholeRegister);
+	//	SPI_Write_Register(PHASE_ADDR, MCP.phaseReg.wholeRegister);
+	//
+	//	//Testing Reading from the device.
+	//
+	//	SPI_Read_Register(STATUSCOM_ADDR);
+	//	SPI_Read_Register(CONFIG0_ADDR);
+	//	SPI_Read_Register(CONFIG1_ADDR);
+	//	SPI_Read_Register(PHASE_ADDR);
+	//
+	//	//
+	//
+	//	SPI_Read_Register(STATUSCOM_ADDR);
+	//	SPI_Read_Register(CONFIG0_ADDR);
+	//	SPI_Read_Register(CONFIG1_ADDR);
+	//	SPI_Read_Register(PHASE_ADDR);
 
 	passedInfoStruct = MCP391xInfo;
 	*passedInfoStruct = MCP;
@@ -125,7 +128,6 @@ void SPI_Write_Register(uint8_t registerAddress, uint32_t registerData)
 {
 	static uint8_t txBuf[4];
 	//Toggle SS pin.
-	int i;
 	SPI_SS_LAT = 0;
 
 	txBuf[0] = 0x40 | (registerAddress << 1);
@@ -148,7 +150,6 @@ void SPI_Read_Register(uint8_t registerAddress)
 {
 	static uint8_t txBuf[5];
 	//Toggle SS pin.
-	int i;
 	SPI_SS_LAT = 0;
 
 	txBuf[0] = 0x40 | (registerAddress << 1);
@@ -159,6 +160,72 @@ void SPI_Read_Register(uint8_t registerAddress)
 
 	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
 	BufferToSpi_Transfer(txBuf, 4);
+
+
+	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
+		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
+	SPI_SS_LAT = 1;
+}
+
+void SPI_Read_All(void)
+{
+	static uint8_t txBuf[(3 * 15) + 1];
+	//Toggle SS pin.
+	SPI_SS_LAT = 0;
+
+	txBuf[0] = 0x40 | (0x08 << 1);
+	txBuf[0] |= 1 << 0; //Clear R/W* bit for Write operation.
+	int i;
+
+	for (i = 1; i < (3 * 15); i++) {
+		txBuf[i] = 0;
+	}
+
+	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+	BufferToSpi_Transfer(txBuf, (3 * 15) + 1);
+
+	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
+		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
+	SPI_SS_LAT = 1;
+}
+
+void SPI_Write_All(void)
+{
+	static uint8_t txBuf[(3 * 15) + 1];
+	//Toggle SS pin.
+	SPI_SS_LAT = 0;
+	int i = 1;
+	int j = 1;
+
+	txBuf[0] = 0x40 | (0x08 << 1);
+	txBuf[0] &= ~(1 << 0); //Clear R/W* bit for Write operation.
+
+	txBuf[3] = MCP.modReg.wholeRegister;
+	txBuf[2] = MCP.modReg.wholeRegister >> 8;
+	txBuf[1] = MCP.modReg.wholeRegister >> 16;
+
+	txBuf[6] = (MCP.phaseReg.wholeRegister & 0x000000FF);
+	txBuf[5] = (MCP.phaseReg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[4] = (MCP.phaseReg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[9] = (MCP.gainReg.wholeRegister & 0x000000FF);
+	txBuf[8] = (MCP.gainReg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[7] = (MCP.gainReg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[12] = (MCP.statusReg.wholeRegister & 0x000000FF);
+	txBuf[11] = (MCP.statusReg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[10] = (MCP.statusReg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[15] = (MCP.config0Reg.wholeRegister & 0x000000FF);
+	txBuf[14] = (MCP.config0Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[13] = (MCP.config0Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[18] = (MCP.config1Reg.wholeRegister & 0x000000FF);
+	txBuf[17] = (MCP.config1Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[16] = (MCP.config1Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+	BufferToSpi_Transfer(txBuf, 19);
 
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
