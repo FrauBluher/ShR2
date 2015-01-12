@@ -1,0 +1,7 @@
+.icon {
+   background-image: url("/static/img/icons.png");
+   background-color: transparent;
+   width: 32px;
+   height: 32px;
+   display: inline-block;
+}
