@@ -53,6 +53,7 @@ uint8_t BufferToSpi_TransferA(uint16_t transferSize);
 uint8_t BufferToSpi_TransferB(uint16_t transferSize);
 uint8_t BufferToUART_TransferA(uint16_t transferSize);
 uint8_t BufferToUART_TransferB(uint16_t transferSize);
+void StartSPIAcquisition(uint8_t buffer)
 
 #endif	/* SPI_DMA_TRANSFER_H */
 

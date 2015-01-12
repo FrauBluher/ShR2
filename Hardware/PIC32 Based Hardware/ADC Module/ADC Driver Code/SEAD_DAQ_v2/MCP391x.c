@@ -62,7 +62,7 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.config0Reg.EN_GAINCAL = 0;
 	MCP.config0Reg.EN_OFFCAL = 0;
 	MCP.config0Reg.OSR = 0b011; //0b011
-	MCP.config0Reg.PRE = 0b11; // 0
+	MCP.config0Reg.PRE = 0b00; // 0
 	MCP.config0Reg.VREFCAL = 64;
 
 	MCP.config1Reg.CLKEXT = 0; //This should be set to zero for oscillator :: TESTING

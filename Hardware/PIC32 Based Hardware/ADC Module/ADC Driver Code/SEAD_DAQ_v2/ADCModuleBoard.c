@@ -136,6 +136,9 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	}
 
 	MCP391x_Init(MCPInfo);
+	StartSPIAcquisition(BUFFER_A);  //We start acquisition here so we don't
+					//capture the config responses from the
+					//MCP3912.
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 	INTEnableInterrupts();
