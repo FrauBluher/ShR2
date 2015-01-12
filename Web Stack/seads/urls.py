@@ -9,7 +9,6 @@ router.register(r'appliance-api', microdata_views.ApplianceViewSet)
 router.register(r'device-api', microdata_views.DeviceViewSet)
 router.register(r'event-api', microdata_views.EventViewSet)
 router.register(r'users', home_views.UserViewSet)
-router.register(r'gitupdate', home_views.GitUpdateViewSet)
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [

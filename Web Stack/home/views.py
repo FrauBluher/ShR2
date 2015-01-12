@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from home.serializers import UserSerializer, GitUpdateSerializer
+from home.serializers import UserSerializer
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
@@ -24,9 +24,6 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     #lookup_field = 'username'
-
-class GitUpdateViewSet(viewsets.ModelViewSet):
-    serializer_class = GitUpdateSerializer
 
 def account(request):
     if request.user.is_authenticated():
