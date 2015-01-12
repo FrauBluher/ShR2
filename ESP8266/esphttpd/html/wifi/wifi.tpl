@@ -42,8 +42,8 @@ function createInputForAp(ap) {
 	//var encVal="-64"; //assume wpa/wpa2
 	//if (ap.enc=="0") encVal="0"; //open
 	//if (ap.enc=="1") encVal="-32"; //wep
-	encrypt.className="icon";
-	encrypt.style.backgroundPosition="-32px "+encVal+"px";
+	//encrypt.className="icon";
+	//encrypt.style.backgroundPosition="-32px "+encVal+"px";
 	var input=document.createElement("input");
 	input.type="radio";
 	input.name="essid";
