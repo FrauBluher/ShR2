@@ -25,6 +25,9 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     #lookup_field = 'username'
 
+class GitUpdateViewSet(viewsets.ModelViewSet):
+    serializer_class = GitUpdateSerializer
+
 def account(request):
     if request.user.is_authenticated():
         return render_to_response('base/account.html', context_instance=RequestContext(request))
