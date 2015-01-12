@@ -16,7 +16,7 @@ from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 
 import git
-from subprocess
+import subprocess
 
 
 # ViewSets define the view behavior.
