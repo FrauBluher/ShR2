@@ -81,6 +81,6 @@ def gitupdate(request):
             g = git.cmd.Git("/home/ubuntu/seads-git/ShR2/")
             g.pull()
             subprocess.Popen(["sudo", "service", "uwsgi", "restart"])
-        return HttpResponse(status=200)
+            return HttpResponse(status=200)
         except: return HttpResponse(status=500)
     else: return HttpResponse(status=403)
