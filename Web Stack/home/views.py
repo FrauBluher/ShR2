@@ -16,7 +16,6 @@ from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 
 import git
-import subprocess
 
 
 # ViewSets define the view behavior.
@@ -77,7 +76,6 @@ def gitupdate(request):
         try:
             g = git.cmd.Git("/home/ubuntu/seads-git/ShR2/")
             g.pull()
-            subprocess.Popen(["sudo", "service", "uwsgi", "restart"])
             return HttpResponse(status=200)
         except: return HttpResponse(status=500)
     else: return HttpResponse(status=403)
