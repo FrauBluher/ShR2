@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from home.serializers import UserSerializer
+from home.serializers import UserSerializer, GitUpdateSerializer
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
