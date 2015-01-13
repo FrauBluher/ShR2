@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<segmentData xmlns='http://www.solidworks.com/segmentData'>
+    <segment ID='1'>
+        <properties>
+            <Name value='JP1@Electrical_10-CTAssem:JP2@Electrical_10-CTAssem'/>
+            <FromCompID value='0'/>
+            <ToCompID value='0'/>
+            <FromConnectionPoint value=''/>
+            <ToConnectionPoint value=''/>
+            <FromComponentRef value='JP2'/>
+            <ToComponentRef value='JP1'/>
+            <Length value='0.040238'/>
+            <AdditionalLength value='0.040238'/>
+            <FromLocation value='-0.072098,0.009412,0.073197'/>
+            <ToLocation value='-0.112336,0.009412,0.073197'/>
+            <MaxDiameter value='0.000000'/>
+            <Diameter value='0.003000'/>
+            <Comment value='No Comments'/>
+            <Coverings value='&quot;Loom .5in YEL&quot;'/>
+        </properties>
+    </segment>
+    <segment ID='2'>
+        <properties>
+            <Name value='CPoint1@Electrical_10-CTAssem.SLDASM:JP2@Electrical_10-CTAssem'/>
+            <FromCompID value='0'/>
+            <ToCompID value='0'/>
+            <FromConnectionPoint value=''/>
+            <ToConnectionPoint value=''/>
+            <FromComponentRef value=''/>
+            <ToComponentRef value='JP2'/>
+            <Length value='0.030255'/>
+            <AdditionalLength value='0.030255'/>
+            <FromLocation value='-0.041843,0.009412,0.073197'/>
+            <ToLocation value='-0.072098,0.009412,0.073197'/>
+            <MaxDiameter value='0.000000'/>
+            <Diameter value='0.003000'/>
+            <Comment value='No Comments'/>
+            <Coverings value=''/>
+        </properties>
+    </segment>
+</segmentData>
