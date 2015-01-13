@@ -39,7 +39,7 @@ $("#wifi").click( function() {
 <p class="lead">If you see this, it means the tiny li'l website in your ESP8266 does actually work. Fyi, this page has
 been loaded <b>%counter%</b> times.</p>
 <ul class="list-unstyled">
-<li>If you haven't connected this device to your WLAN network now, you can <a id="wifi" href="javascript:void(0)">do so.</a></li>
+<li>If you haven't connected this device to your WLAN network now, you can <a id="wifi" href="#">do so.</a></li>
 <li>You can also control the <a href="led.tpl">LED</a>.</li>
 <li>You can download the raw <a href="flash.bin">contents</a> of the SPI flash rom</li>
 </ul>
