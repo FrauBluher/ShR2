@@ -19,15 +19,17 @@ padding-top: 70px;
 <!-- jQuery Version 1.11.1 -->
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/jquery.pjax.min.js"></script>
+<script src="/static/js/scan_aps.js"></script>
 <script>
 $(function(){
 	$("#navbar").load("/navbar.html");
 });
 </script>
 <script>
-$(document).pjax('a[data-pjax]', 'pjax-container', {
-	fragment: '#pjax-container'
-});
+$(document).pjax('a[data-pjax]', 'pjax-container');
+$(document).on('pjax:success', function() {
+	scanAPs();
+})
 </script>
 </head>
 <body>
