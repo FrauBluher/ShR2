@@ -23,19 +23,22 @@ $(function(){
 	$("#navbar").load("/navbar.html");
 });
 </script>
+<script>
+$(document).pjax('a[data-pjax]', 'pjax-container');
+</script>
 </head>
 <body>
 <div id="navbar"></div>
 <!-- Page Content -->
-<div class="container">
+<div class="container" id="pjax-container">
 <div class="row">
 <div class="col-lg-12 text-center">
 <h1>It works</h1>
 <p class="lead">If you see this, it means the tiny li'l website in your ESP8266 does actually work. Fyi, this page has
 been loaded <b>%counter%</b> times.</p>
 <ul class="list-unstyled">
-<li>If you haven't connected this device to your WLAN network now, you can <a href="/wifi">do so.</a></li>
-<li>You can also control the <a href="led.tpl">LED</a>.</li>
+<li>If you haven't connected this device to your WLAN network now, you can <a data-pjax href="/wifi">do so.</a></li>
+<li>You can also control the <a data-pjax href="led.tpl">LED</a>.</li>
 <li>You can download the raw <a href="flash.bin">contents</a> of the SPI flash rom</li>
 </ul>
 </div>
