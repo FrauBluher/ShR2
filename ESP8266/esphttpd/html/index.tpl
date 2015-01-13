@@ -17,7 +17,8 @@ padding-top: 70px;
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
 <!-- jQuery Version 1.11.1 -->
-<script src="static/js/jquery.min.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/jquery.pjax.min.js"></script>
 <script>
 $(function(){
 	$("#navbar").load("/navbar.html");
