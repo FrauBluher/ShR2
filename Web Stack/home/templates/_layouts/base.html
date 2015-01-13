@@ -61,9 +61,17 @@
 
   <footer>
     {% block footer %}
-    <div class="container">
+    <div class="row-fluid">
       <hr>
-      <p>&copy; Bryan 2014</p>
+      <div class="col-sm-2">
+        <img src="{% static 'webapp/img/ucsc-logo.png' %}">
+      </div>
+      <div class="col-sm-2">
+        <img src="{% static 'webapp/img/baskin-logo.jpg' %}">
+      </div>
+      <div class="col-sm-2">
+        <img src="{% static 'webapp/img/citris-logo.png' %}">
+      </div>
     </div>
     {% endblock footer %}
   </footer>
