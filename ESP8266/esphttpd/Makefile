@@ -142,7 +142,7 @@ firmware:
 	$(Q) mkdir -p $@
 
 flash: $(FW_FILE_1) $(FW_FILE_2)
-	-$(ESPTOOL) --port $(ESPPORT) write_flash 0x00000 firmware/0x00000.bin 0x40000 firmware/0x40000.bin
+	$(Q) $(ESPTOOL) --port $(ESPPORT) write_flash 0x00000 firmware/0x00000.bin 0x40000 firmware/0x40000.bin
 
 webpages.espfs: html/ html/wifi/ mkespfsimage/mkespfsimage
 	cd html; find | ../mkespfsimage/mkespfsimage > ../webpages.espfs; cd ..
@@ -151,8 +151,8 @@ mkespfsimage/mkespfsimage: mkespfsimage/
 	make -C mkespfsimage
 
 htmlflash: webpages.espfs
-	if [ $$(stat -c '%s' webpages.espfs) -gt $$(( 0x2E000 )) ]; then echo "webpages.espfs too big!"; false; fi
-	$(ESPTOOL) --port $(ESPPORT) write_flash 0x12000 webpages.espfs
+	$(Q) if [ $$(stat -c '%s' webpages.espfs) -gt $$(( 0x2E000 )) ]; then echo "webpages.espfs too big!"; false; fi
+	$(Q) $(ESPTOOL) --port $(ESPPORT) write_flash 0x12000 webpages.espfs
 
 clean:
 	$(Q) rm -f $(APP_AR)
