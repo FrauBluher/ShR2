@@ -25,7 +25,9 @@ $(function(){
 });
 </script>
 <script>
-$(document).pjax('a[data-pjax]', 'pjax-container');
+$(document).pjax('a[data-pjax]', 'pjax-container', {
+	fragment: '#pjax-container'
+});
 </script>
 </head>
 <body>
