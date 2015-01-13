@@ -20,6 +20,7 @@ padding-top: 70px;
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/jquery.pjax.min.js"></script>
 <script src="/static/js/scan_aps.js"></script>
+<script src="/static/js/140medley.min.js"></script>
 <script>
 $(function(){
 	$("#navbar").load("/navbar.html");
