@@ -19,7 +19,7 @@ padding-top: 70px;
 <![endif]-->
 <script type="text/javascript" src="/static/js/140medley.min.js"></script>
 <!-- jQuery Version 1.11.1 -->
-<script src="static/js/jquery.min.js"></script>
+<script src="/static/js/jquery.min.js"></script>
 <script>
 $(function(){
 	$("#navbar").load("navbar.html");
