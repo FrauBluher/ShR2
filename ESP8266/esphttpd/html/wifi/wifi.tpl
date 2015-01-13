@@ -22,7 +22,7 @@ padding-top: 70px;
 <script src="/static/js/jquery.min.js"></script>
 <script>
 $(function(){
-	$("#navbar").load("navbar.html");
+	$("#navbar").load("/navbar.html");
 });
 </script>
 <script type="text/javascript">
