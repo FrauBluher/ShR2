@@ -25,14 +25,16 @@ $(function(){
 </script>
 <script>
 function wifi() {
-	$(".container").load("/wifi");
+$.ajax({url:"/wifi",success:function(result){
+    $("#container").html(result);
+  }});
 }
 </script>
 </head>
 <body>
 <div id="navbar"></div>
 <!-- Page Content -->
-<div class="container">
+<div class="container" id="container">
 <div class="row">
 <div class="col-lg-12 text-center">
 <h1>It works</h1>
