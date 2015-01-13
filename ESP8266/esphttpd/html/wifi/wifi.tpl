@@ -19,7 +19,12 @@ padding-top: 70px;
 <![endif]-->
 <script type="text/javascript" src="/static/js/140medley.min.js"></script>
 <!-- jQuery Version 1.11.1 -->
-<script src="/static/js/jquery.min.js"></script>
+<script src="static/js/jquery.min.js"></script>
+<script>
+$(function(){
+	$("#navbar").load("navbar.html");
+});
+</script>
 <script type="text/javascript">
 
 var xhr=j();
@@ -108,7 +113,7 @@ window.onload=function(e) {
 <span class="icon-bar"></span>
 <span class="icon-bar"></span>
 </button>
-<a class="navbar-brand" href="#">Start Bootstrap</a>
+<a class="navbar-brand" href="/">SEADS</a>
 </div>
 <!-- Collect the nav links, forms, and other content for toggling -->
 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
