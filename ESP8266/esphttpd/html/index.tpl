@@ -24,10 +24,13 @@ $(function(){
 });
 </script>
 <script>
-$("#wifi").click( function() {
-$.ajax({url:"/wifi",success:function(result){
-    $("#container").html(result);
-  }});
+$(function() {
+	$("#wifi").on("click", function(e){
+		e.preventDefault();
+		$.ajax({url:"/wifi",success:function(result){
+		    $("#container").html(result);
+	  	}})
+	});
 });
 </script>
 </head>
@@ -42,8 +45,7 @@ $.ajax({url:"/wifi",success:function(result){
 been loaded <b>%counter%</b> times.</p>
 <ul class="list-unstyled">
 <li>
-<button id="wifi" type="button" class="btn btn-default btn-lg">
-  <span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Connect to Network
+<button id="wifi" type="button" class="btn btn-default btn-lg">Connect to Network
 </button>
 </li>
 <li>You can also control the <a href="led.tpl">LED</a>.</li>
