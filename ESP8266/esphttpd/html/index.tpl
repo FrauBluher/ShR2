@@ -24,11 +24,11 @@ $(function(){
 });
 </script>
 <script>
-function wifi() {
+$("#wifi").click( function() {
 $.ajax({url:"/wifi",success:function(result){
     $("#container").html(result);
   }});
-}
+});
 </script>
 </head>
 <body>
@@ -41,7 +41,11 @@ $.ajax({url:"/wifi",success:function(result){
 <p class="lead">If you see this, it means the tiny li'l website in your ESP8266 does actually work. Fyi, this page has
 been loaded <b>%counter%</b> times.</p>
 <ul class="list-unstyled">
-<li>If you haven't connected this device to your WLAN network now, you can <a id="wifi" href="javascript:wifi()">do so.</a></li>
+<li>
+<button id="wifi" type="button" class="btn btn-default btn-lg">
+  <span class="glyphicon glyphicon-signal" aria-hidden="true"></span> Connect to Network
+</button>
+</li>
 <li>You can also control the <a href="led.tpl">LED</a>.</li>
 <li>You can download the raw <a href="flash.bin">contents</a> of the SPI flash rom</li>
 </ul>
