@@ -22,7 +22,7 @@ var currAp="%currSsid%";
 
 function createInputForAp(ap) {
     if (ap.essid=="" && ap.rssi==0) return;
-    var table = $("#aps");
+    var table = $("#ap-table");
     var row = table.insertRow();
     var rssi=document.createElement("div");
     var rssiVal=-Math.floor(ap.rssi/51)*32;
@@ -76,6 +76,7 @@ function scanAPs() {
                          .addClass("table-responsive")
                 var table = document.createElement("table");
                 table.className="table";
+                table.id = "ap-table";
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
                     $("#aps").append(createInputForAp(data.result.APs[i]));
