@@ -65,7 +65,7 @@ function getSelectedEssid() {
 
 
 function scanAPs() {
-    xhr.open("GET", "wifiscan.cgi");
+    xhr.open("GET", "/wifi/wifiscan.cgi");
     xhr.onreadystatechange=function() {
         if (xhr.readyState==4 && xhr.status>=200 && xhr.status<300) {
             var data=JSON.parse(xhr.responseText);
@@ -119,7 +119,7 @@ window.onload=function(e) {
                     <h1>WiFi Scan</h1>
                     <p>Current WiFi mode: %WiFiMode%</p>
                     <p>Note: %WiFiapwarn%</p>
-                    <form name="wifiform" action="connect.cgi" method="post">
+                    <form name="wifiform" action="/wifi/connect.cgi" method="post">
                     <p>
                         To connect to a WiFi network, please select one of the detected networks...<br>
                         <div id="aps">Scanning...</div>
