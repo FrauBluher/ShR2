@@ -7,7 +7,6 @@
 <link href="css/scrolling-nav.css" rel="stylesheet">
 <!-- jQuery Version 1.11.1 -->
 <script src="/static/js/jquery.min.js"></script>
-<script src="/static/js/bootpag.js"></script>
 <script>
 $(function(){
 	$("#navbar").load("/navbar.html");
