@@ -63,10 +63,7 @@ function scanAPs() {
             currAp=getSelectedEssid();
             if (data.result.inProgress=="0" && data.result.APs.length>1) {
                 // Create table to hold APs
-                $("#aps").empty()
-                         .removeClass()
-                         .addClass("table-responsive")
-                         .append(table);
+                $("#aps").empty();
                 $("#ap-table").empty();
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
@@ -118,7 +115,7 @@ window.onload=function(e) {
                     <form name="wifiform" action="/wifi/connect.cgi" method="post">
                     <p>
                         To connect to a WiFi network, please select one of the detected networks...<br>
-                        <div id="aps">Scanning...</div>
+                        <div id="aps" class="table-responsive">Scanning...</div>
                         <table class="table" id="ap-table">
                             <tbody></tbody>
                         </table>
