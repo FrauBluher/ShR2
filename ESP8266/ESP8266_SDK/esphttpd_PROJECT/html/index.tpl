@@ -38,9 +38,8 @@ function createInputForAp(ap) {
     input += " value='"+ap.essid+"'";
     if (currAp==ap.essid) input += "checked='"+1+"'";
     input += "id='opt-"+ap.essid+"'";
-    input += "></input>"
-    var label="<label for='opt-"+ap.essid+"'>"+ap.essid+"</label>";
-    $("#ap-table").after("<tr><td>"+label+input)
+    input += "> "+ap.essid+"</input>"
+    $("#ap-table tr:last").after("<tr><td>"+input)
     //div.appendChild(input);
     //div.appendChild(rssi);
     //div.appendChild(encrypt);
@@ -73,7 +72,7 @@ function scanAPs() {
                          .append(table);
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
-                    $("#aps").append(createInputForAp(data.result.APs[i]));
+                    table.appendChild(createInputForAp(data.result.APs[i]));
                 }
                 window.setTimeout(scanAPs, 20000);
             } else {
