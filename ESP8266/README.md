@@ -1,4 +1,4 @@
-### Things to keep in mind for ESP development: 
+# Things to keep in mind for ESP development: 
 * Set up firmware to configure an internet connection if there is none.
 * Fork the esp-httpd project webserver into our repo
 * With internet connection, be able to send some garbage data to the server via UART
