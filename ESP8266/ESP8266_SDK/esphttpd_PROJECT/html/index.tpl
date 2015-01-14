@@ -39,7 +39,7 @@ function createInputForAp(ap) {
     if (currAp==ap.essid) input += "checked='"+1+"'";
     input += "id='opt-"+ap.essid+"'";
     input += "></input>"
-    var label="<label for='opt-"+ap.essid"'>"+ap.essid+"</label>";
+    var label="<label for='opt-"+ap.essid+"'>"+ap.essid+"</label>";
     $("#ap-table").after("<tr><td>"+label+input)
     //div.appendChild(input);
     //div.appendChild(rssi);
