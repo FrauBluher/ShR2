@@ -22,24 +22,28 @@ var currAp="%currSsid%";
 
 function createInputForAp(ap) {
     if (ap.essid=="" && ap.rssi==0) return;
-    //var rssi=document.createElement("div");
-    //var rssiVal=-Math.floor(ap.rssi/51)*32;
-    //rssi.className="icon";
-    //rssi.style.backgroundPosition="0px "+rssiVal+"px";
-    //var encrypt=document.createElement("div");
-    //var encVal="-64"; //assume wpa/wpa2
-    //if (ap.enc=="0") encVal="0"; //open
-    //if (ap.enc=="1") encVal="-32"; //wep
-    //encrypt.className="icon";
-    //encrypt.style.backgroundPosition="-32px "+encVal+"px";
+    var rssi=document.createElement("div");
+    var rssiVal=-Math.floor(ap.rssi/51)*32;
+    rssi.className="icon";
+    rssi.style.backgroundPosition="0px "+rssiVal+"px";
+    var encrypt=document.createElement("div");
+    var encVal="-64"; //assume wpa/wpa2
+    if (ap.enc=="0") encVal="0"; //open
+    if (ap.enc=="1") encVal="-32"; //wep
+    encrypt.className="icon";
+    encrypt.style.backgroundPosition="-32px "+encVal+"px";
     var input="<input";
     input += " type='radio'";
     input += " name='"+ap.essid+"'";
     input += " value='"+ap.essid+"'";
     if (currAp==ap.essid) input += "checked='"+1+"'";
     input += "id='opt-"+ap.essid+"'";
-    input += "> "+ap.essid+"</input>"
-    $("#ap-table").append("<tr><td>"+input+"</td></tr>")
+    input += "> "+ap.essid+"</input>";
+    $("#ap-table").append("<tr><td")
+                  .append(input)
+                  .append(rssi)
+                  .append(encrypt)
+                  .append("</tr></td");
     //div.appendChild(input);
     //div.appendChild(rssi);
     //div.appendChild(encrypt);
