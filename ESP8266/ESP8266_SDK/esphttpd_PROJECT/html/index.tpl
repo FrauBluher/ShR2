@@ -65,6 +65,7 @@ function scanAPs() {
                 // Create table to hold APs
                 $("#aps").empty();
                 $("#ap-table").empty();
+                $("#aps").append($("#ap-table"));
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
                     createInputForAp(data.result.APs[i]);
