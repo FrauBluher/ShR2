@@ -39,7 +39,7 @@ function createInputForAp(ap) {
     if (currAp==ap.essid) input += "checked='"+1+"'";
     input += "id='opt-"+ap.essid+"'";
     input += "> "+ap.essid+"</input>"
-    $("#ap-table >tbody:last").append("<tr><td>"+input+"</td></tr>")
+    $("#ap-table").append("<tr><td>"+input+"</td></tr>")
     //div.appendChild(input);
     //div.appendChild(rssi);
     //div.appendChild(encrypt);
@@ -120,7 +120,7 @@ window.onload=function(e) {
                             <tbody></tbody>
                         </table>
                         <br>WiFi password, if applicable: <br />
-                        <input type="text" name="passwd" val="%WiFiPasswd%"> <br />
+                        <input type="password" name="passwd" val="%WiFiPasswd%"> <br />
                         <input type="submit" name="connect" value="Connect!">
                     </p>
                     <a class="btn btn-default page-scroll" href="#services">Next</a>
