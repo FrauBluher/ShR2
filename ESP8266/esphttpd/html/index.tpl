@@ -2,9 +2,9 @@
 <head>
 <title>ESP8266 - esphttpd</title>
 <!-- Bootstrap Core CSS -->
-<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
 <!-- Custom CSS -->
-<link href="css/scrolling-nav.css" rel="stylesheet">
+<link href="/static/css/scrolling-nav.css" rel="stylesheet">
 <!-- jQuery Version 1.11.1 -->
 <script src="/static/js/jquery.min.js"></script>
 <script>
@@ -69,9 +69,9 @@ $(function(){
         </div>
     </section>
 	<!-- Bootstrap Core JavaScript -->
-	<script src="static/js/bootstrap.min.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
 	<!-- Scrolling Nav JavaScript -->
-    <script src="js/jquery.easing.min.js"></script>
-    <script src="js/scrolling-nav.js"></script>
+    <script src="/static/js/jquery.easing.min.js"></script>
+    <script src="/static/js/scrolling-nav.js"></script>
 </body>
 </html>
