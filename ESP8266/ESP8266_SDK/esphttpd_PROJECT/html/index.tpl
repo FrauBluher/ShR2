@@ -39,7 +39,7 @@ function createInputForAp(ap) {
     if (currAp==ap.essid) input += "checked='"+1+"'";
     input += "id='opt-"+ap.essid+"'";
     input += "> "+ap.essid+"</input>"
-    $("#ap-table tr:last").after("<tr><td>"+input)
+    $("#ap-table").after("<tr><td>"+input)
     //div.appendChild(input);
     //div.appendChild(rssi);
     //div.appendChild(encrypt);
