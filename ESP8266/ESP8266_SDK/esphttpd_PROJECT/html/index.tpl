@@ -34,7 +34,7 @@ function createInputForAp(ap) {
     //encrypt.style.backgroundPosition="-32px "+encVal+"px";
     var input="<input";
     input += " type='radio'";
-    input += " name='"+essid+"'";
+    input += " name='"+ap.essid+"'";
     input += " value='"+ap.essid+"'";
     if (currAp==ap.essid) input += "checked='"+1+"'";
     input += "id='opt-"+ap.essid+"'";
