@@ -12,6 +12,9 @@ $(function(){
 	$("#navbar").load("/navbar.html");
 });
 </script>
+<style>
+{margin-top: 70px;}
+</style>
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 	<div id="navbar"></div>
@@ -24,7 +27,7 @@ $(function(){
 					<p class="lead">Welcome to your new SEADS device.</p>
 					<p>Before we get started, let's go over some setup steps.</p>
 					<p>When you're ready, we'll gather some information about your network.</p> 
-					<a class="btn btn-default page-scroll" href="#wifi">Get Started</a>
+					<a class="btn btn-default page-scroll" href="#wifi">Begin Setup</a>
 				</div>
 			</div>
 			<!-- /.row -->
@@ -37,7 +40,8 @@ $(function(){
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>About Section</h1>
+                    <h1>WiFi Scan</h1>
+                    This is where we do the AP scan.
                     <a class="btn btn-default page-scroll" href="#services">Next</a>
                 </div>
             </div>
