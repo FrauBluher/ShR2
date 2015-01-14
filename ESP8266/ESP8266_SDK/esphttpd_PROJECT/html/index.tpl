@@ -39,7 +39,7 @@ function createInputForAp(ap) {
     if (currAp==ap.essid) input += "checked='"+1+"'";
     input += "id='opt-"+ap.essid+"'";
     input += "> "+ap.essid+"</input>"
-    $("#ap-table").after("<tr><td>"+input)
+    $("#ap-table >tbody:last").append("<tr><td>"+input+"</td></tr>")
     //div.appendChild(input);
     //div.appendChild(rssi);
     //div.appendChild(encrypt);
@@ -63,13 +63,11 @@ function scanAPs() {
             currAp=getSelectedEssid();
             if (data.result.inProgress=="0" && data.result.APs.length>1) {
                 // Create table to hold APs
-                var table = document.createElement("table");
-                table.className="table";
-                table.id = "ap-table";
                 $("#aps").empty()
                          .removeClass()
                          .addClass("table-responsive")
                          .append(table);
+                $("#ap-table").empty();
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
                     createInputForAp(data.result.APs[i]);
@@ -121,6 +119,9 @@ window.onload=function(e) {
                     <p>
                         To connect to a WiFi network, please select one of the detected networks...<br>
                         <div id="aps">Scanning...</div>
+                        <table class="table" id="ap-table">
+                            <tbody></tbody>
+                        </table>
                         <br>WiFi password, if applicable: <br />
                         <input type="text" name="passwd" val="%WiFiPasswd%"> <br />
                         <input type="submit" name="connect" value="Connect!">
