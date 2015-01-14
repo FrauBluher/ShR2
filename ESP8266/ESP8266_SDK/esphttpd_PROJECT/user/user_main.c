@@ -53,7 +53,7 @@ HttpdBuiltInUrl builtInUrls[]={
 	{"/", cgiRedirect, "/index.tpl"},
 	{"/flash.bin", cgiReadFlash, NULL},
 	{"/led.tpl", cgiEspFsTemplate, tplLed},
-	{"/index.tpl", cgiEspFsTemplate, tplCounter},
+	{"/index.tpl", cgiEspFsTemplate, tplCounter, cgiEspFsTemplate, tplWlan},
 	{"/led.cgi", cgiLed, NULL},
 
 	//Routines to make the /wifi URL and everything beneath it work.
