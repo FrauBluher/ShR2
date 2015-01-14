@@ -72,7 +72,7 @@ function scanAPs() {
                          .append(table);
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
-                    table.appendChild(createInputForAp(data.result.APs[i]));
+                    createInputForAp(data.result.APs[i]);
                 }
                 window.setTimeout(scanAPs, 20000);
             } else {
