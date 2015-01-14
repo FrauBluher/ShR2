@@ -95,7 +95,7 @@ window.onload=function(e) {
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 	<div id="navbar"></div>
 	<!-- Page Content -->
-	<section id="intro" class="scroll-section light">
+	<section id="intro" class="top-section light">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">

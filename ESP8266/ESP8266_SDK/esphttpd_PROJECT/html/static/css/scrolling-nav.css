@@ -33,6 +33,12 @@ of those sections to manage the look and feel of the site. */
 
 .scroll-section {
     height: 100%;
+    padding-top: 55px;
+    text-align: center;
+}
+
+.top-section {
+    height: 100%;
     padding-top: 150px;
     text-align: center;
 }
