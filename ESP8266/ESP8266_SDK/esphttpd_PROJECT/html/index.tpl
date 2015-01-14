@@ -97,38 +97,13 @@ window.onload=function(e) {
 					<p class="lead">Welcome to your new SEADS device.</p>
 					<p>Before we get started, let's go over some setup steps.</p>
 					<p>When you're ready, we'll gather some information about your network.</p> 
-					<a class="btn btn-default page-scroll" href="#wifi">Begin Setup</a>
+					<a class="btn btn-default page-scroll" href="#services">Begin Setup</a>
 				</div>
 			</div>
 			<!-- /.row -->
 		</div>
 		<!-- /.container -->
 	</section>
-
-    <!-- About Section -->
-    <section id="wifi" class="scroll-section dark">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-centered">
-                    <h1>WiFi Scan</h1>
-                    <p>Current WiFi mode: %WiFiMode%</p>
-                    <p>Note: %WiFiapwarn%</p>
-                    <form name="wifiform" action="/wifi/connect.cgi" method="post">
-                    <p>
-                        To connect to a WiFi network, please select one of the detected networks...<br>
-                        <div id="aps" class="table-responsive">Scanning...</div>
-                        <table class="table" id="ap-table">
-                            <tbody></tbody>
-                        </table>
-                        <br>WiFi password, if applicable: <br />
-                        <input type="password" name="passwd" val="%WiFiPasswd%"> <br />
-                        <input type="submit" name="connect" value="Connect!">
-                    </p>
-                    <a class="btn btn-default page-scroll" href="#services">Next</a>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Services Section -->
     <section id="services" class="scroll-section light">
@@ -155,7 +130,31 @@ window.onload=function(e) {
 					<li>You can also control the <a href="led.tpl">LED</a>.</li>
 					<li>You can download the raw <a href="flash.bin">contents</a> of the SPI flash rom</li>
 					</ul>
-					<a class="btn btn-default" href="#">Done!</a>
+                    <p>Current WiFi mode: %WiFiMode%</p>
+                    <p>Note: %WiFiapwarn%</p>
+					<a class="btn btn-default page-scroll" href="#wifi">Next</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WiFi Section -->
+    <section id="wifi" class="scroll-section dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-centered">
+                    <h1>WiFi Scan</h1>
+                    <form name="wifiform" action="/wifi/connect.cgi" method="post">
+                    <p>
+                        To connect to a WiFi network, please select one of the detected networks.<br>
+                        <div id="aps" class="table-responsive">Scanning...</div>
+                        <table class="table" id="ap-table">
+                            <tbody></tbody>
+                        </table>
+                        <br>WiFi password, if applicable: <br />
+                        <input type="password" name="passwd" val="%WiFiPasswd%"> <br />
+                        <input type="submit" name="connect" value="Connect">
+                    </p>
                 </div>
             </div>
         </div>
