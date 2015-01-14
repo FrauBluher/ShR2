@@ -22,36 +22,29 @@ var currAp="%currSsid%";
 
 function createInputForAp(ap) {
     if (ap.essid=="" && ap.rssi==0) return;
-    var table = $("#ap-table");
-    var row = table.insertRow();
-    var rssi=document.createElement("div");
-    var rssiVal=-Math.floor(ap.rssi/51)*32;
-    rssi.className="icon";
-    rssi.style.backgroundPosition="0px "+rssiVal+"px";
-    var encrypt=document.createElement("div");
-    if (ap.enc > 0) {
-        span = document.createElement("span");
-        span.className="glyphicon glyphicon-signal";
-        encrypt.appendChild(span);
-    }
+    //var rssi=document.createElement("div");
+    //var rssiVal=-Math.floor(ap.rssi/51)*32;
+    //rssi.className="icon";
+    //rssi.style.backgroundPosition="0px "+rssiVal+"px";
+    //var encrypt=document.createElement("div");
     //var encVal="-64"; //assume wpa/wpa2
     //if (ap.enc=="0") encVal="0"; //open
     //if (ap.enc=="1") encVal="-32"; //wep
     //encrypt.className="icon";
     //encrypt.style.backgroundPosition="-32px "+encVal+"px";
-    var input=document.createElement("input");
-    input.type="radio";
-    input.name="essid";
-    input.value=ap.essid;
-    if (currAp==ap.essid) input.checked="1";
-    input.id="opt-"+ap.essid;
-    var label=document.createElement("label");
-    label.htmlFor="opt-"+ap.essid;
-    label.textContent=ap.essid;
-    row.insertCell(input);
-    row.insertCell(rssi);
-    row.insertCell(encrypt);
-    row.insertCell(label);
+    var input="<input";
+    input += " type='radio'";
+    input += " name='"+essid+"'";
+    input += " value='"+ap.essid+"'";
+    if (currAp==ap.essid) input += "checked='"+1+"'";
+    input += "id='opt-"+ap.essid+"'";
+    input += "></input>"
+    var label="<label for='opt-"+ap.essid"'>"+ap.essid+"</label>";
+    $("#ap-table").after("<tr><td>"+label+input)
+    //div.appendChild(input);
+    //div.appendChild(rssi);
+    //div.appendChild(encrypt);
+    //div.appendChild(label);
 }
 
 function getSelectedEssid() {
