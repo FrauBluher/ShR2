@@ -12,14 +12,11 @@ $(function(){
 	$("#navbar").load("/navbar.html");
 });
 </script>
-<style>
-{margin-top: 70px;}
-</style>
 </head>
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 	<div id="navbar"></div>
 	<!-- Page Content -->
-	<section id="intro" class="intro-section">
+	<section id="intro" class="scroll-section">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">
@@ -36,7 +33,7 @@ $(function(){
 	</section>
 
     <!-- About Section -->
-    <section id="wifi" class="wifi-section">
+    <section id="wifi" class="scroll-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -49,7 +46,7 @@ $(function(){
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="services-section">
+    <section id="services" class="scroll-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -62,7 +59,7 @@ $(function(){
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
+    <section id="contact" class="scroll-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
