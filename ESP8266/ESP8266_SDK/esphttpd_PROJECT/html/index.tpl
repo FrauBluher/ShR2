@@ -70,9 +70,10 @@ function scanAPs() {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
                     createInputForAp(data.result.APs[i]);
                 }
-                window.setTimeout(scanAPs, 20000);
+                //Disabled recurring requests for now (table clears)
+                //window.setTimeout(scanAPs, 20000);
             } else {
-                window.setTimeout(scanAPs, 1000);
+                //window.setTimeout(scanAPs, 1000);
             }
         }
     }
