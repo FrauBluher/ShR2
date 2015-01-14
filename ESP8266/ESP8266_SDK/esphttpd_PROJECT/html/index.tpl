@@ -71,12 +71,13 @@ function scanAPs() {
             currAp=getSelectedEssid();
             if (data.result.inProgress=="0" && data.result.APs.length>1) {
                 // Create table to hold APs
-                $("#aps").empty()
-                         .removeClass()
-                         .addClass("table-responsive")
                 var table = document.createElement("table");
                 table.className="table";
                 table.id = "ap-table";
+                $("#aps").empty()
+                         .removeClass()
+                         .addClass("table-responsive")
+                         .append(table);
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
                     $("#aps").append(createInputForAp(data.result.APs[i]));
