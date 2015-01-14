@@ -43,7 +43,7 @@ function createInputForAp(ap) {
                   .append(input)
                   .append(rssi)
                   .append(encrypt)
-                  .append("</tr></td");
+                  .append("</tr></td>");
     //div.appendChild(input);
     //div.appendChild(rssi);
     //div.appendChild(encrypt);
