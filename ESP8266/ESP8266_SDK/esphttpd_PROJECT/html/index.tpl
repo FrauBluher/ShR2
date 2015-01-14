@@ -22,8 +22,8 @@ var currAp="%currSsid%";
 
 function createInputForAp(ap) {
     if (ap.essid=="" && ap.rssi==0) return;
-    var div=document.createElement("div");
-    div.id="apdiv";
+    var table = $("#aps");
+    var row = table.insertRow();
     var rssi=document.createElement("div");
     var rssiVal=-Math.floor(ap.rssi/51)*32;
     rssi.className="icon";
@@ -48,11 +48,10 @@ function createInputForAp(ap) {
     var label=document.createElement("label");
     label.htmlFor="opt-"+ap.essid;
     label.textContent=ap.essid;
-    div.appendChild(input);
-    div.appendChild(rssi);
-    div.appendChild(encrypt);
-    div.appendChild(label);
-    return div;
+    row.insertCell(input);
+    row.insertCell(rssi);
+    row.insertCell(encrypt);
+    row.insertCell(label);
 }
 
 function getSelectedEssid() {
@@ -71,7 +70,12 @@ function scanAPs() {
             var data=JSON.parse(xhr.responseText);
             currAp=getSelectedEssid();
             if (data.result.inProgress=="0" && data.result.APs.length>1) {
-                $("#aps").empty();
+                // Create table to hold APs
+                $("#aps").empty()
+                         .removeClass()
+                         .addClass("table-responsive")
+                var table = document.createElement("table");
+                table.className="table";
                 for (var i=0; i<data.result.APs.length; i++) {
                     if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
                     $("#aps").append(createInputForAp(data.result.APs[i]));
