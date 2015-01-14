@@ -9,9 +9,6 @@
 <script src="/static/js/jquery.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="/static/js/bootstrap.min.js"></script>
-<!-- Scrolling Nav JavaScript -->
-<script src="/static/js/jquery.easing.min.js"></script>
-<script src="/static/js/scrolling-nav.js"></script>
 <script>
 $(function(){
 	$("#navbar").load("/navbar.html");
@@ -168,5 +165,9 @@ window.onload=function(e) {
             </div>
         </div>
     </section>
+    <!-- Scrolling Nav JavaScript -->
+    <script src="/static/js/jquery.easing.min.js"></script>
+    <script src="/static/js/scrolling-nav.js"></script>
 </body>
+
 </html>
