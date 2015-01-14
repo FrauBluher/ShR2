@@ -170,5 +170,6 @@ window.onload=function(e) {
 $.getScript("/static/js/bootstrap.min.js");
 $.getScript("/static/js/jquery.easing.min.js");
 $.getScript("/static/js/scrolling-nav.js");
+</script>
 
 </html>

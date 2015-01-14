@@ -88,9 +88,9 @@ void ICACHE_FLASH_ATTR tplSetupPage(HttpdConnData *connData, char *token, void *
 	} else if (os_strcmp(token, "WiFiapwarn")==0) {
 		x=wifi_get_opmode();
 		if (x==2) {
-			os_strcpy(buff, "<b>Can't scan in this mode.</b> Click <a href=\"setmode.cgi?mode=3\">here</a> to go to STA+AP mode.");
+			os_strcpy(buff, "<b>Can't scan in this mode.</b> Click <a href=\"/wifi/setmode.cgi?mode=3\">here</a> to go to STA+AP mode.");
 		} else {
-			os_strcpy(buff, "Click <a href=\"setmode.cgi?mode=2\">here</a> to go to standalone AP mode.");
+			os_strcpy(buff, "Click <a href=\"/wifi/setmode.cgi?mode=2\">here</a> to go to standalone AP mode.");
 		}
 	//Taken from tplCounter below
 	} else if (os_strcmp(token, "counter")==0) {
