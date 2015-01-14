@@ -20,15 +20,11 @@ $(function(){
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">
-					<h1>It works</h1>
-					<p class="lead">If you see this, it means the tiny li'l website in your ESP8266 does actually work. Fyi, this page has
-					been loaded <b>%counter%</b> times.</p>
-					<ul class="list-unstyled">
-					<li>Go to <a href="/wifi">WiFi Page</a>.</li>
-					<li>You can also control the <a href="led.tpl">LED</a>.</li>
-					<li>You can download the raw <a href="flash.bin">contents</a> of the SPI flash rom</li>
-					</ul>
-					<a class="btn btn-default page-scroll" href="#about">Click Me to Scroll Down!</a>
+					<h1>It works!</h1>
+					<p class="lead">Welcome to your new SEADS device.</p>
+					<p>Before we get started, let's go over some setup steps.</p>
+					<p>When you're ready, we'll gather some information about your network.</p> 
+					<a class="btn btn-default page-scroll" href="#wifi">Get Started</a>
 				</div>
 			</div>
 			<!-- /.row -->
@@ -37,11 +33,12 @@ $(function(){
 	</section>
 
     <!-- About Section -->
-    <section id="about" class="about-section">
+    <section id="wifi" class="wifi-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <h1>About Section</h1>
+                    <a class="btn btn-default page-scroll" href="#services">Next</a>
                 </div>
             </div>
         </div>
@@ -53,6 +50,8 @@ $(function(){
             <div class="row">
                 <div class="col-lg-12">
                     <h1>Services Section</h1>
+                    <p>Under Construction<p>
+                    <a class="btn btn-default page-scroll" href="#contact">Next</a>
                 </div>
             </div>
         </div>
@@ -64,6 +63,13 @@ $(function(){
             <div class="row">
                 <div class="col-lg-12">
                     <h1>Contact Section</h1>
+                    <p>Fyi, this page has been loaded <b>%counter%</b> times.</p>
+                    <ul class="list-unstyled">
+					<li>Go to <a href="/wifi">WiFi Page</a>.</li>
+					<li>You can also control the <a href="led.tpl">LED</a>.</li>
+					<li>You can download the raw <a href="flash.bin">contents</a> of the SPI flash rom</li>
+					</ul>
+					<a class="btn btn-default" href="#">Done!</a>
                 </div>
             </div>
         </div>
