@@ -80,6 +80,6 @@ def gitupdate(request):
         except: return HttpResponse(status=500)
     else: return HttpResponse(status=403)
     
-@crsf_exempt
+@csrf_exempt
 def echo(request):
    return HttpResponse(status=200)
