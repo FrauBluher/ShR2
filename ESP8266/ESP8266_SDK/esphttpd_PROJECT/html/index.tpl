@@ -13,37 +13,41 @@ $(function(){
 });
 </script>
 
-<script type="text/javascript" src="/static/js/140medley.min.js"></script>
 <!-- jQuery Version 1.11.1 -->
 <script type="text/javascript">
 
-var xhr=j();
 var currAp="%currSsid%";
 
 function createInputForAp(ap) {
     if (ap.essid=="" && ap.rssi==0) return;
+    var wrapper = document.createElement("div");
     var rssi=document.createElement("div");
     var rssiVal=-Math.floor(ap.rssi/51)*32;
     rssi.className="icon";
     rssi.style.backgroundPosition="0px "+rssiVal+"px";
+    wrapper.appendChild(rssi);
     var encrypt=document.createElement("div");
     var encVal="-64"; //assume wpa/wpa2
     if (ap.enc=="0") encVal="0"; //open
     if (ap.enc=="1") encVal="-32"; //wep
     encrypt.className="icon";
     encrypt.style.backgroundPosition="-32px "+encVal+"px";
-    var input="<input";
-    input += " type='radio'";
-    input += " name='"+ap.essid+"'";
-    input += " value='"+ap.essid+"'";
-    if (currAp==ap.essid) input += "checked='"+1+"'";
-    input += "id='opt-"+ap.essid+"'";
-    input += "> "+ap.essid+"</input>";
-    $("#ap-table").append("<tr><td>")
-                  .append(input)
-                  .append(rssi)
-                  .append(encrypt)
-                  .append("</tr></td>");
+    wrapper.appendChild(encrypt);
+    var input = document.createElement("input");
+    input.type="radio";
+    input.name=ap.essid;
+    input.value=ap.essid;
+    input.id="opt-"+ap.essid;
+    if (currAp==ap.essid) input.checked="1";
+    input.appendChild(document.createTextNode(ap.essid));
+    wrapper.appendChild(input)
+    $("#ap-table").append($('<tr>')
+	              .append($('<td>')
+    	                  .append(input)
+	              )
+                   );
+    //$("#ap-table").append("<tr><td>")
+    //              .append(wrapper);
     //div.appendChild(input);
     //div.appendChild(rssi);
     //div.appendChild(encrypt);
@@ -60,34 +64,26 @@ function getSelectedEssid() {
 
 
 function scanAPs() {
-    xhr.open("GET", "/wifi/wifiscan.cgi");
-    xhr.onreadystatechange=function() {
-        if (xhr.readyState==4 && xhr.status>=200 && xhr.status<300) {
-            var data=JSON.parse(xhr.responseText);
-            currAp=getSelectedEssid();
-            if (data.result.inProgress=="0" && data.result.APs.length>1) {
-                // Create table to hold APs
-                $("#aps").empty();
-                $("#ap-table").empty();
-                $("#aps").append($("#ap-table"));
-                for (var i=0; i<data.result.APs.length; i++) {
-                    if (data.result.APs[i].essid=="" && data.result.APs[i].rssi==0) continue;
-                    createInputForAp(data.result.APs[i]);
-                }
-                //Disabled recurring requests for now (table clears)
-                //window.setTimeout(scanAPs, 20000);
-            } else {
-                //window.setTimeout(scanAPs, 1000);
-            }
+    $.get("/wifi/wifiscan.cgi", function( data ) {
+	if (data.result.APs.length < 1) scanAPs();
+        currAp=getSelectedEssid();
+        $("#aps").empty();
+        $("#ap-table").empty();
+        $("#aps").append($("#ap-table"));
+        aps = data.result.APs;
+        for (var i in aps) {
+            if (aps[i].essid=="" && aps[i].rssi==0) continue;
+            createInputForAp(aps[i]);
         }
-    }
-    xhr.send();
+        //Disabled recurring requests for now (table clears)
+        //window.setTimeout(scanAPs, 20000);
+    });
 }
 
-
-window.onload=function(e) {
+$(function() {
     scanAPs();
-};
+});
+
 </script>
 
 </head>
