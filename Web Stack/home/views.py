@@ -79,3 +79,11 @@ def gitupdate(request):
             return HttpResponse(status=200)
         except: return HttpResponse(status=500)
     else: return HttpResponse(status=403)
+
+@csrf_exempt
+def echo(request):
+   return HttpResponse(status=200)
+
+@csrf_exempt
+def echo_args(request, args):
+   return HttpResponse(status=200)

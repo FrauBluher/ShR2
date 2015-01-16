@@ -36,9 +36,15 @@
 #define MAX32
 
 #include <stdint.h>
-#define BUFFERLENGTH 8192
+#define BUFFERLENGTH 9*2000
+
+enum {
+    BUFFER_A = 0,
+    BUFFER_B
+};
 
 //8 bit integer should be changed to 16 bits for SPI testing.
+
 typedef struct {
     uint8_t BufferArray[BUFFERLENGTH];
     uint8_t bufferFull;
@@ -53,7 +59,8 @@ uint8_t BufferToSpi_TransferA(uint16_t transferSize);
 uint8_t BufferToSpi_TransferB(uint16_t transferSize);
 uint8_t BufferToUART_TransferA(uint16_t transferSize);
 uint8_t BufferToUART_TransferB(uint16_t transferSize);
-void StartSPIAcquisition(uint8_t buffer)
+void StartSPIAcquisition(uint8_t buffer);
+void DMAStartUARTRX(void);
 
 #endif	/* SPI_DMA_TRANSFER_H */
 
