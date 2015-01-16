@@ -594,7 +594,7 @@
                         "{{ appliance }}",
                     {% endif %}
               id:"event{{ forloop.counter }}",
-              type:"columns",
+              type:"line",
               data:{
                  index:{{ forloop.counter }}+1,
                  aggregation:"avg"
@@ -607,7 +607,7 @@
            {% endfor %}
         ],
         area: {
-           initialDisplayUnit: "1 h",
+           initialDisplayUnit: "1 m",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor: "newestData"
         },
