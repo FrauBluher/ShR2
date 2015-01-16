@@ -57,6 +57,7 @@ os_event_t    at_procTaskQueue[at_procTaskQueueLen];
 
 BOOL specialAtState = TRUE;
 at_stateType  at_state;
+//data line is modified to the uart buffer pointer in ipCmd
 uint8_t *pDataLine;
 BOOL echoFlag = TRUE;
 
@@ -88,23 +89,23 @@ at_recvTask(os_event_t *events)
 //  temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 //  temp = 'X';
   //add transparent determine
-  while(READ_PERI_REG(UART_STATUS(UART0)) & (UART_RXFIFO_CNT << UART_RXFIFO_CNT_S))
-  {
+	while(READ_PERI_REG(UART_STATUS(UART0)) & (UART_RXFIFO_CNT << UART_RXFIFO_CNT_S)) {
 //    temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
     WRITE_PERI_REG(0X60000914, 0x73); //WTD
 
-    if(at_state != at_statIpTraning)
-    {
-      temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
-      if((temp != '\n') && (echoFlag))
-      {
-        //uart_tx_one_char(temp); //display back the character that was sent
-      }
+    if(at_state != at_statIpTraning) {
+		temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
+		//if (echoFlag) {
+			//uart_tx_one_char(temp);
+			//uart_tx_one_char('\n');
+		//}
     }
+//    if((at_state != at_statIpTraning) && (temp != '\n') && (echoFlag))
+//    {
+//      uart_tx_one_char(temp); //display back
+//    }
 
-	//STATE MACHINE SWITCHES STATES
     switch(at_state) {
-	
     case at_statIdle: //serch "AT" head
       atHead[0] = atHead[1];
       atHead[1] = temp;
@@ -147,16 +148,15 @@ at_recvTask(os_event_t *events)
         uart0_sendStr("\r\nbusy p...\r\n");
       }
       break;
-
+	//we are sending the data here!!!!
     case at_statIpSending:
+		//sets the data line pointer to the uart buffer
       *pDataLine = temp;
-      if((pDataLine >= &at_dataLine[at_sendLen - 1]) || (pDataLine >= &at_dataLine[at_dataLenMax - 1]))
-      {
+      if((pDataLine >= &at_dataLine[at_sendLen - 1]) || (pDataLine >= &at_dataLine[at_dataLenMax - 1])) {
+		  //starts the at_proctask function somehow
         system_os_post(at_procTaskPrio, 0, 0);
         at_state = at_statIpSended;
-      }
-      else
-      {
+      } else {
         pDataLine++;
       }
       break;
@@ -164,13 +164,14 @@ at_recvTask(os_event_t *events)
     case at_statIpSended: //send data
       if(temp == '\n')
       {
-
+//      system_os_post(at_busyTaskPrio, 0, 2);
         uart0_sendStr("busy s...\r\n");
       }
       break;
 
     case at_statIpTraning:
       os_timer_disarm(&at_delayCheck);
+//      *pDataLine = temp;
       if(pDataLine > &at_dataLine[at_dataLenMax - 1])
       {
         os_timer_arm(&at_delayCheck, 0, 0);
@@ -192,9 +193,33 @@ at_recvTask(os_event_t *events)
         *pDataLine = temp;
         pDataLine++;
         at_tranLen++;
+//        if(ipDataSendFlag == 0)
+//        {
+//          os_timer_arm(&at_delayCheck, 20, 0);
+//        }
         os_timer_arm(&at_delayCheck, 20, 0);
       }
       break;
+
+//      os_timer_disarm(&at_delayCheck);
+//      *pDataLine = temp;
+//      if(pDataLine >= &at_dataLine[at_dataLenMax - 1])
+//      {
+////        ETS_UART_INTR_DISABLE();
+////      pDataLine++;
+//        at_tranLen++;
+////      os_timer_arm(&at_delayCheck, 1, 0); /////
+//        system_os_post(at_procTaskPrio, 0, 0);
+//        break;
+//      }
+//      pDataLine++;
+//      at_tranLen++;
+//      if(ipDataSendFlag == 0)
+//      {
+//        os_timer_arm(&at_delayCheck, 20, 0);
+//      }
+//      break;
+
     default:
       if(temp == '\n')
       {
@@ -229,20 +254,32 @@ at_procTask(os_event_t *events)
       at_state = at_statIdle;
     }
   }
-  else if(at_state == at_statIpSended)
-  {
+  //have the data, now need to send
+  else if(at_state == at_statIpSended) {
     at_ipDataSending(at_dataLine);//UartDev.rcv_buff.pRcvMsgBuff);
-    if(specialAtState)
-    {
+    if(specialAtState) {
       at_state = at_statIdle;
     }
-  }
-  else if(at_state == at_statIpTraning)
+  } else if(at_state == at_statIpTraning)
   {
     at_ipDataSendNow();//UartDev.rcv_buff.pRcvMsgBuff);
   }
 }
 
+//static void ICACHE_FLASH_ATTR
+//at_busyTask(os_event_t *events)
+//{
+//  switch(events->par)
+//  {
+//  case 1:
+//    uart0_sendStr("\r\nbusy p...\r\n");
+//    break;
+//
+//  case 2:
+//    uart0_sendStr("\r\nbusy s...\r\n");
+//    break;
+//  }
+//}
 
 /**
   * @brief  Initializes build two tasks.
@@ -250,11 +287,11 @@ at_procTask(os_event_t *events)
   * @retval None
   */
 void ICACHE_FLASH_ATTR
-at_init(void) {
-	//used to process rx commands
-	system_os_task(at_recvTask, at_recvTaskPrio, at_recvTaskQueue, at_recvTaskQueueLen);
-	//used to call functions based on rx commands
-	system_os_task(at_procTask, at_procTaskPrio, at_procTaskQueue, at_procTaskQueueLen);
+at_init(void)
+{
+  system_os_task(at_recvTask, at_recvTaskPrio, at_recvTaskQueue, at_recvTaskQueueLen);
+//  system_os_task(at_busyTask, at_busyTaskPrio, at_busyTaskQueue, at_busyTaskQueueLen);
+  system_os_task(at_procTask, at_procTaskPrio, at_procTaskQueue, at_procTaskQueueLen);
 }
 
 /**

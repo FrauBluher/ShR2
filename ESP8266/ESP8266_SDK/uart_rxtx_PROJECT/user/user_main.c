@@ -14,12 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Modified by Henry Crute
- * hcrute@ucsc.edu
- * 
  */
-
 #include "ets_sys.h"
 #include "driver/uart.h"
 #include "osapi.h"
@@ -35,11 +30,16 @@ void user_init(void)
   at_uartType tempUart;
 
   user_esp_platform_load_param((uint32 *)&tempUart, sizeof(at_uartType));
-  uart_init(tempUart.baud, BIT_RATE_115200);
-  uart_init(BIT_RATE_115200, BIT_RATE_115200);
+  if(tempUart.saved == 1)
+  {
+    uart_init(tempUart.baud, BIT_RATE_115200);
+  }
+  else
+  {
+    uart_init(BIT_RATE_115200, BIT_RATE_115200);
+  }
   at_wifiMode = wifi_get_opmode();
   os_printf("\r\nready!!!\r\n");
   uart0_sendStr("\r\nready\r\n");
-  //calls system_os_task. schedules a function to be repeditively called
   at_init();
 }

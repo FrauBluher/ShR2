@@ -1,0 +1,40 @@
+curl -X POST seads.brabsmit.com/api/event-api/ -d '{"device": "/api/device-api/2/", "wattage":"10", "timestamp":"1421296856"}' -H "Content-Type: application/json" -H "Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0"
+
+AT+CIPSTART="TCP","esp8266.allaboutee.com",80
+AT+CIPSEND=154\r\n
+
+POST /receiver.php HTTP/1.1
+Host: esp8266.allaboutee.com
+Content-Type: application/x-www-form-urlencoded
+Con­tent-Length: 20
+
+napples=12&oranges=45
+
+AT+CIPSTATUS
+AT+CIPCLOSE
+
+AT+CIPSTART="TCP","seads.brabsmit.com",80
+
+AT+CIPSEND=308
+
+POST seads.brabsmit.com/api/event-api/ HTTP/1.1
+User-Agent: curl/7.35.0
+Host: seads.brabsmit.com
+Accept: */*
+Content-Type: application/json
+Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0
+Content-Length: 74
+
+{"device": "/api/device-api/2/", "wattage":"10", "timestamp":"1421296856"}
+
+
+AT+CIPSTART="TCP","google.com",80
+AT+CIPSEND=20
+GET / HTTP/1.1
+
+AT+CIPSTART="TCP","seads.brabsmit.com",80
+AT+CIPSEND=43
+
+GET http://seads.brabsmit.com/ HTTP/1.0
+
+

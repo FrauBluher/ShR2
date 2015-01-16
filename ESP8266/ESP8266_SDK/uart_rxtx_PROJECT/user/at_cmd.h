@@ -24,7 +24,7 @@
 #include "at_baseCmd.h"
 
 #define at_cmdNum   32
-
+//first argument is command, second is length
 at_funcationType at_fun[at_cmdNum]={
   {NULL, 0, NULL, NULL, NULL, at_exeCmdNull},
   {"E", 1, NULL, NULL, at_setupCmdE, NULL},
