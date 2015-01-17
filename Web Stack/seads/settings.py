@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     'microdata',
     'webapp',
     'home',
+    'debug',
 )
 
 MIDDLEWARE_CLASSES = (

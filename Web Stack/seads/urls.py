@@ -25,7 +25,8 @@ urlpatterns = [
     # Development URLs
     url(r'^api/', include(router.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
-    url(r'^gitupdate/$', 'home.views.gitupdate'),
-    url(r'^echo/', 'home.views.echo'),
-    url(r'^echo/(?P<args>\w+)$', 'home.views.echo_args'),
+    url(r'^gitupdate/$', 'debug.views.gitupdate'),
+    url(r'^echo/', 'debug.views.echo'),
+    url(r'^echo/(?P<args>\w+)$', 'debug.views.echo_args'),
+    url(r'^datagen/$', 'debug.views.datagen'),
 ]
