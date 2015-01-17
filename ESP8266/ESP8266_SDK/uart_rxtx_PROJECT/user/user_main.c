@@ -20,6 +20,7 @@
 #include "osapi.h"
 #include "at.h"
 #include "nmea0183.h"
+#include "send_recv_port.h"
 
 extern uint8_t at_wifiMode;
 extern void user_esp_platform_load_param(void *param, uint16 len);
