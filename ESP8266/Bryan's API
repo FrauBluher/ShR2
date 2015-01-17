@@ -1,4 +1,4 @@
-curl -X POST seads.brabsmit.com/api/event-api/ -d '{"device": "/api/device-api/2/", "wattage":"10", "timestamp":"1421296856"}' -H "Content-Type: application/json" -H "Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0"
+curl -X POST seads.brabsmit.com/api/event-api/ -d '{"device": "/api/device-api/2/", "wattage":"10", "timestamp":"1421296856"}' -H "Content-Type: application/json" -H "Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0" -v
 
 AT+CIPSTART="TCP","esp8266.allaboutee.com",80
 AT+CIPSEND=154\r\n
@@ -13,12 +13,14 @@ napples=12&oranges=45
 AT+CIPSTATUS
 AT+CIPCLOSE
 
+AT+CIPSTART="TCP","128.114.63.151",80
+
 AT+CIPSTART="TCP","seads.brabsmit.com",80
+//FUCKING GOLDEN WORKS
+AT+CIPSEND=284
 
-AT+CIPSEND=308
-
-POST seads.brabsmit.com/api/event-api/ HTTP/1.1
-User-Agent: curl/7.35.0
+POST /api/event-api/ HTTP/1.1
+User-Agent: ESP8266
 Host: seads.brabsmit.com
 Accept: */*
 Content-Type: application/json
@@ -26,7 +28,7 @@ Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0
 Content-Length: 74
 
 {"device": "/api/device-api/2/", "wattage":"10", "timestamp":"1421296856"}
-
+//THIS SHIT WORKS
 
 AT+CIPSTART="TCP","google.com",80
 AT+CIPSEND=20

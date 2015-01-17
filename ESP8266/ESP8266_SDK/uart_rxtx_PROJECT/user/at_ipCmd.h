@@ -29,7 +29,7 @@ typedef enum
 typedef struct
 {
 	BOOL linkEn;
-  BOOL teToff;
+	BOOL teToff;
 	uint8_t linkId;
 	teType teType;
 	uint8_t repeaTime;

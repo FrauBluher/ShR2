@@ -95,10 +95,9 @@ at_recvTask(os_event_t *events)
 
     if(at_state != at_statIpTraning) {
 		temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
-		//if (echoFlag) {
-			//uart_tx_one_char(temp);
-			//uart_tx_one_char('\n');
-		//}
+		if (echoFlag) {
+			uart_tx_one_char(temp);
+		}
     }
 //    if((at_state != at_statIpTraning) && (temp != '\n') && (echoFlag))
 //    {
@@ -287,8 +286,7 @@ at_procTask(os_event_t *events)
   * @retval None
   */
 void ICACHE_FLASH_ATTR
-at_init(void)
-{
+at_init(void) {
   system_os_task(at_recvTask, at_recvTaskPrio, at_recvTaskQueue, at_recvTaskQueueLen);
 //  system_os_task(at_busyTask, at_busyTaskPrio, at_busyTaskQueue, at_busyTaskQueueLen);
   system_os_task(at_procTask, at_procTaskPrio, at_procTaskQueue, at_procTaskQueueLen);

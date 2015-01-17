@@ -1281,7 +1281,13 @@ void ICACHE_FLASH_ATTR
 at_ipDataSending(uint8_t *pAtRcvData) {
 	//buffer for debug send string
 	//char send_buffer[400];
-	os_printf("\r\nsending:\r\n");
+	uart0_sendStr("\r\nsending:\r\n");
+	uint16_t iter = 0;
+	while (iter < at_sendLen) {
+		uart_tx_one_char(pAtRcvData[iter]);
+		iter++;
+	}
+	uart0_sendStr("\r\nsending:\r\n");
 	espconn_sent(pLink[sendingID].pCon, pAtRcvData, at_sendLen);
 	os_printf("id:%d,Len:%d,dp:%p\r\n",sendingID,at_sendLen,pAtRcvData);
 	//uart0_sendStr("\r\ndebug\r\n");
