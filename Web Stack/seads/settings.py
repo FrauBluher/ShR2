@@ -15,6 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',
     BASE_DIR + '/webapp/templates/',
+    BASE_DIR + '/debug/html/',
 )
 
 LOGIN_REDIRECT_URL = '/'

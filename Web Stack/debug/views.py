@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from microdata.models import Event, Device
 from django import forms
+from django.shortcuts import render
 
 import git
 
