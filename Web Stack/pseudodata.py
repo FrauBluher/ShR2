@@ -22,7 +22,7 @@ def compute(obj):
 	for i in range (obj.time_stop - obj.time_start):
 		payload = '{"device":"'+obj.device+'",'+\
 				   '"appliance":"'+obj.appliance+'",'+\
-				   '"timestamp":"'+str(i)+'",'+\
+				   '"timestamp":"'+str(i*1000)+'",'+\
 				   '"wattage":"'+str(obj.power)+'"}'
 
 		obj.conn.request("http://seads.brabsmit.com/api/event-api/","POST", payload, obj.header)
