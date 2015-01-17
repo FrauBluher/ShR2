@@ -7,13 +7,12 @@
 {% include "base/navbar.html" %}
 </nav>
    <div class="container">
-      <form action="" method="post">
+      <form action="" method="post" style="margin-top:50px;">
         {% csrf_token %}
         <table>
             {{ form.as_table }}
-            <tr><td><td><input type="submit" value="Submit">
-            <a href="/datagen/" class="btn">Submit</a></td></td></tr>
         </table>
+        <input type="submit" value="Submit">
       </form>
    </div>
 </div>
