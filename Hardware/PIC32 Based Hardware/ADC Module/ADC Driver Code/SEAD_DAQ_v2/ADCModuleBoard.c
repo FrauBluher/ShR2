@@ -60,6 +60,8 @@
 #define UART_MODULE_ID 1
 #endif
 
+int i;
+
 /**
  * @brief Sets up the board with the peripherals defined in the header.
  */
@@ -114,10 +116,40 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	 * - BufferToSpi_Init(BufferA, BufferB)
 	 */
 
-	//RESET_LAT = 1;
-	_TRISF5 = 0;
-	_RF5 = 1;
+	RESET_LAT = 0;
+	for (i = 0; i < 40000; i++) { //RESET MCP3912 To ensure proper config.
+		Nop();
+	}
+	RESET_LAT = 1;
 	SPI_SS_LAT = 1;
+
+	BufferToSpi_Init(BufferA, BufferB);
+	BufferToUART_Init();
+	DMAStartUARTRX();
+
+
+
+	for (i = 0; i < 40000; i++) {
+		Nop();
+	}
+
+	MCP391x_Init(MCPInfo);
+
+	//INLINE DEBUG
+	char initMsg[] = "START\r\n";
+	DmaChnSetTxfer(DMA_CHANNEL3, initMsg, (void*) &U3TXREG, 7, 1, 1);
+	DmaChnSetEvEnableFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE);
+	DmaChnStartTxfer(DMA_CHANNEL3, DMA_WAIT_NOT, 0);
+
+	for (i = 0; i < 400; i++) {
+		Nop();
+	}
+
+	//StartSPIAcquisition(BUFFER_A); //We start acquisition here so we don't
+	//capture the config responses from the
+	//MCP3912.
+	//MCP391x_Init(MCPInfo);
+
 
 	//Change Notification Enable
 	int temp;
@@ -125,20 +157,6 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	temp = mPORTFRead();
 	ConfigIntCN(CHANGE_INT_PRI_3 | CHANGE_INT_ON);
 	mCNClearIntFlag();
-
-	BufferToSpi_Init(BufferA, BufferB);
-	BufferToUART_Init();
-
-	int i;
-
-	for (i = 0; i < 40000; i++) { //TESTING STARUP DELAY
-		Nop();
-	}
-
-	MCP391x_Init(MCPInfo);
-	StartSPIAcquisition(BUFFER_A);  //We start acquisition here so we don't
-					//capture the config responses from the
-					//MCP3912.
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 	INTEnableInterrupts();

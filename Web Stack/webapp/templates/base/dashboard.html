@@ -98,7 +98,7 @@
 </div>
 <!-- /.row -->
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-12">
         {% if my_devices %}
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -594,7 +594,7 @@
                         "{{ appliance }}",
                     {% endif %}
               id:"event{{ forloop.counter }}",
-              type:"columns",
+              type:"line",
               data:{
                  index:{{ forloop.counter }}+1,
                  aggregation:"avg"
@@ -607,7 +607,7 @@
            {% endfor %}
         ],
         area: {
-           initialDisplayUnit: "1 h",
+           initialDisplayUnit: "1 m",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor: "newestData"
         },

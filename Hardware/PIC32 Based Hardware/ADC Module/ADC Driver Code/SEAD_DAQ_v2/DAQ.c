@@ -50,8 +50,6 @@ enum {
 	DAQ_WAIT_FOR_CONVERSION,
 	DAQ_WAIT,
 	DAQ_FATAL_ERROR,
-	BUFFER_A,
-	BUFFER_B
 };
 
 typedef struct {
@@ -68,8 +66,7 @@ int main(void)
 	InitFSM();
 	ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo);
 	TRISBbits.TRISB6 = 0;
-	LATBbits.LATB6 = 1;
-	
+	LATBbits.LATB6 = 0;
 	while (1) {
 
 
