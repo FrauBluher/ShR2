@@ -2,13 +2,12 @@
 
 {% block page_title %}SEADS_debug - datagen{% endblock %}
 {% block page_class %}datagen-page{% endblock %}
+
 {% block content %}
-
 {% include "base/navbar.html" %}
-<!-- This code is taken from http://getbootstrap.com/examples/jumbotron/ -->
 </nav>
-
-<form action="" method="post">
+   <div class="container">
+      <form action="" method="post">
         {% csrf_token %}
         <table>
             {{ form.as_table }}
@@ -16,6 +15,6 @@
             <a href="/datagen/" class="btn">Submit</a></td></td></tr>
         </table>
       </form>
-
+   </div>
 </div>
 {% endblock %}
