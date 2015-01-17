@@ -42,10 +42,11 @@ void user_init(void)
 	uart0_sendStr("\r\nready\r\n");
 	at_init();
 	//testing nmea protocol functions
-	char mystring[] = "GPRMC,092751.000,A,5321.6802,N,00630.3371,W,0.06,31.66,280511,,,A";
-	uart0_sendStr(mystring);
-	uart0_sendStr("\r\n");
-	char str[15];
-	os_sprintf(str, "%d\r\n", checksum(mystring));
-	uart0_sendStr(str);
+	//char mystring[] = "GPRMC,092751.000,A,5321.6802,N,00630.3371,W,0.06,31.66,280511,,,A";
+	//uart0_sendStr(mystring);
+	//uart0_sendStr("\r\n");
+	//char str[15];
+	//os_sprintf(str, "%d\r\n", checksum(mystring));
+	//uart0_sendStr(str);
+	//check("$messagenafwefh*22\r\n", false);
 }

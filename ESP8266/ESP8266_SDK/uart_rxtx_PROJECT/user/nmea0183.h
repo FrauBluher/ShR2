@@ -10,8 +10,6 @@
  * 
  */
 
-
-
 #ifndef __NMEA0183_H
 #define __NMEA0183_H
 
@@ -19,5 +17,6 @@
 
 uint8_t checksum(char *);
 
+bool check(const char *, bool);
 
 #endif
