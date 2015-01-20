@@ -35,7 +35,7 @@ function createInputForAp(ap) {
     wrapper.appendChild(encrypt);
     var input = document.createElement("input");
     input.type="radio";
-    input.name=ap.essid;
+    input.name="wifi";
     input.id="opt-"+ap.essid;
     if (currAp==ap.essid) input.checked="1";
     input.appendChild(document.createTextNode(ap.essid));
@@ -55,10 +55,15 @@ function createInputForAp(ap) {
                    );
 }
 
+$(".radio").click(function() {
+    $(".radio").removeAttr('checked');
+    $(".radio").buttonset('refresh');
+});
+
 function getSelectedEssid() {
     var e=document.forms.wifiform.elements;
     for (var i=0; i<e.length; i++) {
-        if (e[i].type=="radio" && e[i].checked) return e[i].value;
+        if (e[i].type=="radio" && e[i].checked) return e[i];
     }
     return currAp;
 }
@@ -70,7 +75,6 @@ function scanAPs() {
         url: "/wifi/wifiscan.cgi",
     })
     .success(function(data) {
-        console.log("success");
         currAp=getSelectedEssid();
         $("#aps").empty();
         $("#ap-table").empty();
@@ -86,7 +90,6 @@ function scanAPs() {
         setTimeout(scanAPs, 20000);
     })
     .fail(function(data) {
-        console.log("fail");
         setTimeout(scanAPs(), 1000);
     });
 
