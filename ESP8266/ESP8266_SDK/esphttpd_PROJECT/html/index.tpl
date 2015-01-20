@@ -36,22 +36,23 @@ function createInputForAp(ap) {
     var input = document.createElement("input");
     input.type="radio";
     input.name=ap.essid;
-    input.value=ap.essid;
     input.id="opt-"+ap.essid;
     if (currAp==ap.essid) input.checked="1";
     input.appendChild(document.createTextNode(ap.essid));
     wrapper.appendChild(input)
+    label = $('<label>')
+    label.text(ap.essid)
+    div = $('<div>')
+    div.addClass("radio")
+    div.css("padding-left","50px")
     $("#ap-table").append($('<tr>')
 	              .append($('<td>')
-    	                  .append(input)
-	              )
+                          .append(div
+                              .append(input)
+    	                      .append(label)
+                          )
+                       )
                    );
-    //$("#ap-table").append("<tr><td>")
-    //              .append(wrapper);
-    //div.appendChild(input);
-    //div.appendChild(rssi);
-    //div.appendChild(encrypt);
-    //div.appendChild(label);
 }
 
 function getSelectedEssid() {
@@ -64,20 +65,30 @@ function getSelectedEssid() {
 
 
 function scanAPs() {
-    $.get("/wifi/wifiscan.cgi", function( data ) {
-	if (data.result.APs.length < 1) scanAPs();
+    $.ajax({
+        type: "GET",
+        url: "/wifi/wifiscan.cgi",
+    })
+    .success(function(data) {
+        console.log("success");
         currAp=getSelectedEssid();
         $("#aps").empty();
         $("#ap-table").empty();
-        $("#aps").append($("#ap-table"));
+        ap_table = $("#ap-table");
+        $("#aps").append(ap_table);
         aps = data.result.APs;
         for (var i in aps) {
             if (aps[i].essid=="" && aps[i].rssi==0) continue;
             createInputForAp(aps[i]);
         }
         //Disabled recurring requests for now (table clears)
-        //window.setTimeout(scanAPs, 20000);
+        setTimeout(scanAPs, 20000);
+    })
+    .fail(function(data) {
+        console.log("fail");
+        setTimeout(scanAPs(), 1000);
     });
+
 }
 
 $(function() {
