@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
 <!-- Custom CSS -->
 <link href="/static/css/scrolling-nav.css" rel="stylesheet">
+<link href="/static/css/style.css" rel="stylesheet">
 <!-- jQuery Version 1.11.1 -->
 <script src="/static/js/jquery.min.js"></script>
 <script>
@@ -20,26 +21,25 @@ var currAp="%currSsid%";
 
 function createInputForAp(ap) {
     if (ap.essid=="" && ap.rssi==0) return;
-    var wrapper = document.createElement("div");
-    var rssi=document.createElement("div");
+    var rssi = $("<div>");
     var rssiVal=-Math.floor(ap.rssi/51)*32;
-    rssi.className="icon";
-    rssi.style.backgroundPosition="0px "+rssiVal+"px";
-    wrapper.appendChild(rssi);
-    var encrypt=document.createElement("div");
+    rssi.addClass("icon");
+    rssi.css("backgroundPosition","0px "+rssiVal+"px");
+
+    var encrypt = $("<div>");
     var encVal="-64"; //assume wpa/wpa2
     if (ap.enc=="0") encVal="0"; //open
     if (ap.enc=="1") encVal="-32"; //wep
-    encrypt.className="icon";
-    encrypt.style.backgroundPosition="-32px "+encVal+"px";
-    wrapper.appendChild(encrypt);
+    encrypt.addClass("icon");
+    encrypt.css("backgroundPosition","-32px "+encVal+"px");
+    
     var input = document.createElement("input");
     input.type="radio";
     input.name="wifi";
     input.id="opt-"+ap.essid;
     if (currAp==ap.essid) input.checked="1";
     input.appendChild(document.createTextNode(ap.essid));
-    wrapper.appendChild(input)
+    
     label = $('<label>')
     label.text(ap.essid)
     div = $('<div>')
@@ -51,6 +51,12 @@ function createInputForAp(ap) {
                               .append(input)
     	                      .append(label)
                           )
+                       )
+                       .append($('<td>')
+                           .append(rssi)
+                       )
+                       .append($('<td>')
+                           .append(encrypt)
                        )
                    );
 }
@@ -80,6 +86,7 @@ function scanAPs() {
         $("#ap-table").empty();
         ap_table = $("<table>");
         ap_table.attr("id", "ap-table");
+        ap_table.css("margin", "0 auto");
         $("#aps").append(ap_table);
         aps = data.result.APs;
         for (var i in aps) {
