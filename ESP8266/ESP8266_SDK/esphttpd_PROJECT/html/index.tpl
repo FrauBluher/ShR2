@@ -74,7 +74,8 @@ function scanAPs() {
         currAp=getSelectedEssid();
         $("#aps").empty();
         $("#ap-table").empty();
-        ap_table = $("#ap-table");
+        ap_table = $("<table>");
+        ap_table.attr("id", "ap-table");
         $("#aps").append(ap_table);
         aps = data.result.APs;
         for (var i in aps) {
@@ -160,8 +161,6 @@ $(function() {
                     <p>
                         To connect to a WiFi network, please select one of the detected networks.<br>
                         <div id="aps" class="table-responsive">Scanning...</div>
-                        <table class="table" id="ap-table">
-                            <tbody></tbody>
                         </table>
                         <br>WiFi password, if applicable: <br />
                         <input type="password" name="passwd" val="%WiFiPasswd%"> <br />
