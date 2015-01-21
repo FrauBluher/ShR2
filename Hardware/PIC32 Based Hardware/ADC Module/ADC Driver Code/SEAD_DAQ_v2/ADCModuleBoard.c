@@ -145,11 +145,7 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 		Nop();
 	}
 
-	//StartSPIAcquisition(BUFFER_A); //We start acquisition here so we don't
-	//capture the config responses from the
-	//MCP3912.
-	//MCP391x_Init(MCPInfo);
-
+	//Start Acquisition moved to DMA_Lib
 
 	//Change Notification Enable
 	int temp;

@@ -45,27 +45,32 @@
 
 uint8_t inited = 0;
 uint8_t currentBuffer = BUFFER_A;
+uint32_t crc = 0;
 SampleBuffer *BufA;
 SampleBuffer *BufB;
-DmaChannel chn;
-DmaChannel rxChn;
+
+DmaChannel uartRxChn = DMA_CHANNEL0;
+DmaChannel spiTxChn = DMA_CHANNEL1;
+DmaChannel spiRxChn = DMA_CHANNEL2;
+DmaChannel uartTxChn = DMA_CHANNEL3;
+DmaChannel crcChn = DMA_CHANNEL4;
+
+
 uint8_t dmaBuff[256] = {};
 
 uint8_t BufferToUART_Init(void)
 {
 	UARTConfigure(UART3, UART_ENABLE_PINS_TX_RX_ONLY | UART_ENABLE_HIGH_SPEED);
 	UARTSetLineControl(UART3, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
-	UARTSetDataRate(UART3, GetPeripheralClock(), 1152000);
+	UARTSetDataRate(UART3, GetPeripheralClock(), 921600);
 	UARTEnable(UART3, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX));
 
-	chn = DMA_CHANNEL3; // DMA channel to use for our example
-
-	DmaChnOpen(chn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
+	DmaChnOpen(uartTxChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
 
 	//DMA continues transfer after TX FIFO is emptied.
-	DmaChnSetEventControl(chn, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(_UART3_TX_IRQ));
+	DmaChnSetEventControl(uartTxChn, DMA_EV_START_IRQ_EN | DMA_EV_START_IRQ(_UART3_TX_IRQ));
 
-	INTEnable(INT_SOURCE_DMA(chn), INT_ENABLED); // enable the chn interrupt in the INT controller
+	INTEnable(INT_SOURCE_DMA(uartTxChn), INT_ENABLED); // enable the chn interrupt in the INT controller
 
 	inited = 1;
 	return(EXIT_SUCCESS);
@@ -85,25 +90,22 @@ uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 		SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_MSTEN | SPI_OPEN_SMP_END |
 			SPI_OPEN_CKE_REV | SPI_OPEN_MODE8, 4);
 
-		chn = DMA_CHANNEL1;
-		rxChn = DMA_CHANNEL2;
-
-		DmaChnOpen(chn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
-		DmaChnOpen(rxChn, DMA_CHN_PRI3, DMA_OPEN_DEFAULT);
+		DmaChnOpen(spiTxChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
+		DmaChnOpen(spiRxChn, DMA_CHN_PRI3, DMA_OPEN_DEFAULT);
 
 		//DMA continues transfer after TX FIFO is emptied.
-		DmaChnSetEventControl(chn, DMA_EV_START_IRQ(_SPI1_TX_IRQ));
-		DmaChnSetEventControl(rxChn, DMA_EV_START_IRQ(_SPI1_RX_IRQ));
+		DmaChnSetEventControl(spiTxChn, DMA_EV_START_IRQ(_SPI1_TX_IRQ));
+		DmaChnSetEventControl(spiRxChn, DMA_EV_START_IRQ(_SPI1_RX_IRQ));
 
-		DmaChnSetEvEnableFlags(chn, DMA_EV_BLOCK_DONE);
-		DmaChnSetEvEnableFlags(rxChn, DMA_EV_BLOCK_DONE | DMA_EV_DST_FULL);
+		DmaChnSetEvEnableFlags(spiTxChn, DMA_EV_BLOCK_DONE);
+		DmaChnSetEvEnableFlags(spiRxChn, DMA_EV_BLOCK_DONE | DMA_EV_DST_FULL);
 
-		DmaChnClrEvFlags(chn, DMA_EV_ALL_EVNTS);
-		DmaChnClrEvFlags(rxChn, DMA_EV_ALL_EVNTS);
+		DmaChnClrEvFlags(spiTxChn, DMA_EV_ALL_EVNTS);
+		DmaChnClrEvFlags(spiRxChn, DMA_EV_ALL_EVNTS);
 
-		DmaChnSetIntPriority(rxChn, 5, 3);
-		DmaChnIntEnable(rxChn);
-		DmaChnClrIntFlag(rxChn);
+		DmaChnSetIntPriority(spiRxChn, 5, 3);
+		DmaChnIntEnable(spiRxChn);
+		DmaChnClrIntFlag(spiRxChn);
 
 
 		inited = 1;
@@ -118,28 +120,29 @@ void StartSPIAcquisition(uint8_t buffer)
 	SPI1STAT = 0; //So we don't lose events.
 
 	if (buffer == BUFFER_A) {
-		DmaChnSetTxfer(rxChn, (void *) &SPI1BUF, BufA->BufferArray, 1, BUFFERLENGTH, 1);
+		DmaChnSetTxfer(spiRxChn, (void *) &SPI1BUF, BufA->BufferArray, 1, BUFFERLENGTH, 1);
 	} else if (buffer == BUFFER_B) {
-		DmaChnSetTxfer(rxChn, (void *) &SPI1BUF, BufB->BufferArray, 1, BUFFERLENGTH, 1);
+		DmaChnSetTxfer(spiRxChn, (void *) &SPI1BUF, BufB->BufferArray, 1, BUFFERLENGTH, 1);
 	}
-	DmaChnEnable(rxChn);
+	DmaChnEnable(spiRxChn);
 }
 
 void DMAStartUARTRX(void)
 {
-	DmaChnOpen(DMA_CHANNEL0, DMA_CHN_PRI1, DMA_OPEN_MATCH); //High priority for control.
+	DmaChnOpen(uartRxChn, DMA_CHN_PRI1, DMA_OPEN_MATCH); //High priority for control.
 
-	DmaChnSetMatchPattern(DMA_CHANNEL0, '\r');
+	DmaChnSetMatchPattern(uartRxChn, '\r');
 
-	DmaChnSetEventControl(DMA_CHANNEL0, DMA_EV_START_IRQ_EN | DMA_EV_MATCH_EN | DMA_EV_START_IRQ(_UART3_RX_IRQ));
+	DmaChnSetEventControl(uartRxChn, DMA_EV_START_IRQ_EN | DMA_EV_MATCH_EN | DMA_EV_START_IRQ(_UART3_RX_IRQ));
 
-	DmaChnSetTxfer(DMA_CHANNEL0, (void*) &U3RXREG, dmaBuff, 1, 256, 1);
+	DmaChnSetTxfer(uartRxChn, (void*) &U3RXREG, dmaBuff, 1, 256, 1);
 
-	DmaChnSetEvEnableFlags(DMA_CHANNEL0, DMA_EV_BLOCK_DONE);
+	DmaChnSetEvEnableFlags(uartRxChn, DMA_EV_BLOCK_DONE);
 
-	DmaChnSetIntPriority(DMA_CHANNEL0, INT_PRIORITY_LEVEL_5, INT_SUB_PRIORITY_LEVEL_3);
-	DmaChnIntEnable(DMA_CHANNEL0);
-	DmaChnEnable(DMA_CHANNEL0);
+	DmaChnSetIntPriority(uartRxChn, INT_PRIORITY_LEVEL_5, INT_SUB_PRIORITY_LEVEL_3);
+	DmaChnIntEnable(uartRxChn);
+	DmaChnClrIntFlag(uartRxChn);
+	DmaChnEnable(uartRxChn);
 }
 
 uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize)
@@ -149,27 +152,46 @@ uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize)
 	DmaChnStartTxfer(DMA_CHANNEL1, DMA_WAIT_NOT, 0);
 }
 
+void DMA_CRC_Calc(uint8_t *data, uint16_t dataSize)
+{
+	//Standard CCITT CRC 16 polynomial: X^16+X^12+X^5+1, hex=0x00011021
+	DmaChnOpen(crcChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
+	DmaChnSetTxfer(crcChn, data, &crc, dataSize, dataSize, dataSize);
+	mCrcConfigure(0x11021, 16, 0xffff); // initial seed set to 0xffff
+	CrcAttachChannel(crcChn, 1);
+
+	DmaChnSetEvEnableFlags(crcChn, DMA_EV_BLOCK_DONE);
+	DmaChnSetIntPriority(crcChn, INT_PRIORITY_LEVEL_5, INT_SUB_PRIORITY_LEVEL_3);
+	DmaChnIntEnable(crcChn);
+	DmaChnClrIntFlag(crcChn);
+	DmaChnEnable(crcChn);
+
+	DmaChnStartTxfer(crcChn, DMA_WAIT_NOT, 0);
+}
+
 uint8_t BufferToUART_TransferA(uint16_t transferSize)
 {
 	// set the transfer source and dest addresses, source and dest size and cell size
-	DmaChnSetTxfer(DMA_CHANNEL3, BufA->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
+	DmaChnSetTxfer(uartTxChn, BufA->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
 
-	DmaChnSetEvEnableFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred
+	DmaChnSetEvEnableFlags(uartTxChn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred
 
-	DmaChnStartTxfer(DMA_CHANNEL3, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
+	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
 }
 
 uint8_t BufferToUART_TransferB(uint16_t transferSize)
 {
-	DmaChnSetTxfer(DMA_CHANNEL3, BufB->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
+	DmaChnSetTxfer(uartTxChn, BufB->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
 
-	DmaChnSetEvEnableFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: all the characters transferred
+	DmaChnSetEvEnableFlags(uartTxChn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: all the characters transferred
 
-	DmaChnStartTxfer(DMA_CHANNEL3, DMA_WAIT_NOT, 0);
+	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0);
 }
 
 void __ISR(_DMA0_VECTOR) DmaHandler0(void)
 {
+	StartSPIAcquisition(BUFFER_A);
+
 	DmaChnClrEvFlags(DMA_CHANNEL0, DMA_EV_BLOCK_DONE);
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL0));
 }
@@ -190,6 +212,7 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 {
 	LATBbits.LATB6 ^= 1;
 	if (currentBuffer == BUFFER_A) {
+		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
 
 		StartSPIAcquisition(BUFFER_B);
 
@@ -198,6 +221,7 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 		currentBuffer = BUFFER_B;
 
 	} else if (currentBuffer == BUFFER_B) {
+		DMA_CRC_Calc(BufB->BufferArray, BUFFERLENGTH);
 
 		StartSPIAcquisition(BUFFER_A);
 
@@ -219,4 +243,10 @@ void __ISR(_DMA3_VECTOR) DmaHandler3(void)
 {
 	DmaChnClrEvFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE);
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL3));
+}
+
+void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
+{
+	DmaChnClrEvFlags(DMA_CHANNEL4, DMA_EV_BLOCK_DONE);
+	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL4));
 }
