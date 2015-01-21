@@ -156,10 +156,10 @@ void DMA_CRC_Calc(uint8_t *data, uint16_t dataSize)
 {
 	//CRC Calculation has up until the end of the UART transfer to finish
 	//and append its CRC checksum.
-	//Standard CCITT CRC 16 polynomial: X^16+X^12+X^5+1, hex=0x00011021
+	//Standard CCITT CRC 16 polynomial: X^16+X^12+X^5+1, hex=0x00001021  11021?
 	DmaChnOpen(crcChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
 	DmaChnSetTxfer(crcChn, data, &crc, dataSize, dataSize, dataSize);
-	mCrcConfigure(0x11021, 16, 0xffff); // initial seed set to 0xffff
+	mCrcConfigure(0x1021, 16, 0xffff); // initial seed set to 0xffff
 	CrcAttachChannel(crcChn, 1);
 
 	DmaChnSetEvEnableFlags(crcChn, DMA_EV_BLOCK_DONE);
@@ -257,18 +257,18 @@ void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 		BufA->BufferArray[BUFFERLENGTH + 2] = 'D';
 		BufA->BufferArray[BUFFERLENGTH + 3] = '*';
 		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0xFF000000) >> 24;
-		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0x00FF0000) >> 16;
-		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0x0000FF00) >> 8;
-		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0x000000FF);
+		BufA->BufferArray[BUFFERLENGTH + 5] = (crc & 0x00FF0000) >> 16;
+		BufA->BufferArray[BUFFERLENGTH + 6] = (crc & 0x0000FF00) >> 8;
+		BufA->BufferArray[BUFFERLENGTH + 7] = (crc & 0x000000FF);
 	} else if (currentBuffer == BUFFER_A) {
 		BufB->BufferArray[BUFFERLENGTH] = 'E';
 		BufB->BufferArray[BUFFERLENGTH + 1] = 'N';
 		BufB->BufferArray[BUFFERLENGTH + 2] = 'D';
 		BufB->BufferArray[BUFFERLENGTH + 3] = '*';
 		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0xFF000000) >> 24;
-		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0x00FF0000) >> 16;
-		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0x0000FF00) >> 8;
-		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0x000000FF);
+		BufB->BufferArray[BUFFERLENGTH + 5] = (crc & 0x00FF0000) >> 16;
+		BufB->BufferArray[BUFFERLENGTH + 6] = (crc & 0x0000FF00) >> 8;
+		BufB->BufferArray[BUFFERLENGTH + 7] = (crc & 0x000000FF);
 	}
 
 	DmaChnClrEvFlags(DMA_CHANNEL4, DMA_EV_ALL_EVNTS);
