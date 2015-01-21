@@ -36,6 +36,8 @@ typedef enum {
 void send_recv_init(void);
 //receiving messages via uart
 void recv_message(os_event_t *events);
+//storing messages via uart buffer?
+void store_message(os_event_t *events);
 //sending messages via wifi
 void send_message(os_event_t *events);
 

@@ -12,10 +12,33 @@
 #ifndef __BUFFERS_H
 #define __BUFFERS_H
 
+#define max_uart_buff_size 255
+#define max_send_buff_size 255
+
+//character buffer for uart
+typedef struct {
+	uint8_t buffer[max_uart_buff_size];
+	uint8_t buff_size;
+	uint8_t read;
+	uint8_t write;
+}uart_buffer_t;
+
+//exact data to send
 typedef struct {
 	uint16_t wattage;
 	char timestamp[14];
 }send_data_t;
+
+//circular buffer for sending
+typedef struct {
+    send_data_t buffer[max_send_buff_size];     // data buffer
+    uint8_t buffer_end; 		// end of data buffer
+    uint8_t capacity;  			// maximum number of items in the buffer
+    uint8_t count;     			// number of items in the buffer
+    uint8_t head;      			// pointer to head
+    uint8_t tail;       		// pointer to tail
+} circular_send_buffer_t;
+
 
 //prototype definitions start for library
 

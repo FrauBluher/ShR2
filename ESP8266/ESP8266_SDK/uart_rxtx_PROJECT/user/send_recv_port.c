@@ -71,6 +71,8 @@ recv_message(os_event_t *events) {
 			user_state = receive_idle;
 		}
 		break;
+	//todo
+	//can use two uart buffers for simultaneous storing and receiving?
 	case store:
 		//nmea checksum on the buffer
 		if (checksum_buffer()) {
@@ -83,6 +85,7 @@ recv_message(os_event_t *events) {
 			user_state = receive_idle;
 		}
 		break;
+	//must not send and store at the same time!
 	case send:
 		;
 		break;
@@ -109,12 +112,13 @@ recv_message(os_event_t *events) {
   * @param  events: not used
   * @retval None
   */
+  /*
 void ICACHE_FLASH_ATTR
 store_message(os_event_t *events) {
 	if (user_state == send) {
 		uart0_sendStr("\r\nstoring...\r\n");
 	}
-}
+}*/
 
 /**
   * @brief  Sends the messages if we have connectivity
@@ -140,8 +144,8 @@ send_recv_init(void) {
 	system_os_task(recv_message, recv_messagePrio,
 				   recv_messageQueue, recv_messageQueueLen);
 	//storing messages have second priority
-	system_os_task(store_message, store_messagePrio,
-				   store_messageQueue, store_messageQueueLen);
+	//system_os_task(store_message, store_messagePrio,
+				   //store_messageQueue, store_messageQueueLen);
 	//sending messages have third priority
 	system_os_task(send_message, send_messagePrio,
 			       send_messageQueue, send_messageQueueLen);
