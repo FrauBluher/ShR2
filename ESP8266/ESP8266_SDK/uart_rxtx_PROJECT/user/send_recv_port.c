@@ -27,6 +27,10 @@ rss_state user_state = receive_idle;
 bool echoFlag = FALSE;
 //flag that tells you if you are connected to an access point?
 bool connected = FALSE;
+//are we storing data?
+bool storing = FALSE;
+//are we sending data?
+bool sending = FALSE;
 
 /**
   * @brief  Uart receive task.
@@ -64,9 +68,23 @@ recv_message(os_event_t *events) {
 		break;
 	case receive_message:
 		if (temp == '\n') {
-			//message terminating
-			user_state = store;
-		} else if (!put_buffer(temp)) { // buffer overflow
+			//message terminating, storing into the send buffer
+			//nmea checksum on the buffer
+			if (checksum_buffer()) {
+				//insert into send buffer
+				print_buffer();
+				put_send_buffer();
+				reset_buffer();
+				user_state = receive_idle;
+			} else {
+				print_buffer();
+				reset_buffer();
+				user_state = receive_idle;
+			}
+		//if the buffer overflows, then reset the buffer and go back
+		//to idle
+		} else if (!put_buffer(temp)) {
+			print_buffer();
 			reset_buffer();
 			user_state = receive_idle;
 		}
@@ -74,16 +92,7 @@ recv_message(os_event_t *events) {
 	//todo
 	//can use two uart buffers for simultaneous storing and receiving?
 	case store:
-		//nmea checksum on the buffer
-		if (checksum_buffer()) {
-			//insert into send buffer
-			put_send_buffer();
-			reset_buffer();
-			user_state = receive_idle;
-		} else {
-			reset_buffer();
-			user_state = receive_idle;
-		}
+		;
 		break;
 	//must not send and store at the same time!
 	case send:
@@ -112,13 +121,14 @@ recv_message(os_event_t *events) {
   * @param  events: not used
   * @retval None
   */
-  /*
 void ICACHE_FLASH_ATTR
 store_message(os_event_t *events) {
+	storing = TRUE;
 	if (user_state == send) {
 		uart0_sendStr("\r\nstoring...\r\n");
 	}
-}*/
+	storing = FALSE;
+}
 
 /**
   * @brief  Sends the messages if we have connectivity
@@ -127,9 +137,11 @@ store_message(os_event_t *events) {
   */
 void ICACHE_FLASH_ATTR
 send_message(os_event_t *events) {
+	sending = TRUE;
 	if (user_state == send) {
 		uart0_sendStr("\r\nsending...\r\n");
 	}
+	sending = FALSE;
 }
 
 /**
@@ -144,8 +156,8 @@ send_recv_init(void) {
 	system_os_task(recv_message, recv_messagePrio,
 				   recv_messageQueue, recv_messageQueueLen);
 	//storing messages have second priority
-	//system_os_task(store_message, store_messagePrio,
-				   //store_messageQueue, store_messageQueueLen);
+	system_os_task(store_message, store_messagePrio,
+				   store_messageQueue, store_messageQueueLen);
 	//sending messages have third priority
 	system_os_task(send_message, send_messagePrio,
 			       send_messageQueue, send_messageQueueLen);
