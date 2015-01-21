@@ -59,7 +59,6 @@ BOOL specialAtState = TRUE;
 at_stateType  at_state;
 //data line is modified to the uart buffer pointer in ipCmd
 uint8_t *pDataLine;
-BOOL echoFlag = TRUE;
 
 static uint8_t at_cmdLine[at_cmdLenMax];
 uint8_t at_dataLine[at_dataLenMax];/////
@@ -93,12 +92,12 @@ at_recvTask(os_event_t *events)
 //    temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
     WRITE_PERI_REG(0X60000914, 0x73); //WTD
 
-    if(at_state != at_statIpTraning) {
+    /*if(at_state != at_statIpTraning) {
 		temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 		if (echoFlag) {
 			uart_tx_one_char(temp);
-		}
-    }
+
+    }*/
 //    if((at_state != at_statIpTraning) && (temp != '\n') && (echoFlag))
 //    {
 //      uart_tx_one_char(temp); //display back
@@ -128,10 +127,11 @@ at_recvTask(os_event_t *events)
         pCmdLine++;
         *pCmdLine = '\0';
         at_state = at_statProcess;
+        /*
         if(echoFlag)
         {
           uart0_sendStr("\r\n"); ///////////
-        }
+        }*/
       }
       else if(pCmdLine >= &at_cmdLine[at_cmdLenMax - 1])
       {

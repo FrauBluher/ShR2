@@ -41,7 +41,9 @@ void user_init(void)
 	at_wifiMode = wifi_get_opmode();
 	os_printf("\r\nready!!!\r\n");
 	uart0_sendStr("\r\nready\r\n");
-	at_init();
+	//at_init();
+	send_recv_init();
+	uart0_sendStr("rss init done\r\n");
 	//testing nmea protocol functions
 	//char mystring[] = "GPRMC,092751.000,A,5321.6802,N,00630.3371,W,0.06,31.66,280511,,,A";
 	//uart0_sendStr(mystring);
