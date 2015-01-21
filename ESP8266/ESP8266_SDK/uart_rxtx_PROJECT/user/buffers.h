@@ -40,10 +40,12 @@ typedef struct {
 } circular_send_buffer_t;
 
 
-//prototype definitions start for library
+//prototype definitions start for uart buffer 
 
 //resets the buffer read and write pointers
 void reset_buffer(void);
+//swaps out buffer 1 with buffer 2, or the other way
+void swap_buffer(void);
 
 //fifo push and pop
 bool put_buffer(uint8_t);
@@ -54,6 +56,8 @@ void print_buffer(void);
 
 //nmea checksums the buffer
 bool checksum_buffer(void);
+
+//prototype definitions start for send buffer
 
 //puts the uart buffer data into the send buffer
 bool put_send_buffer(void);

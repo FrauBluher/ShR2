@@ -13,13 +13,23 @@
 
 
 
-//inits the uart buffer
-uart_buffer_t uart_buffer = {
+//inits the uart buffers! using two semiphores for simultaneous
+//read store
+uart_buffer_t uart_buffer1 = {
 	.buffer[0] = 0,
 	.buff_size = 0,
 	.read = 0,
 	.write = 0
 };
+
+uart_buffer_t uart_buffer2 = {
+	.buffer[0] = 0,
+	.buff_size = 0,
+	.read = 0,
+	.write = 0
+};
+
+uart_buffer_t *uart_buffer = &uart_buffer1;
 
 //inits the sending circular buffer
 circular_send_buffer_t send_buffer = {
@@ -39,9 +49,22 @@ circular_send_buffer_t send_buffer = {
   */
 void ICACHE_FLASH_ATTR
 reset_buffer(void) {
-	uart_buffer.read = 0;
-	uart_buffer.write = 0;
-	uart_buffer.buff_size = 0;
+	uart_buffer->read = 0;
+	uart_buffer->write = 0;
+	uart_buffer->buff_size = 0;
+}
+
+/**
+  * @brief  swaps out the current buffer with the another one
+  * @param  None
+  * @retval None
+  */
+void swap_buffer(void) {
+	if (uart_buffer == &uart_buffer1) {
+		uart_buffer = &uart_buffer2;
+	} else {
+		uart_buffer = &uart_buffer1;
+	}
 }
 
 /**
@@ -54,8 +77,8 @@ print_buffer(void) {
 	uint8_t i;
 	uart_tx_one_char('\r');
 	uart_tx_one_char('\n');
-	for (i = 0; i < uart_buffer.buff_size; i++) {
-		uart_tx_one_char(uart_buffer.buffer[i]);
+	for (i = 0; i < uart_buffer->buff_size; i++) {
+		uart_tx_one_char(uart_buffer->buffer[i]);
 	}
 	uart_tx_one_char('\r');
 	uart_tx_one_char('\n');
@@ -69,12 +92,12 @@ print_buffer(void) {
 bool ICACHE_FLASH_ATTR
 put_buffer(uint8_t character) {
 	//if the index is greater than the max buff size minus null plug
-	if (uart_buffer.write > (max_uart_buff_size - 1)) {
+	if (uart_buffer->write > (max_uart_buff_size - 1)) {
 		return false;
 	} else {
 		//incriment size, write character, incriment pointer, return
-		uart_buffer.buff_size++;
-		uart_buffer.buffer[uart_buffer.write++] = character;
+		uart_buffer->buff_size++;
+		uart_buffer->buffer[uart_buffer->write++] = character;
 		return true;
 	}
 }
@@ -86,12 +109,12 @@ put_buffer(uint8_t character) {
   */
 uint8_t ICACHE_FLASH_ATTR
 read_buffer(void) {
-	if (uart_buffer.buff_size == 0 || uart_buffer.read == uart_buffer.write) {
+	if (uart_buffer->buff_size == 0 || uart_buffer->read == uart_buffer->write) {
 		return 0;
 	} else {
 		//decrement size, return value, incriment pointer
-		uart_buffer.buff_size--;
-		return uart_buffer.buffer[uart_buffer.read++];
+		uart_buffer->buff_size--;
+		return uart_buffer->buffer[uart_buffer->read++];
 	}
 }
 
@@ -103,10 +126,10 @@ read_buffer(void) {
 bool ICACHE_FLASH_ATTR
 checksum_buffer(void) {
 	//insert null plug for string manipulation
-	uart_buffer.buffer[uart_buffer.write] = 0;
+	uart_buffer->buffer[uart_buffer->write] = 0;
 	//checks the uart buffer, strict OFF for now
 	//that means it doesn't require a checksum
-	if (check(uart_buffer.buffer, false)) {
+	if (check(uart_buffer->buffer, false)) {
 		return true;
 	} else {
 		return false;
@@ -125,6 +148,15 @@ put_send_buffer(void) {
 	;
 }
 
-
+/**
+  * @brief  gets the size of the send buffer
+  * @param  None
+  * @retval returns the current size of the circular buffer
+  */
+  uint8_t ICACHE_FLASH_ATTR
+  size_send_buffer(void) {
+	  return send_buffer.count;
+  }
+  
 
 
