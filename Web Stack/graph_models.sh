@@ -1,5 +1,7 @@
 #!/bin/bash
 
-python ~/seads/manage.py graph_models -a > ~/seads/my_project.dot
+python manage.py graph_models -a > my_project.dot
 
-dot -Tpng ~/seads/my_project.dot -o ~/seads/outfile.png
+dot -Tpng my_project.dot -o outfile.png
+
+rm my_project.dot
