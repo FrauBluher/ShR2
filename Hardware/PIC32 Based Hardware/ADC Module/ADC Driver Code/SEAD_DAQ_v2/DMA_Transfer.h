@@ -37,6 +37,7 @@
 
 #include <stdint.h>
 #define BUFFERLENGTH 9*2000
+#define END_MESSAGE 8
 
 enum {
     BUFFER_A = 0,
@@ -46,7 +47,7 @@ enum {
 //8 bit integer should be changed to 16 bits for SPI testing.
 
 typedef struct {
-    uint8_t BufferArray[BUFFERLENGTH];
+    uint8_t BufferArray[BUFFERLENGTH + END_MESSAGE];
     uint8_t bufferFull;
     uint8_t txStarted;
     uint16_t index;

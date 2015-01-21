@@ -154,6 +154,8 @@ uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize)
 
 void DMA_CRC_Calc(uint8_t *data, uint16_t dataSize)
 {
+	//CRC Calculation has up until the end of the UART transfer to finish
+	//and append its CRC checksum.
 	//Standard CCITT CRC 16 polynomial: X^16+X^12+X^5+1, hex=0x00011021
 	DmaChnOpen(crcChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
 	DmaChnSetTxfer(crcChn, data, &crc, dataSize, dataSize, dataSize);
@@ -216,7 +218,7 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 
 		StartSPIAcquisition(BUFFER_B);
 
-		BufferToUART_TransferA(BUFFERLENGTH);
+		BufferToUART_TransferA(BUFFERLENGTH + END_MESSAGE);
 
 		currentBuffer = BUFFER_B;
 
@@ -225,7 +227,7 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 
 		StartSPIAcquisition(BUFFER_A);
 
-		BufferToUART_TransferB(BUFFERLENGTH);
+		BufferToUART_TransferB(BUFFERLENGTH + END_MESSAGE);
 
 		currentBuffer = BUFFER_A;
 
@@ -247,6 +249,29 @@ void __ISR(_DMA3_VECTOR) DmaHandler3(void)
 
 void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 {
-	DmaChnClrEvFlags(DMA_CHANNEL4, DMA_EV_BLOCK_DONE);
-	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL4));
+	//currentBuffer will be set to the opposite buffer than the one which
+	//needs to have this appended to it.
+	if (currentBuffer == BUFFER_B) {
+		BufA->BufferArray[BUFFERLENGTH] = 'E';
+		BufA->BufferArray[BUFFERLENGTH + 1] = 'N';
+		BufA->BufferArray[BUFFERLENGTH + 2] = 'D';
+		BufA->BufferArray[BUFFERLENGTH + 3] = '*';
+		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0xFF000000) >> 24;
+		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0x00FF0000) >> 16;
+		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0x0000FF00) >> 8;
+		BufA->BufferArray[BUFFERLENGTH + 4] = (crc & 0x000000FF);
+	} else if (currentBuffer == BUFFER_A) {
+		BufB->BufferArray[BUFFERLENGTH] = 'E';
+		BufB->BufferArray[BUFFERLENGTH + 1] = 'N';
+		BufB->BufferArray[BUFFERLENGTH + 2] = 'D';
+		BufB->BufferArray[BUFFERLENGTH + 3] = '*';
+		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0xFF000000) >> 24;
+		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0x00FF0000) >> 16;
+		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0x0000FF00) >> 8;
+		BufB->BufferArray[BUFFERLENGTH + 4] = (crc & 0x000000FF);
+	}
+
+	DmaChnClrEvFlags(DMA_CHANNEL4, DMA_EV_ALL_EVNTS);
+	DmaChnClrIntFlag(DMA_CHANNEL4);
+	mDmaChnClrIntFlag(4);
 }
