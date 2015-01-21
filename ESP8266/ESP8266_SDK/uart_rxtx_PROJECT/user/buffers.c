@@ -9,6 +9,7 @@
 #include "c_types.h"
 #include "osapi.h"
 #include "buffers.h"
+#include "nmea0183.h"
 
 #define max_buff_size 255
 
@@ -81,3 +82,35 @@ read_buffer(void) {
 		return uart_buffer[read++];
 	}
 }
+
+/**
+  * @brief  nmea checksums the buffer string to be validated and stored
+  * @param  None
+  * @retval returns false if failed, and true if succeeded
+  */
+bool ICACHE_FLASH_ATTR
+checksum_buffer(void) {
+	//insert null plug for string manipulation
+	uart_buffer[write] = 0;
+	//checks the uart buffer, strict OFF for now
+	//that means it doesn't require a checksum
+	if (check(uart_buffer, false)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**
+  * @brief  puts the data found in the uart buffer into the send buffer
+  * @param  None
+  * @retval returns false if failed, and true if succeeded
+  */
+bool ICACHE_FLASH_ATTR
+put_send_buffer(void) {
+	;
+}
+
+
+
+

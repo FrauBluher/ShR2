@@ -2,16 +2,14 @@
  *  Henry Crute
  * 	hcrute@ucsc.edu
  * 	
- * 	code for nmea protocol
- * 
- *  
- * 
+ * 	code for nmea protocol checksums
  * 
  * 
  */
 
 #include "c_types.h"
 #include "osapi.h"
+#include "nmea0183.h"
 
 /**
   * @brief  nmea string checksum function

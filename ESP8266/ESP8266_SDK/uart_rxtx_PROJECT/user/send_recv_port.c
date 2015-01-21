@@ -11,7 +11,7 @@
 #include "user_interface.h"
 #include "osapi.h"
 #include "driver/uart.h"
-#include "nmea0183.h"
+
 #include "send_recv_port.h"
 #include "buffers.h"
 
@@ -58,7 +58,7 @@ recv_message(os_event_t *events) {
 		//a message is beginning!
 		if (temp == '$') {
 			user_state = receive_message;
-			//starts to put shit on the buffer
+			//puts shit on the buffer
 			put_buffer(temp);
 		}
 		break;
@@ -72,7 +72,16 @@ recv_message(os_event_t *events) {
 		}
 		break;
 	case store:
-		;
+		//nmea checksum on the buffer
+		if (checksum_buffer()) {
+			//insert into send buffer
+			put_send_buffer();
+			reset_buffer();
+			user_state = receive_idle;
+		} else {
+			reset_buffer();
+			user_state = receive_idle;
+		}
 		break;
 	case send:
 		;

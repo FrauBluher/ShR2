@@ -29,5 +29,10 @@ uint8_t read_buffer(void);
 //debug print buffer
 void print_buffer(void);
 
+//nmea checksums the buffer
+bool checksum_buffer(void);
+
+//puts the uart buffer data into the send buffer
+bool put_send_buffer(void);
 
 #endif
