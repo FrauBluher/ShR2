@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+from django_pandas.managers import DataFrameManager
 # Create your models here.
 
 class Appliance(models.Model):
@@ -26,6 +27,8 @@ class Event(models.Model):
     appliance = models.ForeignKey(Appliance, related_name='appliance', blank=True, null=True)
     timestamp = models.PositiveIntegerField(help_text='13 digits, millisecond resolution')
     wattage = models.FloatField()
+    
+    objects = DataFrameManager()
 
     def __unicode__(self):
         return str(self.timestamp)
