@@ -228,8 +228,7 @@ at_exeCmdCipstatus(uint8_t id)
   * @retval None
   */
 void ICACHE_FLASH_ATTR
-at_testCmdCipstart(uint8_t id)
-{
+at_testCmdCipstart(uint8_t id) {
   char temp[64];
 
   if(at_ipMux)
@@ -629,14 +628,15 @@ at_setupCmdCipstart(uint8_t id, char *pPara)
 //  }
   remotePort = 0;
   localPort = 0;
-  if(at_wifiMode == 1)
-  {
+  //checks to see if it is connected to an access point
+  if(at_wifiMode == 1) {
     if(wifi_station_get_connect_status() != STATION_GOT_IP)
     {
       uart0_sendStr("no ip\r\n");
       return;
     }
   }
+  //get rid of the = sign in the beginning of the para string
   pPara++;
   if(at_ipMux)
   {
@@ -653,6 +653,7 @@ at_setupCmdCipstart(uint8_t id, char *pPara)
     uart0_sendStr("ID ERROR\r\n");
     return;
   }
+  //checks for udp or tcp connection parameters
   len = at_dataStrCpy(temp, pPara, 6);
   if(len == -1)
   {
@@ -672,6 +673,7 @@ at_setupCmdCipstart(uint8_t id, char *pPara)
     uart0_sendStr("Link typ ERROR\r\n");
     return;
   }
+  //copies ip address or domain name
   pPara += (len+3);
   len = at_dataStrCpy(ipTemp, pPara, 64);
   os_printf("%s\r\n", ipTemp);
@@ -688,7 +690,7 @@ at_setupCmdCipstart(uint8_t id, char *pPara)
   }
   pPara += (1);
   remotePort = atoi(pPara);
-
+	//tries to establish udp connection
   if(linkType == ESPCONN_UDP)
   {
     os_printf("remote port:%d\r\n", remotePort);
@@ -740,7 +742,7 @@ at_setupCmdCipstart(uint8_t id, char *pPara)
   pLink[linkID].pCon->type = linkType;
   pLink[linkID].pCon->state = ESPCONN_NONE;
   pLink[linkID].linkId = linkID;
-
+	//actually establishes connection via tcp or udp
   switch(linkType)
   {
   case ESPCONN_TCP:
@@ -1223,18 +1225,16 @@ at_setupCmdCipsend(uint8_t id, char *pPara)
 //    uart0_sendStr("link is not\r\n");
 //    return;
 //  }
-  if(IPMODE == TRUE)
-  {
+  if(IPMODE == TRUE) {
     uart0_sendStr("IPMODE=1\r\n");
     at_backError;
     return;
   }
+  //incriments the pointer to skip the = sign
   pPara++;
-  if(at_ipMux)
-  {
+  if(at_ipMux) {
     sendingID = atoi(pPara);
-    if(sendingID >= at_linkMax)
-    {
+    if(sendingID >= at_linkMax) {
       at_backError;
       return;
     }
@@ -1245,38 +1245,30 @@ at_setupCmdCipsend(uint8_t id, char *pPara)
       return;
     }
     pPara++;
-  }
-  else
-  {
+  } else {
     sendingID = 0;
-  }
-  if(pLink[sendingID].linkEn == FALSE)
-  {
+    //checks to see if there is a link present for the id
+  } if(pLink[sendingID].linkEn == FALSE) {
     uart0_sendStr("link is not\r\n");
     return;
   }
+  //gets send length from format string
   at_sendLen = atoi(pPara);
-  if(at_sendLen > 2048)
-  {
+  if(at_sendLen > 2048) {
     uart0_sendStr("too long\r\n");
     return;
   }
+  //checks to see if there was anything other than a number in the string
   pPara = at_checkLastNum(pPara, 5);
-  if((pPara == NULL)||(*pPara != '\r'))
-  {
+  if((pPara == NULL)||(*pPara != '\r')) {
     uart0_sendStr("type error\r\n");
     return;
   }
-//  at_dataLine = (uint8_t *)os_zalloc(sizeof(uint8_t)*at_sendLen);
-//  if(at_dataLine == NULL)
-//  {
-//  	at_backError;
-//  	return;
-//  }
   pDataLine = at_dataLine;
-//  pDataLine = UartDev.rcv_buff.pRcvMsgBuff;
+	//  pDataLine = UartDev.rcv_buff.pRcvMsgBuff;
   specialAtState = FALSE;
   at_state = at_statIpSending;
+  //prompt that we are ready to receive chars to send
   uart0_sendStr("> "); //uart0_sendStr("\r\n>");
 }
 
@@ -1286,17 +1278,21 @@ at_setupCmdCipsend(uint8_t id, char *pPara)
   * @retval None
   */
 void ICACHE_FLASH_ATTR
-at_ipDataSending(uint8_t *pAtRcvData)
-{
-  espconn_sent(pLink[sendingID].pCon, pAtRcvData, at_sendLen);
-  os_printf("id:%d,Len:%d,dp:%p\r\n",sendingID,at_sendLen,pAtRcvData);
-  //bug if udp,send is ok
-//  if(pLink[sendingID].pCon->type == ESPCONN_UDP)
-//  {
-//    uart0_sendStr("\r\nSEND OK\r\n");
-//    specialAtState = TRUE;
-//    at_state = at_statIdle;
-//  }
+at_ipDataSending(uint8_t *pAtRcvData) {
+	//buffer for debug send string
+	//char send_buffer[400];
+	uart0_sendStr("\r\nsending:\r\n");
+	uint16_t iter = 0;
+	while (iter < at_sendLen) {
+		uart_tx_one_char(pAtRcvData[iter]);
+		iter++;
+	}
+	uart0_sendStr("\r\nsending:\r\n");
+	espconn_sent(pLink[sendingID].pCon, pAtRcvData, at_sendLen);
+	os_printf("id:%d,Len:%d,dp:%p\r\n",sendingID,at_sendLen,pAtRcvData);
+	//uart0_sendStr("\r\ndebug\r\n");
+	//os_sprintf(send_buffer, "\r\nid:%d,Len:%d,dp:%p\r\n",sendingID,at_sendLen,pAtRcvData);
+	//uart0_sendStr(send_buffer);
 }
 
 /**

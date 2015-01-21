@@ -100,74 +100,51 @@ at_cmdProcess(uint8_t *pAtRcvData)
   int16_t cmdId;
   int8_t cmdLen;
   uint16_t i;
-
-  cmdLen = at_getCmdLen(pAtRcvData);
-  if(cmdLen != -1)
-  {
-    cmdId = at_cmdSearch(cmdLen, pAtRcvData);
-  }
-  else 
-  {
-  	cmdId = -1;
-  }
-  if(cmdId != -1)
-  {
-//    os_printf("cmd id: %d\r\n", cmdId);
-    pAtRcvData += cmdLen;
-    if(*pAtRcvData == '\r')
-    {
-      if(at_fun[cmdId].at_exeCmd)
-      {
-        at_fun[cmdId].at_exeCmd(cmdId);
-      }
-      else
-      {
-        at_backError;
-      }
-    }
-    else if(*pAtRcvData == '?' && (pAtRcvData[1] == '\r'))
-    {
-      if(at_fun[cmdId].at_queryCmd)
-      {
-        at_fun[cmdId].at_queryCmd(cmdId);
-      }
-      else
-      {
-        at_backError;
-      }
-    }
-    else if((*pAtRcvData == '=') && (pAtRcvData[1] == '?') && (pAtRcvData[2] == '\r'))
-    {
-      if(at_fun[cmdId].at_testCmd)
-      {
-        at_fun[cmdId].at_testCmd(cmdId);
-      }
-      else
-      {
-        at_backError;
-      }
-    }
-    else if((*pAtRcvData >= '0') && (*pAtRcvData <= '9') || (*pAtRcvData == '='))
-    {
-      if(at_fun[cmdId].at_setupCmd)
-      {
-        at_fun[cmdId].at_setupCmd(cmdId, pAtRcvData);
-      }
-      else
-      {
-//        uart0_sendStr("no this fun\r\n"); //Relax, it's just a code.
-        at_backError;
-      }
-    }
-    else
-    {
-      at_backError;
-    }
-  }
-  else 
-  {
-  	at_backError;
-  }
+	//gets the base command length to compare and search
+	cmdLen = at_getCmdLen(pAtRcvData);
+	if(cmdLen != -1) {
+		cmdId = at_cmdSearch(cmdLen, pAtRcvData);
+	} else {
+		cmdId = -1;
+	}
+	//if the command ID was found
+	if(cmdId != -1) {
+		//os_printf("cmd id: %d\r\n", cmdId);
+		//increment the pointer to the recv data by command length
+		pAtRcvData += cmdLen;
+		if(*pAtRcvData == '\r') {
+			if(at_fun[cmdId].at_exeCmd) {
+				at_fun[cmdId].at_exeCmd(cmdId);
+			} else {
+				at_backError;
+			}
+		} else if(*pAtRcvData == '?' && (pAtRcvData[1] == '\r')) {
+			if(at_fun[cmdId].at_queryCmd) {
+				at_fun[cmdId].at_queryCmd(cmdId);
+			} else {
+				at_backError;
+			}
+		} else if((*pAtRcvData == '=') && (pAtRcvData[1] == '?') && (pAtRcvData[2] == '\r')) {
+			if(at_fun[cmdId].at_testCmd) {
+				at_fun[cmdId].at_testCmd(cmdId);
+			} else {
+				at_backError;
+			}
+		}
+		else if((*pAtRcvData >= '0') && (*pAtRcvData <= '9') || (*pAtRcvData == '=')) {
+			if(at_fun[cmdId].at_setupCmd) {
+				at_fun[cmdId].at_setupCmd(cmdId, pAtRcvData);
+			} else {
+//        uart0_sendStr("no this fun\r\n");
+				at_backError;
+			}
+		} else {
+			at_backError;
+		}
+	//if the command ID was not found
+	} else {
+		at_backError;
+	}
 }
 
 /**

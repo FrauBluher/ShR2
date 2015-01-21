@@ -1,0 +1,22 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %}SEADS_debug - datagen{% endblock %}
+{% block page_class %}datagen-page{% endblock %}
+
+{% block content %}
+{% include "base/navbar.html" %}
+</nav>
+   <div class="container">
+      <form action="" method="post" style="margin-top:50px;">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+      </form>
+      <table>
+         {{ vars.as_table }}
+      </table>
+   </div>
+</div>
+{% endblock %}

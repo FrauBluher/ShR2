@@ -154,6 +154,7 @@ mkespfsimage/mkespfsimage: mkespfsimage/
 htmlflash: webpages.espfs
 	$(Q) if [ $$(stat -c '%s' webpages.espfs) -gt $$(( 0x2E000 )) ]; then echo "webpages.espfs too big!"; false; fi
 	$(Q) $(ESPTOOLPY) --port $(ESPPORT) write_flash 0x12000 webpages.espfs
+	$(Q) sudo screen $(ESPPORT) $(ESPBAUD)
 
 clean:
 	$(Q) rm -f $(APP_AR)

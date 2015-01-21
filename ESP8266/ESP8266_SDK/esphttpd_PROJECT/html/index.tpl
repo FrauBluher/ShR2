@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
 <!-- Custom CSS -->
 <link href="/static/css/scrolling-nav.css" rel="stylesheet">
+<link href="/static/css/style.css" rel="stylesheet">
 <!-- jQuery Version 1.11.1 -->
 <script src="/static/js/jquery.min.js"></script>
 <script>
@@ -20,64 +21,85 @@ var currAp="%currSsid%";
 
 function createInputForAp(ap) {
     if (ap.essid=="" && ap.rssi==0) return;
-    var wrapper = document.createElement("div");
-    var rssi=document.createElement("div");
+    var rssi = $("<div>");
     var rssiVal=-Math.floor(ap.rssi/51)*32;
-    rssi.className="icon";
-    rssi.style.backgroundPosition="0px "+rssiVal+"px";
-    wrapper.appendChild(rssi);
-    var encrypt=document.createElement("div");
+    rssi.addClass("icon");
+    rssi.css("backgroundPosition","0px "+rssiVal+"px");
+
+    var encrypt = $("<div>");
     var encVal="-64"; //assume wpa/wpa2
     if (ap.enc=="0") encVal="0"; //open
     if (ap.enc=="1") encVal="-32"; //wep
-    encrypt.className="icon";
-    encrypt.style.backgroundPosition="-32px "+encVal+"px";
-    wrapper.appendChild(encrypt);
+    encrypt.addClass("icon");
+    encrypt.css("backgroundPosition","-32px "+encVal+"px");
+    
     var input = document.createElement("input");
     input.type="radio";
-    input.name=ap.essid;
-    input.value=ap.essid;
+    input.name="wifi";
     input.id="opt-"+ap.essid;
     if (currAp==ap.essid) input.checked="1";
     input.appendChild(document.createTextNode(ap.essid));
-    wrapper.appendChild(input)
+    
+    label = $('<label>')
+    label.text(ap.essid)
+    div = $('<div>')
+    div.addClass("radio")
+    div.css("padding-left","50px")
     $("#ap-table").append($('<tr>')
 	              .append($('<td>')
-    	                  .append(input)
-	              )
+                          .append(div
+                              .append(input)
+    	                      .append(label)
+                          )
+                       )
+                       .append($('<td>')
+                           .append(rssi)
+                       )
+                       .append($('<td>')
+                           .append(encrypt)
+                       )
                    );
-    //$("#ap-table").append("<tr><td>")
-    //              .append(wrapper);
-    //div.appendChild(input);
-    //div.appendChild(rssi);
-    //div.appendChild(encrypt);
-    //div.appendChild(label);
 }
+
+$(".radio").click(function() {
+    $(".radio").removeAttr('checked');
+    $(".radio").buttonset('refresh');
+});
 
 function getSelectedEssid() {
     var e=document.forms.wifiform.elements;
     for (var i=0; i<e.length; i++) {
-        if (e[i].type=="radio" && e[i].checked) return e[i].value;
+        if (e[i].type=="radio" && e[i].checked) return e[i];
     }
     return currAp;
 }
 
 
 function scanAPs() {
-    $.get("/wifi/wifiscan.cgi", function( data ) {
-	if (data.result.APs.length < 1) scanAPs();
+    $.ajax({
+        type: "GET",
+        url: "/wifi/wifiscan.cgi",
+    })
+    .success(function(data) {
         currAp=getSelectedEssid();
         $("#aps").empty();
         $("#ap-table").empty();
-        $("#aps").append($("#ap-table"));
+        ap_table = $("<table>");
+        ap_table.attr("id", "ap-table");
+        ap_table.css("margin", "0 auto");
+        $("#aps").append(ap_table);
         aps = data.result.APs;
         for (var i in aps) {
             if (aps[i].essid=="" && aps[i].rssi==0) continue;
             createInputForAp(aps[i]);
         }
         //Disabled recurring requests for now (table clears)
-        //window.setTimeout(scanAPs, 20000);
+        setTimeout(scanAPs, 20000);
+    })
+    .fail(function(data) {
+        setTimeout(scanAPs(), 1000);
     });
+
 }
 
 $(function() {
@@ -149,8 +171,6 @@ $(function() {
                     <p>
                         To connect to a WiFi network, please select one of the detected networks.<br>
                         <div id="aps" class="table-responsive">Scanning...</div>
-                        <table class="table" id="ap-table">
-                            <tbody></tbody>
                         </table>
                         <br>WiFi password, if applicable: <br />
                         <input type="password" name="passwd" val="%WiFiPasswd%"> <br />

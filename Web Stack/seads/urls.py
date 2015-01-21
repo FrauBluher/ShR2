@@ -14,8 +14,6 @@ router.register(r'users', home_views.UserViewSet)
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'home.views.index'), 
-    url(r'^api/', include(router.urls)),
-    url(r'^docs/', include('rest_framework_swagger.urls')),
     url(r'^signin/$', 'home.views.signin'),
     url(r'^signout/$', 'home.views.signout'),
     url(r'^register/$', 'home.views.register'),
@@ -23,5 +21,12 @@ urlpatterns = [
     url(r'^data/$', 'webapp.views.landing'),
     url(r'^dashboard/$', 'webapp.views.dashboard'),
     url(r'^charts/device/(?P<serial>\d+)/(?P<unit>\w)$', 'webapp.views.charts'),
-    url(r'^gitupdate/$', 'home.views.gitupdate'),
+    
+    # Development URLs
+    url(r'^api/', include(router.urls)),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
+    url(r'^gitupdate/$', 'debug.views.gitupdate'),
+    url(r'^echo/', 'debug.views.echo'),
+    url(r'^echo/(?P<args>\w+)$', 'debug.views.echo_args'),
+    url(r'^datagen/$', 'debug.views.datagen'),
 ]
