@@ -19,6 +19,9 @@ class DatagenForm(forms.Form):
    start = forms.IntegerField(label='Start')
    stop = forms.IntegerField(label='Stop') 
 
+class DatadelForm(forms.Form):
+   device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
+
 @csrf_exempt
 def gitupdate(request):
     if request.method == 'POST':
@@ -56,5 +59,20 @@ def datagen(request):
          return HttpResponse(events)
    else:
       form = DatagenForm()
-   return render(request, 'datagen.html', {'form':form})
+   title = "Debug - Data Generation"
+   description = "Use this form to submit random generated data for the device chosen."
+   return render(request, 'debug.html', {'title':title,'description',description,'form':form})
+
+def datadel(request):
+  if request.method == 'POST':
+    form = DatadelForm(request.POST)
+    if form.is_valid():
+       device = form.cleaned_data['device']
+       events = Event.objects.filter(device=device)
+       events.delete()
+  else:
+    form = DatadelForm()
+  title = "Debug - Data Deletion"
+  description = "Use this form to delete data for the device chosen."
+  return render(request, 'debug.html', {'title':title,'description',description,'form':form})
       
