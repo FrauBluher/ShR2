@@ -231,6 +231,9 @@ void ICACHE_FLASH_ATTR
 store_message(os_event_t *events) {
 	if (user_state == idle_store || user_state == receive_store) {
 		uart0_sendStr("\r\nstoring...\r\n");
+		if (push_send_buffer()) {
+			uart0_sendStr("\r\nsucceeded...\r\n");
+		}
 	}
 	storing = FALSE;
 }
@@ -242,9 +245,11 @@ store_message(os_event_t *events) {
   */
 void ICACHE_FLASH_ATTR
 send_message(os_event_t *events) {
-	
 	if (user_state == idle_send || user_state == receive_send) {
 		uart0_sendStr("\r\nsending...\r\n");
+		if (send_pop_buffer()) {
+			uart0_sendStr("\r\nsucceeded...\r\n");
+		}
 	}
 	sending = FALSE;
 }

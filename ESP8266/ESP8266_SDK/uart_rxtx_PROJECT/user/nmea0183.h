@@ -11,7 +11,7 @@
 
 typedef enum {
   TALKER_SEAD,
-  TALKER_UKNOWN
+  TALKER_UNKNOWN
 }talker_id;
 
 typedef enum {

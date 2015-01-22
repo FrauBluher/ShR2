@@ -9,6 +9,8 @@ from django.forms import ModelChoiceField
 import git
 import random
 
+import numpy
+
 class DeviceModelChoiceField(ModelChoiceField):
    def label_from_instance(self, obj):
       return "%s (%i)" % (obj, obj.serial)
@@ -16,8 +18,9 @@ class DeviceModelChoiceField(ModelChoiceField):
 class DatagenForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
    appliances = forms.ModelMultipleChoiceField(label='Appliances', queryset=Appliance.objects.all())
-   start = forms.IntegerField(label='Start')
-   stop = forms.IntegerField(label='Stop') 
+   start = forms.IntegerField(label='Start (10-digit timestamp)')
+   stop = forms.IntegerField(label='Stop (10-digit timestamp)')
+   resolution = forms.IntegerField(label='Resolution (seconds)')
 
 class DatadelForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
@@ -52,19 +55,20 @@ def datagen(request):
          appliances = form.cleaned_data['appliances']
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
-         events = []
-         averages = {'Computer':100, 'Toaster':20, 'Refrigerator':400, 'Television':60}
-         for i in range(start, stop):
+         resolution = form.cleaned_data['resolution']
+         wattages = {'Computer':{'avg':100, 'stdev':50}, 'Toaster':{'avg':20, 'stdev':20}, 'Refrigerator':{'avg':400,'stdev':200}, 'Television':{'avg':60,'stdev':60}}
+         count = 0
+         for i in numpy.arange(start, stop, resolution):
              for appliance in appliances:
-                 wattage = averages[appliance.name] + random.uniform(-20,20)
+                 wattage = wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['stdev'],wattages[appliance.name]['stdev'])
                  event = Event(device=device, timestamp=i*1000, wattage=wattage, appliance=appliance)
                  event.save()
-                 events.append("{0}: {1}: {2} - {3}".format(event.device, event.timestamp, event.wattage, event.appliance))
-         success = "Added {0} events successfully".format((stop - start)*len(appliances))
+                 count += 1
+         success = "Added {0} events successfully".format(count)
    else:
       form = DatagenForm()
    title = "Debug - Data Generation"
-   description = "Use this form to submit random generated data with 1s resolution for the device chosen."
+   description = "Use this form to submit random generated data for the device chosen."
    return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
 
 def datadel(request):

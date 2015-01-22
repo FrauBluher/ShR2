@@ -21,6 +21,7 @@
 #include "at.h"
 
 #include "send_recv_port.h"
+#include "buffers.h"
 
 extern uint8_t at_wifiMode;
 extern void user_esp_platform_load_param(void *param, uint16 len);
@@ -42,6 +43,7 @@ void user_init(void)
 	os_printf("\r\nready!!!\r\n");
 	uart0_sendStr("\r\nOK\r\n");
 	//at_init();
+	init_buffers();
 	send_recv_init();
 	uart0_sendStr("init done\r\n");
 }
