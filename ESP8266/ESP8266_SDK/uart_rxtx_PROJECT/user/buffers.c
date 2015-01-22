@@ -31,7 +31,8 @@ uart_buffer_t uart_buffer2 = {
 
 uart_buffer_t *uart_buffer = &uart_buffer1;
 
-//inits the sending circular buffer
+//inits the sending circular buffer, if you push on the buffer and it is
+//full, then we overwrite the oldest values
 circular_send_buffer_t send_buffer = {
 	.buffer[0] = 0,
 	.buffer_end = max_send_buff_size - 1,
@@ -98,6 +99,8 @@ put_buffer(uint8_t character) {
 		//incriment size, write character, incriment pointer, return
 		uart_buffer->buff_size++;
 		uart_buffer->buffer[uart_buffer->write++] = character;
+		//puts null plug at the end of the buffer
+		uart_buffer->buffer[uart_buffer->write] = NULL;
 		return true;
 	}
 }
@@ -145,7 +148,61 @@ checksum_buffer(void) {
   */
 bool ICACHE_FLASH_ATTR
 push_send_buffer(void) {
-	;
+	//initialize temp pointer to the buffer not being used by receive
+	uart_buffer_t *temp_ptr = NULL;
+	if (uart_buffer == &uart_buffer1) {
+		temp_ptr = &uart_buffer2;
+	} else {
+		temp_ptr = &uart_buffer1;
+	}
+	//check preamble for talker type, and message type
+	talker_id talker = get_talker(temp_ptr->buffer);
+	sentence_id sentence = get_sentence(temp_ptr->buffer);
+	if (talker == TALKER_SEAD) {
+		uart0_sendStr("talker sead...\r\n");
+		switch (sentence) {
+		case SENTENCE_DAT:
+			process data fields
+			//add 8 to the pointer to skip talker id, and message type
+			char *buff_ptr = temp_ptr->buffer + 8;
+			send_buffer.buffer[head].wattage = atof(buff_ptr);
+			while (*buff_ptr != ',') {
+				buff_ptr++;
+			}
+			buff_ptr++;
+			//copies timestamp to send buffer timestamp
+			buff_ptr = os_strncpy(send_buffer.buffer[head].timestamp, buff_ptr, 13);
+			
+			//TODO FIX PUSH INCRIMENTING
+			send_buffer.head++;
+			if (send_buffer.capacity == send_buffer.count) {
+				//overwrite the oldest item at the tail
+				send_buffer.tail++;
+				if (send_buffer.tail > send_buffer.end) {
+					send_buffer.tail = 0;
+				}
+				if (send_buffer.head > send_buffer.buffer_end) {
+					send_buffer.head = 0;
+				}
+			} else {
+				//if the head goes off the end, reset the head
+				if (send_buffer.head > send_buffer.buffer_end) {
+					send_buffer.head = 0;
+				}
+				send_buffer.count++;
+			}
+			break;
+		case SENTENCE_UNKNOWN:
+			uart0_sendStr("sentence unknown...\r\n");
+			break;
+		case default:
+			;
+			break;
+		}
+	} else if (talker == TALKER_UNKNOWN) {
+		uart0_sendStr("talker unknown...\r\n");
+		return false;
+	}
 }
 
 /**

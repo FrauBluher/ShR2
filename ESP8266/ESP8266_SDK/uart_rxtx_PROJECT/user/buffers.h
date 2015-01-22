@@ -25,8 +25,8 @@ typedef struct {
 
 //exact data to send
 typedef struct {
-	uint16_t wattage;
-	char timestamp[14];
+	float_t wattage;
+	char timestamp[14] = 0;
 }send_data_t;
 
 //circular buffer for sending

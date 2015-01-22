@@ -41,10 +41,10 @@ checksum(const char *string) {
   * true if strict is off and checksum matches, or checksum not present
   * false otherwise
   */
-
 bool ICACHE_FLASH_ATTR
 check(const char *string, bool strict) {
 	uint8_t check = 0;
+	uint8_t sentence_len = 0;
 	
 	//sentence starts with "$"
 	if (*string++ != '$') {
@@ -53,6 +53,11 @@ check(const char *string, bool strict) {
 	//XOR's everything until end of string, or asterisk
 	while(*string && *string != '*') {
 		check ^= *string++;
+		sentence_len++;
+	}
+	//if the length is less than 6 then it can't be a message (no fields)
+	if (sentence_len < 6) {
+		return false;
 	}
 	if (*string == '*') {
 		string++;
@@ -74,7 +79,7 @@ check(const char *string, bool strict) {
 	} else if (strict) {
 		return false;
 	}
-	//reuturn false if not delimited with \r\n
+	//reuturn false if not delimited with \r\n or \n
 	if (*string && strcmp(string, "\n") && strcmp(string, "\r\n")) {
 		return false;
 	}
@@ -82,5 +87,27 @@ check(const char *string, bool strict) {
 	return true;
 }
 
+/**
+  * @brief  returns sentence and talker types for a string
+  * @param  string
+  * @retval sentence ID or talker ID
+  */
+sentence_id ICACHE_FLASH_ATTR
+get_sentence(const char *string) {
+	if (os_strcmp(string + 3, "DAT")) {
+		return SENTENCE_DAT;
+	} else {
+		return SENTENCE_UNKNOWN;
+	}
+}
 
+
+talker_id ICACHE_FLASH_ATTR
+get_talker(const char *string) {
+	if (os_strcmp(string + 1, "SE")) {
+		return TALKER_SEAD;
+	} else {
+		return TALKER_UNKNOWN;
+	}
+}
 
