@@ -9,6 +9,8 @@ from django.forms import ModelChoiceField
 import git
 import random
 
+import numpy
+
 class DeviceModelChoiceField(ModelChoiceField):
    def label_from_instance(self, obj):
       return "%s (%i)" % (obj, obj.serial)
@@ -16,8 +18,9 @@ class DeviceModelChoiceField(ModelChoiceField):
 class DatagenForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
    appliances = forms.ModelMultipleChoiceField(label='Appliances', queryset=Appliance.objects.all())
-   start = forms.IntegerField(label='Start')
-   stop = forms.IntegerField(label='Stop') 
+   start = forms.IntegerField(label='Start (10-digit timestamp)')
+   stop = forms.IntegerField(label='Stop (10-digit timestamp)')
+   resolution = forms.IntegerField(label='Resolution (seconds)')
 
 class DatadelForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
@@ -52,9 +55,10 @@ def datagen(request):
          appliances = form.cleaned_data['appliances']
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
+         resolution = form.cleaned_data['resolution']
          events = []
          averages = {'Computer':100, 'Toaster':20, 'Refrigerator':400, 'Television':60}
-         for i in range(start, stop):
+         for i in numpy.arange(start, stop, resolution):
              for appliance in appliances:
                  wattage = averages[appliance.name] + random.uniform(-20,20)
                  event = Event(device=device, timestamp=i*1000, wattage=wattage, appliance=appliance)
@@ -64,7 +68,7 @@ def datagen(request):
    else:
       form = DatagenForm()
    title = "Debug - Data Generation"
-   description = "Use this form to submit random generated data with 1s resolution for the device chosen."
+   description = "Use this form to submit random generated data for the device chosen."
    return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
 
 def datadel(request):
