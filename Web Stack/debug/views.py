@@ -56,15 +56,15 @@ def datagen(request):
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
          resolution = form.cleaned_data['resolution']
-         events = []
-         averages = {'Computer':100, 'Toaster':20, 'Refrigerator':400, 'Television':60}
+         wattages = {'Computer':{'avg':100, 'stdev':50}, 'Toaster':{'avg':20, 'stdev':20}, 'Refrigerator':{'avg':400,'stdev':200}, 'Television':{'avg':60,'stdev':60}}
+         count = 0
          for i in numpy.arange(start, stop, resolution):
              for appliance in appliances:
-                 wattage = averages[appliance.name] + random.uniform(-20,20)
+                 wattage = wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['stdev'],wattages[appliance.name]['stdev'])
                  event = Event(device=device, timestamp=i*1000, wattage=wattage, appliance=appliance)
                  event.save()
-                 events.append("{0}: {1}: {2} - {3}".format(event.device, event.timestamp, event.wattage, event.appliance))
-         success = "Added {0} events successfully".format((stop - start)*len(appliances))
+                 count += 1
+         success = "Added {0} events successfully".format(count)
    else:
       form = DatagenForm()
    title = "Debug - Data Generation"
