@@ -16,7 +16,9 @@
         </table>
         <input type="submit" value="Submit">
       </form>
-      <p>{{ success }}</p>
+      {% if success %}
+        <div class="alert alert-success" role="alert">{{ success }}</div>
+      {% endif %}
    </div>
 </div>
 

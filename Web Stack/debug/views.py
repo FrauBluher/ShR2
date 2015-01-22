@@ -56,11 +56,11 @@ def datagen(request):
          averages = {'Computer':100, 'Toaster':20, 'Refrigerator':400, 'Television':60}
          for i in range(start, stop):
              for appliance in appliances:
-                 wattage = averages[appliance.name] + random.uniform(-10,10)
+                 wattage = averages[appliance.name] + random.uniform(-20,20)
                  event = Event(device=device, timestamp=i*1000, wattage=wattage, appliance=appliance)
                  event.save()
                  events.append("{0}: {1}: {2} - {3}".format(event.device, event.timestamp, event.wattage, event.appliance))
-         success = "Added %i events successfully" % (stop - start)
+         success = "Added {0} events successfully".format((stop - start)*len(appliances))
    else:
       form = DatagenForm()
    title = "Debug - Data Generation"
@@ -77,24 +77,9 @@ def datadel(request):
          events = Event.objects.filter(device=device)
          count = len(events)
          events.delete()
-         success = "Deleted %i events successfully" % count
+         success = "Deleted {0} events successfully".format(count)
    else:
       form = DatadelForm()
    title = "Debug - Data Deletion"
    description = "Use this form to delete data for the device chosen."
    return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
-
-def dev(request):
-   methods = {'datagen':datagen, 'datadel':datadel}
-   if request.method == 'POST':
-      form = DevForm(request.POST)
-      if form.is_valid():
-         method = form.cleaned_data['method']
-         if method in methods:
-            return HttpResponse(methods[method](request))
-         else: return HttpResponse(status=404)
-   else:
-      form = DevForm()
-   title = "Development - Method Select"
-   description = "Select a debug method"
-   return render(request, 'debug.html', {'title':title,'description':description,'form':form})

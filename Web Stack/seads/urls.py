@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^gitupdate/$', 'debug.views.gitupdate'),
     url(r'^echo/', 'debug.views.echo'),
     url(r'^echo/(?P<args>\w+)$', 'debug.views.echo_args'),
-    url(r'^dev/$', 'debug.views.dev'),
+    url(r'^datagen/$', 'debug.views.datagen'),
+    url(r'^datadel/$', 'debug.views.datadel'),
 ]
