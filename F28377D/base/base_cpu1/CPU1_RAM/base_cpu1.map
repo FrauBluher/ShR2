@@ -1,7 +1,7 @@
 ******************************************************************************
              TMS320C2000 Linker Unix v6.2.7                    
 ******************************************************************************
->> Linked Tue Jan 20 15:46:00 2015
+>> Linked Thu Jan 22 14:59:09 2015
 
 OUTPUT FILE NAME:   <base_cpu1.out>
 ENTRY POINT SYMBOL: "code_start"  address: 00000000
@@ -16,7 +16,7 @@ PAGE 0:
   RAMM0                 00000122   000002de  00000027  000002b7  RWIX
   RAMD0                 0000b000   00000800  00000000  00000800  RWIX
   RAMGS0                0000c000   00001000  00000fff  00000001  RWIX
-  RAMGS1                0000d000   00001000  0000054a  00000ab6  RWIX
+  RAMGS1                0000d000   00001000  000005f9  00000a07  RWIX
   RAMGS2                0000e000   00001000  00000000  00001000  RWIX
   RAMGS3                0000f000   00001000  00000000  00001000  RWIX
   RAMGS4                00010000   00001000  00000000  00001000  RWIX
@@ -176,17 +176,18 @@ Cla1SoftIntRegsFile
                   0000cd8f    00000257     uartstdio.obj (.text)
                   0000cfe6    00000019     rts2800_fpu32.lib : args_main.obj (.text)
 
-.text.2    0    0000d000    0000054a     
+.text.2    0    0000d000    000005f9     
                   0000d000    0000024b     F2837xD_Gpio.obj (.text)
                   0000d24b    000001c6     interrupt.obj (.text)
-                  0000d411    0000006e     main.obj (.text)
-                  0000d47f    00000046     rts2800_fpu32.lib : boot.obj (.text)
-                  0000d4c5    00000028     F2837xD_PieCtrl.obj (.text)
-                  0000d4ed    00000025     F2837xD_PieVect.obj (.text)
-                  0000d512    00000019     rts2800_fpu32.lib : exit.obj (.text)
-                  0000d52b    0000000e     interrupt.obj (.text:retain)
-                  0000d539    00000009     rts2800_fpu32.lib : _lock.obj (.text)
-                  0000d542    00000008     F2837xD_CodeStartBranch.obj (.text)
+                  0000d411    00000090     main.obj (.text:retain)
+                  0000d4a1    0000008d     main.obj (.text)
+                  0000d52e    00000046     rts2800_fpu32.lib : boot.obj (.text)
+                  0000d574    00000028     F2837xD_PieCtrl.obj (.text)
+                  0000d59c    00000025     F2837xD_PieVect.obj (.text)
+                  0000d5c1    00000019     rts2800_fpu32.lib : exit.obj (.text)
+                  0000d5da    0000000e     interrupt.obj (.text:retain)
+                  0000d5e8    00000009     rts2800_fpu32.lib : _lock.obj (.text)
+                  0000d5f1    00000008     F2837xD_CodeStartBranch.obj (.text)
 
 GETBUFFER 
 *          0    0003f800    00000000     DSECT
@@ -796,7 +797,7 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 address    name
 --------   ----
 ffffffff   .text
-0000d512   C$$EXIT
+0000d5c1   C$$EXIT
 0000c0be   _ADCA1_ISR
 0000c33e   _ADCA2_ISR
 0000c348   _ADCA3_ISR
@@ -852,7 +853,7 @@ ffffffff   .text
 00005d20   _Cmpss6Regs
 00005d40   _Cmpss7Regs
 00005d60   _Cmpss8Regs
-0000d411   _ConfigureUART
+0000d4a1   _ConfigureUART
 0005d300   _CpuSysRegs
 00000c00   _CpuTimer0Regs
 00000c08   _CpuTimer1Regs
@@ -946,7 +947,7 @@ ffffffff   .text
 00047800   _Emif2Regs
 00000d01   _EmuBMode
 00000d00   _EmuKey
-0000d4e4   _EnableInterrupts
+0000d593   _EnableInterrupts
 00000141   _F28x_usDelay
 0000c532   _FLASH_CORRECTABLE_ERROR_ISR
 0000c406   _FPU_OVERFLOW_ISR
@@ -986,12 +987,12 @@ ffffffff   .text
 0000c9fe   _InitAuxPll
 0000d000   _InitGpio
 0000c8c2   _InitPeripheralClocks
-0000d4c5   _InitPieCtrl
-0000d4ed   _InitPieVectTable
+0000d574   _InitPieCtrl
+0000d59c   _InitPieVectTable
 0000c891   _InitSysCtrl
 0000c97a   _InitSysPll
 00007900   _InputXbarRegs
-0000d52b   _IntDefaultHandler
+0000d5da   _IntDefaultHandler
 0000d314   _IntDisable
 0000d27d   _IntEnable
 0000d398   _IntIFRClear
@@ -1110,6 +1111,8 @@ ffffffff   .text
 0000cdc1   _UARTwrite
 0000c4ba   _UPPA_ISR
 0000c4c4   _USBA_ISR
+0000d448   _USBUARTRXIntHandler
+0000d411   _USBUARTTXIntHandler
 0000c0a0   _USER10_ISR
 0000c0aa   _USER11_ISR
 0000c0b4   _USER12_ISR
@@ -1145,15 +1148,16 @@ ffffffff   ___pinit__
 ffffffff   ___text__
 0000cfe6   __args_main
 00008002   __lock
-0000d541   __nop
-0000d53d   __register_lock
-0000d539   __register_unlock
+0000d5f0   __nop
+0000d5ec   __register_lock
+0000d5e8   __register_unlock
 00000400   __stack
 00008000   __unlock
-0000d512   _abort
-0000d47f   _c_int00
-0000d514   _exit
-0000d43d   _main
+0000d5c1   _abort
+0000d52e   _c_int00
+0000d5c3   _exit
+0000d4e9   _init
+0000d51f   _main
 ffffffff   binit
 00000122   cinit
 00000000   code_start
@@ -1484,19 +1488,22 @@ address    name
 0000d27d   _IntEnable
 0000d314   _IntDisable
 0000d398   _IntIFRClear
-0000d411   _ConfigureUART
-0000d43d   _main
-0000d47f   _c_int00
-0000d4c5   _InitPieCtrl
-0000d4e4   _EnableInterrupts
-0000d4ed   _InitPieVectTable
-0000d512   C$$EXIT
-0000d512   _abort
-0000d514   _exit
-0000d52b   _IntDefaultHandler
-0000d539   __register_unlock
-0000d53d   __register_lock
-0000d541   __nop
+0000d411   _USBUARTTXIntHandler
+0000d448   _USBUARTRXIntHandler
+0000d4a1   _ConfigureUART
+0000d4e9   _init
+0000d51f   _main
+0000d52e   _c_int00
+0000d574   _InitPieCtrl
+0000d593   _EnableInterrupts
+0000d59c   _InitPieVectTable
+0000d5c1   C$$EXIT
+0000d5c1   _abort
+0000d5c3   _exit
+0000d5da   _IntDefaultHandler
+0000d5e8   __register_unlock
+0000d5ec   __register_lock
+0000d5f0   __nop
 00047000   _Emif1Regs
 00047800   _Emif2Regs
 00050000   _IpcRegs
@@ -1530,4 +1537,4 @@ ffffffff   binit
 ffffffff   etext
 ffffffff   pinit
 
-[364 symbols]
+[367 symbols]

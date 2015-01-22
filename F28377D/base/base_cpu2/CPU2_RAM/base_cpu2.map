@@ -1,7 +1,7 @@
 ******************************************************************************
              TMS320C2000 Linker Unix v6.2.7                    
 ******************************************************************************
->> Linked Tue Jan 20 15:46:08 2015
+>> Linked Thu Jan 22 14:50:42 2015
 
 OUTPUT FILE NAME:   <base_cpu2.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 0000b7ba
@@ -14,7 +14,7 @@ MEMORY CONFIGURATION
 PAGE 0:
   BEGIN                 00000000   00000002  00000002  00000000  RWIX
   RAMM0                 00000080   00000380  0000001a  00000366  RWIX
-  RAMLS0                00008000   00000800  0000010a  000006f6  RWIX
+  RAMLS0                00008000   00000800  0000010d  000006f3  RWIX
   RAMLS1                00008800   00000800  00000000  00000800  RWIX
   RAMLS2                00009000   00000800  00000000  00000800  RWIX
   RAMLS3                00009800   00000800  00000000  00000800  RWIX
@@ -142,16 +142,16 @@ Cla1SoftIntRegsFile
 *          1    00000ce0    00000004     DSECT
                   00000ce0    00000004     F2837xD_GlobalVariableDefs.obj (Cla1SoftIntRegsFile)
 
-.text.1    0    00008000    0000010a     
-                  00008000    00000036     F2837xD_Gpio.obj (.text)
-                  00008036    00000036     main.obj (.text)
-                  0000806c    00000028     F2837xD_PieCtrl.obj (.text)
-                  00008094    00000025     F2837xD_PieVect.obj (.text)
-                  000080b9    00000019     rts2800_fpu32.lib : args_main.obj (.text)
-                  000080d2    00000019                       : exit.obj (.text)
-                  000080eb    0000000e     interrupt.obj (.text:retain)
-                  000080f9    00000009     rts2800_fpu32.lib : _lock.obj (.text)
-                  00008102    00000008     F2837xD_CodeStartBranch.obj (.text)
+.text.1    0    00008000    0000010d     
+                  00008000    00000039     main.obj (.text)
+                  00008039    00000036     F2837xD_Gpio.obj (.text)
+                  0000806f    00000028     F2837xD_PieCtrl.obj (.text)
+                  00008097    00000025     F2837xD_PieVect.obj (.text)
+                  000080bc    00000019     rts2800_fpu32.lib : args_main.obj (.text)
+                  000080d5    00000019                       : exit.obj (.text)
+                  000080ee    0000000e     interrupt.obj (.text:retain)
+                  000080fc    00000009     rts2800_fpu32.lib : _lock.obj (.text)
+                  00008105    00000008     F2837xD_CodeStartBranch.obj (.text)
 
 .text.2    0    0000b000    00000800     
                   0000b000    0000057b     F2837xD_DefaultISR.obj (.text:retain)
@@ -689,7 +689,7 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 address    name
 --------   ----
 ffffffff   .text
-000080d2   C$$EXIT
+000080d5   C$$EXIT
 0000b0be   _ADCA1_ISR
 0000b33e   _ADCA2_ISR
 0000b348   _ADCA3_ISR
@@ -834,15 +834,15 @@ ffffffff   .text
 00047800   _Emif2Regs
 00000d01   _EmuBMode
 00000d00   _EmuKey
-0000808b   _EnableInterrupts
+0000808e   _EnableInterrupts
 00000096   _F28x_usDelay
 0000b51e   _FLASH_CORRECTABLE_ERROR_ISR
 0000b406   _FPU_OVERFLOW_ISR
 0000b410   _FPU_UNDERFLOW_ISR
 0005f800   _Flash0CtrlRegs
 0005fb00   _Flash0EccRegs
-00008000   _GPIO_ReadPin
-00008017   _GPIO_WritePin
+00008039   _GPIO_ReadPin
+00008050   _GPIO_WritePin
 00007f00   _GpioDataRegs
 0000b7b4   _HALT
 0000b7b7   _HIB
@@ -861,11 +861,11 @@ ffffffff   .text
 0000b438   _IPC3_ISR
 0000b6ba   _InitAuxPll
 0000b57e   _InitPeripheralClocks
-0000806c   _InitPieCtrl
-00008094   _InitPieVectTable
+0000806f   _InitPieCtrl
+00008097   _InitPieVectTable
 0000b57b   _InitSysCtrl
 0000b636   _InitSysPll
-000080eb   _IntDefaultHandler
+000080ee   _IntDefaultHandler
 00050000   _IpcRegs
 0000b230   _MCBSPA_RX_ISR
 0000b23a   _MCBSPA_TX_ISR
@@ -952,17 +952,18 @@ ffffffff   ___c_args__
 ffffffff   ___etext__
 ffffffff   ___pinit__
 ffffffff   ___text__
-000080b9   __args_main
+000080bc   __args_main
 0000a9c2   __lock
-00008101   __nop
-000080fd   __register_lock
-000080f9   __register_unlock
+00008104   __nop
+00008100   __register_lock
+000080fc   __register_unlock
 00000400   __stack
 0000a9c0   __unlock
-000080d2   _abort
+000080d5   _abort
 0000b7ba   _c_int00
-000080d4   _exit
-00008036   _main
+000080d7   _exit
+00008000   _init
+0000801c   _main
 ffffffff   binit
 00000080   cinit
 00000000   code_start
@@ -1050,20 +1051,21 @@ address    name
 00007580   _AdcdRegs
 00007980   _DmaClaSrcSelRegs
 00007f00   _GpioDataRegs
-00008000   _GPIO_ReadPin
-00008017   _GPIO_WritePin
-00008036   _main
-0000806c   _InitPieCtrl
-0000808b   _EnableInterrupts
-00008094   _InitPieVectTable
-000080b9   __args_main
-000080d2   C$$EXIT
-000080d2   _abort
-000080d4   _exit
-000080eb   _IntDefaultHandler
-000080f9   __register_unlock
-000080fd   __register_lock
-00008101   __nop
+00008000   _init
+0000801c   _main
+00008039   _GPIO_ReadPin
+00008050   _GPIO_WritePin
+0000806f   _InitPieCtrl
+0000808e   _EnableInterrupts
+00008097   _InitPieVectTable
+000080bc   __args_main
+000080d5   C$$EXIT
+000080d5   _abort
+000080d7   _exit
+000080ee   _IntDefaultHandler
+000080fc   __register_unlock
+00008100   __register_lock
+00008104   __nop
 0000a800   _PieVectTableInit
 0000a9c0   __unlock
 0000a9c2   __lock
@@ -1255,4 +1257,4 @@ ffffffff   binit
 ffffffff   etext
 ffffffff   pinit
 
-[280 symbols]
+[281 symbols]
