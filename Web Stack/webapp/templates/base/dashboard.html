@@ -553,6 +553,12 @@
          $('#content').html(ajax_data);
       });
    });
+
+   function chart_click(event) {
+      event.preventDefault();
+      console.log(event.clickSeries);
+      
+   }
    
    //initial chart load, get data for first device
    {% if my_devices %}
@@ -607,11 +613,14 @@
            {% endfor %}
         ],
         area: {
-           initialDisplayUnit: "1 h",
+           initialDisplayUnit: "5 m",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor: "newestData"
         },
-        currentTime: {enabled: false}
+        currentTime: {enabled: false},
+        events: {
+           onClick: function(event) { chart_click(event) }
+        }
      });
    {% endif %}
 
