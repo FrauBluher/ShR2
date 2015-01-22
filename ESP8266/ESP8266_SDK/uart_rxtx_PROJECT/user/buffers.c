@@ -139,12 +139,23 @@ checksum_buffer(void) {
 /******************************SEND BUFFER*****************************/
 
 /**
-  * @brief  puts the data found in the uart buffer into the send buffer
+  * @brief  puts the data found in the other uart buffer into the send buffer
   * @param  None
-  * @retval returns false if failed, and true if succeeded
+  * @retval returns false if failed to get fields, and true if succeeded
   */
 bool ICACHE_FLASH_ATTR
-put_send_buffer(void) {
+push_send_buffer(void) {
+	;
+}
+
+/**
+  * @brief  retreives data, makes the format string, sends json data
+  * @param  None
+  * @retval returns false if failed to send and pop,
+  * and true if succeeded
+  */
+bool ICACHE_FLASH_ATTR
+send_pop_buffer(void) {
 	;
 }
 

@@ -59,7 +59,11 @@ bool checksum_buffer(void);
 
 //prototype definitions start for send buffer
 
-//puts the uart buffer data into the send buffer
-bool put_send_buffer(void);
+//push and pop for send buffer
+bool push_send_buffer(void);
+bool send_pop_buffer(void);
+
+//returns current size of send buffer
+uint8_t size_send_buffer(void);
 
 #endif

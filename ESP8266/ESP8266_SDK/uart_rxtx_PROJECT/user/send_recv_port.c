@@ -81,6 +81,9 @@ recv_message(os_event_t *events) {
 				uart0_sendStr("\r\nchecksum succeeded...\r\n");
 				print_buffer();
 				storing = TRUE;
+				//swap and reset buffer
+				swap_buffer();
+				reset_buffer();
 				system_os_post(store_messagePrio, 0, 0);
 				user_state = idle_store;
 			} else {
@@ -138,6 +141,9 @@ recv_message(os_event_t *events) {
 				uart0_sendStr("\r\nchecksum succeeded...\r\n");
 				print_buffer();
 				storing = TRUE;
+				//swap and reset buffer
+				swap_buffer();
+				reset_buffer();
 				system_os_post(store_messagePrio, 0, 0);
 				user_state = idle_store;
 			} else {
@@ -175,6 +181,9 @@ recv_message(os_event_t *events) {
 				uart0_sendStr("\r\nchecksum succeeded...\r\n");
 				print_buffer();
 				storing = TRUE;
+				//swap and reset buffer
+				swap_buffer();
+				reset_buffer();
 				system_os_post(store_messagePrio, 0, 0);
 				user_state = idle_store;
 			} else {
