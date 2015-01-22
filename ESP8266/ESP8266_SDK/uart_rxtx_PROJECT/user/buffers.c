@@ -2,7 +2,8 @@
  *  Henry Crute
  * 	hcrute@ucsc.edu
  * 	
- * 	implementation of the buffer
+ * Implementation of the buffers for receiving, and circular buffer
+ * for sending
  * 
  */
 
@@ -11,7 +12,18 @@
 #include "buffers.h"
 #include "nmea0183.h"
 
+//the preamble of the post request
+#define POST_REQUEST "POST /api/event-api/ HTTP/1.1\r\n"\
+					 "User-Agent: ESP8266\r\n"\
+					 "Host: seads.brarbsmit.com\r\n"\
+					 "Accept: */*\r\n"\
+					 "Content-Type: application/json\r\n"\
+					 "Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0\r\n"\
+					 "Content-Length: %u\r\n\r\n%s"
+//format string for json data
+#define JSON_DATA "{\"device\": \"/api/device-api/%u/\", \"wattage\":\"%f\", \"timestamp\":\"%s\"}"
 
+uint8_t device_id = 2;
 
 //inits the uart buffers! using two semiphores for simultaneous
 //read store
@@ -43,6 +55,11 @@ circular_send_buffer_t send_buffer = {
 };
 
 /******************************UART BUFFER*****************************/
+void ICACHE_FLASH_ATTR
+init_buffers(void) {
+	os_memset(send_buffer.buffer, 0, sizeof(send_data_t) * max_send_buff_size);
+}
+
 /**
   * @brief  resets read and write pointers for uart buffer
   * @param  None
@@ -60,7 +77,8 @@ reset_buffer(void) {
   * @param  None
   * @retval None
   */
-void swap_buffer(void) {
+void ICACHE_FLASH_ATTR
+swap_buffer(void) {
 	if (uart_buffer == &uart_buffer1) {
 		uart_buffer = &uart_buffer2;
 	} else {
@@ -100,7 +118,7 @@ put_buffer(uint8_t character) {
 		uart_buffer->buff_size++;
 		uart_buffer->buffer[uart_buffer->write++] = character;
 		//puts null plug at the end of the buffer
-		uart_buffer->buffer[uart_buffer->write] = NULL;
+		uart_buffer->buffer[uart_buffer->write] = 0;
 		return true;
 	}
 }
@@ -150,6 +168,7 @@ bool ICACHE_FLASH_ATTR
 push_send_buffer(void) {
 	//initialize temp pointer to the buffer not being used by receive
 	uart_buffer_t *temp_ptr = NULL;
+	char *buff_ptr = NULL;
 	if (uart_buffer == &uart_buffer1) {
 		temp_ptr = &uart_buffer2;
 	} else {
@@ -162,23 +181,25 @@ push_send_buffer(void) {
 		uart0_sendStr("talker sead...\r\n");
 		switch (sentence) {
 		case SENTENCE_DAT:
-			process data fields
+			//process data fields
 			//add 8 to the pointer to skip talker id, and message type
-			char *buff_ptr = temp_ptr->buffer + 8;
-			send_buffer.buffer[head].wattage = atof(buff_ptr);
+			buff_ptr = temp_ptr->buffer + 8;
+			send_buffer.buffer[send_buffer.head].wattage = atof(buff_ptr);
 			while (*buff_ptr != ',') {
 				buff_ptr++;
 			}
 			buff_ptr++;
+			//TODO fix the hardcoded 13 to the length of the actual time
+			//given
 			//copies timestamp to send buffer timestamp
-			buff_ptr = os_strncpy(send_buffer.buffer[head].timestamp, buff_ptr, 13);
+			os_strncpy(send_buffer.buffer[send_buffer.head].timestamp, buff_ptr, 13);
 			
 			//TODO FIX PUSH INCRIMENTING
 			send_buffer.head++;
 			if (send_buffer.capacity == send_buffer.count) {
 				//overwrite the oldest item at the tail
 				send_buffer.tail++;
-				if (send_buffer.tail > send_buffer.end) {
+				if (send_buffer.tail > send_buffer.tail) {
 					send_buffer.tail = 0;
 				}
 				if (send_buffer.head > send_buffer.buffer_end) {
@@ -195,8 +216,8 @@ push_send_buffer(void) {
 		case SENTENCE_UNKNOWN:
 			uart0_sendStr("sentence unknown...\r\n");
 			break;
-		case default:
-			;
+		default:
+			return false;
 			break;
 		}
 	} else if (talker == TALKER_UNKNOWN) {
@@ -213,7 +234,40 @@ push_send_buffer(void) {
   */
 bool ICACHE_FLASH_ATTR
 send_pop_buffer(void) {
-	;
+	//return false if there was nothing on the buffer
+	if (send_buffer.count == 0) {
+		return false;
+	}
+	//establish tcp connection with seads.brabsmit.com on port 80
+	//if failed, return false
+	//else format the output json data into a string
+	//initialize buffer to use for sending data
+	char json_data[512] = "";
+	char send_data[1024] = "";
+	uint16_t chars_written = 0;
+	chars_written = os_sprintf(json_data, JSON_DATA, device_id,
+		send_buffer.buffer[send_buffer.tail].wattage,
+		send_buffer.buffer[send_buffer.tail].timestamp);
+	//if sprintf failed
+	if (chars_written < 0) {
+		return false;
+	}
+	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
+		json_data);
+	//if sprintf failed
+	if (chars_written < 0) {
+		return false;
+	}
+	//send the "send_data" and close the tcp connection afterwards
+	uart0_sendStr(send_data);
+	//decriment the tail and the number of things in the circular buffer
+	send_buffer.count--;
+	if (send_buffer.tail == 0) {
+		send_buffer.tail = send_buffer.buffer_end;
+	} else {
+		send_buffer.tail--;
+	}
+	
 }
 
 /**

@@ -25,8 +25,8 @@ typedef struct {
 
 //exact data to send
 typedef struct {
-	float_t wattage;
-	char timestamp[14] = 0;
+	float wattage;
+	char timestamp[14];
 }send_data_t;
 
 //circular buffer for sending
@@ -42,6 +42,7 @@ typedef struct {
 
 //prototype definitions start for uart buffer 
 
+void init_buffers(void);
 //resets the buffer read and write pointers
 void reset_buffer(void);
 //swaps out buffer 1 with buffer 2, or the other way
