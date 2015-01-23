@@ -25,9 +25,11 @@
 //receive store send states
 typedef enum {
   receive_idle,
-  receive_message,
-  store,
-  send
+  receive,
+  idle_send,
+  idle_store,
+  receive_store,
+  receive_send,
 }rss_state;
 
 //prototype definitions start for library

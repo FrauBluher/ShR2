@@ -1,3 +1,0 @@
-Version: 1.2.3.2
-Time: 2014-12-05 21:51
-GIT Revision: b780994cc997cf36b902f0635eaf457344d3492f

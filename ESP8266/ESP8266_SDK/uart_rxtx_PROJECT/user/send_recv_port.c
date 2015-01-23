@@ -24,7 +24,7 @@ os_event_t    send_messageQueue[send_messageQueueLen];
 rss_state user_state = receive_idle;
 
 //flag that checks to see if it should echo rx
-bool echoFlag = FALSE;
+bool echoFlag = TRUE;
 //flag that tells you if you are connected to an access point?
 bool connected = FALSE;
 //are we storing data?
@@ -49,57 +49,162 @@ recv_message(os_event_t *events) {
 	
 	//if it is not storing from the buffer. don't worry because storing is
 	//and should be fast
-	if(user_state != store) {
-		temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
+	
+	temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 		//echo back if flag is true
-		if (echoFlag) {
-			uart_tx_one_char(temp);
-		}
-    }
+	if (echoFlag) {
+		uart_tx_one_char(temp);
+	}
+
     switch(user_state) {
 	case receive_idle:
 		//if the character is a dollar sign, we are no longer idle and
 		//a message is beginning!
 		if (temp == '$') {
-			user_state = receive_message;
+			user_state = receive;
 			//puts shit on the buffer
 			put_buffer(temp);
+		//TODO change to if is connected to access point, and send 
+		//is greater than 0
+		} else if (size_send_buffer() > 0) {
+			sending = TRUE;
+			system_os_post(send_messagePrio, 0, 0);
+			user_state = idle_send;
 		}
 		break;
-	case receive_message:
+	case receive:
 		if (temp == '\n') {
 			//message terminating, storing into the send buffer
 			//nmea checksum on the buffer
 			if (checksum_buffer()) {
-				//insert into send buffer
+				//store it into the circular buffer
+				uart0_sendStr("\r\nchecksum succeeded...\r\n");
 				print_buffer();
-				put_send_buffer();
+				storing = TRUE;
+				//swap and reset buffer
+				swap_buffer();
 				reset_buffer();
-				user_state = receive_idle;
+				system_os_post(store_messagePrio, 0, 0);
+				user_state = idle_store;
 			} else {
-				print_buffer();
+				//print_buffer();
+				uart0_sendStr("\r\nchecksum failed...\r\n");
 				reset_buffer();
 				user_state = receive_idle;
 			}
 		//if the buffer overflows, then reset the buffer and go back
 		//to idle
 		} else if (!put_buffer(temp)) {
-			print_buffer();
+			//print_buffer();
 			reset_buffer();
 			user_state = receive_idle;
 		}
 		break;
-	//todo
-	//can use two uart buffers for simultaneous storing and receiving?
-	case store:
-		;
+	case idle_send:
+		if (sending == FALSE && temp != '$') {
+			user_state = receive_idle;
+		} else if (sending == FALSE && temp == '$') {
+			user_state = receive;
+			//put shit on the buffer
+			put_buffer(temp);
+		} else if (sending == TRUE && temp == '$') {
+			user_state = receive_send;
+			//puts shit on the buffer
+			put_buffer(temp);
+		} else if (sending == TRUE && temp != '$') {
+			user_state = idle_send;
+		}
 		break;
-	//must not send and store at the same time!
-	case send:
-		;
+	case idle_store:
+		if (storing == FALSE && temp != '$') {
+			user_state = receive_idle;
+		} else if (storing == FALSE && temp == '$') {
+			user_state = receive;
+			//puts shit on the buffer
+			put_buffer(temp);
+		} else if (storing == TRUE && temp == '$') {
+			user_state = receive_store;
+			//puts shit on the buffer
+			put_buffer(temp);
+		} else if (storing == TRUE && temp != '$') {
+			user_state = idle_store;
+		}
 		break;
+	//reveiving and storing at the same time
+	case receive_store:
+		if (storing == FALSE && temp != '\n') {
+			put_buffer(temp);
+			user_state = receive;
+		} else if (storing == FALSE && temp == '\n') {
+			if (checksum_buffer()) {
+				//store it into the circular buffer
+				uart0_sendStr("\r\nchecksum succeeded...\r\n");
+				print_buffer();
+				storing = TRUE;
+				//swap and reset buffer
+				swap_buffer();
+				reset_buffer();
+				system_os_post(store_messagePrio, 0, 0);
+				user_state = idle_store;
+			} else {
+				//print_buffer();
+				uart0_sendStr("\r\nchecksum failed...\r\n");
+				reset_buffer();
+				user_state = receive_idle;
+			}
+		} else if (storing == TRUE && temp != '\n') {
+			//continue to receive shit and store, in case of overflow
+			if (!put_buffer(temp)) {
+				//print_buffer();
+				reset_buffer();
+				user_state = idle_store;
+			}
+			user_state = receive_store;
+		} else if (storing == TRUE && temp == '\n') {
+			//too fast for the buffers to handle, reset and drop message
+			reset_buffer();
+			user_state = idle_store;
+		}
+		break;
+	//
+	case receive_send:
+		if (sending == FALSE && temp != '\n') {
+			if (!put_buffer(temp)) {
+				//print_buffer();
+				reset_buffer();
+				user_state = idle_store;
+			}
+			user_state = receive;
+		} else if (sending == FALSE && temp == '\n') {
+			if (checksum_buffer()) {
+				//store it into the circular buffer
+				uart0_sendStr("\r\nchecksum succeeded...\r\n");
+				print_buffer();
+				storing = TRUE;
+				//swap and reset buffer
+				swap_buffer();
+				reset_buffer();
+				system_os_post(store_messagePrio, 0, 0);
+				user_state = idle_store;
+			} else {
+				//print_buffer();
+				uart0_sendStr("\r\nchecksum failed...\r\n");
+				reset_buffer();
+				user_state = receive_idle;
+			}
+		} else if (sending == TRUE && temp != '\n') {
+			put_buffer(temp);
+			user_state = receive_send;
+		} else if (sending == TRUE && temp == '\n') {
+			//drop message, got a message before we could send
+			reset_buffer();
+			user_state = idle_send;
+		}
+		break;
+	//default case, will never happen hopefully
 	default:
 		if(temp == '\n') {
+			uart0_sendStr("Error...\r\n");
 		}
 		break;
     }
@@ -107,7 +212,8 @@ recv_message(os_event_t *events) {
     //end of the while loop
 	}
 	
-	//handles uart interrupt, and calling business from the uart.c driver
+	//handles uart interrupt, and calling this function from the uart.c
+	//driver
 	if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_FULL_INT_ST)) {
 		WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_FULL_INT_CLR);
 	} else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_TOUT_INT_ST)) {
@@ -123,9 +229,11 @@ recv_message(os_event_t *events) {
   */
 void ICACHE_FLASH_ATTR
 store_message(os_event_t *events) {
-	storing = TRUE;
-	if (user_state == send) {
+	if (user_state == idle_store || user_state == receive_store) {
 		uart0_sendStr("\r\nstoring...\r\n");
+		if (push_send_buffer()) {
+			uart0_sendStr("\r\nsucceeded...\r\n");
+		}
 	}
 	storing = FALSE;
 }
@@ -137,9 +245,11 @@ store_message(os_event_t *events) {
   */
 void ICACHE_FLASH_ATTR
 send_message(os_event_t *events) {
-	sending = TRUE;
-	if (user_state == send) {
+	if (user_state == idle_send || user_state == receive_send) {
 		uart0_sendStr("\r\nsending...\r\n");
+		if (send_pop_buffer()) {
+			uart0_sendStr("\r\nsucceeded...\r\n");
+		}
 	}
 	sending = FALSE;
 }

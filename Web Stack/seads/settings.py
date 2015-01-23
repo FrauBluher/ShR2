@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# bad idea - move elsewhere
+wunderground_key = '24e5a1d55557f6d5'
+
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',
     BASE_DIR + '/webapp/templates/',

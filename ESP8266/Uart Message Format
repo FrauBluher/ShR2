@@ -1,0 +1,7 @@
+$SEDAT,76.2,1421885767000
+
+SE is the talker id (SEAD)
+DAT is the type of message (data)
+the next field is wattage string
+The next field is a timestamp string
+Checksum will be optional as of now

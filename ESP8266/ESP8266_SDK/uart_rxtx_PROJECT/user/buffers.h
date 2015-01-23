@@ -25,7 +25,7 @@ typedef struct {
 
 //exact data to send
 typedef struct {
-	uint16_t wattage;
+	float wattage;
 	char timestamp[14];
 }send_data_t;
 
@@ -40,10 +40,13 @@ typedef struct {
 } circular_send_buffer_t;
 
 
-//prototype definitions start for library
+//prototype definitions start for uart buffer 
 
+void init_buffers(void);
 //resets the buffer read and write pointers
 void reset_buffer(void);
+//swaps out buffer 1 with buffer 2, or the other way
+void swap_buffer(void);
 
 //fifo push and pop
 bool put_buffer(uint8_t);
@@ -55,7 +58,13 @@ void print_buffer(void);
 //nmea checksums the buffer
 bool checksum_buffer(void);
 
-//puts the uart buffer data into the send buffer
-bool put_send_buffer(void);
+//prototype definitions start for send buffer
+
+//push and pop for send buffer
+bool push_send_buffer(void);
+bool send_pop_buffer(void);
+
+//returns current size of send buffer
+uint8_t size_send_buffer(void);
 
 #endif

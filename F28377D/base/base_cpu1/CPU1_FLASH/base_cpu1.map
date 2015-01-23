@@ -1,7 +1,7 @@
 ******************************************************************************
              TMS320C2000 Linker Unix v6.2.7                    
 ******************************************************************************
->> Linked Tue Jan 20 15:55:48 2015
+>> Linked Thu Jan 22 12:44:51 2015
 
 OUTPUT FILE NAME:   <base_cpu1.out>
 ENTRY POINT SYMBOL: "code_start"  address: 00080000
@@ -23,7 +23,7 @@ PAGE 0:
   RAMGS15               0001b000   00001000  00000000  00001000  RWIX
   BEGIN                 00080000   00000002  00000002  00000000  RWIX
   FLASHA                00080002   00001ffe  00000000  00001ffe  RWIX
-  FLASHB                00082000   00002000  00001596  00000a6a  RWIX
+  FLASHB                00082000   00002000  00001599  00000a67  RWIX
   FLASHC                00084000   00002000  00000000  00002000  RWIX
   FLASHD                00086000   00002000  0000002d  00001fd3  RWIX
   FLASHE                00088000   00008000  00000000  00008000  RWIX
@@ -189,7 +189,7 @@ codestart
                   00082014    00000009     uartstdio.obj (.cinit)
                   0008201d    00000002     --HOLE-- [fill = 0]
 
-.text      0    00082040    00001577     
+.text      0    00082040    0000157a     
                   00082040    0000058f     F2837xD_DefaultISR.obj (.text:retain)
                   000825cf    00000302     uart.obj (.text)
                   000828d1    000002a8     F2837xD_SysCtrl.obj (.text)
@@ -197,16 +197,16 @@ codestart
                   00082dda    00000257     uartstdio.obj (.text)
                   00083031    0000024b     F2837xD_Gpio.obj (.text)
                   0008327c    000001c6     interrupt.obj (.text)
-                  00083442    00000070     main.obj (.text)
-                  000834b2    00000046     rts2800_fpu32.lib : boot.obj (.text)
-                  000834f8    00000028     F2837xD_PieCtrl.obj (.text)
-                  00083520    00000025     F2837xD_PieVect.obj (.text)
-                  00083545    00000021     rts2800_fpu32.lib : memcpy_ff.obj (.text)
-                  00083566    00000019                       : args_main.obj (.text)
-                  0008357f    00000019                       : exit.obj (.text)
-                  00083598    0000000e     interrupt.obj (.text:retain)
-                  000835a6    00000009     rts2800_fpu32.lib : _lock.obj (.text)
-                  000835af    00000008     F2837xD_CodeStartBranch.obj (.text)
+                  00083442    00000073     main.obj (.text)
+                  000834b5    00000046     rts2800_fpu32.lib : boot.obj (.text)
+                  000834fb    00000028     F2837xD_PieCtrl.obj (.text)
+                  00083523    00000025     F2837xD_PieVect.obj (.text)
+                  00083548    00000021     rts2800_fpu32.lib : memcpy_ff.obj (.text)
+                  00083569    00000019                       : args_main.obj (.text)
+                  00083582    00000019                       : exit.obj (.text)
+                  0008359b    0000000e     interrupt.obj (.text:retain)
+                  000835a9    00000009     rts2800_fpu32.lib : _lock.obj (.text)
+                  000835b2    00000008     F2837xD_CodeStartBranch.obj (.text)
 
 ramfuncs   0    00086000    0000002d     RUN ADDR = 00008000
                   00086000    00000025     F2837xD_SysCtrl.obj (ramfuncs)
@@ -812,7 +812,7 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 address    name
 --------   ----
 ffffffff   .text
-0008357f   C$$EXIT
+00083582   C$$EXIT
 000820fe   _ADCA1_ISR
 0008237e   _ADCA2_ISR
 00082388   _ADCA3_ISR
@@ -962,7 +962,7 @@ ffffffff   .text
 00047800   _Emif2Regs
 00000d01   _EmuBMode
 00000d00   _EmuKey
-00083517   _EnableInterrupts
+0008351a   _EnableInterrupts
 00008025   _F28x_usDelay
 00082572   _FLASH_CORRECTABLE_ERROR_ISR
 00082446   _FPU_OVERFLOW_ISR
@@ -1003,12 +1003,12 @@ ffffffff   .text
 00008000   _InitFlash
 00083031   _InitGpio
 0008290d   _InitPeripheralClocks
-000834f8   _InitPieCtrl
-00083520   _InitPieVectTable
+000834fb   _InitPieCtrl
+00083523   _InitPieVectTable
 000828d1   _InitSysCtrl
 000829c5   _InitSysPll
 00007900   _InputXbarRegs
-00083598   _IntDefaultHandler
+0008359b   _IntDefaultHandler
 00083345   _IntDisable
 000832ae   _IntEnable
 000833c9   _IntIFRClear
@@ -1164,20 +1164,21 @@ ffffffff   ___binit__
 ffffffff   ___c_args__
 00082000   ___cinit__
 ffffffff   ___etext__
-00083545   ___memcpy_ff
+00083548   ___memcpy_ff
 ffffffff   ___pinit__
 ffffffff   ___text__
-00083566   __args_main
+00083569   __args_main
 0000a802   __lock
-000835ae   __nop
-000835aa   __register_lock
-000835a6   __register_unlock
+000835b1   __nop
+000835ad   __register_lock
+000835a9   __register_unlock
 00000400   __stack
 0000a800   __unlock
-0008357f   _abort
-000834b2   _c_int00
-00083581   _exit
-0008346e   _main
+00083582   _abort
+000834b5   _c_int00
+00083584   _exit
+0008346e   _init
+000834a6   _main
 ffffffff   binit
 00082000   cinit
 00080000   code_start
@@ -1535,20 +1536,21 @@ address    name
 00083345   _IntDisable
 000833c9   _IntIFRClear
 00083442   _ConfigureUART
-0008346e   _main
-000834b2   _c_int00
-000834f8   _InitPieCtrl
-00083517   _EnableInterrupts
-00083520   _InitPieVectTable
-00083545   ___memcpy_ff
-00083566   __args_main
-0008357f   C$$EXIT
-0008357f   _abort
-00083581   _exit
-00083598   _IntDefaultHandler
-000835a6   __register_unlock
-000835aa   __register_lock
-000835ae   __nop
+0008346e   _init
+000834a6   _main
+000834b5   _c_int00
+000834fb   _InitPieCtrl
+0008351a   _EnableInterrupts
+00083523   _InitPieVectTable
+00083548   ___memcpy_ff
+00083569   __args_main
+00083582   C$$EXIT
+00083582   _abort
+00083584   _exit
+0008359b   _IntDefaultHandler
+000835a9   __register_unlock
+000835ad   __register_lock
+000835b1   __nop
 00086000   _RamfuncsLoadStart
 0008602d   _RamfuncsLoadEnd
 00090000   _PieVectTableInit
@@ -1562,4 +1564,4 @@ ffffffff   binit
 ffffffff   etext
 ffffffff   pinit
 
-[372 symbols]
+[373 symbols]

@@ -3,7 +3,7 @@
  */
 #include "F28x_Project.h"
 
-int main(void) {
+void init(void) {
 	InitSysCtrl();
 
 	EALLOW;
@@ -33,15 +33,16 @@ int main(void) {
 // This function is found in F2837xD_PieVect.c.
 	InitPieVectTable();
 
-
-
 // Enable global Interrupts and higher priority real-time debug events:
 	EINT;  // Enable Global interrupt INTM
 	ERTM;  // Enable Global realtime interrupt DBGM
 
-// Step 6. IDLE loop. Just sit and loop forever (optional):
-	for(;;)
-	{
+}
+
+int main(void) {
+	init();
+
+	for(;;) {
 		//
 		// Turn on LED
 		//
@@ -61,7 +62,5 @@ int main(void) {
 		// Delay for a bit.
 		//
 		DELAY_US(1000 * 250);
-
-
 	}
 }
