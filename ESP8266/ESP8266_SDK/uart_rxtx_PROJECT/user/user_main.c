@@ -43,7 +43,6 @@ void user_init(void)
 	os_printf("\r\nready!!!\r\n");
 	uart0_sendStr("\r\nOK\r\n");
 	//at_init();
-	init_buffers();
 	send_recv_init();
 	uart0_sendStr("init done\r\n");
 }

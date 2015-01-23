@@ -24,7 +24,7 @@ os_event_t    send_messageQueue[send_messageQueueLen];
 rss_state user_state = receive_idle;
 
 //flag that checks to see if it should echo rx
-bool echoFlag = TRUE;
+//bool echoFlag = TRUE;
 //flag that tells you if you are connected to an access point?
 bool connected = FALSE;
 //are we storing data?
@@ -52,9 +52,9 @@ recv_message(os_event_t *events) {
 	
 	temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 		//echo back if flag is true
-	if (echoFlag) {
+	//if (echoFlag) {
 		uart_tx_one_char(temp);
-	}
+	//}
 
     switch(user_state) {
 	case receive_idle:
@@ -231,9 +231,9 @@ void ICACHE_FLASH_ATTR
 store_message(os_event_t *events) {
 	if (user_state == idle_store || user_state == receive_store) {
 		uart0_sendStr("\r\nstoring...\r\n");
-		if (push_send_buffer()) {
-			uart0_sendStr("\r\nsucceeded...\r\n");
-		}
+		//if (push_send_buffer()) {
+		//	uart0_sendStr("\r\nsucceeded...\r\n");
+		//}
 	}
 	storing = FALSE;
 }
@@ -247,9 +247,9 @@ void ICACHE_FLASH_ATTR
 send_message(os_event_t *events) {
 	if (user_state == idle_send || user_state == receive_send) {
 		uart0_sendStr("\r\nsending...\r\n");
-		if (send_pop_buffer()) {
-			uart0_sendStr("\r\nsucceeded...\r\n");
-		}
+		//if (send_pop_buffer()) {
+		//	uart0_sendStr("\r\nsucceeded...\r\n");
+		//}
 	}
 	sending = FALSE;
 }

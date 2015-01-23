@@ -164,6 +164,7 @@ checksum_buffer(void) {
   * @param  None
   * @retval returns false if failed to get fields, and true if succeeded
   */
+/*
 bool ICACHE_FLASH_ATTR
 push_send_buffer(void) {
 	//initialize temp pointer to the buffer not being used by receive
@@ -225,13 +226,14 @@ push_send_buffer(void) {
 		return false;
 	}
 }
-
+*/
 /**
   * @brief  retreives data, makes the format string, sends json data
   * @param  None
   * @retval returns false if failed to send and pop,
   * and true if succeeded
   */
+/*
 bool ICACHE_FLASH_ATTR
 send_pop_buffer(void) {
 	//return false if there was nothing on the buffer
@@ -269,7 +271,7 @@ send_pop_buffer(void) {
 	}
 	
 }
-
+*/
 /**
   * @brief  gets the size of the send buffer
   * @param  None
