@@ -18,14 +18,6 @@
                         <li>
                             <a href="javascript:void(0)"><i class="fa fa-sitemap fa-fw"></i> Devices<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                            <!--
-                                <li>
-                                    <a href="javascript:void(0)">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0)">Second Level Item</a>
-                                </li>
-                             -->
                                 {% if public_devices %}
                                 <li>
                                     <a href="javascript:void(0)">Public Devices <span class="fa arrow"></span></a>
@@ -55,6 +47,11 @@
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+                        {% if user.is_authenticated %}
+                        <li>
+                            <a id="newDevice" href="javascript:void(0)" data-toggle="modal" data-target="#deviceModal"><i class="fa glyphicon glyphicon glyphicon-plus fa-fw"></i> Add Device</a>
+                        </li>
+                        {% endif %}
                         <li>
                             <a href="javascript:void(0)"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -101,4 +98,34 @@
             <!-- /.navbar-static-side -->
         </nav>
         </div>
+        
+     <!-- deviceModal -->
+      <div class="modal fade" id="deviceModal" tabindex="-1" role="dialog" aria-labelledby="deviceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Add a new device</h4>
+            </div>
+            <div class="modal-body" id="modalBody">
+              You'll need the secret key from your SEADS device in order to continue.
+              <br><br>
+              You can find the secret key on the access point created by the device.
+              <br><br><br>
+             <button type="button" id="help" class="btn btn-default btn-block">Where to find the key</button>
+             <button type="button" id="enterKey" class="btn btn-primary btn-block">Enter key</button>
+            </div>
+          </div>
+        </div>
+      <script>
+         $('#help').on('click', function(e) {
+            $('#modalBody').html("Help page");
+         });
+         $('#enterKey').on('click', function(e) {
+            $.get('/new_device/key/', function(data) {
+               $('#modalBody').html(data);
+            });
+         });
+      </script>
+      </div>
     <!-- /#wrapper -->

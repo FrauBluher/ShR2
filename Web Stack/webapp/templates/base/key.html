@@ -1,0 +1,26 @@
+<div id="keyFormWrapper">
+   <form id="keyForm" action="" method="post">
+      {% csrf_token %}
+      <table>
+         {{ form.as_table }}
+      </table>
+      <input id="submit" type="submit" value="Submit">
+   </form>
+   {% if not error and created %}
+   <div class="alert alert-success" role="alert">Paired</div>
+   {% endif %}
+   {% if error %}
+   <div class="alert alert-danger" role="alert">Not Paired</div>
+   {% endif %}
+</div>
+
+<script>
+$('#submit').click(function(e){
+      e.preventDefault();
+      $.post('/new_device/key/',
+         $('#keyForm').serialize(), 
+         function(data, status, xhr){
+            $('#keyFormWrapper').html(data);
+         });
+});
+</script>

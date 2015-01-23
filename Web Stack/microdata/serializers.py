@@ -11,7 +11,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
    
    class Meta:
       model = Device
-      fields = ('owner', 'serial', 'name', 'zipcode', 'private')
+      fields = ('owner', 'secret_key', 'serial', 'name', 'zipcode', 'private', 'registered')
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
    

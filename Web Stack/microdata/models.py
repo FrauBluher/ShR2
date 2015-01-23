@@ -12,11 +12,13 @@ class Appliance(models.Model):
         return self.name
 
 class Device(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+    secret_key = models.CharField(max_length=15)
     serial = models.IntegerField(unique=True)
-    name = models.CharField(max_length=30)
-    zipcode = models.CharField(max_length=5)
+    name = models.CharField(max_length=30, blank=True, null=True)
+    zipcode = models.CharField(max_length=5, blank=True, null=True)
     private = models.BooleanField(default=False)
+    registered = models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.name    

@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^data/$', 'webapp.views.landing'),
     url(r'^dashboard/$', 'webapp.views.dashboard'),
     url(r'^charts/device/(?P<serial>\d+)/(?P<unit>\w)$', 'webapp.views.charts'),
+    url(r'^new_device/key/', 'microdata.views.new_device_key'),
     
     # Development URLs
     url(r'^api/', include(router.urls)),
