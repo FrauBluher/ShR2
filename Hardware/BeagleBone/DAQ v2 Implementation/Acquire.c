@@ -14,7 +14,8 @@ static int speed = 921600;
 static int fP;
 static int keepRunning = 1;
 static char tmpBuff[19000];
-static char overflow[1000];
+char currChar;
+char match;
 FILE *output;
 
 int openDAQ(void)
@@ -37,11 +38,12 @@ int main(int argc, char *argv[])
 {
 	int retVal;
 	int serial_fd;
+	int i, j, k = 0;
 	int closestSpeed;
 	int runningTotal = 0;
 	int overflowSize = 0;
 	int lastSize = 0;
-	unsigned short txCrc = 0;
+	long txCrc = 0;
 	unsigned short crc_ccitt_ffff = 0xFFFF;
 	struct termios2 tio;
 	struct serial_struct ss;
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
 	//Newer method for setting custom baud rates (kernel 2.6+)
 	ioctl(serial_fd, TCGETS2, &tio);
 	tio.c_cflag &= ~CBAUD;
-//	tio.c_cflag &= ~CRTSCTS;
+	tio.c_cflag &= ~CRTSCTS;
 	tio.c_cflag |= BOTHER;
 	tio.c_ispeed = speed;
 	tio.c_ospeed = speed;
@@ -81,50 +83,60 @@ int main(int argc, char *argv[])
 	fprintf(stdout, "%i\r\n", write(serial_fd, start, 1));
 	fflush(stdout);
 
-	while( keepRunning) {
+	while(keepRunning) {
 		if (select(serial_fd + 1, &read_fds, NULL, NULL, &timeout) == 1) {
 
 			ioctl(serial_fd, FIONREAD, &retVal);
 
-			if (retVal + runningTotal > 18008) {
-				overflowSize = runningTotal + retVal - 18008;
-				lastSize = retVal - overflowSize;
-				read(serial_fd, &tmpBuff[runningTotal], lastSize);
-				read(serial_fd, &overflow, overflowSize);
-				runningTotal += retVal;
-				fprintf(stdout, "uhoh! overflow:%i lastSize:%i \r\n", overflowSize, lastSize);
-				fflush(stdout);
-			} else {
-				read(serial_fd, &tmpBuff[runningTotal], retVal);
-				runningTotal += retVal;
-			}
+			for (i = 0; i < retVal; i++) {
+				read(serial_fd, &currChar, 1);
 
-			if (runningTotal >= 18008) {
-				//Calculate CRC now that we have our block of data.
-				txCrc =	(tmpBuff[18006] << 8) |
-					(tmpBuff[18007]);
-
-				fprintf(stdout, "Transmitted CRC: %i running total: %i\r\n", txCrc, runningTotal);
-				fflush(stdout);
-
-				//fwrite(tmpBuff, 1, retVal, output);
-				//fflush(output);
-				if (runningTotal == 18008) {
+				if (currChar == 'E') {
+					match = 1;
+				} else if (currChar == 'N' && match == 1) {
+					match = 2;
+				} else if (currChar == 'D' && match == 2) {
+					match = 3;
+				} else if (currChar == '*' && match == 3) {
+					match = 4;
+				} else if (match == 4) {
+					txCrc |= (currChar & 0xFF000000);
+					match = 5;
+				} else if (match == 5) {
+					txCrc |= (currChar & 0x00FF0000);
+					match = 6;
+				} else if (match == 6) {
+					txCrc |= (currChar & 0x0000FF00);
+					match = 7;	
+				} else if (match == 7) {
+					txCrc |= (currChar & 0x000000FF);
+					match = 0;
 					runningTotal = 0;
-				} else {
-					memcpy(overflow, tmpBuff, overflowSize);
-					runningTotal = runningTotal - 18008;
-				}
-			}
+					for (j = 0; j < 18000; j += 9) {
+						fprintf(output, "%i,%i,%i,%i\r\n", ((int) (tmpBuff[j+1] << 8) | tmpBuff[j+2]),
+							((int) (tmpBuff[j+3] << 8) | tmpBuff[j+4]),
+							((int) (tmpBuff[j+5] << 8) | tmpBuff[j+6]),
+							((int) (tmpBuff[j+7] << 8) | tmpBuff[j+8]));
+					}
+					fprintf(stdout,"block complete, crc: %li\r\n", txCrc);
+					fflush(stdout);
+					fflush(output);
 
+				} else {
+					match = 0;
+					if (runningTotal > 18000) {
+						fprintf(stdout, "uhoh\r\n");
+						fflush(stdout);
+						runningTotal = 0;
+					}
+					tmpBuff[runningTotal] = currChar;
+					runningTotal++;
+				}
+			}		
 		} else {
 			fprintf(stdout, "Timeout.\r\n");
 			fflush(stdout);
 		}
-		
-
-
-
 
 
 		timeout.tv_sec = 1; //This needs to be set every time we return from select().	

@@ -49,11 +49,14 @@ uint32_t crc = 0;
 SampleBuffer *BufA;
 SampleBuffer *BufB;
 
+uint8_t testBuffer[] = "hello world!\r\n";
+
 DmaChannel uartRxChn = DMA_CHANNEL0;
 DmaChannel spiTxChn = DMA_CHANNEL1;
 DmaChannel spiRxChn = DMA_CHANNEL2;
 DmaChannel uartTxChn = DMA_CHANNEL3;
 DmaChannel crcChn = DMA_CHANNEL4;
+DmaChannel pmpChn = DMA_CHANNEL5;
 
 
 uint8_t dmaBuff[256] = {};
@@ -113,6 +116,35 @@ uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB)
 	} else {
 		return(EXIT_FAILURE);
 	}
+}
+
+void BufferToPMP_Init(void)
+{
+	mPMPOpen(PMP_ON | PMP_MUX_OFF | PMP_READ_WRITE_EN | PMP_CS2_EN |
+		PMP_CS2_POL_LO | PMP_WRITE_POL_LO | PMP_READ_POL_LO,
+		PMP_IRQ_READ_WRITE | PMP_AUTO_ADDR_OFF |
+		PMP_DATA_BUS_8 | PMP_MODE_MASTER1 | PMP_WAIT_BEG_3 |
+		PMP_WAIT_MID_7 | PMP_WAIT_END_3, PMP_PEN_OFF,
+		PMP_INT_OFF);
+	PMPSetAddress(0x8000); //Not needed?
+	DmaChnOpen(pmpChn, 0, DMA_OPEN_DEFAULT);
+	DmaChnSetEventControl(pmpChn, DMA_EV_START_IRQ(_PMP_IRQ));
+	DmaChnSetEvEnableFlags(pmpChn, DMA_EV_BLOCK_DONE);
+	DmaChnSetIntPriority(pmpChn, 5, 3);
+	DmaChnIntEnable(pmpChn);
+	DmaChnEnable(pmpChn);
+}
+
+void BufferToPMP_TransferA(uint16_t transferSize)
+{
+	DmaChnSetTxfer(pmpChn, testBuffer, (void*) &PMDIN, transferSize, 1, 1);
+	DmaChnStartTxfer(pmpChn, DMA_WAIT_NOT, 0);
+}
+
+void BufferToPMP_TransferB(uint16_t transferSize)
+{
+	DmaChnSetTxfer(pmpChn, testBuffer, (void*) &PMDIN, transferSize, 1, 1);
+	DmaChnStartTxfer(pmpChn, DMA_WAIT_NOT, 0);
 }
 
 void StartSPIAcquisition(uint8_t buffer)
@@ -219,6 +251,7 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 		StartSPIAcquisition(BUFFER_B);
 
 		BufferToUART_TransferA(BUFFERLENGTH + END_MESSAGE);
+		BufferToPMP_TransferA(14);
 
 		currentBuffer = BUFFER_B;
 
@@ -228,6 +261,7 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 		StartSPIAcquisition(BUFFER_A);
 
 		BufferToUART_TransferB(BUFFERLENGTH + END_MESSAGE);
+		BufferToPMP_TransferB(14);
 
 		currentBuffer = BUFFER_A;
 
@@ -274,4 +308,10 @@ void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 	DmaChnClrEvFlags(DMA_CHANNEL4, DMA_EV_ALL_EVNTS);
 	DmaChnClrIntFlag(DMA_CHANNEL4);
 	mDmaChnClrIntFlag(4);
+}
+
+void __ISR(_DMA_5_VECTOR) DmaHandler5(void)
+{
+	DmaChnClrEvFlags(DMA_CHANNEL5, DMA_EV_BLOCK_DONE);
+	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL5));
 }

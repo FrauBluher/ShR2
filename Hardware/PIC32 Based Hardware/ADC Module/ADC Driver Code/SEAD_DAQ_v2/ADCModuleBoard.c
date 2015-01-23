@@ -125,6 +125,7 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 
 	BufferToSpi_Init(BufferA, BufferB);
 	BufferToUART_Init();
+	BufferToPMP_Init();
 	DMAStartUARTRX();
 
 

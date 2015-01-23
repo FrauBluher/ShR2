@@ -60,6 +60,7 @@ uint8_t BufferToSpi_TransferA(uint16_t transferSize);
 uint8_t BufferToSpi_TransferB(uint16_t transferSize);
 uint8_t BufferToUART_TransferA(uint16_t transferSize);
 uint8_t BufferToUART_TransferB(uint16_t transferSize);
+void BufferToPMP_Init(void);
 void StartSPIAcquisition(uint8_t buffer);
 void DMAStartUARTRX(void);
 
