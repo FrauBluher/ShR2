@@ -128,19 +128,11 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	BufferToPMP_Init();
 	DMAStartUARTRX();
 
-
-
 	for (i = 0; i < 40000; i++) {
 		Nop();
 	}
 
 	MCP391x_Init(MCPInfo);
-
-	//INLINE DEBUG
-	char initMsg[] = "START\r\n";
-	DmaChnSetTxfer(DMA_CHANNEL3, initMsg, (void*) &U3TXREG, 7, 1, 1);
-	DmaChnSetEvEnableFlags(DMA_CHANNEL3, DMA_EV_BLOCK_DONE);
-	DmaChnStartTxfer(DMA_CHANNEL3, DMA_WAIT_NOT, 0);
 
 	for (i = 0; i < 400; i++) {
 		Nop();
@@ -158,6 +150,7 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 	INTEnableInterrupts();
 
+	StartSPIAcquisition(BUFFER_A);
 	//System Initialized Successfully
 	return(EXIT_SUCCESS);
 }

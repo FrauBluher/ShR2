@@ -2,7 +2,7 @@
 CC = gcc
 
 SUBDIRS = BitMode EEPROM/erase EEPROM/read EEPROM/write EEPROM/user/read \
-	  EEPROM/user/size EEPROM/user/write Events LargeRead MultiThread \
+	  EEPROM/user/size EEPROM/user/write Events LargeRead \
 	  SetVIDPID Simple Timeouts \
 	  
 all: subdirs

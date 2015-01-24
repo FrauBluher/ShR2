@@ -137,13 +137,13 @@ void BufferToPMP_Init(void)
 
 void BufferToPMP_TransferA(uint16_t transferSize)
 {
-	DmaChnSetTxfer(pmpChn, testBuffer, (void*) &PMDIN, transferSize, 1, 1);
+	DmaChnSetTxfer(pmpChn, BufA->BufferArray, (void*) &PMDIN, transferSize, 1, 1);
 	DmaChnStartTxfer(pmpChn, DMA_WAIT_NOT, 0);
 }
 
 void BufferToPMP_TransferB(uint16_t transferSize)
 {
-	DmaChnSetTxfer(pmpChn, testBuffer, (void*) &PMDIN, transferSize, 1, 1);
+	DmaChnSetTxfer(pmpChn, BufB->BufferArray, (void*) &PMDIN, transferSize, 1, 1);
 	DmaChnStartTxfer(pmpChn, DMA_WAIT_NOT, 0);
 }
 
@@ -224,7 +224,9 @@ uint8_t BufferToUART_TransferB(uint16_t transferSize)
 
 void __ISR(_DMA0_VECTOR) DmaHandler0(void)
 {
-	StartSPIAcquisition(BUFFER_A);
+	//StartSPIAcquisition(BUFFER_A);
+
+	//PUT CONTROLS FOR THE DAQ HERE.  CONFIG, ETC.
 
 	DmaChnClrEvFlags(DMA_CHANNEL0, DMA_EV_BLOCK_DONE);
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL0));
@@ -246,25 +248,11 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 {
 	LATBbits.LATB6 ^= 1;
 	if (currentBuffer == BUFFER_A) {
-		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
-
 		StartSPIAcquisition(BUFFER_B);
-
-		BufferToUART_TransferA(BUFFERLENGTH + END_MESSAGE);
-		BufferToPMP_TransferA(14);
-
-		currentBuffer = BUFFER_B;
-
+		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
 	} else if (currentBuffer == BUFFER_B) {
+		StartSPIAcquisition(BUFFER_B);
 		DMA_CRC_Calc(BufB->BufferArray, BUFFERLENGTH);
-
-		StartSPIAcquisition(BUFFER_A);
-
-		BufferToUART_TransferB(BUFFERLENGTH + END_MESSAGE);
-		BufferToPMP_TransferB(14);
-
-		currentBuffer = BUFFER_A;
-
 	}
 
 	DmaChnClrEvFlags(DMA_CHANNEL2, DMA_EV_ALL_EVNTS);
@@ -285,7 +273,7 @@ void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 {
 	//currentBuffer will be set to the opposite buffer than the one which
 	//needs to have this appended to it.
-	if (currentBuffer == BUFFER_B) {
+	if (currentBuffer == BUFFER_A) {
 		BufA->BufferArray[BUFFERLENGTH] = 'E';
 		BufA->BufferArray[BUFFERLENGTH + 1] = 'N';
 		BufA->BufferArray[BUFFERLENGTH + 2] = 'D';
@@ -294,7 +282,13 @@ void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 		BufA->BufferArray[BUFFERLENGTH + 5] = (crc & 0x00FF0000) >> 16;
 		BufA->BufferArray[BUFFERLENGTH + 6] = (crc & 0x0000FF00) >> 8;
 		BufA->BufferArray[BUFFERLENGTH + 7] = (crc & 0x000000FF);
-	} else if (currentBuffer == BUFFER_A) {
+
+		//BufferToUART_TransferA(BUFFERLENGTH + END_MESSAGE);
+		BufferToPMP_TransferA(BUFFERLENGTH + END_MESSAGE);
+
+		currentBuffer = BUFFER_B;
+
+	} else if (currentBuffer == BUFFER_B) {
 		BufB->BufferArray[BUFFERLENGTH] = 'E';
 		BufB->BufferArray[BUFFERLENGTH + 1] = 'N';
 		BufB->BufferArray[BUFFERLENGTH + 2] = 'D';
@@ -303,6 +297,11 @@ void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 		BufB->BufferArray[BUFFERLENGTH + 5] = (crc & 0x00FF0000) >> 16;
 		BufB->BufferArray[BUFFERLENGTH + 6] = (crc & 0x0000FF00) >> 8;
 		BufB->BufferArray[BUFFERLENGTH + 7] = (crc & 0x000000FF);
+
+		//BufferToUART_TransferB(BUFFERLENGTH + END_MESSAGE);
+		BufferToPMP_TransferB(BUFFERLENGTH + END_MESSAGE);
+
+		currentBuffer = BUFFER_A;
 	}
 
 	DmaChnClrEvFlags(DMA_CHANNEL4, DMA_EV_ALL_EVNTS);
