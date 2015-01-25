@@ -13,9 +13,9 @@ class Appliance(models.Model):
 
 class Device(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-    secret_key = models.CharField(max_length=15)
+    secret_key = models.CharField(max_length=7, blank=True, null=True)
     serial = models.IntegerField(unique=True)
-    name = models.CharField(max_length=30, blank=True, null=True)
+    name = models.CharField(max_length=30)
     zipcode = models.CharField(max_length=5, blank=True, null=True)
     private = models.BooleanField(default=False)
     registered = models.BooleanField(default=False)
