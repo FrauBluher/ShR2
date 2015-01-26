@@ -13,7 +13,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # bad idea - move elsewhere
-wunderground_key = '24e5a1d55557f6d5'
+WUNDERGROUND_KEY = '24e5a1d55557f6d5'
+OWM_KEY = 'b19ab21f2b0f046b8ec430fae9e28a84'
 
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',
