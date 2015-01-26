@@ -34,4 +34,10 @@ $('#submit').click(function(e){
             $('#keyFormWrapper').html(data);
          });
 });
+
+$(function () {
+   $.autotab({ tabOnSelect: true });
+   $('.digit').autotab('filter', 'number');
+   $('.char').autotab('filter', 'text');
+});
 </script>

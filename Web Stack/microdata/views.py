@@ -15,15 +15,19 @@ import string
 class KeyForm(forms.Form):
 
    alphabetic = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetical characters are allowed.')
+   attrs_digit = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 0.5rem;', 'class':'keyField single-cell digit'}
+   attrs_digit_last = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 1.5rem;', 'class':'keyField single-cell digit last'}
+   attrs_char = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 0.5rem;', 'class':'keyField single-cell char'}
+   attrs_char_last = {'size':1, 'maxlength':1, 'style':'text-align: center;', 'class':'keyField single-cell char last'}
 
-   digit1 = forms.IntegerField(widget=forms.TextInput(attrs={'size':1, 'maxlength':1}), max_value=9)
-   digit2 = forms.IntegerField(widget=forms.TextInput(attrs={'size':1, 'maxlength':1}), max_value=9)
-   digit3 = forms.IntegerField(widget=forms.TextInput(attrs={'size':1, 'maxlength':1, 'style':'margin-right: 1.5rem'}), max_value=9)
+   digit1 = forms.IntegerField(widget=forms.TextInput(attrs=attrs_digit), max_value=9)
+   digit2 = forms.IntegerField(widget=forms.TextInput(attrs=attrs_digit), max_value=9)
+   digit3 = forms.IntegerField(widget=forms.TextInput(attrs=attrs_digit_last), max_value=9)
    
-   char1 = forms.CharField(widget=forms.TextInput(attrs={'size':1, 'maxlength':1}), max_length=1, validators=[alphabetic])
-   char2 = forms.CharField(widget=forms.TextInput(attrs={'size':1, 'maxlength':1}), max_length=1, validators=[alphabetic])
-   char3 = forms.CharField(widget=forms.TextInput(attrs={'size':1, 'maxlength':1}), max_length=1, validators=[alphabetic])
-   char4 = forms.CharField(widget=forms.TextInput(attrs={'size':1, 'maxlength':1}), max_length=1, validators=[alphabetic])
+   char1 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
+   char2 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
+   char3 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
+   char4 = forms.CharField(widget=forms.TextInput(attrs=attrs_char_last), max_length=1, validators=[alphabetic])
    
 
 class ApplianceViewSet(viewsets.ModelViewSet):
