@@ -23,9 +23,10 @@ class Device(models.Model):
     registered = models.BooleanField(default=False)
     
     def save(self, **kwargs):
-      secret_key =  ''.join(random.choice(string.digits) for i in range(3))
-      secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
-      self.secret_key = secret_key
+      if self.secret_key == None:
+         secret_key =  ''.join(random.choice(string.digits) for i in range(3))
+         secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
+         self.secret_key = secret_key
       super(Device, self).save()
     
     def __unicode__(self):
