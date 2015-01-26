@@ -207,18 +207,14 @@ uint8_t BufferToUART_TransferA(uint16_t transferSize)
 {
 	// set the transfer source and dest addresses, source and dest size and cell size
 	DmaChnSetTxfer(uartTxChn, BufA->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
-
 	DmaChnSetEvEnableFlags(uartTxChn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: pattern match or all the characters transferred
-
 	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0); // force the DMA transfer: the UART1 tx flag it's already been active
 }
 
 uint8_t BufferToUART_TransferB(uint16_t transferSize)
 {
 	DmaChnSetTxfer(uartTxChn, BufB->BufferArray, (void*) &U3TXREG, transferSize, 1, 1);
-
 	DmaChnSetEvEnableFlags(uartTxChn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: all the characters transferred
-
 	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0);
 }
 
