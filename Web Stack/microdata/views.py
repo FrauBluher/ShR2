@@ -9,8 +9,6 @@ from rest_framework import permissions, authentication
 from rest_framework.response import Response
 from django import forms
 from django.core.validators import RegexValidator
-import random
-import string
 
 class KeyForm(forms.Form):
 
@@ -48,23 +46,6 @@ class DeviceViewSet(viewsets.ModelViewSet):
    #lookup_field = 'serial'
    #permission_classes = (permissions.IsAuthenticated,)
    #authentication_classes = (authentication.TokenAuthentication,)
-   def restore_object(self, attrs, instance=None):
-        if instance is not None:
-            instance.serial = attrs.get('serial', instance.serial)
-            instance.name = attrs.get('name', instance.url)
-            instance.zipcode = attrs.get('zipcode', instance.zipcode)
-            instance.private = attrs.get('private', instance.private)
-            instance.registered = attrs.get('registered', instance.registered)
-            return instance
-
-        secret_key =  ''.join(random.choice(string.digits) for i in range(3))
-        secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
-        del attrs['secret_key']
-
-        device = Device(**attrs)
-        device.secret_key = secret_key
-
-        return device
 
 class EventViewSet(viewsets.ModelViewSet):
    """
@@ -90,7 +71,7 @@ def new_device_key(request):
             secret_key += form.cleaned_data['char2']
             secret_key += form.cleaned_data['char3']
             secret_key += form.cleaned_data['char4']
-            devices = Device.objects.filter(registered=False, secret_key = secret_key)
+            devices = Device.objects.filter(registered=False, secret_key = secret_key.upper())
             device = devices[0] if devices else None
             if device:
                device.owner = request.user
