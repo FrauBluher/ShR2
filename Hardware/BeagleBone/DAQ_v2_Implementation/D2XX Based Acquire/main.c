@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <unistd.h>
 #include "ftd2xx.h"
+#include "lib_crc.h"
 
-#define BUF_SIZE 18008
+#define BUF_SIZE 0x10000
 
 static char tmpBuff[BUF_SIZE];
 static char tmpBuff2[BUF_SIZE];
@@ -22,7 +24,11 @@ int main(int argc, char *argv[])
 	FT_HANDLE ftUART;
 	FT_HANDLE ftFIFO;
 	FT_STATUS ftStatus;
+	int runningTotal = 0;
+	int rxCrc = 0xFFFF;
 	int iport;
+	int crc;
+	int i;	
 	
 	if(argc > 1) {
 		sscanf(argv[1], "%d", &iport);
@@ -76,16 +82,27 @@ int main(int argc, char *argv[])
 	//ftStatus = FT_Write(ftUART, &start, 1, &dwBytesWritten);
 
 	while(1) {
-		//FT_GetStatus(ftUART, &uartRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
 		FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
-		FT_Read(ftFIFO, tmpBuff, fifoRxQueueSize, &dwBytesRead);
-		//FT_Read(ftUART, tmpBuff2, uartRxQueueSize, &dwBytesRead);
+		FT_Read(ftFIFO, &tmpBuff[runningTotal], fifoRxQueueSize, &dwBytesRead);
+		runningTotal += dwBytesRead;
 
-		//fprintf(stdout, "FIFO: %i, UART: %i\r\n", fifoRxQueueSize, uartRxQueueSize);
-		if(fifoRxQueueSize > 1) {
-			fwrite(tmpBuff, 1, fifoRxQueueSize, fh);
+		if(runningTotal >= 18008) {
+
+			for (i = 0; i < 18000; i++) {
+				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
+			}
+
+			crc = ((tmpBuff[18006] << 8) | (tmpBuff[18007]));
+			fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
+			fflush(stdout);
+
+			//Turn it into a nice formatted file here.
+			//fwrite(tmpBuff, 1, runningTotal, stdout);
 			//fprintf(stdout, "\r\n");
-			fflush(fh);
+			//fflush(stdout);
+
+			runningTotal = 0;
+			rxCrc = 0xFFFF;
 		}
 		
 		usleep(100);

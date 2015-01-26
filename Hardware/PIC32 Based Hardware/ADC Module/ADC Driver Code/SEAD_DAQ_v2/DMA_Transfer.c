@@ -251,7 +251,7 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 		StartSPIAcquisition(BUFFER_B);
 		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
 	} else if (currentBuffer == BUFFER_B) {
-		StartSPIAcquisition(BUFFER_B);
+		StartSPIAcquisition(BUFFER_A);
 		DMA_CRC_Calc(BufB->BufferArray, BUFFERLENGTH);
 	}
 
