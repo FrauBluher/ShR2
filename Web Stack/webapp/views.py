@@ -34,7 +34,8 @@ def dashboard(request):
    if request.user.is_authenticated():
       my_devices = Device.objects.filter(owner=user)
    else: my_devices = public_devices
-   events = Event.objects.filter(device=my_devices[0])
+   device = my_devices[0] if my_devices else None
+   events = Event.objects.filter(device=device)
    appliances = Set()
    for event in events: appliances.add(event.appliance)
    context = {'public_devices': public_devices,
