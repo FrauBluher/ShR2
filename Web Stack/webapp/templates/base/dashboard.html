@@ -553,12 +553,6 @@
          $('#content').html(ajax_data);
       });
    });
-
-   function chart_click(event) {
-      event.preventDefault();
-      console.log(event.clickSeries);
-      
-   }
    
    //initial chart load, get data for first device
    {% if my_devices %}
@@ -573,6 +567,7 @@
                 });
             }
         },
+        legend: { enabled: true },
         valueAxis:{
            "default":{
               title: "Power (W)"
@@ -618,9 +613,7 @@
            initialDisplayAnchor: "newestData"
         },
         currentTime: {enabled: false},
-        events: {
-           onClick: function(event) { chart_click(event) }
-        }
+        
      });
    {% endif %}
 
