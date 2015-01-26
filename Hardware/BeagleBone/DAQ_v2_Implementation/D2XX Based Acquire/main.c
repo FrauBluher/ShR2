@@ -101,18 +101,17 @@ int main(int argc, char *argv[])
 			//fprintf(stdout, "\r\n");
 			//fflush(stdout);
 			for (i = 0; i < 18000;) {
-				fprintf(fh, "%i, %i, %i, %i\r\n", ((tmpBuff[i+1] << 8) | tmpBuff[i+2]),
-					((tmpBuff[i+3] << 8) | tmpBuff[i+4]),
-					((tmpBuff[i+5] << 8) | tmpBuff[i+6]),
-					((tmpBuff[i+7] << 8) | tmpBuff[i+8]));
+				fprintf(fh, "%i, %i, %i, %i\r\n", ((tmpBuff[i+2] << 8) | tmpBuff[i+1]),
+					((tmpBuff[i+4] << 8) | tmpBuff[i+3]),
+					((tmpBuff[i+6] << 8) | tmpBuff[i+5]),
+					((tmpBuff[i+8] << 8) | tmpBuff[i+7]));
 				i += 9;
 			}
 			fflush(fh);
 
 			runningTotal = 0;
 			rxCrc = 0xFFFF;
-		}
-		
+		}	
 		usleep(100);
 	}
 
