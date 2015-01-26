@@ -26,6 +26,7 @@
   {% endblock %}
   
   <link href="{% static 'webapp/font-awesome-4.1.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'webapp/css/screen.css' %}" rel="stylesheet" type="text/css">
 
   {# use the CDN to get bootstrap css. can not be inside compress css block #}
   {% block cdn_css %}
@@ -43,6 +44,8 @@
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="{% static '//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js' %}"></script>
   <script src="{% static 'webapp/js/jquery.min.js' %}"></script>
+  <script src="{% static 'webapp/js/jquery.autotab.js' %}"></script>
+
 </head>
 <body style="padding-top: 40px;" class="{% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}>
 {% block body %}

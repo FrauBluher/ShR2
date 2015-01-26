@@ -10,19 +10,22 @@ from rest_framework.response import Response
 from django import forms
 from django.core.validators import RegexValidator
 
-
 class KeyForm(forms.Form):
 
    alphabetic = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetical characters are allowed.')
+   attrs_digit = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 0.5rem;', 'class':'keyField single-cell digit'}
+   attrs_digit_last = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 1.5rem;', 'class':'keyField single-cell digit last'}
+   attrs_char = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 0.5rem;', 'class':'keyField single-cell char'}
+   attrs_char_last = {'size':1, 'maxlength':1, 'style':'text-align: center;', 'class':'keyField single-cell char last'}
 
-   digit1 = forms.IntegerField(max_value=9)
-   digit2 = forms.IntegerField(max_value=9)
-   digit3 = forms.IntegerField(max_value=9)
+   digit1 = forms.IntegerField(widget=forms.TextInput(attrs=attrs_digit), max_value=9)
+   digit2 = forms.IntegerField(widget=forms.TextInput(attrs=attrs_digit), max_value=9)
+   digit3 = forms.IntegerField(widget=forms.TextInput(attrs=attrs_digit_last), max_value=9)
    
-   char1 = forms.CharField(max_length=1, validators=[alphabetic])
-   char2 = forms.CharField(max_length=1, validators=[alphabetic])
-   char3 = forms.CharField(max_length=1, validators=[alphabetic])
-   char4 = forms.CharField(max_length=1, validators=[alphabetic])
+   char1 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
+   char2 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
+   char3 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
+   char4 = forms.CharField(widget=forms.TextInput(attrs=attrs_char_last), max_length=1, validators=[alphabetic])
    
 
 class ApplianceViewSet(viewsets.ModelViewSet):
@@ -68,7 +71,8 @@ def new_device_key(request):
             secret_key += form.cleaned_data['char2']
             secret_key += form.cleaned_data['char3']
             secret_key += form.cleaned_data['char4']
-            device = Device.objects.filter(registered=False, secret_key = secret_key)[0]
+            devices = Device.objects.filter(registered=False, secret_key = secret_key.upper())
+            device = devices[0] if devices else None
             if device:
                device.owner = request.user
                device.registered = True
