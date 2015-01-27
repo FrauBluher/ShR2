@@ -17,7 +17,8 @@
 #include "httpdespfs.h"
 #include "cgi.h"
 #include "cgiwifi.h"
-#include "stdout.h"
+//#include "stdout.h"
+#include "uart.h"
 #include "auth.h"
 
 //Function that tells the authentication system what users/passwords live on the system.
@@ -74,7 +75,8 @@ HttpdBuiltInUrl builtInUrls[]={
 
 //Main routine. Initialize stdout, the I/O and the webserver and we're done.
 void user_init(void) {
-	stdoutInit();
+	//stdoutInit();
+	uart_init(BIT_RATE_115200, BIT_RATE_115200);
 	httpdInit(builtInUrls, 80);
 	os_printf("\nReady\n");
 }

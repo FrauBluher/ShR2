@@ -8,9 +8,11 @@
  */
 
 //#include "at.h"
-#include "user_interface.h"
+//#include "user_interface.h"
+#include "espmissingincludes.h"
 #include "osapi.h"
-#include "driver/uart.h"
+#include "uart.h"
+#include "ets_sys.h"
 
 #include "send_recv_port.h"
 #include "buffers.h"
@@ -53,7 +55,7 @@ recv_message(os_event_t *events) {
 	temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 		//echo back if flag is true
 	//if (echoFlag) {
-		uart_tx_one_char(temp);
+		//uart_tx_one_char(temp);
 	//}
 
     switch(user_state) {

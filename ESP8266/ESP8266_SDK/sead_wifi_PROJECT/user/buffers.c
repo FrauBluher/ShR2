@@ -11,7 +11,7 @@
 #include "osapi.h"
 #include "buffers.h"
 #include "nmea0183.h"
-#include "stdout.h"
+#include "uart.h"
 
 //the preamble of the post request
 #define POST_REQUEST "POST /api/event-api/ HTTP/1.1\r\n"\
@@ -88,14 +88,9 @@ swap_buffer(void) {
   */
 void ICACHE_FLASH_ATTR
 print_buffer(void) {
-	uint8_t i;
-	stdoutPutchar('\r');
-	stdoutPutchar('\n');
-	for (i = 0; i < uart_buffer->buff_size; i++) {
-		stdoutPutchar(uart_buffer->buffer[i]);
-	}
-	stdoutPutchar('\r');
-	stdoutPutchar('\n');
+	uart0_sendStr("\n");
+	uart0_sendStr(uart_buffer->buffer);
+	uart0_sendStr("\n");
 }
 
 /**

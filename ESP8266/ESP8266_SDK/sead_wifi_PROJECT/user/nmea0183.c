@@ -7,8 +7,12 @@
  * 
  */
 
-#include "c_types.h"
+//for the strtol
+#include "stdlib.h"
 #include "osapi.h"
+//for the os_printf etc
+#include "espmissingincludes.h"
+#include "c_types.h"
 #include "nmea0183.h"
 
 /**
@@ -68,7 +72,7 @@ check(const char *string, bool strict) {
 		//debug getting hex value
 		char str[15];
 		os_sprintf(str, "e:%d\r\n", expected);
-		uart0_sendStr(str);
+		os_printf(str);
 		if (expected == 0) {
 			return false;
 		}
