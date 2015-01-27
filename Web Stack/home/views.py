@@ -32,13 +32,17 @@ def account(request):
 
 def register(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect("/data/")
     else:
         if request.method == 'POST':
             form = UserCreationForm(request.POST)
             if form.is_valid():
                 new_user = form.save()
-                return HttpResponseRedirect("/")
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password2')
+                user = authenticate(username=username, password=password)
+                login(request, user)
+                return HttpResponseRedirect("/data/")
         else:
             form = UserCreationForm()
         return render(request, "base/register.html", {
@@ -56,7 +60,7 @@ def signin(request):
                 login(request, user)
                 token = Token.objects.get_or_create(user=user)
                 context = {'api-auth-token':token}
-                return render(request, "base/index.html", context)
+                return HttpResponseRedirect("/data/")
     else:
         form = AuthenticationForm()
     return render(request, "base/signin.html", {
@@ -68,4 +72,6 @@ def signout(request):
     return HttpResponseRedirect("/signin/")
 
 def index(request):
-    return render_to_response('base/index.html', context_instance=RequestContext(request))
+    if request.user.is_authenticated():
+        return HttpResponseRedirect("/data/")
+    return render(request, "base/index.html")

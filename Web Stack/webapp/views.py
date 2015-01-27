@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from microdata.models import Device, Event, Appliance
 from django.http import HttpResponse
+from django.conf import settings
 import json
 from sets import Set
 from collections import defaultdict
+from urllib2 import Request, urlopen, URLError
+from pyzipcode import ZipCodeDatabase
 
 import timeseries as ts
 
@@ -21,6 +25,7 @@ def chartify(data):
       values.append(tmp)
    return values
 
+@login_required(login_url='/signin/')
 def landing(request):
    public_devices = Device.objects.filter(private=False)
    user = request.user.id
@@ -28,6 +33,7 @@ def landing(request):
    context = {'public_devices': public_devices, 'my_devices': my_devices}
    return render(request, 'base/landing.html', context)
 
+@login_required(login_url='/signin/')
 def dashboard(request):
    public_devices = Device.objects.filter(private=False)
    user = request.user.id
@@ -92,13 +98,25 @@ units = {'s': second,
          'd': day,
          'M': month,
          'y': year,
+         '0': second,
 }
+
+def get_weather(zipcode):
+   zcdb = ZipCodeDatabase()
+   zipcode = zcdb[zipcode]
+   city = zipcode.city.replace(" ", "_") + "," + zipcode.state + ",us"
+   #url = "http://api.openweathermap.org/data/2.5/history?q="+city+"&type=hour&APPID="+settings.OWM_KEY
+   #request = Request(url)
+   #response = urlopen(request)
+   #response = json.load(response)
+   #return response
 
 #TODO request parameters
 def charts(request, serial, unit):
    if request.method == 'GET':
       user = request.user.id
-      device = Device.objects.filter(Q(owner=user) | Q(private=False), serial=serial)
+      devices = Device.objects.filter(Q(owner=user) | Q(private=False), serial=serial)
+      device = devices[0] if devices else None
       events = Event.objects.filter(device=device)
       response_data = {}
       response_data['unit'] = unit
@@ -107,6 +125,7 @@ def charts(request, serial, unit):
          values = defaultdict(list)
          appliances = Set()
          [appliances, values] = units[unit](events, appliances, values)
+         response_data['weather'] = get_weather(str(device.zipcode))
          response_data['appliances'] = list(appliances)
          response_data['values'] = chartify(values)
          response_data['dataLimitFrom'] = events[0].timestamp
