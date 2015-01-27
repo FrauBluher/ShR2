@@ -55,11 +55,6 @@ circular_send_buffer_t send_buffer = {
 };
 
 /******************************UART BUFFER*****************************/
-void ICACHE_FLASH_ATTR
-init_buffers(void) {
-	os_memset(send_buffer.buffer, 0, sizeof(send_data_t) * max_send_buff_size);
-}
-
 /**
   * @brief  resets read and write pointers for uart buffer
   * @param  None
