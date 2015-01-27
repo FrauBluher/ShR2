@@ -2,3 +2,16 @@
 *.swp
 local_settings.py
 db.*
+*.o
+*.elf
+*.hex
+*.bin
+*.log
+*.so
+*.dll
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db

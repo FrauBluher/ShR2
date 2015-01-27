@@ -22,7 +22,9 @@ TEMPLATE_DIRS = (
     BASE_DIR + '/debug/html/',
 )
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/data/'
+
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) 
 
 STATICFILES_FINDERS = (
    'django.contrib.staticfiles.finders.FileSystemFinder',

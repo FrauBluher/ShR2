@@ -16,10 +16,21 @@
 </div>
 
 <script type="text/javascript">
+$.get("/dashboard/", function( ajax_data ) {
+   $('#content').html(ajax_data);
+});
 
-   $.get("/dashboard/", function( ajax_data ) {
-         $('#content').html(ajax_data);
+$('.nav-bar.account').on('click', function() {
+   $.get("/account/", function ( ajax_data ) {
+      $('#content').html(ajax_data);
    });
+});
+
+$('.side-bar.dashboard').on('click', function() {
+   $.get("/dashboard/", function ( ajax_data ) {
+      $('#content').html(ajax_data);
+   });
+});
 </script>
 
 {% endblock content %}
