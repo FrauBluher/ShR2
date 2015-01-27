@@ -18,7 +18,6 @@ Cgi/template routines for the /wifi url.
 #include "mem.h"
 #include "httpd.h"
 #include "cgi.h"
-#include "io.h"
 #include "espmissingincludes.h"
 
 //Enable this to disallow any changes in AP settings

@@ -14,7 +14,6 @@
 #include "ets_sys.h"
 #include "osapi.h"
 #include "httpd.h"
-#include "io.h"
 #include "httpdespfs.h"
 #include "cgi.h"
 #include "cgiwifi.h"
@@ -54,7 +53,7 @@ HttpdBuiltInUrl builtInUrls[]={
 	{"/flash.bin", cgiReadFlash, NULL},
 	{"/led.tpl", cgiEspFsTemplate, tplLed},
 	{"/index.tpl", cgiEspFsTemplate, tplSetupPage},
-	{"/led.cgi", cgiLed, NULL},
+	//{"/led.cgi", cgiLed, NULL},
 
 	//Routines to make the /wifi URL and everything beneath it work.
 
@@ -76,7 +75,6 @@ HttpdBuiltInUrl builtInUrls[]={
 //Main routine. Initialize stdout, the I/O and the webserver and we're done.
 void user_init(void) {
 	stdoutInit();
-	ioInit();
 	httpdInit(builtInUrls, 80);
 	os_printf("\nReady\n");
 }

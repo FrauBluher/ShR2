@@ -19,7 +19,6 @@ flash as a binary. Also handles the hit counter on the main page.
 #include "mem.h"
 #include "httpd.h"
 #include "cgi.h"
-#include "io.h"
 #include <ip_addr.h>
 #include "espmissingincludes.h"
 
@@ -28,6 +27,7 @@ flash as a binary. Also handles the hit counter on the main page.
 static char currLedState=0;
 
 //Cgi that turns the LED on or off according to the 'led' param in the POST data
+/*
 int ICACHE_FLASH_ATTR cgiLed(HttpdConnData *connData) {
 	int len;
 	char buff[1024];
@@ -46,7 +46,7 @@ int ICACHE_FLASH_ATTR cgiLed(HttpdConnData *connData) {
 	httpdRedirect(connData, "led.tpl");
 	return HTTPD_CGI_DONE;
 }
-
+*/
 
 
 //Template code for the led page.

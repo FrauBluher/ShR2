@@ -19,7 +19,6 @@ HTTP auth implementation. Only does basic authentication for now.
 #include "httpd.h"
 #include "cgi.h"
 #include "auth.h"
-#include "io.h"
 #include "base64.h"
 #include <ip_addr.h>
 #include "espmissingincludes.h"
