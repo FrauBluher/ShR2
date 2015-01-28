@@ -49,7 +49,8 @@ CFLAGS		= -Os -ggdb -std=c99 -Werror -Wpointer-arith -Wundef -Wall -Wl,-EL -fno-
 		-Wno-address
 
 # linker flags used to generate the main object file
-LDFLAGS		= -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static -L$(SDK_EXTRA_LIBS)
+LDFLAGS		= -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static -L$(SDK_EXTRA_LIBS) \
+		-DICACHE_FLASH
 
 # linker script used for the above linkier step
 LD_SCRIPT	= eagle.app.v6.ld
