@@ -53,7 +53,8 @@ HttpdBuiltInUrl builtInUrls[]={
 //and the sending receiving state machine and we're done.
 void user_init(void) {
 	//stdoutInit();
-	uart_init(BIT_RATE_115200, BIT_RATE_115200);
+	//init only uart0, regular uart
+	uart_init(BIT_RATE_115200);
 	httpdInit(builtInUrls, 80);
 	//inits uart stuff
 	send_recv_init();
