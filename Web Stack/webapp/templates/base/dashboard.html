@@ -104,11 +104,7 @@
             },
            {% for appliance in appliances %}
            {
-              name: {% if appliance == None %}
-                        "Unknown",
-                    {% else %}
-                        "{{ appliance }}",
-                    {% endif %}
+              name: "{{ appliance }}",
               id:"event{{ forloop.counter }}",
               type:"line",
               data:{
@@ -117,7 +113,7 @@
               },
               stack: "default",
               style:{
-                 fillColor:"{% cycle 'red' 'blue' 'green' 'purple' %}",
+                 fillColor:"{% if appliance.name == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' %}{% endif %}",
                  lineColor:""
               }
            },

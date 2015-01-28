@@ -43,7 +43,8 @@ def dashboard(request):
    device = my_devices[0] if my_devices else None
    events = Event.objects.filter(device=device)
    appliances = Set()
-   for event in events: appliances.add(event.appliance)
+   for event in events:
+      appliances.add(event.appliance)
    context = {'public_devices': public_devices,
               'my_devices': my_devices,
               'appliances': list(appliances)
@@ -52,53 +53,17 @@ def dashboard(request):
 
 def second(events, appliances, values):
    for event in events:
-      appliances.add(event.appliance.name if event.appliance is not None else "None")
-      values[event.timestamp].append(event.wattage)
-   for time in values: values[time].insert(0,sum(values[time]))
-   return [appliances, values]
-
-def minute(events, appliances, values):
-   for event in events:
-      appliances.add(event.appliance.name if event.appliance is not None else "None")
-      values[event.timestamp].append(event.wattage)
-   for time in values: values[time].insert(0,sum(values[time]))
-   return [appliances, values]
-   
-def hour(events, appliances, values):
-   for event in events:
-      appliances.add(event.appliance.name if event.appliance is not None else "None")
-      values[event.timestamp].append(event.wattage)
-   for time in values: values[time].insert(0,sum(values[time]))
-   return [appliances, values]
-   
-def day(events, appliances, values):
-   for event in events:
-      appliances.add(event.appliance.name if event.appliance is not None else "None")
-      values[event.timestamp].append(event.wattage)
-   for time in values: values[time].insert(0,sum(values[time]))
-   return [appliances, values]
-   
-def month(events, appliances, values):
-   for event in events:
-      appliances.add(event.appliance.name if event.appliance is not None else "None")
-      values[event.timestamp].append(event.wattage)
-   for time in values: values[time].insert(0,sum(values[time]))
-   return [appliances, values]
-   
-def year(events, appliances, values):
-   for event in events:
-      appliances.add(event.appliance.name if event.appliance is not None else "None")
+      appliances.add(event.appliance.name)
       values[event.timestamp].append(event.wattage)
    for time in values: values[time].insert(0,sum(values[time]))
    return [appliances, values]
 
 units = {'s': second,
-         'm': minute,
-         'h': hour,
-         'd': day,
-         'M': month,
-         'y': year,
-         '0': second,
+         'm': second,
+         'h': second,
+         'd': second,
+         'M': second,
+         'y': second,
 }
 
 def get_weather(zipcode):
