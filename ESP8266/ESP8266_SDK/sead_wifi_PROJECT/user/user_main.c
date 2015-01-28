@@ -17,6 +17,7 @@
 #include "httpdespfs.h"
 #include "cgi.h"
 #include "cgiwifi.h"
+#include "c_types.h"
 //#include "stdout.h"
 #include "uart.h"
 

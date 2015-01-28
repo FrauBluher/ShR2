@@ -162,5 +162,5 @@ process_message(char *string, float *wattage, char *timestamp) {
 		return_value = false;
 	}
 	return return_value;
-}*/
-
+}
+*/
