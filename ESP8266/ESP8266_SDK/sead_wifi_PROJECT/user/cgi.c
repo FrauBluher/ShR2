@@ -22,49 +22,6 @@ flash as a binary. Also handles the hit counter on the main page.
 #include <ip_addr.h>
 #include "espmissingincludes.h"
 
-
-//cause I can't be bothered to write an ioGetLed()
-static char currLedState=0;
-
-//Cgi that turns the LED on or off according to the 'led' param in the POST data
-/*
-int ICACHE_FLASH_ATTR cgiLed(HttpdConnData *connData) {
-	int len;
-	char buff[1024];
-	
-	if (connData->conn==NULL) {
-		//Connection aborted. Clean up.
-		return HTTPD_CGI_DONE;
-	}
-
-	len=httpdFindArg(connData->postBuff, "led", buff, sizeof(buff));
-	if (len!=0) {
-		currLedState=atoi(buff);
-		ioLed(currLedState);
-	}
-
-	httpdRedirect(connData, "led.tpl");
-	return HTTPD_CGI_DONE;
-}
-*/
-
-
-//Template code for the led page.
-void ICACHE_FLASH_ATTR tplLed(HttpdConnData *connData, char *token, void **arg) {
-	char buff[128];
-	if (token==NULL) return;
-
-	os_strcpy(buff, "Unknown");
-	if (os_strcmp(token, "ledstate")==0) {
-		if (currLedState) {
-			os_strcpy(buff, "on");
-		} else {
-			os_strcpy(buff, "off");
-		}
-	}
-	httpdSend(connData, buff, -1);
-}
-
 static long hitCounter=0;
 
 void ICACHE_FLASH_ATTR tplSetupPage(HttpdConnData *connData, char *token, void **arg) {

@@ -13,6 +13,7 @@
 #include "osapi.h"
 #include "uart.h"
 #include "ets_sys.h"
+#include "c_types.h"
 
 #include "send_recv_port.h"
 #include "buffers.h"
@@ -26,7 +27,7 @@ os_event_t    send_messageQueue[send_messageQueueLen];
 rss_state user_state = receive_idle;
 
 //flag that checks to see if it should echo rx
-//bool echoFlag = TRUE;
+bool echoFlag = TRUE;
 //flag that tells you if you are connected to an access point?
 bool connected = FALSE;
 //are we storing data?
@@ -54,9 +55,11 @@ recv_message(os_event_t *events) {
 	
 	temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 		//echo back if flag is true
-	//if (echoFlag) {
-		//uart_tx_one_char(temp);
-	//}
+	if (echoFlag) {
+		char echoChar[2] = {0};
+		echoChar[0] = temp;
+		uart0_sendStr(echoChar);
+	}
 
     switch(user_state) {
 	case receive_idle:

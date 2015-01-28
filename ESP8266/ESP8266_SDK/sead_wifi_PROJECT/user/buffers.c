@@ -7,8 +7,11 @@
  * 
  */
 
+#include "espmissingincludes.h"
 #include "c_types.h"
 #include "osapi.h"
+#include "stdlib.h"
+
 #include "buffers.h"
 #include "nmea0183.h"
 #include "uart.h"
@@ -154,38 +157,27 @@ checksum_buffer(void) {
   * @param  None
   * @retval returns false if failed to get fields, and true if succeeded
   */
-/*
+
 bool ICACHE_FLASH_ATTR
 push_send_buffer(void) {
 	//initialize temp pointer to the buffer not being used by receive
 	uart_buffer_t *temp_ptr = NULL;
-	char *buff_ptr = NULL;
+	bool return_value = true;
 	if (uart_buffer == &uart_buffer1) {
 		temp_ptr = &uart_buffer2;
 	} else {
 		temp_ptr = &uart_buffer1;
 	}
-	//check preamble for talker type, and message type
-	talker_id talker = get_talker(temp_ptr->buffer);
-	sentence_id sentence = get_sentence(temp_ptr->buffer);
-	if (talker == TALKER_SEAD) {
-		uart0_sendStr("talker sead...\r\n");
-		switch (sentence) {
-		case SENTENCE_DAT:
-			//process data fields
-			//add 8 to the pointer to skip talker id, and message type
-			buff_ptr = temp_ptr->buffer + 8;
-			send_buffer.buffer[send_buffer.head].wattage = atof(buff_ptr);
-			while (*buff_ptr != ',') {
-				buff_ptr++;
-			}
-			buff_ptr++;
-			//TODO fix the hardcoded 13 to the length of the actual time
-			//given
-			//copies timestamp to send buffer timestamp
-			os_strncpy(send_buffer.buffer[send_buffer.head].timestamp, buff_ptr, 13);
-			
-			//TODO FIX PUSH INCRIMENTING
+	uart0_sendStr(temp_ptr->buffer);
+	//goes through the message string and populates the buffer from the
+	//found fields
+	//process_message(temp_ptr->buffer,
+	//				&send_buffer.buffer[send_buffer.head].wattage,
+	//				send_buffer.buffer[send_buffer.head].timestamp);
+	//TODO
+	//incriment if successfully processed message and copied values over
+	//TODO FIX PUSH INCRIMENTING
+	/*
 			send_buffer.head++;
 			if (send_buffer.capacity == send_buffer.count) {
 				//overwrite the oldest item at the tail
@@ -202,21 +194,10 @@ push_send_buffer(void) {
 					send_buffer.head = 0;
 				}
 				send_buffer.count++;
-			}
-			break;
-		case SENTENCE_UNKNOWN:
-			uart0_sendStr("sentence unknown...\r\n");
-			break;
-		default:
-			return false;
-			break;
-		}
-	} else if (talker == TALKER_UNKNOWN) {
-		uart0_sendStr("talker unknown...\r\n");
-		return false;
-	}
+			}*/
+	return return_value;
 }
-*/
+
 /**
   * @brief  retreives data, makes the format string, sends json data
   * @param  None
@@ -226,6 +207,7 @@ push_send_buffer(void) {
 /*
 bool ICACHE_FLASH_ATTR
 send_pop_buffer(void) {
+	bool return_value = true;
 	//return false if there was nothing on the buffer
 	if (send_buffer.count == 0) {
 		return false;
@@ -259,7 +241,7 @@ send_pop_buffer(void) {
 	} else {
 		send_buffer.tail--;
 	}
-	
+	return return_value;
 }
 */
 /**

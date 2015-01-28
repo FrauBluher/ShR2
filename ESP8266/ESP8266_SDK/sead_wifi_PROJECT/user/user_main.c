@@ -19,24 +19,8 @@
 #include "cgiwifi.h"
 //#include "stdout.h"
 #include "uart.h"
-#include "auth.h"
 
-//Function that tells the authentication system what users/passwords live on the system.
-//This is disabled in the default build; if you want to try it, enable the authBasic line in
-//the builtInUrls below.
-int myPassFn(HttpdConnData *connData, int no, char *user, int userLen, char *pass, int passLen) {
-	if (no==0) {
-		os_strcpy(user, "admin");
-		os_strcpy(pass, "s3cr3t");
-		return 1;
-//Add more users this way. Check against incrementing no for each user added.
-//	} else if (no==1) {
-//		os_strcpy(user, "user1");
-//		os_strcpy(pass, "something");
-//		return 1;
-	}
-	return 0;
-}
+#include "send_recv_port.h"
 
 
 /*
@@ -52,14 +36,9 @@ should be placed above the URLs they protect.
 HttpdBuiltInUrl builtInUrls[]={
 	{"/", cgiRedirect, "/index.tpl"},
 	{"/flash.bin", cgiReadFlash, NULL},
-	{"/led.tpl", cgiEspFsTemplate, tplLed},
 	{"/index.tpl", cgiEspFsTemplate, tplSetupPage},
-	//{"/led.cgi", cgiLed, NULL},
 
 	//Routines to make the /wifi URL and everything beneath it work.
-
-//Enable the line below to protect the WiFi configuration with an username/password combo.
-//	{"/wifi/*", authBasic, myPassFn},
 
 	{"/wifi", cgiRedirect, "/wifi/wifi.tpl"},
 	{"/wifi/", cgiRedirect, "/wifi/wifi.tpl"},
@@ -73,10 +52,14 @@ HttpdBuiltInUrl builtInUrls[]={
 };
 
 
-//Main routine. Initialize stdout, the I/O and the webserver and we're done.
+//Main routine. Initialize stdout, the I/O, the webserver,
+//and the sending receiving state machine and we're done.
 void user_init(void) {
 	//stdoutInit();
 	uart_init(BIT_RATE_115200, BIT_RATE_115200);
 	httpdInit(builtInUrls, 80);
+	//inits uart stuff
+	send_recv_init();
 	os_printf("\nReady\n");
+	uart0_sendStr("\nReady\n");
 }
