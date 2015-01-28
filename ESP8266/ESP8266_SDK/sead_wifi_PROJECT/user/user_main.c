@@ -35,11 +35,15 @@ should be placed above the URLs they protect.
 */
 HttpdBuiltInUrl builtInUrls[]={
 	{"/", cgiRedirect, "/index.tpl"},
+	{"/flash.bin", cgiReadFlash, NULL},
 	{"/index.tpl", cgiEspFsTemplate, tplSetupPage},
 
 	//Routines to make the /wifi URL and everything beneath it work.
 
+	{"/wifi", cgiRedirect, "/wifi/wifi.tpl"},
+	{"/wifi/", cgiRedirect, "/wifi/wifi.tpl"},
 	{"/wifi/wifiscan.cgi", cgiWiFiScan, NULL},
+	{"/wifi/wifi.tpl", cgiEspFsTemplate, tplWlan},
 	{"/wifi/connect.cgi", cgiWiFiConnect, NULL},
 	{"/wifi/setmode.cgi", cgiWifiSetMode, NULL},
 
