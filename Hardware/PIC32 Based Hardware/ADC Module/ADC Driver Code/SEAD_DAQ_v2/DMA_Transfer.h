@@ -36,7 +36,7 @@
 #define MAX32
 
 #include <stdint.h>
-#define BUFFERLENGTH 9*2000
+#define BUFFERLENGTH 13*2000
 #define END_MESSAGE 8
 
 enum {

@@ -86,13 +86,13 @@ int main(int argc, char *argv[])
 		FT_Read(ftFIFO, &tmpBuff[runningTotal], fifoRxQueueSize, &dwBytesRead);
 		runningTotal += dwBytesRead;
 
-		if(runningTotal >= 18008) {
+		if(runningTotal >= 27008) {
 
-			for (i = 0; i < 18000; i++) {
+			for (i = 0; i < 27000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
 			}
 
-			crc = ((tmpBuff[18006] << 8) | (tmpBuff[18007]));
+			crc = ((tmpBuff[27006] << 8) | (tmpBuff[27007]));
 			fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
 			fflush(stdout);
 
@@ -100,12 +100,12 @@ int main(int argc, char *argv[])
 			//fwrite(tmpBuff, 1, runningTotal, stdout);
 			//fprintf(stdout, "\r\n");
 			//fflush(stdout);
-			for (i = 0; i < 18000;) {
-				fprintf(fh, "%i, %i, %i, %i\r\n", ((tmpBuff[i+2] << 8) | tmpBuff[i+1]),
-					((tmpBuff[i+4] << 8) | tmpBuff[i+3]),
-					((tmpBuff[i+6] << 8) | tmpBuff[i+5]),
-					((tmpBuff[i+8] << 8) | tmpBuff[i+7]));
-				i += 9;
+			for (i = 0; i < 27000;) {
+				fprintf(fh, "%i, %i, %i, %i\r\n", ((tmpBuff[i+3] << 16) | (tmpBuff[i+2] << 8) | tmpBuff[i+1]),
+					((tmpBuff[i+6] << 16) | (tmpBuff[i+5] << 8) | tmpBuff[i+4]),
+					((tmpBuff[i+9] << 16) | (tmpBuff[i+7] << 8) | tmpBuff[i+7]),
+					((tmpBuff[i+12] << 16) | (tmpBuff[i+11] << 8) | tmpBuff[i+10]));
+				i += 12;
 			}
 			fflush(fh);
 

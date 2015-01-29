@@ -85,7 +85,7 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 
 	MCP.modReg.wholeRegister = 0;
 
-	MCP.statusReg.WIDTH_DATA = 0b00;
+	MCP.statusReg.WIDTH_DATA = 0b01; //24 bits
 	MCP.statusReg.DR_HIZ = 1;
 	MCP.statusReg.DR_LINK = 1;
 	MCP.statusReg.EN_CRCCOM = 0;
@@ -152,7 +152,7 @@ void SPI_Read_Result_Registers(void)
 	SPI_SS_LAT = 0;
 
 	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
-	BufferToSpi_Transfer(adcBuf, 9); //9
+	BufferToSpi_Transfer(adcBuf, 13); //9
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
