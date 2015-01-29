@@ -158,6 +158,11 @@ uart0_sendStr(const char *str)
 	}
 }
 
+void ICACHE_FLASH_ATTR
+uart0_putChar(char c) {
+	uart_tx_one_char(UART0, c);
+}
+
 /******************************************************************************
  * FunctionName : uart0_rx_intr_handler
  * Description  : Internal used function

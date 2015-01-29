@@ -4,4 +4,6 @@ compiler:
     - clang
     - gcc
 
-script: make ci
+install: make test_heatshrink_dynamic
+
+script: ./test_heatshrink_dynamic

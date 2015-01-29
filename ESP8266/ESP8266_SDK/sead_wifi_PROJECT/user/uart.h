@@ -114,6 +114,7 @@ typedef struct {
 
 void uart_init(UartBautRate uart0_br);
 void uart0_sendStr(const char *str);
+void uart0_putChar(char);
 
 #endif
 

@@ -89,13 +89,14 @@ swap_buffer(void) {
   * @param  None
   * @retval None
   */
+  /*
 void ICACHE_FLASH_ATTR
 print_buffer(void) {
 	uart0_sendStr("\n");
 	uart0_sendStr(uart_buffer->buffer);
 	uart0_sendStr("\n");
 }
-
+*/
 /**
   * @brief  puts a char onto the buffer, incriments the write pointer
   * @param  character to put into buffer

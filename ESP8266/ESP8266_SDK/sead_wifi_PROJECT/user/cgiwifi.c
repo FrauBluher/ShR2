@@ -20,9 +20,6 @@ Cgi/template routines for the /wifi url.
 #include "cgi.h"
 #include "espmissingincludes.h"
 
-//Enable this to disallow any changes in AP settings
-//#define DEMO_MODE
-
 //WiFi access point data
 typedef struct {
 	char ssid[32];
@@ -114,21 +111,21 @@ int ICACHE_FLASH_ATTR cgiWiFiScan(HttpdConnData *connData) {
 	if (cgiWifiAps.scanInProgress==1) {
 		//We're still scanning. Tell Javascript code that.
 		len=os_sprintf(buff, "{\n \"result\": { \n\"inProgress\": \"1\"\n }\n}\n");
-		httpdSend(connData, buff, len);
+		espconn_sent(connData->conn, (uint8 *)buff, len);
 	} else {
 		//We have a scan result. Pass it on.
 		len=os_sprintf(buff, "{\n \"result\": { \n\"inProgress\": \"0\", \n\"APs\": [\n");
-		httpdSend(connData, buff, len);
+		espconn_sent(connData->conn, (uint8 *)buff, len);
 		if (cgiWifiAps.apData==NULL) cgiWifiAps.noAps=0;
 		for (i=0; i<cgiWifiAps.noAps; i++) {
 			//Fill in json code for an access point
 			len=os_sprintf(buff, "{\"essid\": \"%s\", \"rssi\": \"%d\", \"enc\": \"%d\"}%s\n", 
 					cgiWifiAps.apData[i]->ssid, cgiWifiAps.apData[i]->rssi, 
 					cgiWifiAps.apData[i]->enc, (i==cgiWifiAps.noAps-1)?"":",");
-			httpdSend(connData, buff, len);
+			espconn_sent(connData->conn, (uint8 *)buff, len);
 		}
 		len=os_sprintf(buff, "]\n}\n}\n");
-		httpdSend(connData, buff, len);
+		espconn_sent(connData->conn, (uint8 *)buff, len);
 		//Also start a new scan.
 		wifiStartScan();
 	}
@@ -197,11 +194,11 @@ int ICACHE_FLASH_ATTR cgiWiFiConnect(HttpdConnData *connData) {
 	os_timer_disarm(&reassTimer);
 	os_timer_setfn(&reassTimer, reassTimerCb, NULL);
 //Set to 0 if you want to disable the actual reconnecting bit
-#ifdef DEMO_MODE
-	httpdRedirect(connData, "/wifi");
-#else
+#if 1 
 	os_timer_arm(&reassTimer, 1000, 0);
 	httpdRedirect(connData, "connecting.html");
+#else
+	httpdRedirect(connData, "/wifi");
 #endif
 	return HTTPD_CGI_DONE;
 }
@@ -220,10 +217,8 @@ int ICACHE_FLASH_ATTR cgiWifiSetMode(HttpdConnData *connData) {
 	len=httpdFindArg(connData->getArgs, "mode", buff, sizeof(buff));
 	if (len!=0) {
 		os_printf("cgiWifiSetMode: %s\n", buff);
-#ifndef DEMO_MODE
 		wifi_set_opmode(atoi(buff));
 		system_restart();
-#endif
 	}
 	httpdRedirect(connData, "/wifi");
 	return HTTPD_CGI_DONE;
@@ -255,7 +250,7 @@ void ICACHE_FLASH_ATTR tplWlan(HttpdConnData *connData, char *token, void **arg)
 			os_strcpy(buff, "Click <a href=\"setmode.cgi?mode=2\">here</a> to go to standalone AP mode.");
 		}
 	}
-	httpdSend(connData, buff, -1);
+	espconn_sent(connData->conn, (uint8 *)buff, os_strlen(buff));
 }
 
 

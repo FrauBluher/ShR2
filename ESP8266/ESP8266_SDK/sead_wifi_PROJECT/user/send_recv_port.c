@@ -18,6 +18,15 @@
 #include "send_recv_port.h"
 #include "buffers.h"
 
+//prototypes
+void send_recv_store_fsm(char);
+void case_idle(char);
+void case_recv(char);
+void case_send(char);
+void case_store(char);
+void case_recv_send(char);
+void case_recv_store(char);
+
 //os event queues for function priority queue
 os_event_t    recv_messageQueue[recv_messageQueueLen];
 os_event_t    store_messageQueue[store_messageQueueLen];
@@ -42,68 +51,36 @@ bool sending = FALSE;
   */
 void ICACHE_FLASH_ATTR
 recv_message(os_event_t *events) {
-	//init variables
-	
 	//usually set temp equal to the UART character at any time
 	uint8_t temp;
 	//while loop getting characters while they are in the buffer
 	while(READ_PERI_REG(UART_STATUS(UART0)) & (UART_RXFIFO_CNT << UART_RXFIFO_CNT_S)) {
-	WRITE_PERI_REG(0X60000914, 0x73); //WTD
-	
-	//if it is not storing from the buffer. don't worry because storing is
-	//and should be fast
-	
-	temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
+		WRITE_PERI_REG(0X60000914, 0x73); //WTD
+		temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 		//echo back if flag is true
-	if (echoFlag) {
-		char echoChar[2] = {0};
-		echoChar[0] = temp;
-		uart0_sendStr(echoChar);
-	}
-
-    switch(user_state) {
-	case receive_idle:
-		//if the character is a dollar sign, we are no longer idle and
-		//a message is beginning!
-		if (temp == '$') {
-			user_state = receive;
-			//puts shit on the buffer
-			put_buffer(temp);
-		//TODO change to if is connected to access point, and send 
-		//is greater than 0
-		} else if (size_send_buffer() > 0) {
-			sending = TRUE;
-			system_os_post(send_messagePrio, 0, 0);
-			user_state = idle_send;
+		if (echoFlag) {
+			uart0_putChar(temp);
 		}
+		//just the fsm for sending, recv, and store
+		send_recv_store_fsm(temp);
+	}
+	//handles uart interrupts
+	if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_FULL_INT_ST)) {
+		WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_FULL_INT_CLR);
+	} else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_TOUT_INT_ST)) {
+		WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_TOUT_INT_CLR);
+	}
+	ETS_UART_INTR_ENABLE();
+}
+
+void ICACHE_FLASH_ATTR
+send_recv_store_fsm(char temp) {
+	switch(user_state) {
+	case receive_idle:
+		case_idle(temp);
 		break;
 	case receive:
-		if (temp == '\n') {
-			//message terminating, storing into the send buffer
-			//nmea checksum on the buffer
-			if (checksum_buffer()) {
-				//store it into the circular buffer
-				uart0_sendStr("\r\nchecksum succeeded...\r\n");
-				print_buffer();
-				storing = TRUE;
-				//swap and reset buffer
-				swap_buffer();
-				reset_buffer();
-				system_os_post(store_messagePrio, 0, 0);
-				user_state = idle_store;
-			} else {
-				//print_buffer();
-				uart0_sendStr("\r\nchecksum failed...\r\n");
-				reset_buffer();
-				user_state = receive_idle;
-			}
-		//if the buffer overflows, then reset the buffer and go back
-		//to idle
-		} else if (!put_buffer(temp)) {
-			//print_buffer();
-			reset_buffer();
-			user_state = receive_idle;
-		}
+		case_recv(temp);
 		break;
 	case idle_send:
 		if (sending == FALSE && temp != '$') {
@@ -144,7 +121,7 @@ recv_message(os_event_t *events) {
 			if (checksum_buffer()) {
 				//store it into the circular buffer
 				uart0_sendStr("\r\nchecksum succeeded...\r\n");
-				print_buffer();
+				//print_buffer();
 				storing = TRUE;
 				//swap and reset buffer
 				swap_buffer();
@@ -184,7 +161,7 @@ recv_message(os_event_t *events) {
 			if (checksum_buffer()) {
 				//store it into the circular buffer
 				uart0_sendStr("\r\nchecksum succeeded...\r\n");
-				print_buffer();
+				//print_buffer();
 				storing = TRUE;
 				//swap and reset buffer
 				swap_buffer();
@@ -213,18 +190,53 @@ recv_message(os_event_t *events) {
 		}
 		break;
     }
-    
-    //end of the while loop
+}
+
+void ICACHE_FLASH_ATTR
+case_recv(char temp) {
+	if (temp == '\n') {
+		//message terminating, storing into the send buffer
+		//nmea checksum on the buffer
+		if (checksum_buffer()) {
+			//store it into the circular buffer
+			uart0_sendStr("\r\nchecksum succeeded...\r\n");
+			//print_buffer();
+			storing = TRUE;
+			//swap and reset buffer
+			swap_buffer();
+			reset_buffer();
+			system_os_post(store_messagePrio, 0, 0);
+			user_state = idle_store;
+		} else {
+			//print_buffer();
+			uart0_sendStr("\r\nchecksum failed...\r\n");
+			reset_buffer();
+			user_state = receive_idle;
+		}
+	//if the buffer overflows, then reset the buffer and go back
+	//to idle
+	} else if (!put_buffer(temp)) {
+		//print_buffer();
+		reset_buffer();
+		user_state = receive_idle;
 	}
-	
-	//handles uart interrupt, and calling this function from the uart.c
-	//driver
-	if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_FULL_INT_ST)) {
-		WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_FULL_INT_CLR);
-	} else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_TOUT_INT_ST)) {
-		WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_TOUT_INT_CLR);
+}
+
+void ICACHE_FLASH_ATTR
+case_idle(char temp) {
+	//if the character is a dollar sign, we are no longer idle and
+	//a message is beginning!
+	if (temp == '$') {
+		user_state = receive;
+		//puts shit on the buffer
+		put_buffer(temp);
+	//TODO change to if is connected to access point, and send 
+	//is greater than 0
+	} else if (size_send_buffer() > 0) {
+		sending = TRUE;
+		system_os_post(send_messagePrio, 0, 0);
+		user_state = idle_send;
 	}
-	ETS_UART_INTR_ENABLE();
 }
 
 /**
@@ -264,6 +276,7 @@ send_message(os_event_t *events) {
   * @param  None
   * @retval None
   */
+
 void ICACHE_FLASH_ATTR
 send_recv_init(void) {
 	//indicates the uart has first priority, and a queue length of 64

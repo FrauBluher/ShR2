@@ -23,16 +23,12 @@ Esp8266 http server - core routines
 #include "httpd.h"
 #include "espfs.h"
 
-
 //Max length of request head
 #define MAX_HEAD_LEN 1024
 //Max amount of connections
-#define MAX_CONN 8
+#define MAX_CONN 2
 //Max post buffer len
 #define MAX_POST 1024
-//Max send buffer len
-#define MAX_SENDBUFF_LEN 2048
-
 
 //This gets set at init time.
 static HttpdBuiltInUrl *builtInUrls;
@@ -42,8 +38,6 @@ struct HttpdPriv {
 	char head[MAX_HEAD_LEN];
 	int headPos;
 	int postPos;
-	char *sendBuff;
-	int sendBuffLen;
 };
 
 //Connection pool
@@ -65,11 +59,14 @@ typedef struct {
 static const MimeMap mimeTypes[]={
 	{"htm", "text/htm"},
 	{"html", "text/html"},
+	{"css", "text/css"},
 	{"js", "text/javascript"},
 	{"txt", "text/plain"},
 	{"jpg", "image/jpeg"},
 	{"jpeg", "image/jpeg"},
 	{"png", "image/png"},
+	{"gif", "image/gif"},
+	{"ico", "image/x-icon"},
 	{NULL, "text/html"}, //default value
 };
 
@@ -165,55 +162,26 @@ int ICACHE_FLASH_ATTR httpdFindArg(char *line, char *arg, char *buff, int buffLe
 	return -1; //not found
 }
 
-//Get the value of a certain header in the HTTP client head
-int ICACHE_FLASH_ATTR httpdGetHeader(HttpdConnData *conn, char *header, char *ret, int retLen) {
-	char *p=conn->priv->head;
-	p=p+strlen(p)+1; //skip GET/POST part
-	p=p+strlen(p)+1; //skip HTTP part
-	while (p<(conn->priv->head+conn->priv->headPos)) {
-		while(*p<=32 && *p!=0) p++; //skip crap at start
-//		os_printf("Looking for %s, Header: '%s'\n", header, p);
-		//See if this is the header
-		if (os_strncmp(p, header, strlen(header))==0 && p[strlen(header)]==':') {
-			//Skip 'key:' bit of header line
-			p=p+strlen(header)+1;
-			//Skip past spaces after the colon
-			while(*p==' ') p++;
-			//Copy from p to end
-			while (*p!=0 && *p!='\r' && *p!='\n' && retLen>1) {
-				*ret++=*p++;
-				retLen--;
-			}
-			//Zero-terminate string
-			*ret=0;
-			//All done :)
-			return 1;
-		}
-		p+=strlen(p)+1; //Skip past end of string and \0 terminator
-	}
-	return 0;
-}
 
 //Start the response headers.
 void ICACHE_FLASH_ATTR httpdStartResponse(HttpdConnData *conn, int code) {
 	char buff[128];
 	int l;
 	l=os_sprintf(buff, "HTTP/1.0 %d OK\r\nServer: esp8266-httpd/"HTTPDVER"\r\n", code);
-	httpdSend(conn, buff, l);
+	espconn_sent(conn->conn, (uint8 *)buff, l);
 }
 
 //Send a http header.
 void ICACHE_FLASH_ATTR httpdHeader(HttpdConnData *conn, const char *field, const char *val) {
 	char buff[256];
 	int l;
-
 	l=os_sprintf(buff, "%s: %s\r\n", field, val);
-	httpdSend(conn, buff, l);
+	espconn_sent(conn->conn, (uint8 *)buff, l);
 }
 
 //Finish the headers.
 void ICACHE_FLASH_ATTR httpdEndHeaders(HttpdConnData *conn) {
-	httpdSend(conn, "\r\n", -1);
+	espconn_sent(conn->conn, (uint8 *)"\r\n", 2);
 }
 
 //ToDo: sprintf->snprintf everywhere... esp doesn't have snprintf tho' :/
@@ -222,7 +190,7 @@ void ICACHE_FLASH_ATTR httpdRedirect(HttpdConnData *conn, char *newUrl) {
 	char buff[1024];
 	int l;
 	l=os_sprintf(buff, "HTTP/1.1 302 Found\r\nLocation: %s\r\n\r\nMoved to %s\r\n", newUrl, newUrl);
-	httpdSend(conn, buff, l);
+	espconn_sent(conn->conn, (uint8 *)buff, l);
 }
 
 //Use this as a cgi function to redirect one url to another.
@@ -231,28 +199,9 @@ int ICACHE_FLASH_ATTR cgiRedirect(HttpdConnData *connData) {
 		//Connection aborted. Clean up.
 		return HTTPD_CGI_DONE;
 	}
+
 	httpdRedirect(connData, (char*)connData->cgiArg);
 	return HTTPD_CGI_DONE;
-}
-
-
-//Add data to the send buffer. len is the length of the data. If len is -1
-//the data is seen as a C-string.
-//Returns 1 for success, 0 for out-of-memory.
-int ICACHE_FLASH_ATTR httpdSend(HttpdConnData *conn, const char *data, int len) {
-	if (len<0) len=strlen(data);
-	if (conn->priv->sendBuffLen+len>MAX_SENDBUFF_LEN) return 0;
-	os_memcpy(conn->priv->sendBuff+conn->priv->sendBuffLen, data, len);
-	conn->priv->sendBuffLen+=len;
-	return 1;
-}
-
-//Helper function to send any data in conn->priv->sendBuff
-static void ICACHE_FLASH_ATTR xmitSendBuff(HttpdConnData *conn) {
-	if (conn->priv->sendBuffLen!=0) {
-		espconn_sent(conn->conn, (uint8_t*)conn->priv->sendBuff, conn->priv->sendBuffLen);
-		conn->priv->sendBuffLen=0;
-	}
 }
 
 //Callback called when the data on a socket has been successfully
@@ -260,25 +209,19 @@ static void ICACHE_FLASH_ATTR xmitSendBuff(HttpdConnData *conn) {
 static void ICACHE_FLASH_ATTR httpdSentCb(void *arg) {
 	int r;
 	HttpdConnData *conn=httpdFindConnData(arg);
-	char sendBuff[MAX_SENDBUFF_LEN];
-
 //	os_printf("Sent callback on conn %p\n", conn);
 	if (conn==NULL) return;
-	conn->priv->sendBuff=sendBuff;
-	conn->priv->sendBuffLen=0;
-
 	if (conn->cgi==NULL) { //Marked for destruction?
 		os_printf("Conn %p is done. Closing.\n", conn->conn);
 		espconn_disconnect(conn->conn);
 		httpdRetireConn(conn);
-		return; //No need to call xmitSendBuff.
+		return;
 	}
 
 	r=conn->cgi(conn); //Execute cgi fn.
 	if (r==HTTPD_CGI_DONE) {
 		conn->cgi=NULL; //mark for destruction.
 	}
-	xmitSendBuff(conn);
 }
 
 static const char *httpNotFoundHeader="HTTP/1.0 404 Not Found\r\nServer: esp8266-httpd/0.1\r\nContent-Type: text/plain\r\n\r\nNot Found.\r\n";
@@ -290,12 +233,8 @@ static void ICACHE_FLASH_ATTR httpdSendResp(HttpdConnData *conn) {
 	int r;
 	//See if the url is somewhere in our internal url table.
 	while (builtInUrls[i].url!=NULL && conn->url!=NULL) {
-		int match=0;
 //		os_printf("%s == %s?\n", builtInUrls[i].url, conn->url);
-		if (os_strcmp(builtInUrls[i].url, conn->url)==0) match=1;
-		if (builtInUrls[i].url[os_strlen(builtInUrls[i].url)-1]=='*' &&
-				os_strncmp(builtInUrls[i].url, conn->url, os_strlen(builtInUrls[i].url)-1)==0) match=1;
-		if (match) {
+		if (os_strcmp(builtInUrls[i].url, conn->url)==0 || builtInUrls[i].url[0]=='*') {
 			os_printf("Is url index %d\n", i);
 			conn->cgiData=NULL;
 			conn->cgi=builtInUrls[i].cgiCb;
@@ -310,7 +249,7 @@ static void ICACHE_FLASH_ATTR httpdSendResp(HttpdConnData *conn) {
 	}
 	//Can't find :/
 	os_printf("%s not found. 404!\n", conn->url);
-	httpdSend(conn, httpNotFoundHeader, -1);
+	espconn_sent(conn->conn, (uint8 *)httpNotFoundHeader, os_strlen(httpNotFoundHeader));
 	conn->cgi=NULL; //mark for destruction
 }
 
@@ -356,16 +295,13 @@ static void ICACHE_FLASH_ATTR httpdParseHeader(char *h, HttpdConnData *conn) {
 	}
 }
 
-
 //Callback called when there's data available on a socket.
 static void ICACHE_FLASH_ATTR httpdRecvCb(void *arg, char *data, unsigned short len) {
 	int x;
 	char *p, *e;
-	char sendBuff[MAX_SENDBUFF_LEN];
 	HttpdConnData *conn=httpdFindConnData(arg);
 	if (conn==NULL) return;
-	conn->priv->sendBuff=sendBuff;
-	conn->priv->sendBuffLen=0;
+
 
 	for (x=0; x<len; x++) {
 		if (conn->priv->headPos!=-1) {
@@ -401,11 +337,10 @@ static void ICACHE_FLASH_ATTR httpdRecvCb(void *arg, char *data, unsigned short 
 				os_printf("Post data: %s\n", conn->postBuff);
 				//Send the response.
 				httpdSendResp(conn);
-				break;
+				return;
 			}
 		}
 	}
-	xmitSendBuff(conn);
 }
 
 static void ICACHE_FLASH_ATTR httpdReconCb(void *arg, sint8 err) {
@@ -429,11 +364,7 @@ static void ICACHE_FLASH_ATTR httpdDisconCb(void *arg) {
 	int i;
 	for (i=0; i<MAX_CONN; i++) {
 		if (connData[i].conn!=NULL) {
-			//Why the >=ESPCONN_CLOSE and not ==? Well, seems the stack sometimes de-allocates
-			//espconns under our noses, especially when connections are interrupted. The memory
-			//is then used for something else, and we can use that to capture *most* of the
-			//disconnect cases.
-			if (connData[i].conn->state==ESPCONN_NONE || connData[i].conn->state>=ESPCONN_CLOSE) {
+			if (connData[i].conn->state==ESPCONN_NONE || connData[i].conn->state==ESPCONN_CLOSE) {
 				connData[i].conn=NULL;
 				if (connData[i].cgi!=NULL) connData[i].cgi(&connData[i]); //flush cgi data
 				httpdRetireConn(&connData[i]);

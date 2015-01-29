@@ -1,192 +1,140 @@
-<html>
-<head>
-<title>ESP8266 - esphttpd</title>
-<!-- Bootstrap Core CSS -->
-<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
-<!-- Custom CSS -->
-<link href="/static/css/scrolling-nav.css" rel="stylesheet">
-<link href="/static/css/style.css" rel="stylesheet">
-<!-- jQuery Version 1.11.1 -->
-<script src="/static/js/jquery.min.js"></script>
-<script>
-$(function(){
-	$("#navbar").load("/navbar.html");
-});
-</script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="description" content="Responsive UI for ESP8266">
+    <meta name="author" content="Rajendra Khope">
+    <link rel="icon" href="favicon.ico">
 
-<!-- jQuery Version 1.11.1 -->
-<script type="text/javascript">
+    <title>Responsive UI for ESP8266</title>
 
-var currAp="%currSsid%";
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-function createInputForAp(ap) {
-    if (ap.essid=="" && ap.rssi==0) return;
-    var rssi = $("<div>");
-    var rssiVal=-Math.floor(ap.rssi/51)*32;
-    rssi.addClass("icon");
-    rssi.css("backgroundPosition","0px "+rssiVal+"px");
+    <!-- Custom styles for this template -->
+    <style type="text/css">
+	body {
+	  padding-top: 70px;
+	}
+	.footer {
 
-    var encrypt = $("<div>");
-    var encVal="-64"; //assume wpa/wpa2
-    if (ap.enc=="0") encVal="0"; //open
-    if (ap.enc=="1") encVal="-32"; //wep
-    encrypt.addClass("icon");
-    encrypt.css("backgroundPosition","-32px "+encVal+"px");
-    
-    var input = document.createElement("input");
-    input.type="radio";
-    input.name="wifi";
-    input.id="opt-"+ap.essid;
-    if (currAp==ap.essid) input.checked="1";
-    input.appendChild(document.createTextNode(ap.essid));
-    
-    label = $('<label>')
-    label.text(ap.essid)
-    div = $('<div>')
-    div.addClass("radio")
-    div.css("padding-left","50px")
-    $("#ap-table").append($('<tr>')
-	              .append($('<td>')
-                          .append(div
-                              .append(input)
-    	                      .append(label)
-                          )
-                       )
-                       .append($('<td>')
-                           .append(rssi)
-                       )
-                       .append($('<td>')
-                           .append(encrypt)
-                       )
-                   );
-}
+	  background-color: #00cccc;
+	}
+    </style>
 
-$(".radio").click(function() {
-    $(".radio").removeAttr('checked');
-    $(".radio").buttonset('refresh');
-});
+  </head>
 
-function getSelectedEssid() {
-    var e=document.forms.wifiform.elements;
-    for (var i=0; i<e.length; i++) {
-        if (e[i].type=="radio" && e[i].checked) return e[i];
-    }
-    return currAp;
-}
+  <body>
 
-
-function scanAPs() {
-    $.ajax({
-        type: "GET",
-        url: "/wifi/wifiscan.cgi",
-    })
-    .success(function(data) {
-        currAp=getSelectedEssid();
-        $("#aps").empty();
-        $("#ap-table").empty();
-        ap_table = $("<table>");
-        ap_table.attr("id", "ap-table");
-        ap_table.css("margin", "0 auto");
-        $("#aps").append(ap_table);
-        aps = data.result.APs;
-        for (var i in aps) {
-            if (aps[i].essid=="" && aps[i].rssi==0) continue;
-            createInputForAp(aps[i]);
-        }
-        //Disabled recurring requests for now (table clears)
-        setTimeout(scanAPs, 20000);
-    })
-    .fail(function(data) {
-        setTimeout(scanAPs(), 1000);
-    });
-
-}
-
-$(function() {
-    scanAPs();
-});
-
-</script>
-
-</head>
-<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
-	<div id="navbar"></div>
-	<!-- Page Content -->
-	<section id="intro" class="top-section light">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12 text-center">
-					<h1>It works!</h1>
-					<p class="lead">Welcome to your new SEADS device.</p>
-					<p>Before we get started, let's go over some setup steps.</p>
-					<p>When you're ready, we'll gather some information about your network.</p> 
-					<a class="btn btn-default page-scroll" href="#services">Begin Setup</a>
-				</div>
-			</div>
-			<!-- /.row -->
-		</div>
-		<!-- /.container -->
-	</section>
-
-    <!-- Services Section -->
-    <section id="services" class="scroll-section light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Services Section</h1>
-                    <p>Under Construction<p>
-                    <a class="btn btn-default page-scroll" href="#contact">Next</a>
-                </div>
-            </div>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="32.png" width="32" height="32" alt="" /> </a>
         </div>
-    </section>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about" data-toggle="modal" data-target="#myModal">About</a></li>
+            <li><a href="#contact" data-toggle="modal" data-target="#contactModal">Contact</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/wifi">WLAN Config</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 
-    <!-- Contact Section -->
-    <section id="contact" class="scroll-section dark">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Contact Section</h1>
-                    <p>Fyi, this page has been loaded <b>%counter%</b> times.</p>
-                    <ul class="list-unstyled">
-					<li>Go to <a href="/wifi">WiFi Page</a>.</li>
-					<li>You can also control the <a href="led.tpl">LED</a>.</li>
-					<li>You can download the raw <a href="flash.bin">contents</a> of the SPI flash rom</li>
-					</ul>
-                    <p>Current WiFi mode: %WiFiMode%</p>
-                    <p>Note: %WiFiapwarn%</p>
-					<a class="btn btn-default page-scroll" href="#wifi">Next</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="container">
 
-    <!-- WiFi Section -->
-    <section id="wifi" class="scroll-section dark">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-centered">
-                    <h1>WiFi Scan</h1>
-                    <form name="wifiform" action="/wifi/connect.cgi" method="post">
-                    <p>
-                        To connect to a WiFi network, please select one of the detected networks.<br>
-                        <div id="aps" class="table-responsive">Scanning...</div>
-                        </table>
-                        <br>WiFi password, if applicable: <br />
-                        <input type="password" name="passwd" val="%WiFiPasswd%"> <br />
-                        <input type="submit" name="connect" value="Connect">
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-</body>
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<h4 class="modal-title" id="myModalLabel">About</h4>
+	      </div>
+	      <div class="modal-body">
+		ESP8266 Responsive UI with bootstrap
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
-<script>
-// Bootstrap Core JavaScript
-$.getScript("/static/js/bootstrap.min.js");
-$.getScript("/static/js/jquery.easing.min.js");
-$.getScript("/static/js/scrolling-nav.js");
-</script>
+	<!-- Modal -->
+	<div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		<h4 class="modal-title" id="myModalLabel">Contact</h4>
+	      </div>
+	      <div class="modal-body">
+		UI Designed by: Rajendra Khope<br />
+		Email: research@iocare.in<br />
+		Website: www.iocare.in
+	      </div>
+	      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
+      <!-- Main component for a content -->
+      <div class="jumbotron">
+        <h1>Bootstrap Responisve UI in ESP8266 </h1>
+
+		<p>
+		If you see this, it means the tiny li'l website in your ESP8266 does actually work. <br />
+		This is an effort to create responsive UI in ESP.<br />
+		
+		<div id="" class="alert alert-info">
+			This page has been loaded <span class="badge"><b>%counter%</b></span>  times..!
+		</div><br /><br />
+
+
+
+		<a href="/wifi" class="btn btn-primary btn-lg btn-block">WLAN Config</a>
+		<a href="led.tpl" class="btn btn-success btn-lg btn-block">LED Control</a>
+		<a href="flash.bin" class="btn btn-info btn-lg btn-block">SPI flash ROM</a><br />
+		<a href="http://iocare.in" class="btn btn-warning btn-lg btn-block">My Website</a>
+
+
+		</p>
+
+
+
+        </p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+  <div class="container">
+     <ul class="nav navbar-nav navbar-left">
+	<li><a>ESP8266 Responsive UI with bootstrap</a></li>
+      </ul>
+  </div>
+</nav>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
 </html>

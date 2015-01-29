@@ -17,30 +17,15 @@
 #include "httpdespfs.h"
 #include "cgi.h"
 #include "cgiwifi.h"
-#include "c_types.h"
-//#include "stdout.h"
 #include "uart.h"
 
 #include "send_recv_port.h"
 
-
-/*
-This is the main url->function dispatching data struct.
-In short, it's a struct with various URLs plus their handlers. The handlers can
-be 'standard' CGI functions you wrote, or 'special' CGIs requiring an argument.
-They can also be auth-functions. An asterisk will match any url starting with
-everything before the asterisks; "*" matches everything. The list will be
-handled top-down, so make sure to put more specific rules above the more
-general ones. Authorization things (like authBasic) act as a 'barrier' and
-should be placed above the URLs they protect.
-*/
 HttpdBuiltInUrl builtInUrls[]={
 	{"/", cgiRedirect, "/index.tpl"},
-	{"/flash.bin", cgiReadFlash, NULL},
-	{"/index.tpl", cgiEspFsTemplate, tplSetupPage},
+	{"/index.tpl", cgiEspFsTemplate, tplCounter},
 
 	//Routines to make the /wifi URL and everything beneath it work.
-
 	{"/wifi", cgiRedirect, "/wifi/wifi.tpl"},
 	{"/wifi/", cgiRedirect, "/wifi/wifi.tpl"},
 	{"/wifi/wifiscan.cgi", cgiWiFiScan, NULL},
@@ -48,20 +33,16 @@ HttpdBuiltInUrl builtInUrls[]={
 	{"/wifi/connect.cgi", cgiWiFiConnect, NULL},
 	{"/wifi/setmode.cgi", cgiWifiSetMode, NULL},
 
+
 	{"*", cgiEspFsHook, NULL}, //Catch-all cgi function for the filesystem
 	{NULL, NULL, NULL}
 };
 
 
-//Main routine. Initialize stdout, the I/O, the webserver,
-//and the sending receiving state machine and we're done.
-void user_init(void) {
-	//stdoutInit();
-	//init only uart0, regular uart
+void ICACHE_FLASH_ATTR
+user_init(void) {
 	uart_init(BIT_RATE_115200);
 	httpdInit(builtInUrls, 80);
-	//inits uart stuff
 	send_recv_init();
 	os_printf("\nReady\n");
-	uart0_sendStr("\nReady\n");
 }

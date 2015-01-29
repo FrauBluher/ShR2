@@ -1,8 +1,6 @@
 #ifndef ESPFS_H
 #define ESPFS_H
 
-
-
 typedef struct EspFsFile EspFsFile;
 
 EspFsFile *espFsOpen(char *fileName);
