@@ -47,6 +47,21 @@ int ICACHE_FLASH_ATTR cgiEspFsHook(HttpdConnData *connData) {
 		connData->cgiData=file;
 		httpdStartResponse(connData, 200);
 		httpdHeader(connData, "Content-Type", httpdGetMimetype(connData->url));
+
+//Modification : bkrajendra		
+		char *url;
+		url = connData->url;
+		//Go find the extension
+		char *ext=url+(strlen(url)-1);
+		while (ext!=url && *ext!='.') ext--;
+		if (*ext=='.') ext++;
+
+		if (os_strcmp(ext, "css")==0 || os_strcmp(ext, "js")==0)
+		{
+			httpdHeader(connData, "Content-Encoding", "gzip");
+		}
+//Modification : bkrajendra			
+
 		httpdEndHeaders(connData);
 		return HTTPD_CGI_MORE;
 	}
@@ -115,7 +130,7 @@ int ICACHE_FLASH_ATTR cgiEspFsTemplate(HttpdConnData *connData) {
 				//Inside ordinary text.
 				if (buff[x]=='%') {
 					//Send raw data up to now
-					if (sp!=0) httpdSend(connData, e, sp);
+					if (sp!=0) espconn_sent(connData->conn, (uint8 *)e, sp);
 					sp=0;
 					//Go collect token chars.
 					tpd->tokenPos=0;
@@ -127,7 +142,7 @@ int ICACHE_FLASH_ATTR cgiEspFsTemplate(HttpdConnData *connData) {
 					if (tpd->tokenPos==0) {
 						//This is the second % of a %% escape string.
 						//Send a single % and resume with the normal program flow.
-						httpdSend(connData, "%", 1);
+						espconn_sent(connData->conn, (uint8 *)"%", 1);
 					} else {
 						//This is an actual token.
 						tpd->token[tpd->tokenPos++]=0; //zero-terminate token
@@ -143,7 +158,7 @@ int ICACHE_FLASH_ATTR cgiEspFsTemplate(HttpdConnData *connData) {
 		}
 	}
 	//Send remaining bit.
-	if (sp!=0) httpdSend(connData, e, sp);
+	if (sp!=0) espconn_sent(connData->conn, (uint8 *)e, sp);
 	if (len!=1024) {
 		//We're done.
 		((TplCallback)(connData->cgiArg))(connData, NULL, &tpd->tplArg);

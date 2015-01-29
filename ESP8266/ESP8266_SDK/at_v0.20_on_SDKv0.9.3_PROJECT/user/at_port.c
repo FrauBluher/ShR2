@@ -77,7 +77,7 @@ static void at_recvTask(os_event_t *events);
   * @param  events: contain the uart receive data
   * @retval None
   */
-static void ICACHE_FLASH_ATTR ///////
+static void ICACHE_FLASH_ATTR///////
 at_recvTask(os_event_t *events)
 {
   static uint8_t atHead[2];

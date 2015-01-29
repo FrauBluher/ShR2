@@ -7,9 +7,14 @@
  * 
  */
 
-#include "c_types.h"
+//for the strtol
+#include "stdlib.h"
 #include "osapi.h"
+//for the os_printf etc
+#include "espmissingincludes.h"
+#include "c_types.h"
 #include "nmea0183.h"
+#include "uart.h"
 
 /**
   * @brief  nmea string checksum function
@@ -68,7 +73,7 @@ check(const char *string, bool strict) {
 		//debug getting hex value
 		char str[15];
 		os_sprintf(str, "e:%d\r\n", expected);
-		uart0_sendStr(str);
+		os_printf(str);
 		if (expected == 0) {
 			return false;
 		}
@@ -111,3 +116,51 @@ get_talker(const char *string) {
 	}
 }
 
+/**
+  * @brief  populates fields from string
+  * @param  string, fields
+  * @retval success or failure
+  */
+/*
+bool ICACHE_FLASH_ATTR
+process_message(char *string, float *wattage, char *timestamp) {
+	char *buff_ptr = NULL;
+	bool return_value = true;
+	//check preamble for talker type, and message type
+	talker_id talker = get_talker(string);
+	sentence_id sentence = get_sentence(string);
+	if (talker == TALKER_SEAD) {
+		uart0_sendStr("talker sead...\r\n");
+		switch (sentence) {
+		case SENTENCE_DAT:
+			//process data fields
+			//add 7 to the pointer to skip talker id, and message type
+			buff_ptr = string + 7;
+			*wattage = atof(buff_ptr);
+			while (*buff_ptr != ',') {
+				buff_ptr++;
+			}
+			buff_ptr++;
+			//copies timestamp to send buffer timestamp
+			uint8_t i = 0;
+			while (*buff_ptr <= '9' && *buff_ptr >= '0') {
+				timestamp[i] = *buff_ptr;
+				i++;
+				buff_ptr++;
+			}
+			break;
+		case SENTENCE_UNKNOWN:
+			uart0_sendStr("sentence unknown...\r\n");
+			return_value = false;
+			break;
+		default:
+			return_value = false;
+			break;
+		}
+	} else if (talker == TALKER_UNKNOWN) {
+		uart0_sendStr("talker unknown...\r\n");
+		return_value = false;
+	}
+	return return_value;
+}
+*/

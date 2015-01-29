@@ -1,7 +1,7 @@
 #ifndef HTTPD_H
 #define HTTPD_H
 #include <c_types.h>
-#include <ip_addr.h>
+#include "lwip/ip_addr.h"
 #include <espconn.h>
 
 #define HTTPDVER "0.2"
@@ -9,7 +9,6 @@
 #define HTTPD_CGI_MORE 0
 #define HTTPD_CGI_DONE 1
 #define HTTPD_CGI_NOTFOUND 2
-#define HTTPD_CGI_AUTHENTICATED 2 //for now
 
 typedef struct HttpdPriv HttpdPriv;
 typedef struct HttpdConnData HttpdConnData;
@@ -46,7 +45,5 @@ const char *httpdGetMimetype(char *url);
 void ICACHE_FLASH_ATTR httpdStartResponse(HttpdConnData *conn, int code);
 void ICACHE_FLASH_ATTR httpdHeader(HttpdConnData *conn, const char *field, const char *val);
 void ICACHE_FLASH_ATTR httpdEndHeaders(HttpdConnData *conn);
-int ICACHE_FLASH_ATTR httpdGetHeader(HttpdConnData *conn, char *header, char *ret, int retLen);
-int ICACHE_FLASH_ATTR httpdSend(HttpdConnData *conn, const char *data, int len);
 
 #endif
