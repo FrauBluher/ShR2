@@ -112,7 +112,6 @@ int main(int argc, char *argv[])
 			runningTotal = 0;
 			rxCrc = 0xFFFF;
 		}	
-		usleep(100);
 	}
 
 	//fwrite(tmpBuff, 1, dwBytesRead, fh);
