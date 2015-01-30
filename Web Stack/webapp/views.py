@@ -53,7 +53,9 @@ def dashboard(request):
 
 def second(events, appliances, values):
    for event in events:
-      appliances.add(event.appliance.name)
+      if (event.appliance == None):
+         appliances.add("Unknown")
+      else: appliances.add(event.appliance.name)
       values[event.timestamp].append(event.wattage)
    for time in values: values[time].insert(0,sum(values[time]))
    return [appliances, values]
