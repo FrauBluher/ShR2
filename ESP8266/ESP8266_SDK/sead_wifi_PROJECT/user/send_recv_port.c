@@ -1,6 +1,6 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
  * contains the c code responsible for the logic behind sending,
  * storing, and receiving data.

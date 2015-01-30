@@ -5,8 +5,6 @@
  * header file for the character buffer, and data buffer
  * character buffer is size 256, and fifo
  * 
- * 
- * 
  */
 
 #ifndef __BUFFERS_H

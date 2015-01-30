@@ -1,8 +1,8 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
- * 	header file for sending through wifi, and receiving through uart
+ * header file for sending through wifi, and receiving through uart
  * 
  */
 

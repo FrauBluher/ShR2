@@ -1,8 +1,8 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
- * 	header file for nmea checksums library on esp8266
+ * header file for nmea checksums library on esp8266
  * 
  */
 

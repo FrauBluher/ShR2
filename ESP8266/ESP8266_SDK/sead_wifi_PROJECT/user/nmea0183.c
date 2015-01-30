@@ -1,10 +1,9 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
- * 	code for nmea protocol checksums
- * 
- * 
+ * code for nmea protocol checksums
+ *  
  */
 
 //for the strtol
