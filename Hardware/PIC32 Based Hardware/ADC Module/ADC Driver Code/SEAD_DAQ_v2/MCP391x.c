@@ -57,12 +57,17 @@ int j;
 uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 {
 	//Setting bits for configuration of the MCP3912;
+	// CLK = 16MHZ
+	// DataRate = 16MHZ / 4 / PRE / OSR;
+	// OSR = 64, PRE = 1  -->  DataRate = 62.5kspS
+	// For OSR >= 256, 3dB rolloff for Sinc filter is .29 * 62.5kspS
+	//	so: 18.125 kHz Effective BW
 	MCP.config0Reg.BOOST = 0b11;
 	MCP.config0Reg.DITHER = 0b11;
 	MCP.config0Reg.EN_GAINCAL = 0;
 	MCP.config0Reg.EN_OFFCAL = 0;
-	MCP.config0Reg.OSR = 0b011; //0b011
-	MCP.config0Reg.PRE = 0b10; // 0
+	MCP.config0Reg.OSR = 0b010; //OSR = 128
+	MCP.config0Reg.PRE = 0b00; // 0b11 = 8, 0b10 = 4, 0b01 = 2, 0 = 1
 	MCP.config0Reg.VREFCAL = 64;
 
 	MCP.config1Reg.CLKEXT = 0; //This should be set to zero for oscillator :: TESTING
@@ -80,7 +85,7 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 
 	MCP.modReg.wholeRegister = 0;
 
-	MCP.statusReg.WIDTH_DATA = 0b00;
+	MCP.statusReg.WIDTH_DATA = 0b01; //24 bits
 	MCP.statusReg.DR_HIZ = 1;
 	MCP.statusReg.DR_LINK = 1;
 	MCP.statusReg.EN_CRCCOM = 0;
@@ -147,7 +152,7 @@ void SPI_Read_Result_Registers(void)
 	SPI_SS_LAT = 0;
 
 	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
-	BufferToSpi_Transfer(adcBuf, 9); //9
+	BufferToSpi_Transfer(adcBuf, 13); //9
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
