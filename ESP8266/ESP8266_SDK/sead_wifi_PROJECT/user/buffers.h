@@ -13,7 +13,7 @@
 #define __BUFFERS_H
 
 #define max_uart_buff_size 255
-#define max_send_buff_size 255
+#define max_send_buff_size 10
 
 //character buffer for uart
 typedef struct {
@@ -25,7 +25,7 @@ typedef struct {
 
 //exact data to send
 typedef struct {
-	float wattage;
+	uint16_t wattage;
 	char timestamp[14];
 }send_data_t;
 

@@ -13,14 +13,11 @@
 #include "user_interface.h"
 
 //# defines for the queue tasking config
-#define recv_messagePrio		0
-#define recv_messageQueueLen	64
+#define recv_messagePrio			0
+#define recv_messageQueueLen		64
 
-#define store_messagePrio		1
-#define store_messageQueueLen	1
-
-#define send_messagePrio		2
-#define send_messageQueueLen	1
+#define store_send_messagePrio		1
+#define store_send_messageQueueLen	1
 
 //receive store send states
 typedef enum {
