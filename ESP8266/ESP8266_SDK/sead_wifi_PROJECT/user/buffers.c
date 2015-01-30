@@ -174,18 +174,13 @@ push_send_buffer(void) {
 	} else {
 		temp_ptr = &uart_buffer1;
 	}
-	//uart0_sendStr(temp_ptr->buffer);
-	//goes through the message string and populates the buffer from the
 	//if it couldn't find fields then pushing fails
 	if (!process_message(temp_ptr->buffer,
 					&send_buffer.buffer[send_buffer.head].wattage,
 					send_buffer.buffer[send_buffer.head].timestamp)) {
 		return false;				
 	}
-	
-	//TODO
 	//incriment if successfully processed message and copied values over
-	//TODO FIX PUSH INCRIMENTING
 	send_buffer.head++;
 	if (send_buffer.capacity == send_buffer.count) {
 		//overwrite the oldest item at the tail
