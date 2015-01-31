@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>460</x>
+      <y>110</y>
+      <w>90</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>idle</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>290</x>
+      <y>110</y>
+      <w>90</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>receiving</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>420</x>
+      <y>360</y>
+      <w>90</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>sending</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>130</x>
+      <y>200</y>
+      <w>90</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>storing</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>250</x>
+      <y>310</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>receiving &amp;
+storing</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.State</type>
+    <coordinates>
+      <x>610</x>
+      <y>290</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>receiving &amp;
+sending</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>350</x>
+      <y>80</y>
+      <w>130</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '$'</panel_attributes>
+    <additional_attributes>30;50;110;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>50</y>
+      <w>146</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '$'</panel_attributes>
+    <additional_attributes>70;80;90;80;90;50;30;50;30;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.InitialState</type>
+    <coordinates>
+      <x>470</x>
+      <y>30</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>450</x>
+      <y>20</y>
+      <w>50</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;90;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>360</x>
+      <y>120</y>
+      <w>140</w>
+      <h>260</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '$' &amp;&amp;
+send_buf &gt; 0
+</panel_attributes>
+    <additional_attributes>100;240;70;180;120;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>490</x>
+      <y>120</y>
+      <w>180</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+send_buf &gt; 0 &amp;&amp;
+recv = '$'</panel_attributes>
+    <additional_attributes>160;170;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>150</x>
+      <y>110</y>
+      <w>160</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '\n'
+</panel_attributes>
+    <additional_attributes>30;90;140;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>290</y>
+      <w>150</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '$' &amp;&amp;
+sending</panel_attributes>
+    <additional_attributes>130;30;30;100</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>180</x>
+      <y>200</y>
+      <w>130</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '\n' &amp;&amp;
+!storing</panel_attributes>
+    <additional_attributes>40;30;70;60;90;110</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>460</x>
+      <y>120</y>
+      <w>130</w>
+      <h>260</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '$' &amp;&amp;
+!sending</panel_attributes>
+    <additional_attributes>40;30;70;180;40;240</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>140</x>
+      <y>220</y>
+      <w>136</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '$' &amp;&amp;
+storing</panel_attributes>
+    <additional_attributes>110;110;40;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>300</x>
+      <y>120</y>
+      <w>190</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+recv != '\n' &amp;&amp;
+!storing
+</panel_attributes>
+    <additional_attributes>30;190;170;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>300</x>
+      <y>130</y>
+      <w>330</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '\n' &amp;&amp;
+!sending</panel_attributes>
+    <additional_attributes>60;30;80;70;310;170</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>110</x>
+      <y>220</y>
+      <w>530</w>
+      <h>284</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '\n' &amp;&amp;
+!sending</panel_attributes>
+    <additional_attributes>40;30;30;240;360;250;510;130</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>320</y>
+      <w>214</w>
+      <h>172</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '\n' &amp;&amp;
+sending
+--
+drops message</panel_attributes>
+    <additional_attributes>30;80;140;100;180;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>520</x>
+      <y>110</y>
+      <w>170</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '\n' &amp;&amp;
+!sending</panel_attributes>
+    <additional_attributes>30;30;90;50;150;180</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>130</x>
+      <y>80</y>
+      <w>180</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '$' &amp;&amp;
+!storing</panel_attributes>
+    <additional_attributes>160;40;70;50;30;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>190</x>
+      <y>110</y>
+      <w>290</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '$' &amp;&amp;
+!storing</panel_attributes>
+    <additional_attributes>270;30;100;110;30;100</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>170</y>
+      <w>150</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '$' &amp;&amp;
+storing</panel_attributes>
+    <additional_attributes>130;70;70;100;70;30;130;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>290</x>
+      <y>340</y>
+      <w>150</w>
+      <h>94</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '$' &amp;&amp;
+sending</panel_attributes>
+    <additional_attributes>130;60;70;70;70;30;130;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>110</x>
+      <y>220</y>
+      <w>160</w>
+      <h>202</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv = '\n' &amp;&amp;
+storing
+--
+drop message</panel_attributes>
+    <additional_attributes>50;30;80;130;140;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>210</x>
+      <y>340</y>
+      <w>144</w>
+      <h>134</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '\n' &amp;&amp;
+storing</panel_attributes>
+    <additional_attributes>100;30;100;90;50;90;50;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>270</x>
+      <y>0</y>
+      <w>120</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '\n'</panel_attributes>
+    <additional_attributes>90;110;90;50;40;50;40;110</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>660</x>
+      <y>210</y>
+      <w>164</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+recv != '\n' &amp;&amp;
+sending</panel_attributes>
+    <additional_attributes>50;120;100;50;30;80</additional_attributes>
+  </element>
+</diagram>

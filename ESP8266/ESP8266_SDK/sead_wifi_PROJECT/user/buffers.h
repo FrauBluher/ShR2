@@ -5,15 +5,13 @@
  * header file for the character buffer, and data buffer
  * character buffer is size 256, and fifo
  * 
- * 
- * 
  */
 
 #ifndef __BUFFERS_H
 #define __BUFFERS_H
 
 #define max_uart_buff_size 255
-#define max_send_buff_size 255
+#define max_send_buff_size 10
 
 //character buffer for uart
 typedef struct {
@@ -25,7 +23,7 @@ typedef struct {
 
 //exact data to send
 typedef struct {
-	float wattage;
+	uint16_t wattage;
 	char timestamp[14];
 }send_data_t;
 
@@ -63,6 +61,7 @@ bool checksum_buffer(void);
 //push and pop for send buffer
 bool push_send_buffer(void);
 bool send_pop_buffer(void);
+void pop_pop_buffer(void);
 
 //returns current size of send buffer
 uint8_t size_send_buffer(void);

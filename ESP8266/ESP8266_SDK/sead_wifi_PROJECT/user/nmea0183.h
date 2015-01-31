@@ -1,8 +1,8 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
- * 	header file for nmea checksums library on esp8266
+ * header file for nmea checksums library on esp8266
  * 
  */
 
@@ -27,6 +27,6 @@ bool check(const char *, bool);
 
 sentence_id get_sentence(const char *);
 talker_id get_talker(const char *);
-bool process_message(char *, float *, char *);
+bool process_message(char *, uint16_t *, char *);
 
 #endif

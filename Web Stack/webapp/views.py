@@ -13,10 +13,13 @@ from pyzipcode import ZipCodeDatabase
 
 import timeseries as ts
 
+from influxdb import client as influxdb
+
 # Create your views here.
 
 #TODO O(n^2) time
 def chartify(data):
+   warnings.warn("chartify method no longer used for InfluxDB.", DeprecationWarning)
    values = []
    for time in data:
       tmp = [time]
@@ -41,19 +44,21 @@ def dashboard(request):
       my_devices = Device.objects.filter(owner=user)
    else: my_devices = public_devices
    device = my_devices[0] if my_devices else None
-   events = Event.objects.filter(device=device)
-   appliances = Set()
-   for event in events:
-      appliances.add(event.appliance)
+   result = []
+   if (device != None):
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      result = db.query('select * from "'+str(device.serial)+'" limit 1;')[0]
    context = {'public_devices': public_devices,
               'my_devices': my_devices,
-              'appliances': list(appliances)
+              'appliances': result['columns'][2:]
               }
    return render(request, 'base/dashboard.html', context)
 
 def second(events, appliances, values):
    for event in events:
-      appliances.add(event.appliance.name)
+      if (event.appliance == None):
+         appliances.add("Unknown")
+      else: appliances.add(event.appliance.name)
       values[event.timestamp].append(event.wattage)
    for time in values: values[time].insert(0,sum(values[time]))
    return [appliances, values]
@@ -76,8 +81,40 @@ def get_weather(zipcode):
    #response = json.load(response)
    #return response
 
-#TODO request parameters
 def charts(request, serial, unit):
+   if request.method == 'GET':
+      user = request.user.id
+      devices = Device.objects.filter(Q(owner=user) | Q(private=False), serial=serial)
+      device = devices[0] if devices else None
+      public_devices = Device.objects.filter(private=False)
+      user = request.user.id
+      if request.user.is_authenticated():
+         my_devices = Device.objects.filter(owner=user)
+      else: my_devices = public_devices
+      context = {}
+      if (device):
+         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+         result = db.query('select * from "'+serial+'";')[0]
+         for point in result['points']:
+            point.pop(1)
+            point[0] = int(point[0])
+            point.insert(1, sum(point[1:]))
+         appliances = result['columns'][2:]
+         data = result['points']
+         context = {'public_devices': public_devices,
+                    'my_devices': my_devices,
+                    'appliances': result['columns'][2:],
+                    'data': json.dumps(data),
+                    'unit': unit,
+                    'dataLimitFrom': result['points'][len(result['points'])-1][0],
+                    'dataLimitTo': result['points'][0][0]
+                    }
+      return render(request, 'base/dashboard.html', context)
+
+
+#TODO request parameters
+def charts_deprecated(request, serial, unit):
+   warnings.warn("Generating chart data from sqlite deprecated. See new charts() using InfluxDB.", DeprecationWarning)
    if request.method == 'GET':
       user = request.user.id
       devices = Device.objects.filter(Q(owner=user) | Q(private=False), serial=serial)

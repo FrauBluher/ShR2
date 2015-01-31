@@ -14,6 +14,11 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Modified by
+ * hcrute@ucsc.edu
+ * Henry Crute
+ * 
  */
 #ifndef UART_APP_H
 #define UART_APP_H

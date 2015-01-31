@@ -1,10 +1,9 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
- * 	code for nmea protocol checksums
- * 
- * 
+ * code for nmea protocol checksums
+ *  
  */
 
 //for the strtol
@@ -99,7 +98,7 @@ check(const char *string, bool strict) {
   */
 sentence_id ICACHE_FLASH_ATTR
 get_sentence(const char *string) {
-	if (os_strcmp(string + 3, "DAT")) {
+	if (os_strncmp(string + 3, "DAT", 3) == 0) {
 		return SENTENCE_DAT;
 	} else {
 		return SENTENCE_UNKNOWN;
@@ -109,7 +108,7 @@ get_sentence(const char *string) {
 
 talker_id ICACHE_FLASH_ATTR
 get_talker(const char *string) {
-	if (os_strcmp(string + 1, "SE")) {
+	if (os_strncmp(string + 1, "SE", 2) == 0) {
 		return TALKER_SEAD;
 	} else {
 		return TALKER_UNKNOWN;
@@ -121,22 +120,23 @@ get_talker(const char *string) {
   * @param  string, fields
   * @retval success or failure
   */
-/*
+
 bool ICACHE_FLASH_ATTR
-process_message(char *string, float *wattage, char *timestamp) {
+process_message(char *string, uint16_t *wattage, char *timestamp) {
 	char *buff_ptr = NULL;
 	bool return_value = true;
 	//check preamble for talker type, and message type
 	talker_id talker = get_talker(string);
 	sentence_id sentence = get_sentence(string);
 	if (talker == TALKER_SEAD) {
-		uart0_sendStr("talker sead...\r\n");
+		uart0_sendStr("talker sead\r\n");
 		switch (sentence) {
 		case SENTENCE_DAT:
 			//process data fields
 			//add 7 to the pointer to skip talker id, and message type
 			buff_ptr = string + 7;
-			*wattage = atof(buff_ptr);
+			//converts string wattage found to an integer, not a float
+			*wattage = atoi(buff_ptr);
 			while (*buff_ptr != ',') {
 				buff_ptr++;
 			}
@@ -150,7 +150,7 @@ process_message(char *string, float *wattage, char *timestamp) {
 			}
 			break;
 		case SENTENCE_UNKNOWN:
-			uart0_sendStr("sentence unknown...\r\n");
+			uart0_sendStr("sentence unknown\r\n");
 			return_value = false;
 			break;
 		default:
@@ -158,9 +158,13 @@ process_message(char *string, float *wattage, char *timestamp) {
 			break;
 		}
 	} else if (talker == TALKER_UNKNOWN) {
-		uart0_sendStr("talker unknown...\r\n");
+		uart0_sendStr("talker unknown\r\n");
 		return_value = false;
 	}
+	uart0_sendStr(timestamp);
+	char buffer[10] = {0};
+	os_sprintf(buffer, "watt: %d\r\n", *wattage);
+	uart0_sendStr(buffer);
 	return return_value;
 }
-*/
+

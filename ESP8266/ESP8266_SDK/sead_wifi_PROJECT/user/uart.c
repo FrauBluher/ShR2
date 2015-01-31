@@ -14,6 +14,10 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * modified: hcrute@ucsc.edu
+ * Henry Crute
+ * 
  */
 #include "espmissingincludes.h"
 #include "ets_sys.h"
@@ -53,16 +57,16 @@ uart_config(uint8 uart_no) {
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_MTDO_U, FUNC_U0RTS);
   //}
 
-  uart_div_modify(uart_no, UART_CLK_FREQ / (UartDev.baut_rate));
+	uart_div_modify(uart_no, UART_CLK_FREQ / (UartDev.baut_rate));
 
-  WRITE_PERI_REG(UART_CONF0(uart_no), UartDev.exist_parity
+	WRITE_PERI_REG(UART_CONF0(uart_no), UartDev.exist_parity
                  | UartDev.parity
                  | (UartDev.stop_bits << UART_STOP_BIT_NUM_S)
                  | (UartDev.data_bits << UART_BIT_NUM_S));
 
   //clear rx and tx fifo,not ready
-  SET_PERI_REG_MASK(UART_CONF0(uart_no), UART_RXFIFO_RST | UART_TXFIFO_RST);
-  CLEAR_PERI_REG_MASK(UART_CONF0(uart_no), UART_RXFIFO_RST | UART_TXFIFO_RST);
+	SET_PERI_REG_MASK(UART_CONF0(uart_no), UART_RXFIFO_RST | UART_TXFIFO_RST);
+	CLEAR_PERI_REG_MASK(UART_CONF0(uart_no), UART_RXFIFO_RST | UART_TXFIFO_RST);
 
   //set rx fifo trigger
 //  WRITE_PERI_REG(UART_CONF1(uart_no),
@@ -86,10 +90,10 @@ uart_config(uint8 uart_no) {
                    ((UartDev.rcv_buff.TrigLvl & UART_RXFIFO_FULL_THRHD) << UART_RXFIFO_FULL_THRHD_S));
   }*/
 
-  //clear all interrupts
-  WRITE_PERI_REG(UART_INT_CLR(uart_no), 0xffff);
-  //enable rx_interrupts
-  SET_PERI_REG_MASK(UART_INT_ENA(uart_no), UART_RXFIFO_FULL_INT_ENA);
+	//clear all interrupts
+	WRITE_PERI_REG(UART_INT_CLR(uart_no), 0xffff);
+	//enable rx_interrupts
+	SET_PERI_REG_MASK(UART_INT_ENA(uart_no), UART_RXFIFO_FULL_INT_ENA);
 }
 
 /******************************************************************************
@@ -151,8 +155,7 @@ uart0_tx_buffer(uint8 *buf, uint16 len) {
  * Returns      :
 *******************************************************************************/
 void ICACHE_FLASH_ATTR
-uart0_sendStr(const char *str)
-{
+uart0_sendStr(const char *str) {
 	while(*str) {
 		uart_tx_one_char(UART0, *str++);
 	}
@@ -174,26 +177,21 @@ uart0_putChar(char c) {
 
 LOCAL void
 uart0_rx_intr_handler(void *para) {
-  uint8 RcvChar;
-  uint8 uart_no = UART0;
-  
-  if(UART_FRM_ERR_INT_ST == (READ_PERI_REG(UART_INT_ST(uart_no)) & UART_FRM_ERR_INT_ST))
-  {
-    os_printf("FRM_ERR\r\n");
-    WRITE_PERI_REG(UART_INT_CLR(uart_no), UART_FRM_ERR_INT_CLR);
-  }
+	uint8 RcvChar;
+	uint8 uart_no = UART0;
+	if(UART_FRM_ERR_INT_ST == (READ_PERI_REG(UART_INT_ST(uart_no)) & UART_FRM_ERR_INT_ST)) {
+		os_printf("FRM_ERR\r\n");
+		WRITE_PERI_REG(UART_INT_CLR(uart_no), UART_FRM_ERR_INT_CLR);
+	}
 
-  if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(uart_no)) & UART_RXFIFO_FULL_INT_ST)) {
-//    os_printf("fifo full\r\n");
-    ETS_UART_INTR_DISABLE();/////////
-
-    system_os_post(recv_messagePrio, 0, 0);
-  }
-  else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(uart_no)) & UART_RXFIFO_TOUT_INT_ST))
-  {
-    ETS_UART_INTR_DISABLE();
-    system_os_post(recv_messagePrio, 0, 0);
-  }
+	if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(uart_no)) & UART_RXFIFO_FULL_INT_ST)) {
+		//os_printf("fifo full\r\n");
+		ETS_UART_INTR_DISABLE();
+		system_os_post(recv_messagePrio, 0, 0);
+	} else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(uart_no)) & UART_RXFIFO_TOUT_INT_ST)) {
+		ETS_UART_INTR_DISABLE();
+		system_os_post(recv_messagePrio, 0, 0);
+	}
 }
 
 /******************************************************************************
@@ -204,22 +202,20 @@ uart0_rx_intr_handler(void *para) {
  * Returns      : NONE
 *******************************************************************************/
 void ICACHE_FLASH_ATTR
-uart_init(UartBautRate uart0_br)
-{
-  // rom use 74880 baut_rate, here reinitialize
-  UartDev.baut_rate = uart0_br;
-  uart_config(UART0);
-  //UartDev.baut_rate = uart1_br;
-  //uart_config(UART1);
-  ETS_UART_INTR_ENABLE();
+uart_init(UartBautRate uart0_br) {
+	// rom use 74880 baut_rate, here reinitialize
+	UartDev.baut_rate = uart0_br;
+	uart_config(UART0);
+	//UartDev.baut_rate = uart1_br;
+	//uart_config(UART1);
+	ETS_UART_INTR_ENABLE();
 
-  //install uart0 putc callback
-  os_install_putc1((void *)uart0_write_char);
+	//install uart0 putc callback
+	os_install_putc1((void *)uart0_write_char);
 }
 
 void ICACHE_FLASH_ATTR
-uart_reattach()
-{
+uart_reattach() {
 	uart_init(BIT_RATE_74880);
 //  ETS_UART_INTR_ATTACH(uart_rx_intr_handler_ssc,  &(UartDev.rcv_buff));
 //  ETS_UART_INTR_ENABLE();
