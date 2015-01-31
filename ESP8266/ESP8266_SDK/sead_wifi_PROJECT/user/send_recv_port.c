@@ -283,11 +283,24 @@ store_send_message(os_event_t *events) {
 	}
 	if (user_state == idle_send || user_state == receive_send) {
 		uart0_sendStr("\r\nsending...\r\n");
-		if (send_pop_buffer()) {
-			uart0_sendStr("\r\nsucceeded...\r\n");
+		//we can't tell when it's done sending after this, so 
+		//the magic sending flag will be set to false after it is done
+		//or if the function failed to queue up tcp sending
+		if (!send_pop_buffer()) {
+			sending = FALSE;
 		}
-		sending = FALSE;
+		//we will not know wether is not it was successfull from here
 	}
+}
+
+/**
+  * @brief  Sets sending flag to false
+  * @param  None
+  * @retval None
+  */
+void ICACHE_FLASH_ATTR
+done_sending(void) {
+	sending = FALSE;
 }
 
 /**

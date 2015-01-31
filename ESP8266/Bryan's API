@@ -19,6 +19,8 @@ AT+CIPSTART="TCP","seads.brabsmit.com",80
 //FUCKING GOLDEN WORKS
 AT+CIPSEND=284
 
+AT+CIPSEND=
+
 POST /api/event-api/ HTTP/1.1
 User-Agent: ESP8266
 Host: seads.brabsmit.com
@@ -38,5 +40,13 @@ AT+CIPSTART="TCP","seads.brabsmit.com",80
 AT+CIPSEND=43
 
 GET http://seads.brabsmit.com/ HTTP/1.0
+
+AT+CIPSTART="TCP","seads.brabsmit.com",80
+AT+CIPSEND=83
+
+GET /echo/ HTTP/1.1
+User-Agent: ESP8266
+Host: seads.brabsmit.com
+Accept: */*
 
 

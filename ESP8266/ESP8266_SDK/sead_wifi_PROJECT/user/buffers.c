@@ -15,19 +15,7 @@
 #include "buffers.h"
 #include "nmea0183.h"
 #include "uart.h"
-
-//the preamble of the post request
-#define POST_REQUEST "POST /api/event-api/ HTTP/1.1\r\n"\
-					 "User-Agent: ESP8266\r\n"\
-					 "Host: seads.brabsmit.com\r\n"\
-					 "Accept: */*\r\n"\
-					 "Content-Type: application/json\r\n"\
-					 "Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0\r\n"\
-					 "Content-Length: %u\r\n\r\n%s"
-//format string for json data
-#define JSON_DATA "{\"device\": \"/api/device-api/%u/\", \"wattage\":\"%d\", \"timestamp\":\"%s\"}"
-
-uint8_t device_id = 2;
+#include "http_request.h"
 
 //inits the uart buffers! using two semiphores for simultaneous
 //read store
@@ -214,34 +202,30 @@ bool ICACHE_FLASH_ATTR
 send_pop_buffer(void) {
 	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
 		send_buffer.head, send_buffer.tail, send_buffer.count);
-	bool return_value = true;
-	//return false if there was nothing on the buffer
+	//return if there was nothing on the buffer
 	if (send_buffer.count == 0) {
 		return false;
 	}
 	//establish tcp connection with seads.brabsmit.com on port 80
-	//if failed, return false
-	//else format the output json data into a string
-	//initialize buffer to use for sending data
-	char json_data[512] = "";
-	char send_data[1024] = "";
-	uint16_t chars_written = 0;
-	chars_written = os_sprintf(json_data, JSON_DATA, device_id,
-		send_buffer.buffer[send_buffer.tail].wattage,
-		send_buffer.buffer[send_buffer.tail].timestamp);
-	//if sprintf failed
-	if (chars_written < 0) {
+	if (!send_http_request(&send_buffer.buffer[send_buffer.tail])) {
 		return false;
 	}
-	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
-		json_data);
-	//if sprintf failed
-	if (chars_written < 0) {
-		return false;
+	//if initializing the request was successful, return true
+	return true;
+}
+
+/**
+  * @brief  increases the tail
+  * @param  None
+  * @retval returns false if failed to send and pop,
+  * and true if succeeded
+  */
+
+void ICACHE_FLASH_ATTR
+pop_pop_buffer(void) {
+	if (send_buffer.count == 0) {
+		return;
 	}
-	//send the "send_data" and close the tcp connection afterwards
-	uart0_sendStr("\r\nSend Data:\r\n");
-	uart0_sendStr(send_data);
 	//decriment the tail and the number of things in the circular buffer
 	send_buffer.count--;
 	if (send_buffer.tail == send_buffer.buffer_end) {
@@ -251,7 +235,6 @@ send_pop_buffer(void) {
 	}
 	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
 		send_buffer.head, send_buffer.tail, send_buffer.count);
-	return return_value;
 }
 
 /**

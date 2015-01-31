@@ -39,5 +39,7 @@ void recv_message(os_event_t *events);
 void store_message(os_event_t *events);
 //sending messages via wifi
 void send_message(os_event_t *events);
+//sets the flag of sending to false
+void done_sending(void);
 
 #endif
