@@ -41,6 +41,12 @@ class Event(models.Model):
     
     objects = DataFrameManager()
 
+    def save(self, **kwargs):
+        if self.appliance == None:
+            # link to the 'Unknown' appliance
+            appliance = Appliance.objects.filter(serial=0)
+        super(Event, self).save()
+
     def __unicode__(self):
         return str(self.timestamp)
 
