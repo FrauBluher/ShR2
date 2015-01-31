@@ -78,10 +78,10 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.phaseReg.PHASEA = 0;
 	MCP.phaseReg.PHASEB = 0;
 
-	MCP.gainReg.PHA_CH0 = 0;
-	MCP.gainReg.PHA_CH1 = 0;
-	MCP.gainReg.PHA_CH2 = 0;
-	MCP.gainReg.PHA_CH3 = 0;
+	MCP.gainReg.PHA_CH0 = 0b011;
+	MCP.gainReg.PHA_CH1 = 0b011;
+	MCP.gainReg.PHA_CH2 = 0b011;
+	MCP.gainReg.PHA_CH3 = 0b011;
 
 	MCP.modReg.wholeRegister = 0;
 

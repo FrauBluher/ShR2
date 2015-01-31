@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -L. -lftd2xx -Wl,-rpath /usr/local/lib
+CFLAGS=-Wall -Wextra -L. -lftd2xx -lpthread -Wl,-rpath /usr/local/lib
 
 APP = largeread
 

@@ -58,7 +58,6 @@ DmaChannel uartTxChn = DMA_CHANNEL3;
 DmaChannel crcChn = DMA_CHANNEL4;
 DmaChannel pmpChn = DMA_CHANNEL5;
 
-
 uint8_t dmaBuff[256] = {};
 
 uint8_t BufferToUART_Init(void)

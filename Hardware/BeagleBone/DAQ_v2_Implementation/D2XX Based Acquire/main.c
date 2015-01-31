@@ -3,120 +3,224 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <pthread.h>
+#include <stdint.h>
 #include "ftd2xx.h"
 #include "lib_crc.h"
 
 #define BUF_SIZE 0x10000
 
-static char tmpBuff[BUF_SIZE];
-static char tmpBuff2[BUF_SIZE];
-static char start = 'r';
+enum {
+	BUFFER_A,
+	BUFFER_B
+};
+
+DWORD dwBytesRead;
+DWORD dwBytesWritten;
+DWORD fifoRxQueueSize;
+DWORD lpdwAmountInTxQueue;
+DWORD lpdwEventStatus;
+
+FILE * fh;
+FT_HANDLE ftFIFO;
+FT_STATUS ftStatus;
+
+int runningTotalA = 0;
+int runningTotalB = 0;
+int rxCrc = 0xFFFF;
+int iport;
+int crc;
+int i;	
+
+static uint8_t tmpBuff[BUF_SIZE];
+static uint8_t tmpBuff2[BUF_SIZE];
+static char exit_thread = 0;
+static char current_buffer = BUFFER_A;
+
+void *read_fifo(void *pArgs)
+{
+	(void)pArgs;
+
+	while(exit_thread != 1) {
+		if (current_buffer == BUFFER_A) {
+			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
+			FT_Read(ftFIFO, &tmpBuff[runningTotalA], fifoRxQueueSize, &dwBytesRead);
+			runningTotalA += dwBytesRead;
+		
+			if (fifoRxQueueSize > 4000) {
+				fprintf(stdout, "ERROR: toRead: %i > 4000.  DATA WILL BE CORRUPTED!\r\n", fifoRxQueueSize);
+				fflush(stdout);
+			}
+
+			if (runningTotalA >= 26007) {
+				current_buffer = BUFFER_B;
+			}
+		} else if (current_buffer == BUFFER_B) {
+			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
+			FT_Read(ftFIFO, &tmpBuff2[runningTotalB], fifoRxQueueSize, &dwBytesRead);
+			runningTotalB += dwBytesRead;
+
+			if (fifoRxQueueSize > 4000) {
+				fprintf(stdout, "ERROR: toRead: %i > 4000.  DATA WILL BE CORRUPTED!\r\n", fifoRxQueueSize);
+				fflush(stdout);
+			}
+
+			if (runningTotalB >= 26007) {
+				current_buffer = BUFFER_A;
+			}
+		}
+	}
+	(void)FT_Close(ftFIFO);
+	
+	return NULL;
+}
+
 
 int main(int argc, char *argv[])
 {
-	DWORD dwBytesRead;
-	DWORD dwBytesWritten;
-	DWORD uartRxQueueSize;
-	DWORD fifoRxQueueSize;
-	DWORD lpdwAmountInTxQueue;
-	DWORD lpdwEventStatus;
-	FILE * fh;
-	FT_HANDLE ftUART;
-	FT_HANDLE ftFIFO;
+	pthread_t thread_id;
+	int i;
 	FT_STATUS ftStatus;
-	int runningTotal = 0;
-	int rxCrc = 0xFFFF;
-	int iport;
-	int crc;
-	int i;	
 	
+	(void)argc; /* Deliberately unused parameter */
+	(void)argv; /* Deliberately unused parameter */
+
 	if(argc > 1) {
 		sscanf(argv[1], "%d", &iport);
 	} else {
 		iport = 0;
 	}
 	
-	fh = fopen("/home/pavlo/Desktop/uhoh", "w");
+	fh = fopen("/home/pavlo/Desktop/data.txt", "w");
 	if(fh == NULL) {
 		printf("Cant open source file\n");
 		return 1;
 	}
 		
-	ftStatus = FT_Open(1, &ftUART);
 	ftStatus = FT_Open(0, &ftFIFO);
 	if(ftStatus != FT_OK) {
-		/* 
-			This can fail if the ftdi_sio driver is loaded
-		 	use lsmod to check this and rmmod ftdi_sio to remove
-			also rmmod usbserial
-		 */
 		printf("FT_Open(%d) failed, check that ftdi_sio and"
-				"usbserial are unloaded.\r\n", iport);
+			"usbserial are unloaded.\r\n Use rmmod.\r\n",
+			iport);
 		return 1;
-	} else {
-		printf("opened %d okay\r\n", iport);
-		fflush(stdout);
 	}
 
-	FT_ResetDevice(ftUART);
 	FT_ResetDevice(ftFIFO);
-
-	//Here is where I'd put all of the config stuff read into argv[]
-
-	// == DEPRECATED, Probably not needed.
-	//FT_SetBaudRate(ftUART, 921600);
-	//FT_SetDtr(ftUART);
-	//FT_SetRts(ftUART);
-	//FT_SetFlowControl(ftUART, FT_FLOW_RTS_CTS, 0, 0);
-
-	ftStatus = FT_SetDataCharacteristics(ftUART, FT_BITS_8, FT_STOP_BITS_1,
-		FT_PARITY_NONE);
-	if (ftStatus == FT_OK) {
-		printf("Set Data Characteristics worked.\r\n");
-	} else {
-		printf("Set Data Characteristics FAILED.\r\n");
-	}
-	FT_SetTimeouts(ftUART, 1000, 1000); //1 Second Timeout	
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
+	
+	pthread_create(&thread_id, NULL, &read_fifo, NULL);
 
-	//ftStatus = FT_Write(ftUART, &start, 1, &dwBytesWritten);
+	int32_t ch0 = 0;
+	int32_t ch1 = 0;
+	int32_t ch2 = 0;
+	int32_t ch3 = 0;
 
 	while(1) {
-		FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
-		FT_Read(ftFIFO, &tmpBuff[runningTotal], fifoRxQueueSize, &dwBytesRead);
-		runningTotal += dwBytesRead;
+		if(runningTotalA >= 26007 && current_buffer == BUFFER_B) {
 
-		if(runningTotal >= 27008) {
-
-			for (i = 0; i < 27000; i++) {
+			for (i = 0; i < 26000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
 			}
 
-			crc = ((tmpBuff[27006] << 8) | (tmpBuff[27007]));
+			crc = ((tmpBuff[26006] << 8) | (tmpBuff[26007]));
+			fprintf(stdout, "Block transfer complete, TX-CRC:%i,"
+				" RX-CRX:%i\r\n", crc, rxCrc);
+			fflush(stdout);
+
+/*
+			for (i = 0; i < 26000; i++) {
+				fprintf(fh, "%02X, i = %i\r\n", tmpBuff[i], i);
+			}
+*/
+
+
+			for (i = 0; i < 26000;) {
+				ch0 |= (tmpBuff[i+2] << 16);
+				ch0 |= (tmpBuff[i+3] << 8);
+				ch0 |= (tmpBuff[i]);
+				ch1 |= (tmpBuff[i+5] << 16);
+				ch1 |= (tmpBuff[i+6] << 8);
+				ch1 |= (tmpBuff[i+4]);
+				ch2 |= (tmpBuff[i+8] << 16);
+				ch2 |= (tmpBuff[i+9] << 8);
+				ch2 |= (tmpBuff[i+7]);
+				ch3 |= (tmpBuff[i+11] << 16);
+				ch3 |= (tmpBuff[i+12] << 8);
+				ch3 |= (tmpBuff[i+10]);
+
+				ch0 = ((ch0 << 8) >> 8);
+				ch1 = ((ch1 << 8) >> 8);
+				ch2 = ((ch2 << 8) >> 8);
+				ch3 = ((ch3 << 8) >> 8);
+
+				fprintf(fh, "%i, %i, %i, %i\r\n", ch0, ch1, ch2, ch3);
+				//fprintf(fh, "%08X, %08X, %08X, %08X i=%i\r\n", ch0, ch1, ch2, ch3, i);
+				i += 13;
+				ch0 = 0;
+				ch1 = 0;
+				ch2 = 0;
+				ch3 = 0;
+			}
+
+			fflush(fh);
+
+			runningTotalA = 0;
+			rxCrc = 0xFFFF;
+		} else if (runningTotalB >= 26007 && current_buffer == BUFFER_A) {
+
+			for (i = 0; i < 26000; i++) {
+				rxCrc = update_crc_ccitt(rxCrc, tmpBuff2[i]);
+			}
+
+			crc = ((tmpBuff2[26006] << 8) | (tmpBuff2[26007]));
 			fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
 			fflush(stdout);
 
-			//Turn it into a nice formatted file here.
-			//fwrite(tmpBuff, 1, runningTotal, stdout);
-			//fprintf(stdout, "\r\n");
-			//fflush(stdout);
-			for (i = 0; i < 27000;) {
-				fprintf(fh, "%i, %i, %i, %i\r\n", ((tmpBuff[i+3] << 16) | (tmpBuff[i+2] << 8) | tmpBuff[i+1]),
-					((tmpBuff[i+6] << 16) | (tmpBuff[i+5] << 8) | tmpBuff[i+4]),
-					((tmpBuff[i+9] << 16) | (tmpBuff[i+7] << 8) | tmpBuff[i+7]),
-					((tmpBuff[i+12] << 16) | (tmpBuff[i+11] << 8) | tmpBuff[i+10]));
-				i += 12;
+/*
+			for (i = 0; i < 26000; i++) {
+				fprintf(fh, "%02X, i = %i\r\n", tmpBuff2[i], i);
 			}
+*/
+
+
+			for (i = 0; i < 26000;) {
+				ch0 |=  (tmpBuff2[i+2] << 16);
+				ch0 |=  (tmpBuff2[i+3] << 8);
+				ch0 |=  (tmpBuff2[i]);
+				ch1 |=  (tmpBuff2[i+5] << 16);
+				ch1 |=  (tmpBuff2[i+6] << 8);
+				ch1 |=  (tmpBuff2[i+4]);
+				ch2 |=  (tmpBuff2[i+8] << 16);
+				ch2 |=  (tmpBuff2[i+9] << 8);
+				ch2 |=  (tmpBuff2[i+7]);
+				ch3 |=  (tmpBuff2[i+11] << 16);
+				ch3 |=  (tmpBuff2[i+12] << 8);
+				ch3 |=  (tmpBuff2[i+10]);
+
+				ch0 = ((ch0 << 8) >> 8);
+				ch1 = ((ch1 << 8) >> 8);
+				ch2 = ((ch2 << 8) >> 8);
+				ch3 = ((ch3 << 8) >> 8);
+
+				fprintf(fh, "%i, %i, %i, %i\r\n", ch0, ch1, ch2, ch3);
+				//fprintf(fh, "%08X, %08X, %08X, %08X i=%i\r\n", ch0, ch1, ch2, ch3, i);
+				i += 13;
+				ch0 = 0;
+				ch1 = 0;
+				ch2 = 0;
+				ch3 = 0;
+			}
+
+
 			fflush(fh);
 
-			runningTotal = 0;
+			runningTotalB = 0;
 			rxCrc = 0xFFFF;
-		}	
+		}
 	}
 
-	//fwrite(tmpBuff, 1, dwBytesRead, fh);
+	exit_thread = 1;
 	fclose(fh);
-	FT_Close(ftUART);
 	
 	return 0;
 }

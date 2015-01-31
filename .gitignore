@@ -9,6 +9,7 @@ db.*
 *.log
 *.so
 *.dll
+*.map
 .DS_Store
 .DS_Store?
 ._*
