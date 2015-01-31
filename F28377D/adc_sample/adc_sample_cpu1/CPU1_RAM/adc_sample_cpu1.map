@@ -1,7 +1,7 @@
 ******************************************************************************
              TMS320C2000 Linker Unix v6.2.10                   
 ******************************************************************************
->> Linked Thu Jan 29 14:57:04 2015
+>> Linked Fri Jan 30 12:45:43 2015
 
 OUTPUT FILE NAME:   <adc_sample_cpu1.out>
 ENTRY POINT SYMBOL: "code_start"  address: 00000000
@@ -15,8 +15,8 @@ PAGE 0:
   BEGIN                 00000000   00000002  00000002  00000000  RWIX
   RAMM0                 00000122   000002de  00000027  000002b7  RWIX
   RAMD0                 0000b000   00000800  00000000  00000800  RWIX
-  RAMGS0                0000c000   00001000  00001000  00000000  RWIX
-  RAMGS1                0000d000   00001000  0000093b  000006c5  RWIX
+  RAMGS0                0000c000   00001000  00000fff  00000001  RWIX
+  RAMGS1                0000d000   00001000  00000985  0000067b  RWIX
   RAMGS2                0000e000   00001000  00000000  00001000  RWIX
   RAMGS3                0000f000   00001000  00000000  00001000  RWIX
   RAMGS4                00010000   00001000  00000000  00001000  RWIX
@@ -168,27 +168,27 @@ Cla1SoftIntRegsFile
 *          1    00000ce0    00000004     DSECT
                   00000ce0    00000004     F2837xD_GlobalVariableDefs.obj (Cla1SoftIntRegsFile)
 
-.text.1    0    0000c000    00001000     
+.text.1    0    0000c000    00000fff     
                   0000c000    0000058f     F2837xD_DefaultISR.obj (.text:retain)
-                  0000c58f    00000302     uart.obj (.text)
-                  0000c891    000002f3     main.obj (.text)
-                  0000cb84    0000029d     F2837xD_SysCtrl.obj (.text)
-                  0000ce21    000001c6     interrupt.obj (.text)
-                  0000cfe7    00000019     rts2800_fpu32.lib : args_main.obj (.text)
+                  0000c58f    0000033c     main.obj (.text)
+                  0000c8cb    00000302     uart.obj (.text)
+                  0000cbcd    0000029d     F2837xD_SysCtrl.obj (.text)
+                  0000ce6a    000000dd     F2837xD_Adc.obj (.text)
+                  0000cf47    00000090     main.obj (.text:retain)
+                  0000cfd7    00000028     F2837xD_PieCtrl.obj (.text)
 
-.text.2    0    0000d000    0000093b     
+.text.2    0    0000d000    00000985     
                   0000d000    00000261     sysctl.obj (.text)
                   0000d261    00000257     uartstdio.obj (.text)
                   0000d4b8    0000024b     F2837xD_Gpio.obj (.text)
-                  0000d703    000000dd     F2837xD_Adc.obj (.text)
-                  0000d7e0    00000090     main.obj (.text:retain)
-                  0000d870    00000046     rts2800_fpu32.lib : boot.obj (.text)
-                  0000d8b6    00000028     F2837xD_PieCtrl.obj (.text)
-                  0000d8de    00000025     F2837xD_PieVect.obj (.text)
-                  0000d903    00000019     rts2800_fpu32.lib : exit.obj (.text)
-                  0000d91c    0000000e     interrupt.obj (.text:retain)
-                  0000d92a    00000009     rts2800_fpu32.lib : _lock.obj (.text)
-                  0000d933    00000008     F2837xD_CodeStartBranch.obj (.text)
+                  0000d703    000001c6     interrupt.obj (.text)
+                  0000d8c9    00000046     rts2800_fpu32.lib : boot.obj (.text)
+                  0000d90f    00000025     F2837xD_PieVect.obj (.text)
+                  0000d934    00000019     rts2800_fpu32.lib : args_main.obj (.text)
+                  0000d94d    00000019                       : exit.obj (.text)
+                  0000d966    0000000e     interrupt.obj (.text:retain)
+                  0000d974    00000009     rts2800_fpu32.lib : _lock.obj (.text)
+                  0000d97d    00000008     F2837xD_CodeStartBranch.obj (.text)
 
 GETBUFFER 
 *          0    0003f800    00000000     DSECT
@@ -802,7 +802,7 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 address    name
 --------   ----
 ffffffff   .text
-0000d903   C$$EXIT
+0000d94d   C$$EXIT
 0000c0be   _ADCA1_ISR
 0000c33e   _ADCA2_ISR
 0000c348   _ADCA3_ISR
@@ -825,7 +825,7 @@ ffffffff   .text
 0000c4f6   _ADCD_EVT_ISR
 0000c550   _AUX_PLL_SLIP_ISR
 0005f4c0   _AccessProtectionRegs
-0000d703   _AdcSetMode
+0000ce6a   _AdcSetMode
 00007400   _AdcaRegs
 00000b00   _AdcaResultRegs
 00008040   _AdcaResults
@@ -836,9 +836,9 @@ ffffffff   .text
 00007580   _AdcdRegs
 00000b60   _AdcdResultRegs
 0005d180   _AnalogSubsysRegs
-0000cdcd   _AuxAuxClkSel
-0000cdb7   _AuxIntOsc2Sel
-0000cdc1   _AuxXtalOscSel
+0000ce16   _AuxAuxClkSel
+0000ce00   _AuxIntOsc2Sel
+0000ce0a   _AuxXtalOscSel
 0000c384   _CLA1_1_ISR
 0000c38e   _CLA1_2_ISR
 0000c398   _CLA1_3_ISR
@@ -849,7 +849,7 @@ ffffffff   .text
 0000c3ca   _CLA1_8_ISR
 0000c55a   _CLA_OVERFLOW_ISR
 0000c564   _CLA_UNDERFLOW_ISR
-0000d7a6   _CalAdcINL
+0000cf0d   _CalAdcINL
 00001400   _Cla1Regs
 00000ce0   _Cla1SoftIntRegs
 0005d200   _ClkCfgRegs
@@ -861,13 +861,13 @@ ffffffff   .text
 00005d20   _Cmpss6Regs
 00005d40   _Cmpss7Regs
 00005d60   _Cmpss8Regs
-0000c9e1   _ConfigureADC
-0000c891   _ConfigureUART
+0000c728   _ConfigureADC
+0000c58f   _ConfigureUART
 0005d300   _CpuSysRegs
 00000c00   _CpuTimer0Regs
 00000c08   _CpuTimer1Regs
 00000c10   _CpuTimer2Regs
-0000cd76   _CsmUnlock
+0000cdbf   _CsmUnlock
 0000c014   _DATALOG_ISR
 0000c30c   _DCANA_1_ISR
 0000c316   _DCANA_2_ISR
@@ -888,8 +888,8 @@ ffffffff   .text
 00078200   _DcsmZ2Otp
 0005f040   _DcsmZ2Regs
 0005d000   _DevCfgRegs
-0000cc5f   _DisableDog
-0000cc39   _DisablePeripheralClocks
+0000cca8   _DisableDog
+0000cc82   _DisablePeripheralClocks
 00007980   _DmaClaSrcSelRegs
 00001000   _DmaRegs
 0000c1ae   _ECAP1_ISR
@@ -956,7 +956,7 @@ ffffffff   .text
 00047800   _Emif2Regs
 00000d01   _EmuBMode
 00000d00   _EmuKey
-0000d8d5   _EnableInterrupts
+0000cff6   _EnableInterrupts
 00000141   _F28x_usDelay
 0000c532   _FLASH_CORRECTABLE_ERROR_ISR
 0000c406   _FPU_OVERFLOW_ISR
@@ -978,8 +978,8 @@ ffffffff   .text
 0000d6e4   _GPIO_WritePin
 00007c00   _GpioCtrlRegs
 00007f00   _GpioDataRegs
-0000cdeb   _HALT
-0000ce04   _HIB
+0000ce34   _HALT
+0000ce4d   _HIB
 0005e000   _HwbistRegs
 0000c29e   _I2CA_FIFO_ISR
 0000c294   _I2CA_ISR
@@ -987,28 +987,28 @@ ffffffff   .text
 0000c2a8   _I2CB_ISR
 00007300   _I2caRegs
 00007340   _I2cbRegs
-0000cdd7   _IDLE
+0000ce20   _IDLE
 0000c03c   _ILLEGAL_ISR
 0000c41a   _IPC0_ISR
 0000c424   _IPC1_ISR
 0000c42e   _IPC2_ISR
 0000c438   _IPC3_ISR
-0000ccf1   _InitAuxPll
+0000cd3a   _InitAuxPll
 0000d4b8   _InitGpio
-0000cbb5   _InitPeripheralClocks
-0000d8b6   _InitPieCtrl
-0000d8de   _InitPieVectTable
-0000cb84   _InitSysCtrl
-0000cc6d   _InitSysPll
+0000cbfe   _InitPeripheralClocks
+0000cfd7   _InitPieCtrl
+0000d90f   _InitPieVectTable
+0000cbcd   _InitSysCtrl
+0000ccb6   _InitSysPll
 00007900   _InputXbarRegs
-0000d91c   _IntDefaultHandler
-0000ceea   _IntDisable
-0000ce53   _IntEnable
-0000cf6e   _IntIFRClear
-0000ce26   _IntMasterDisable
-0000ce21   _IntMasterEnable
-0000ce2b   _IntRegister
-0000ce3e   _IntUnregister
+0000d966   _IntDefaultHandler
+0000d7cc   _IntDisable
+0000d735   _IntEnable
+0000d850   _IntIFRClear
+0000d708   _IntMasterDisable
+0000d703   _IntMasterEnable
+0000d70d   _IntRegister
+0000d720   _IntUnregister
 00050000   _IpcRegs
 0000c230   _MCBSPA_RX_ISR
 0000c23a   _MCBSPA_TX_ISR
@@ -1049,7 +1049,7 @@ ffffffff   .text
 0000c226   _SPIB_TX_ISR
 0000c4a6   _SPIC_RX_ISR
 0000c4b0   _SPIC_TX_ISR
-0000cde0   _STANDBY
+0000ce29   _STANDBY
 0000c546   _SYS_PLL_SLIP_ISR
 00007200   _SciaRegs
 00007210   _ScibRegs
@@ -1057,8 +1057,8 @@ ffffffff   .text
 00007230   _ScidRegs
 00005e00   _Sdfm1Regs
 00005e80   _Sdfm2Regs
-0000cc51   _ServiceDog
-0000c9fc   _SetupADCContinuous
+0000cc9a   _ServiceDog
+0000c743   _SetupADCContinuous
 00006100   _SpiaRegs
 00006110   _SpibRegs
 00006120   _SpicRegs
@@ -1075,54 +1075,54 @@ ffffffff   .text
 0000d0c7   _SysCtlReset
 0000d260   _SysCtlUSBPLLDisable
 0000d25f   _SysCtlUSBPLLEnable
-0000cd97   _SysIntOsc1Sel
-0000cda1   _SysIntOsc2Sel
-0000cdab   _SysXtalOscSel
+0000cde0   _SysIntOsc1Sel
+0000cdea   _SysIntOsc2Sel
+0000cdf4   _SysXtalOscSel
 0000c0fa   _TIMER0_ISR
 0000c000   _TIMER1_ISR
 0000c00a   _TIMER2_ISR
 00007940   _TrigRegs
-0000c739   _UARTBusy
-0000c6f9   _UARTCharGet
-0000c6d0   _UARTCharGetNonBlocking
-0000c729   _UARTCharPut
-0000c716   _UARTCharPutNonBlocking
-0000c6a6   _UARTCharsAvail
-0000c625   _UARTConfigGetExpClk
-0000c5eb   _UARTConfigSetExpClk
-0000c653   _UARTDisable
-0000c649   _UARTEnable
-0000c683   _UARTFIFODisable
-0000c67a   _UARTFIFOEnable
-0000c5bd   _UARTFIFOIntLevelGet
-0000c5a3   _UARTFIFOIntLevelSet
-0000c5d3   _UARTFIFOLevelGet
-0000c843   _UARTIntClear
-0000c7d8   _UARTIntDisable
-0000c7a2   _UARTIntEnable
-0000c813   _UARTIntStatus
-0000c59a   _UARTParityModeGet
-0000c58f   _UARTParityModeSet
-0000c746   _UARTRXIntRegister
-0000c776   _UARTRXIntUnregister
-0000c87b   _UARTRxErrorClear
-0000c873   _UARTRxErrorGet
-0000c6c3   _UARTSpaceAvail
+0000ca75   _UARTBusy
+0000ca35   _UARTCharGet
+0000ca0c   _UARTCharGetNonBlocking
+0000ca65   _UARTCharPut
+0000ca52   _UARTCharPutNonBlocking
+0000c9e2   _UARTCharsAvail
+0000c961   _UARTConfigGetExpClk
+0000c927   _UARTConfigSetExpClk
+0000c98f   _UARTDisable
+0000c985   _UARTEnable
+0000c9bf   _UARTFIFODisable
+0000c9b6   _UARTFIFOEnable
+0000c8f9   _UARTFIFOIntLevelGet
+0000c8df   _UARTFIFOIntLevelSet
+0000c90f   _UARTFIFOLevelGet
+0000cb7f   _UARTIntClear
+0000cb14   _UARTIntDisable
+0000cade   _UARTIntEnable
+0000cb4f   _UARTIntStatus
+0000c8d6   _UARTParityModeGet
+0000c8cb   _UARTParityModeSet
+0000ca82   _UARTRXIntRegister
+0000cab2   _UARTRXIntUnregister
+0000cbb7   _UARTRxErrorClear
+0000cbaf   _UARTRxErrorGet
+0000c9ff   _UARTSpaceAvail
 0000d261   _UARTStdioConfig
-0000c75e   _UARTTXIntRegister
-0000c78c   _UARTTXIntUnregister
-0000c69c   _UARTTxIntModeGet
-0000c68c   _UARTTxIntModeSet
+0000ca9a   _UARTTXIntRegister
+0000cac8   _UARTTXIntUnregister
+0000c9d8   _UARTTxIntModeGet
+0000c9c8   _UARTTxIntModeSet
 0000d303   _UARTgetc
 0000d2b4   _UARTgets
 0000d4ae   _UARTprintf
-0000c669   _UARTsetLoopBack
+0000c9a5   _UARTsetLoopBack
 0000d309   _UARTvprintf
 0000d293   _UARTwrite
 0000c4ba   _UPPA_ISR
 0000c4c4   _USBA_ISR
-0000d817   _USBUARTRXIntHandler
-0000d7e0   _USBUARTTXIntHandler
+0000cf7e   _USBUARTRXIntHandler
+0000cf47   _USBUARTTXIntHandler
 0000c0a0   _USER10_ISR
 0000c0aa   _USER11_ISR
 0000c0b4   _USER12_ISR
@@ -1156,20 +1156,20 @@ ffffffff   ___c_args__
 ffffffff   ___etext__
 ffffffff   ___pinit__
 ffffffff   ___text__
-0000cfe7   __args_main
+0000d934   __args_main
 00008142   __lock
-0000d932   __nop
-0000d92e   __register_lock
-0000d92a   __register_unlock
+0000d97c   __nop
+0000d978   __register_lock
+0000d974   __register_unlock
 00000400   __stack
 00008140   __unlock
-0000d903   _abort
-0000d870   _c_int00
-0000d905   _exit
-0000c8bd   _init
-0000c9d6   _main
+0000d94d   _abort
+0000d8c9   _c_int00
+0000d94f   _exit
+0000c5bb   _init
+0000c723   _main
 00008000   _resultsIndex
-0000c8f1   _sample_adc
+0000c5ef   _sample_adc
 ffffffff   binit
 00000122   cinit
 00000000   code_start
@@ -1413,69 +1413,67 @@ address    name
 0000c56e   _PIE_RESERVED_ISR
 0000c578   _EMPTY_ISR
 0000c585   _NOTUSED_ISR
-0000c58f   _UARTParityModeSet
-0000c59a   _UARTParityModeGet
-0000c5a3   _UARTFIFOIntLevelSet
-0000c5bd   _UARTFIFOIntLevelGet
-0000c5d3   _UARTFIFOLevelGet
-0000c5eb   _UARTConfigSetExpClk
-0000c625   _UARTConfigGetExpClk
-0000c649   _UARTEnable
-0000c653   _UARTDisable
-0000c669   _UARTsetLoopBack
-0000c67a   _UARTFIFOEnable
-0000c683   _UARTFIFODisable
-0000c68c   _UARTTxIntModeSet
-0000c69c   _UARTTxIntModeGet
-0000c6a6   _UARTCharsAvail
-0000c6c3   _UARTSpaceAvail
-0000c6d0   _UARTCharGetNonBlocking
-0000c6f9   _UARTCharGet
-0000c716   _UARTCharPutNonBlocking
-0000c729   _UARTCharPut
-0000c739   _UARTBusy
-0000c746   _UARTRXIntRegister
-0000c75e   _UARTTXIntRegister
-0000c776   _UARTRXIntUnregister
-0000c78c   _UARTTXIntUnregister
-0000c7a2   _UARTIntEnable
-0000c7d8   _UARTIntDisable
-0000c813   _UARTIntStatus
-0000c843   _UARTIntClear
-0000c873   _UARTRxErrorGet
-0000c87b   _UARTRxErrorClear
-0000c891   _ConfigureUART
-0000c8bd   _init
-0000c8f1   _sample_adc
-0000c9d6   _main
-0000c9e1   _ConfigureADC
-0000c9fc   _SetupADCContinuous
-0000cb84   _InitSysCtrl
-0000cbb5   _InitPeripheralClocks
-0000cc39   _DisablePeripheralClocks
-0000cc51   _ServiceDog
-0000cc5f   _DisableDog
-0000cc6d   _InitSysPll
-0000ccf1   _InitAuxPll
-0000cd76   _CsmUnlock
-0000cd97   _SysIntOsc1Sel
-0000cda1   _SysIntOsc2Sel
-0000cdab   _SysXtalOscSel
-0000cdb7   _AuxIntOsc2Sel
-0000cdc1   _AuxXtalOscSel
-0000cdcd   _AuxAuxClkSel
-0000cdd7   _IDLE
-0000cde0   _STANDBY
-0000cdeb   _HALT
-0000ce04   _HIB
-0000ce21   _IntMasterEnable
-0000ce26   _IntMasterDisable
-0000ce2b   _IntRegister
-0000ce3e   _IntUnregister
-0000ce53   _IntEnable
-0000ceea   _IntDisable
-0000cf6e   _IntIFRClear
-0000cfe7   __args_main
+0000c58f   _ConfigureUART
+0000c5bb   _init
+0000c5ef   _sample_adc
+0000c723   _main
+0000c728   _ConfigureADC
+0000c743   _SetupADCContinuous
+0000c8cb   _UARTParityModeSet
+0000c8d6   _UARTParityModeGet
+0000c8df   _UARTFIFOIntLevelSet
+0000c8f9   _UARTFIFOIntLevelGet
+0000c90f   _UARTFIFOLevelGet
+0000c927   _UARTConfigSetExpClk
+0000c961   _UARTConfigGetExpClk
+0000c985   _UARTEnable
+0000c98f   _UARTDisable
+0000c9a5   _UARTsetLoopBack
+0000c9b6   _UARTFIFOEnable
+0000c9bf   _UARTFIFODisable
+0000c9c8   _UARTTxIntModeSet
+0000c9d8   _UARTTxIntModeGet
+0000c9e2   _UARTCharsAvail
+0000c9ff   _UARTSpaceAvail
+0000ca0c   _UARTCharGetNonBlocking
+0000ca35   _UARTCharGet
+0000ca52   _UARTCharPutNonBlocking
+0000ca65   _UARTCharPut
+0000ca75   _UARTBusy
+0000ca82   _UARTRXIntRegister
+0000ca9a   _UARTTXIntRegister
+0000cab2   _UARTRXIntUnregister
+0000cac8   _UARTTXIntUnregister
+0000cade   _UARTIntEnable
+0000cb14   _UARTIntDisable
+0000cb4f   _UARTIntStatus
+0000cb7f   _UARTIntClear
+0000cbaf   _UARTRxErrorGet
+0000cbb7   _UARTRxErrorClear
+0000cbcd   _InitSysCtrl
+0000cbfe   _InitPeripheralClocks
+0000cc82   _DisablePeripheralClocks
+0000cc9a   _ServiceDog
+0000cca8   _DisableDog
+0000ccb6   _InitSysPll
+0000cd3a   _InitAuxPll
+0000cdbf   _CsmUnlock
+0000cde0   _SysIntOsc1Sel
+0000cdea   _SysIntOsc2Sel
+0000cdf4   _SysXtalOscSel
+0000ce00   _AuxIntOsc2Sel
+0000ce0a   _AuxXtalOscSel
+0000ce16   _AuxAuxClkSel
+0000ce20   _IDLE
+0000ce29   _STANDBY
+0000ce34   _HALT
+0000ce4d   _HIB
+0000ce6a   _AdcSetMode
+0000cf0d   _CalAdcINL
+0000cf47   _USBUARTTXIntHandler
+0000cf7e   _USBUARTRXIntHandler
+0000cfd7   _InitPieCtrl
+0000cff6   _EnableInterrupts
 0000d000   _SysCtlPeripheralPresent
 0000d021   _SysCtlPeripheralReady
 0000d060   _SysCtlPeripheralReset
@@ -1508,21 +1506,23 @@ address    name
 0000d6b7   _GPIO_EnableUnbondedIOPullups
 0000d6cd   _GPIO_ReadPin
 0000d6e4   _GPIO_WritePin
-0000d703   _AdcSetMode
-0000d7a6   _CalAdcINL
-0000d7e0   _USBUARTTXIntHandler
-0000d817   _USBUARTRXIntHandler
-0000d870   _c_int00
-0000d8b6   _InitPieCtrl
-0000d8d5   _EnableInterrupts
-0000d8de   _InitPieVectTable
-0000d903   C$$EXIT
-0000d903   _abort
-0000d905   _exit
-0000d91c   _IntDefaultHandler
-0000d92a   __register_unlock
-0000d92e   __register_lock
-0000d932   __nop
+0000d703   _IntMasterEnable
+0000d708   _IntMasterDisable
+0000d70d   _IntRegister
+0000d720   _IntUnregister
+0000d735   _IntEnable
+0000d7cc   _IntDisable
+0000d850   _IntIFRClear
+0000d8c9   _c_int00
+0000d90f   _InitPieVectTable
+0000d934   __args_main
+0000d94d   C$$EXIT
+0000d94d   _abort
+0000d94f   _exit
+0000d966   _IntDefaultHandler
+0000d974   __register_unlock
+0000d978   __register_lock
+0000d97c   __nop
 00047000   _Emif1Regs
 00047800   _Emif2Regs
 00050000   _IpcRegs

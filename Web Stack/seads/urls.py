@@ -4,11 +4,11 @@ from microdata import views as microdata_views
 from home import views as home_views
 from django.contrib import admin
 
-router = routers.DefaultRouter()
-router.register(r'appliance-api', microdata_views.ApplianceViewSet)
-router.register(r'device-api', microdata_views.DeviceViewSet)
-router.register(r'event-api', microdata_views.EventViewSet)
-router.register(r'users', home_views.UserViewSet)
+#router = routers.DefaultRouter()
+#router.register(r'appliance-api', microdata_views.ApplianceViewSet)
+#router.register(r'device-api', microdata_views.DeviceViewSet)
+#router.register(r'event-api', microdata_views.EventViewSet)
+#router.register(r'users', home_views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [
@@ -24,11 +24,13 @@ urlpatterns = [
     url(r'^new_device/key/', 'microdata.views.new_device_key'),
     
     # Development URLs
-    url(r'^api/', include(router.urls)),
-    url(r'^docs/', include('rest_framework_swagger.urls')),
+    #url(r'^api/', include(router.urls)),
+    #url(r'^docs/', include('rest_framework_swagger.urls')),
     url(r'^gitupdate/$', 'debug.views.gitupdate'),
     url(r'^echo/', 'debug.views.echo'),
     url(r'^echo/(?P<args>\w+)$', 'debug.views.echo_args'),
     url(r'^datagen/$', 'debug.views.datagen'),
     url(r'^datadel/$', 'debug.views.datadel'),
+    url(r'^influxgen/$', 'debug.views.influxgen'),
+    url(r'^influxdel/$', 'debug.views.influxdel'),
 ]

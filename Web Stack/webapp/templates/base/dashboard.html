@@ -41,39 +41,26 @@
 </div>
 <!-- /.row -->
 <script type="text/javascript">
-   //sidebar devices links
-   $('.selected').each(function() {
-        $(this).on("click", function() {
-            $('#content').empty();
-            var url = '/charts/device/'+$(this).attr('id');
-            var container = document.getElementById("content");
-            var device_name = $(this).html();
-            //make_chart(url, container, "Power (W)", device_name)
-        });
-    }); 
-   
-   //chart devices links
-   $('.chart-device').each(function() {
-		$(this).on("click", function() {
-            var url = '/charts/device/'+$(this).attr('id');
-            var container = document.getElementById("line-chart");
-            var device_name = $(this).html();
-            //make_chart(url, container, "Power (W)", device_name)
-	   });
-    });
-
-   //initial dashboard load
-   $('#dashboard').on("click", function() {
-      $.get("/dashboard/", function( ajax_data ) {
-         $('#content').html(ajax_data);
-      });
-   });
    
    //initial chart load, get data for first device
    {% if my_devices %}
+     
+     var data = {
+        "dataLimitFrom":{{ dataLimitFrom }},
+        "dataLimitTo":{{ dataLimitTo }},
+        "unit":"{{ unit }}",
+        "data":{{ data }}
+     };
+     
      chart = new TimeChart({
         container: document.getElementById("line-chart"),
         data:
+        {
+            units:["{{ unit }}"],
+            timestampInSeconds: true,
+            preloaded: data
+        },
+        /*
         {
             dataFunction: function(from, to, unit, success, error){
                 $.get("/charts/device/{{ my_devices.0.serial }}/"+unit,null,function(data){
@@ -82,6 +69,7 @@
                 });
             }
         },
+        */
         legend: { enabled: true },
         valueAxis:{
            "default":{

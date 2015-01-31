@@ -6,9 +6,11 @@ from django import forms
 from django.shortcuts import render
 from django.forms import ModelChoiceField
 
+from influxdb import client as influxdb
+
 import git
 import random
-
+import json
 import numpy
 
 class DeviceModelChoiceField(ModelChoiceField):
@@ -45,7 +47,43 @@ def echo(request):
 @csrf_exempt
 def echo_args(request, args):
    return HttpResponse(status=200)
-   
+
+def influxgen(request):
+   success = ""
+   if request.method == 'POST':
+      form = DatagenForm(request.POST)
+      if form.is_valid():
+         device = form.cleaned_data['device']
+         appliances = form.cleaned_data['appliances']
+         start = form.cleaned_data['start']
+         stop = form.cleaned_data['stop']
+         resolution = form.cleaned_data['resolution']
+         wattages = {'Unknown':{'avg':700, 'stdev':20}, 'Computer':{'avg':100, 'stdev':50}, 'Toaster':{'avg':20, 'stdev':20}, 'Refrigerator':{'avg':400,'stdev':200}, 'Television':{'avg':60,'stdev':60}}
+         count = 0
+         data = []
+         data_dict = {}
+         data_dict['name'] = str(device.serial)
+         columns = ['time']
+         for appliance in appliances:
+            columns.append(appliance.name)
+         data_dict['columns'] = columns
+         data_dict['points'] = []
+         for i in numpy.arange(start, stop, resolution):
+            point_list = [i]
+            for appliance in appliances:
+               point_list.append(wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['stdev'],wattages[appliance.name]['stdev']))
+               count += 1
+            data_dict['points'].append(point_list)
+         data.append(data_dict)
+         db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
+         if (db.write_points(data)):
+            success = "Added {0} points successfully".format(count)
+   else:
+      form = DatagenForm()
+   title = "Debug - Data Generation (InfluxDB)"
+   description = "Use this form to submit random generated data for the device chosen."
+   return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
+
 def datagen(request):
    success = ""
    if request.method == 'POST':
@@ -70,6 +108,23 @@ def datagen(request):
    title = "Debug - Data Generation"
    description = "Use this form to submit random generated data for the device chosen."
    return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
+
+def influxdel(request):
+   success = ""
+   if request.method == 'POST':
+      form = DatadelForm(request.POST)
+      count = 0
+      if form.is_valid():
+         device = form.cleaned_data['device']
+         db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
+         if (db.query('drop series "'+str(device.serial)+'";')):
+            success = "Deleted all events successfully"
+   else:
+      form = DatadelForm()
+   title = "Debug - Data Deletion"
+   description = "Use this form to delete data for the device chosen."
+   return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
+   
 
 def datadel(request):
    success = ""
