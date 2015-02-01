@@ -45,20 +45,20 @@
    //initial chart load, get data for first device
    {% if my_devices %}
      
-     var data = {
-        "dataLimitFrom":{{ dataLimitFrom }},
-        "dataLimitTo":{{ dataLimitTo }},
-        "unit":"{{ unit }}",
-        "data":{{ data }}
-     };
-     
      chart = new TimeChart({
         container: document.getElementById("line-chart"),
         data:
         {
-            units:["{{ unit }}"],
+            units:["y","M","d","h","m","s"],
             timestampInSeconds: true,
-            preloaded: data
+            urlByUnit:{
+               "y":"/charts/device/{{ my_devices.0.serial }}/",
+               "M":"/charts/device/{{ my_devices.0.serial }}/",
+               "d":"/charts/device/{{ my_devices.0.serial }}/",
+               "h":"/charts/device/{{ my_devices.0.serial }}/",
+               "m":"/charts/device/{{ my_devices.0.serial }}/",
+               "s":"/charts/device/{{ my_devices.0.serial }}/",
+            }
         },
         /*
         {
@@ -101,7 +101,7 @@
               },
               stack: "default",
               style:{
-                 fillColor:"{% if appliance.name == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' %}{% endif %}",
+                 fillColor:"{% if appliance == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' %}{% endif %}",
                  lineColor:""
               }
            },
