@@ -12,6 +12,7 @@ import git
 import random
 import json
 import numpy
+import re
 
 class DeviceModelChoiceField(ModelChoiceField):
    def label_from_instance(self, obj):
@@ -62,18 +63,15 @@ def influxgen(request):
          count = 0
          data = []
          data_dict = {}
-         data_dict['name'] = str(device.serial)
-         columns = ['time']
-         for appliance in appliances:
-            columns.append(appliance.name)
-         data_dict['columns'] = columns
+         data_dict['name'] = "device."+str(device.serial)
+         data_dict['columns'] = ['time','appliance','wattage']
          data_dict['points'] = []
          for i in numpy.arange(start, stop, resolution):
             point_list = [i]
             for appliance in appliances:
-               point_list.append(wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['stdev'],wattages[appliance.name]['stdev']))
+               point_list = [i, appliance.name, wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['stdev'],wattages[appliance.name]['stdev'])]
                count += 1
-            data_dict['points'].append(point_list)
+               data_dict['points'].append(point_list)
          data.append(data_dict)
          db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
          if (db.write_points(data)):
@@ -117,8 +115,11 @@ def influxdel(request):
       if form.is_valid():
          device = form.cleaned_data['device']
          db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
-         if (db.query('drop series "'+str(device.serial)+'";')):
-            success = "Deleted all events successfully"
+         series = db.query('list series')[0]['points']
+         rg = re.compile('device.'+str(device.serial))
+         for s in series:
+            if rg.search(s[1]):
+               db.query('drop series '+s[1])
    else:
       form = DatadelForm()
    title = "Debug - Data Deletion"

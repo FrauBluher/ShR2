@@ -12,12 +12,11 @@ from urllib2 import Request, urlopen, URLError
 from pyzipcode import ZipCodeDatabase
 
 import timeseries as ts
-
+import re
 from influxdb import client as influxdb
 
 # Create your views here.
 
-#TODO O(n^2) time
 def chartify(data):
    warnings.warn("chartify method no longer used for InfluxDB.", DeprecationWarning)
    values = []
@@ -54,62 +53,85 @@ def dashboard(request):
               }
    return render(request, 'base/dashboard.html', context)
 
-def second(events, appliances, values):
-   for event in events:
-      if (event.appliance == None):
-         appliances.add("Unknown")
-      else: appliances.add(event.appliance.name)
-      values[event.timestamp].append(event.wattage)
-   for time in values: values[time].insert(0,sum(values[time]))
-   return [appliances, values]
+def merge_subs(lst_of_lsts):
+    res = []
+    for row in lst_of_lsts:
+        for i, resrow in enumerate(res):
+            if row[0]==resrow[0]:
+                res[i] += row[1:]
+                break
+        else:
+            res.append(row)
+    return res
 
-units = {'s': second,
-         'm': second,
-         'h': second,
-         'd': second,
-         'M': second,
-         'y': second,
-}
+def group_by_mean(serial, unit, start, stop):
+   if unit == 'y': unit = 'm'
+   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   result = db.query('list series')[0]
+   appliances = Set()
+   for series in result['points']:
+      rg = re.compile('device.'+str(serial))
+      if re.match(rg, series[1]):
+         appliance = series[1].split('device.'+str(serial)+'.')
+         if (len(appliance) < 2): continue
+         else: appliances.add(appliance[-1])
+   mean = {}
+   # see if continuous query for unit is defined
+   result = db.query('list series')[0]
+   rg = re.compile('1'+unit+'.device.'+str(serial))
+   exists = False
+   for series in result['points']:
+      if (re.match(rg, series[1])):
+         exists = True
+   if exists == False:
+      # make query
+      db.query('select mean(wattage) from /^device.'+str(serial)+'.*/ group by time(1'+unit+') into 1'+unit+'.:series_name')
+   to_merge = []
+   for appliance in appliances:
+      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance)[0]['points']
+      # hack
+      new_group = []
+      for s in group:
+         s = [s[0],s[2]]
+         new_group.append(s)
+      to_merge += new_group
+   data = merge_subs(to_merge)
+   for point in data:
+      point.insert(1, sum(point[1:]))
+   if (len(data) < 1): return None
+   data = {'data': data,
+           'unit': unit,
+           'dataLimitFrom': data[len(data)-1][0],
+           'dataLimitTo': data[0][0],
+          }
+   return data
 
-def get_weather(zipcode):
-   zcdb = ZipCodeDatabase()
-   zipcode = zcdb[zipcode]
-   city = zipcode.city.replace(" ", "_") + "," + zipcode.state + ",us"
-   #url = "http://api.openweathermap.org/data/2.5/history?q="+city+"&type=hour&APPID="+settings.OWM_KEY
-   #request = Request(url)
-   #response = urlopen(request)
-   #response = json.load(response)
-   #return response
-
-def charts(request, serial, unit):
+def default_chart(request):
    if request.method == 'GET':
       user = request.user.id
-      devices = Device.objects.filter(Q(owner=user) | Q(private=False), serial=serial)
-      device = devices[0] if devices else None
-      public_devices = Device.objects.filter(private=False)
-      user = request.user.id
-      if request.user.is_authenticated():
-         my_devices = Device.objects.filter(owner=user)
-      else: my_devices = public_devices
+      device = Device.objects.filter(owner=user)[0]
       context = {}
       if (device):
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-         result = db.query('select * from "'+serial+'";')[0]
-         for point in result['points']:
-            point.pop(1)
-            point[0] = int(point[0])
-            point.insert(1, sum(point[1:]))
-         appliances = result['columns'][2:]
-         data = result['points']
-         context = {'public_devices': public_devices,
-                    'my_devices': my_devices,
-                    'appliances': result['columns'][2:],
-                    'data': json.dumps(data),
-                    'unit': unit,
-                    'dataLimitFrom': result['points'][len(result['points'])-1][0],
-                    'dataLimitTo': result['points'][0][0]
+         result = db.query('list series')[0]
+         appliances = Set()
+         for series in result['points']:
+            rg = re.compile('device.'+str(device.serial))
+            if re.match(rg, series[1]):
+               appliance = series[1].split('device.'+str(device.serial)+'.')
+               if (len(appliance) < 2): continue
+               else: appliances.add(appliance[-1])
+         context = {'my_devices': [device],
+                    'appliances': appliances,
                     }
       return render(request, 'base/dashboard.html', context)
+
+def charts(request, serial):
+   if request.method == 'GET':
+      unit = request.GET.get('unit','')
+      start = request.GET.get('from','')
+      stop = request.GET.get('to','')
+      return HttpResponse(json.dumps(group_by_mean(serial,unit,start,stop)), content_type="application/json")
 
 
 #TODO request parameters
