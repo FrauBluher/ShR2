@@ -12,7 +12,7 @@ from urllib2 import Request, urlopen, URLError
 from pyzipcode import ZipCodeDatabase
 
 import timeseries as ts
-
+import re
 from influxdb import client as influxdb
 
 # Create your views here.
@@ -65,25 +65,44 @@ def merge_subs(lst_of_lsts):
     return res
 
 def group_by_mean(serial, unit, start, stop):
+   if unit == 'y': unit = 'm'
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-   result = db.query('select * from "'+str(serial)+'" limit 1;')[0]
-   appliances = result['columns'][2:]
+   result = db.query('list series')[0]
+   appliances = Set()
+   for series in result['points']:
+      rg = re.compile('device.'+str(serial))
+      if re.match(rg, series[1]):
+         appliance = series[1].split('device.'+str(serial)+'.')
+         if (len(appliance) < 2): continue
+         else: appliances.add(appliance[-1])
    mean = {}
-   for appliance in appliances:
-      if (start and stop):
-         mean[appliance] = db.query('select mean("'+appliance+'") from "'+str(serial)+'" group by time(1'+unit+') where time > "'+start+'" and time "'+stop+'";')[0]
-      else:
-         mean[appliance] = db.query('select mean("'+appliance+'") from "'+str(serial)+'" group by time(1'+unit+') where time > now() - 1d')[0]
+   # see if continuous query for unit is defined
+   result = db.query('list series')[0]
+   rg = re.compile('1'+unit+'.device.'+str(serial))
+   exists = False
+   for series in result['points']:
+      if (re.match(rg, series[1])):
+         exists = True
+   if exists == False:
+      # make query
+      db.query('select mean(wattage) from /^device.'+str(serial)+'.*/ group by time(1'+unit+') into 1'+unit+'.:series_name')
    to_merge = []
-   for appliance in mean:
-      to_merge += mean[appliance]['points']
+   for appliance in appliances:
+      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance)[0]['points']
+      # hack
+      new_group = []
+      for s in group:
+         s = [s[0],s[2]]
+         new_group.append(s)
+      to_merge += new_group
    data = merge_subs(to_merge)
    for point in data:
       point.insert(1, sum(point[1:]))
+   if (len(data) < 1): return None
    data = {'data': data,
            'unit': unit,
            'dataLimitFrom': data[len(data)-1][0],
-           'dataLimitTo': data[0][0]
+           'dataLimitTo': data[0][0],
           }
    return data
 
@@ -94,10 +113,16 @@ def default_chart(request):
       context = {}
       if (device):
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-         result = db.query('select * from "'+str(device.serial)+'" limit 1;')[0]
-         appliances = result['columns'][2:]
+         result = db.query('list series')[0]
+         appliances = Set()
+         for series in result['points']:
+            rg = re.compile('device.'+str(device.serial))
+            if re.match(rg, series[1]):
+               appliance = series[1].split('device.'+str(device.serial)+'.')
+               if (len(appliance) < 2): continue
+               else: appliances.add(appliance[-1])
          context = {'my_devices': [device],
-                    'appliances': result['columns'][2:],
+                    'appliances': appliances,
                     }
       return render(request, 'base/dashboard.html', context)
 

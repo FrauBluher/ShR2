@@ -7,8 +7,12 @@ from rest_framework import viewsets
 from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer
 from rest_framework import permissions, authentication
 from rest_framework.response import Response
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django import forms
 from django.core.validators import RegexValidator
+
+from influxdb import client as influxdb
 
 class KeyForm(forms.Form):
 
