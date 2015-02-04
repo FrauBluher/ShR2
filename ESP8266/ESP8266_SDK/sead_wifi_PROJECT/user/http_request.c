@@ -51,7 +51,9 @@ static void networkDisconCb(void *);
 void network_start(void);
 
 send_data_t *data_to_send = NULL;
-	
+
+
+//occasionally gets stuck in sending phase.
 bool ICACHE_FLASH_ATTR
 send_http_request (send_data_t *temp) {
 	//check to see if we have an IP address and we are in STA mode

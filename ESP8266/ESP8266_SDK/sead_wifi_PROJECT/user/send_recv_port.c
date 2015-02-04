@@ -120,8 +120,7 @@ case_idle(char temp) {
 		user_state = receive;
 		//puts shit on the buffer
 		put_buffer(temp);
-	//TODO change to if is connected to access point, and send 
-	//is greater than 0
+	//if we have info to send
 	} else if (size_send_buffer() > 0) {
 		sending = TRUE;
 		system_os_post(store_send_messagePrio, 0, 0);
@@ -150,9 +149,12 @@ case_recv(char temp) {
 			reset_buffer();
 			user_state = receive_idle;
 		}
-	//if the buffer overflows, then reset the buffer and go back
-	//to idle
-	} else if (!put_buffer(temp)) {
+	} else if (put_buffer(temp)) {
+		//if we were successful in pushing, check to see if we can send?
+		
+	} else {
+		//if the buffer overflows, then reset the buffer and go back
+		//to idle. This is the case that puts things into the buffer
 		print_buffer();
 		reset_buffer();
 		user_state = receive_idle;
@@ -161,7 +163,12 @@ case_recv(char temp) {
 
 void ICACHE_FLASH_ATTR
 case_store(char temp) {
-	if (storing == FALSE && temp != '$') {
+	//send stuff right after storing?
+	if (storing == FALSE && temp != '$' && size_send_buffer() < 0) {
+		sending = TRUE;
+		system_os_post(store_send_messagePrio, 0, 0);
+		user_state = idle_send;
+	} else if (storing == FALSE && temp != '$') {
 		user_state = receive_idle;
 	} else if (storing == FALSE && temp == '$') {
 		user_state = receive;
