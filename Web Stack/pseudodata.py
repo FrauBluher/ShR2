@@ -19,12 +19,17 @@ class C:
 
 def compute(obj):
 	for i in range (obj.time_stop - obj.time_start):
+                power = random.uniform(-.25*obj.power, .25*obj.power) + obj.power
 		payload = '{"device":"'+obj.device+'",'+\
 				   '"appliance":"'+obj.appliance+'",'+\
 				   '"timestamp":"'+str(i)+'",'+\
-				   '"wattage":"'+str(obj.power)+'"}'
+				   '"wattage":"'+str(power)+'"}'
 
-		obj.conn.request("http://seads.brabsmit.com/api/event-api/","POST", payload, obj.header)
+		resp, content = obj.conn.request("http://seads.brabsmit.com/api/event-api/","POST", payload, obj.header)
+                if resp['status'] != '201':
+                   print resp
+                   print content
+                   sys.exit(1)
 
 def get_appliances():
 	appliances = []
@@ -38,7 +43,7 @@ def get_appliances():
 		i += 1
 
 	if len(appliances) == 0:
-		appliances.append(Appliance('/api/appliance-api/1/', '100'))
+		appliances.append(Appliance('/api/appliance-api/5/', '700'))
 
 	return appliances
 
@@ -53,10 +58,9 @@ if __name__ == "__main__":
 	time_start = int(sys.argv[2])
 	time_stop = int(sys.argv[3])
 	conn = httplib2.Http()
-	header = {"Content-Type": "application/json",
-			  "Authorization": "Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0"}
+	header = {"Content-Type": "application/json"}
 	jobs = []
 	for appliance in appliances:
-		power = random.uniform(-10,10) + int(appliance.averagepower)
+		power = int(appliance.averagepower)
 		c = C(header, device, time_start, time_stop, appliance.name, power, conn)
 		compute(c)
