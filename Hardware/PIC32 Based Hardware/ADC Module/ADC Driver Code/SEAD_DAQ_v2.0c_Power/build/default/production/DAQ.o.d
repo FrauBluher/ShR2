@@ -1,4 +1,4 @@
-build/default/debug/DAQ.o:  \
+build/default/production/DAQ.o:  \
 DAQ.c  \
 ADCModuleBoard.h  \
 DMA_Transfer.h  \

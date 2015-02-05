@@ -23,25 +23,46 @@
  */
 
 /**
- * @file	DAQ.c
+ * @file	DMA_Transfer.h
  * @author 	Pavlo Milo Manovi
  * @date	April, 2014
- * @brief 	Main loop for the DAQ.
+ * @brief 	This library provides methods to send data over UART and SPI using
+ *              non-blocking DMA.  See notes in the .c file for specifics and future
+ *              required work.
  */
 
+#ifndef SPI_DMA_TRANSFER_H
+#define	SPI_DMA_TRANSFER_H
+#define MAX32
 
-#include "ADCModuleBoard.h"
-#include <plib.h>
+#include <stdint.h>
+#define BUFFERLENGTH 13*2000
+#define END_MESSAGE 8
 
-SampleBuffer BufferA;
-SampleBuffer BufferB;
+enum {
+    BUFFER_A = 0,
+    BUFFER_B
+};
 
-static MCP391x_Info ADCInfo;
+//8 bit integer should be changed to 16 bits for SPI testing.
 
-int main(void)
-{
-	ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo);
-	while (1) {
-		;
-	}
-}
+typedef struct {
+    uint8_t BufferArray[BUFFERLENGTH + END_MESSAGE];
+    uint8_t bufferFull;
+    uint8_t txStarted;
+    uint16_t index;
+} SampleBuffer;
+
+uint8_t BufferToUART_Init(void);
+uint8_t BufferToSpi_Init(SampleBuffer *BufferA, SampleBuffer *BufferB);
+uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize);
+uint8_t BufferToSpi_TransferA(uint16_t transferSize);
+uint8_t BufferToSpi_TransferB(uint16_t transferSize);
+uint8_t BufferToUART_TransferA(uint16_t transferSize);
+uint8_t BufferToUART_TransferB(uint16_t transferSize);
+void BufferToPMP_Init(void);
+void StartSPIAcquisition(uint8_t buffer);
+void DMAStartUARTRX(void);
+
+#endif	/* SPI_DMA_TRANSFER_H */
+

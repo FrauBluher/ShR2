@@ -1,4 +1,4 @@
-build/default/debug/MCP391x.o:  \
+build/default/production/MCP391x.o:  \
 MCP391x.c  \
 MCP391x.h  \
 ADCModuleBoard.h  \

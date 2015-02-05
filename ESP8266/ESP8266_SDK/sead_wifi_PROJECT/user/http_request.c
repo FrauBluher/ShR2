@@ -6,6 +6,8 @@
  * 
  */
 
+#include "time.h"
+
 #include "c_types.h"
 #include "espmissingincludes.h"
 #include "user_interface.h"
@@ -49,7 +51,9 @@ static void networkDisconCb(void *);
 void network_start(void);
 
 send_data_t *data_to_send = NULL;
-	
+
+
+//occasionally gets stuck in sending phase.
 bool ICACHE_FLASH_ATTR
 send_http_request (send_data_t *temp) {
 	//check to see if we have an IP address and we are in STA mode
@@ -112,7 +116,6 @@ static void ICACHE_FLASH_ATTR networkConnectedCb(void *arg) {
  
 	sint8 d = espconn_sent(serv_conn,transmission,strlen(transmission));
 	*/
-	espconn_regist_recvcb(serv_conn, networkRecvCb);
 	os_printf("conn_end\r\n");
 	//sets sending flag false
 }

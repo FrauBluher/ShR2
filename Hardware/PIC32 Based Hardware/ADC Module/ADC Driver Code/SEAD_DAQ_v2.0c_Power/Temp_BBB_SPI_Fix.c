@@ -23,25 +23,18 @@
  */
 
 /**
- * @file	DAQ.c
+ * @file	Temp_BBB_SPI_Fix.c
  * @author 	Pavlo Milo Manovi
  * @date	April, 2014
- * @brief 	Main loop for the DAQ.
+ * @brief 	This library is used to provide a temporary fix to handle the fact
+ *              that the beaglebone black doesn't support slave SPI without the PRU.
+ *              until I write an SPI driver with the PRU we'll have to deal with using
+ *              this blocking set of SPI calls with the BBB as the master.
  */
 
-
-#include "ADCModuleBoard.h"
 #include <plib.h>
 
-SampleBuffer BufferA;
-SampleBuffer BufferB;
-
-static MCP391x_Info ADCInfo;
-
-int main(void)
-{
-	ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo);
-	while (1) {
-		;
-	}
+void Init_BBB_SPI_Transfer(void) {
+	SpiChnOpen(SPI_CHANNEL1, SPI_OPEN_MSTEN | SPI_OPEN_SMP_END | SPI_OPEN_MODE8, 4);
+	//SpiChnPutS(chn, (unsigned int*)slaveBuff, txferSize);
 }
