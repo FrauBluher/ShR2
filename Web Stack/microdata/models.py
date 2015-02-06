@@ -21,17 +21,17 @@ class Device(models.Model):
    zipcode = models.CharField(max_length=5, blank=True, null=True)
    private = models.BooleanField(default=False)
    registered = models.BooleanField(default=False)
-   continuous_queries_registered = models.BooleanField(default=False, editable=False)
+   fanout_query_registered = models.BooleanField(default=False, editable=False)
     
    def save(self, **kwargs):
       if self.secret_key == None:
          secret_key =  ''.join(random.choice(string.digits) for i in range(3))
          secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
          self.secret_key = secret_key
-      if self.continuous_queries_registered == False:
+      if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          db.query('select * from device.'+str(self.serial)+' into device.'+str(self.serial)+'.[appliance]')
-         self.continuous_queries_registered = True
+         self.fanout_query_registered = True
       super(Device, self).save()
    
    def __unicode__(self):

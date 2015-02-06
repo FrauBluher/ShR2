@@ -83,7 +83,8 @@
               type:"line",
               data:{
                 index:1,
-                aggregation:"avg"
+                aggregation:"avg",
+                noDataPolicy:"skip"
               },
               style:{
                 lineWidth: 1,
@@ -97,7 +98,8 @@
               type:"line",
               data:{
                  index:{{ forloop.counter }}+1,
-                 aggregation:"avg"
+                 aggregation:"avg",
+                 noDataPolicy:"skip"
               },
               stack: "default",
               style:{
