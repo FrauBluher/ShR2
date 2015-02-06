@@ -242,13 +242,15 @@ void __ISR(_DMA1_VECTOR) DmaHandler1(void)
 void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 {
 	LATBbits.LATB6 ^= 1;
-	if (currentBuffer == BUFFER_A) {
+        //starts the DMA transfer over uart from the current buffer
+
+	/*if (currentBuffer == BUFFER_A) {
 		StartSPIAcquisition(BUFFER_B);
 		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
 	} else if (currentBuffer == BUFFER_B) {
 		StartSPIAcquisition(BUFFER_A);
 		DMA_CRC_Calc(BufB->BufferArray, BUFFERLENGTH);
-	}
+	}*/
 
 	DmaChnClrEvFlags(DMA_CHANNEL2, DMA_EV_ALL_EVNTS);
 	DmaChnClrIntFlag(DMA_CHANNEL2);
