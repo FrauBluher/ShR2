@@ -52,24 +52,14 @@
             units:["y","M","d","h","m","s"],
             timestampInSeconds: true,
             urlByUnit:{
-               "y":"/charts/device/{{ my_devices.0.serial }}/",
+               "m":"/charts/device/{{ my_devices.0.serial }}/",
                "M":"/charts/device/{{ my_devices.0.serial }}/",
                "d":"/charts/device/{{ my_devices.0.serial }}/",
                "h":"/charts/device/{{ my_devices.0.serial }}/",
-               "m":"/charts/device/{{ my_devices.0.serial }}/",
-               //"s":"/charts/device/{{ my_devices.0.serial }}/",
+               "y":"/charts/device/{{ my_devices.0.serial }}/",
+               "s":"/charts/device/{{ my_devices.0.serial }}/",
             }
         },
-        /*
-        {
-            dataFunction: function(from, to, unit, success, error){
-                $.get("/charts/device/{{ my_devices.0.serial }}/"+unit,null,function(data){
-                    success(data);
-                    console.log(data);
-                });
-            }
-        },
-        */
         legend: { enabled: true },
         valueAxis:{
            "default":{
@@ -103,7 +93,7 @@
               },
               stack: "default",
               style:{
-                 fillColor:"{% if appliance == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' %}{% endif %}",
+                 fillColor:"{% if appliance == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' 'cyan' 'yellow' 'orange' %}{% endif %}",
                  lineColor:""
               }
            },
@@ -115,8 +105,40 @@
            initialDisplayAnchor: "newestData",
         },
         currentTime: {enabled: false},
-
+        advanced:{timeUpdateInterval: 300},
      });
    {% endif %}
+
+function realTimeData() {
+   var interval = chart.displayUnit().split(' ')[0];
+   var displayUnit = chart.displayUnit().slice(-1);
+   var period;
+   var timeout;
+   if (displayUnit == 'm') {
+      period = 'now - ' + interval + ' minutes'
+      timeout = interval * 60 * 1000
+   }
+   var start = +Date.parse(period);
+   var stop = +Date.parse('now');
+   var get_url = '/charts/device/{{ my_devices.0.serial }}/?unit='+displayUnit+'&from='+start+'&to='+stop;
+   $.get(get_url, function (ajax_data) {
+      console.log(ajax_data);
+      chart.addData({unit: displayUnit, values: ajax_data.data});
+   });
+   setTimeout(realTimeData, timeout);
+}
+
+function waitForChart() {
+   console.log("Waiting for chart");
+   if (chart.displayUnit() != null) {
+      realTimeData();
+   } else {
+      setTimeout(waitForChart, 250);
+   }
+}
+
+$(function() {
+   waitForChart();
+});
 
 </script>

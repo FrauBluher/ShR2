@@ -11,6 +11,7 @@ from collections import defaultdict
 from urllib2 import Request, urlopen, URLError
 from pyzipcode import ZipCodeDatabase
 
+import datetime
 import timeseries as ts
 import re
 from influxdb import client as influxdb
@@ -65,9 +66,11 @@ def merge_subs(lst_of_lsts):
     return res
 
 def group_by_mean(serial, unit, start, stop):
-   if unit == 'y': unit = 'm'
+   if (unit == 'y'): unit = 'm'
    if (start == ''): start = 'now() - 1d'
+   else: start = '\''+datetime.datetime.fromtimestamp(int(start)/1000).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
+   else: stop = '\''+datetime.datetime.fromtimestamp(int(stop)/1000).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
@@ -80,7 +83,9 @@ def group_by_mean(serial, unit, start, stop):
    mean = {}
    to_merge = []
    for appliance in appliances:
-      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+str(start)+' and time < '+str(stop))[0]['points']
+      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop)
+      if (len(group)): group = group[0]['points']
+      else: return None
       # hack
       new_group = []
       for s in group:
@@ -126,7 +131,6 @@ def charts(request, serial):
       return HttpResponse(json.dumps(group_by_mean(serial,unit,start,stop)), content_type="application/json")
 
 
-#TODO request parameters
 def charts_deprecated(request, serial, unit):
    warnings.warn("Generating chart data from sqlite deprecated. See new charts() using InfluxDB.", DeprecationWarning)
    if request.method == 'GET':
