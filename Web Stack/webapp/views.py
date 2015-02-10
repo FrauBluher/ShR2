@@ -66,6 +66,8 @@ def merge_subs(lst_of_lsts):
 
 def group_by_mean(serial, unit, start, stop):
    if unit == 'y': unit = 'm'
+   if (start == ''): start = 'now() - 1d'
+   if (stop == ''): stop = 'now()'
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
@@ -76,19 +78,9 @@ def group_by_mean(serial, unit, start, stop):
          if (len(appliance) < 2): continue
          else: appliances.add(appliance[-1])
    mean = {}
-   # see if continuous query for unit is defined
-   result = db.query('list series')[0]
-   rg = re.compile('1'+unit+'.device.'+str(serial))
-   exists = False
-   for series in result['points']:
-      if (re.match(rg, series[1])):
-         exists = True
-   if exists == False:
-      # make query
-      db.query('select mean(wattage) from /^device.'+str(serial)+'.*/ group by time(1'+unit+') into 1'+unit+'.:series_name')
    to_merge = []
    for appliance in appliances:
-      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance)[0]['points']
+      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+str(start)+' and time < '+str(stop))[0]['points']
       # hack
       new_group = []
       for s in group:

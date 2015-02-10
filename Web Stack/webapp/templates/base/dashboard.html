@@ -57,7 +57,7 @@
                "d":"/charts/device/{{ my_devices.0.serial }}/",
                "h":"/charts/device/{{ my_devices.0.serial }}/",
                "m":"/charts/device/{{ my_devices.0.serial }}/",
-               "s":"/charts/device/{{ my_devices.0.serial }}/",
+               //"s":"/charts/device/{{ my_devices.0.serial }}/",
             }
         },
         /*
@@ -109,15 +109,13 @@
            },
            {% endfor %}
         ],
-        /*
         area: {
            initialDisplayUnit: "5 m",
            initialDisplayPeriod: "1 d",
-           initialDisplayAnchor: "newestData"
+           initialDisplayAnchor: "newestData",
         },
-        */
         currentTime: {enabled: false},
-        
+
      });
    {% endif %}
 
