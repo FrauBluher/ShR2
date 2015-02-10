@@ -45,24 +45,43 @@ uint8_t device_id = 3;
 static void networkSentCb(void *);
 static void networkRecvCb(void *, char *, unsigned short);
 static void networkConnectedCb(void *);
-//static void networkReconCb(void *, sint8);
+static void networkReconCb(void *, sint8);
 static void networkDisconCb(void *);
-
 void network_start(void);
+sint8 package_send(espconn *);
 
+//initializing connection variables!
+static espconn serv_conn;
+static ip_addr_t serv_ip;
+
+//pointer to the data we want to send:
+//TODO: localize this pointer in function calls!
 send_data_t *data_to_send = NULL;
+//flag to tell if we have already configured tcp connection to the server.
+bool server_config = false;
 
+
+void print_espconn_state(espconn *serv_connection) {
+	os_printf("State is: %d\r\n", serv_connection->state);
+}
 
 //occasionally gets stuck in sending phase.
 bool ICACHE_FLASH_ATTR
-send_http_request (send_data_t *temp) {
+send_http_request(send_data_t *temp) {
 	//check to see if we have an IP address and we are in STA mode
 	//1 stands for STA mode 2 is AP and 3 is both STA+AP
 	if (wifi_station_get_connect_status() == STATION_GOT_IP &&
 		wifi_get_opmode() == 1) {
 		os_printf("Connected and have an ip addr\r\n");
 		data_to_send = temp;
-		network_start();
+		//if the server connection isn't up???? start it
+		if (serv_conn.state == ESPCONN_NONE ||
+			serv_conn.state == ESPCONN_CLOSE) {
+			network_start();
+		} else {
+			sint8 d = package_send(&serv_conn);
+			done_sending();
+		}
 		return true;
 	} else {
 		os_printf("No ip addr\r\n");
@@ -70,24 +89,10 @@ send_http_request (send_data_t *temp) {
 	}
 }
 
-
-static void ICACHE_FLASH_ATTR networkSentCb(void *arg) {
-  os_printf("sent\r\n");
-  pop_pop_buffer();
-}
- 
-static void ICACHE_FLASH_ATTR networkRecvCb(void *arg, char *data, unsigned short len) {
-	os_printf("recv\r\n");
-	//print out what was received
-	struct espconn *serv_conn=(struct espconn *)arg;
-	int x;
-	os_printf("%s\r\n", data);
-	espconn_disconnect(serv_conn);
-}
- 
-static void ICACHE_FLASH_ATTR networkConnectedCb(void *arg) {
-	os_printf("conn_start\r\n");
-	struct espconn *serv_conn=(struct espconn *)arg;
+//formates the data from data_to_send to json
+//sends it on the serv_conn connection
+sint8 ICACHE_FLASH_ATTR
+package_send(espconn *serv_conn) {
 	//sends the echo thingy
 	char json_data[512] = "";
 	char send_data[1024] = "";
@@ -97,47 +102,61 @@ static void ICACHE_FLASH_ATTR networkConnectedCb(void *arg) {
 		data_to_send->timestamp);
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
-	//send the "send_data" and close the tcp connection afterwards
 	os_printf("\r\nSend Data:\r\n%s", send_data);
-	
-	sint8 d = espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
-	/*
-	int head_len = strlen(header);
-	int json_len = strlen(json);
- 
-	char json_len_str[10];
-	os_sprintf(json_len_str,"%d",json_len);
-	int json_len_str_len = strlen(json_len_str);
- 
-	strcpy(transmission,header);
-	strcpy(transmission+head_len,json_len_str);
-	strcpy(transmission+head_len+json_len_str_len,"\r\n\r\n");
-	strcpy(transmission+head_len+json_len_str_len+4,json);
- 
-	sint8 d = espconn_sent(serv_conn,transmission,strlen(transmission));
-	*/
-	os_printf("conn_end\r\n");
-	//sets sending flag false
+	//send the data.
+	return espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
 }
 
-//TODO handle reconnection.
-/*
-static void ICACHE_FLASH_ATTR networkReconCb(void *arg, sint8 err) {
-	os_printf("rcon");
-	struct espconn *serv_conn=(struct espconn *)arg;
-	espconn_disconnect(serv_conn);
-}*/
+static void ICACHE_FLASH_ATTR
+networkSentCb(void *arg) {
+  os_printf("sent\r\n");
+  print_espconn_state((espconn *)arg);
+  //incriments circular buffer tail (POP POP)
+  pop_pop_buffer();
+}
+ 
+static void ICACHE_FLASH_ATTR
+networkRecvCb(void *arg, char *data, unsigned short len) {
+	os_printf("recv\r\n");
+	print_espconn_state((espconn *)arg);
+	//print out what was received
+	espconn *serv_conn=(espconn *)arg;
+	os_printf("%s\r\n", data);
+	print_espconn_state(serv_conn);
+}
 
-static void ICACHE_FLASH_ATTR networkDisconCb(void *arg) {
-	os_printf("dcon");
+//callback for being initially connected
+static void ICACHE_FLASH_ATTR
+networkConnectedCb(void *arg) {
+	os_printf("conn_start\r\n");
+	print_espconn_state((espconn *)arg);
+	sint8 d = package_send((espconn *)arg);
+	os_printf("conn_end\r\n");
+	print_espconn_state((espconn *)arg);
+	//set sending flag to false
 	done_sending();
+}
+
+//TODO handle reconnection?
+static void ICACHE_FLASH_ATTR
+networkReconCb(void *arg, sint8 err) {
+	server_config = false;
+	os_printf("rcon");
+	print_espconn_state((espconn *)arg);
+}
+
+static void ICACHE_FLASH_ATTR
+networkDisconCb(void *arg) {
+	server_config = false;
+	os_printf("dcon");
+	print_espconn_state((espconn *)arg);
 }
 
 static void ICACHE_FLASH_ATTR
 networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	//initializing connection arguments
 	static esp_tcp tcp;
-	struct espconn *serv_conn=(struct espconn *)arg;
+	espconn *serv_conn=(espconn *)arg;
 	if (serv_ip==NULL) {
 		os_printf("\r\nNS lookup failed :/\r\n");
 		return;
@@ -158,18 +177,20 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	//specify callback functions for different situations
 	espconn_regist_connectcb(serv_conn, networkConnectedCb);
 	espconn_regist_disconcb(serv_conn, networkDisconCb);
-	//espconn_regist_reconcb(serv_conn, networkReconCb);
+	espconn_regist_reconcb(serv_conn, networkReconCb);
 	espconn_regist_recvcb(serv_conn, networkRecvCb);
 	espconn_regist_sentcb(serv_conn, networkSentCb);
+	//debug 
+	print_espconn_state(serv_conn);
 	espconn_connect(serv_conn);
+	//debug
+	print_espconn_state(serv_conn);
 }
 
 void ICACHE_FLASH_ATTR
 network_start(void) {
-	//initializing connection arguments
-	static struct espconn serv_conn;
-	static ip_addr_t serv_ip;
 	os_printf("Looking up server...\r\n");
 	espconn_gethostbyname(&serv_conn, SERVER_NAME, &serv_ip,
 						  networkServerFoundCb);
+	print_espconn_state(&serv_conn);
 }

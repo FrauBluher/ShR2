@@ -282,9 +282,11 @@ case_recv_send(char temp) {
 void ICACHE_FLASH_ATTR
 store_send_message(os_event_t *events) {
 	if (user_state == idle_store || user_state == receive_store) {
-		uart0_sendStr("\r\nstoring...\r\n");
+		os_printf("\r\nstoring...\r\n");
 		if (push_send_buffer()) {
-			uart0_sendStr("\r\nsucceeded...\r\n");
+			os_printf("\r\nsucceeded...\r\n");
+		} else {
+			os_printf("\r\nfailed...\r\n");
 		}
 		storing = FALSE;
 	}

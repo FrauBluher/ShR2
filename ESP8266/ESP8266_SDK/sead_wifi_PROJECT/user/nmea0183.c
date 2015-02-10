@@ -161,10 +161,8 @@ process_message(char *string, uint16_t *wattage, char *timestamp) {
 		uart0_sendStr("talker unknown\r\n");
 		return_value = false;
 	}
-	uart0_sendStr(timestamp);
-	char buffer[10] = {0};
-	os_sprintf(buffer, "watt: %d\r\n", *wattage);
-	uart0_sendStr(buffer);
+	os_printf("time: %s\r\n", timestamp);
+	os_printf("watt: %d\r\n", *wattage);
 	return return_value;
 }
 
