@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 import random
 import string
+from django.core.exceptions import SuspiciousOperation
 from influxdb import client as influxdb
 
 # Create your models here.
@@ -30,7 +31,16 @@ class Device(models.Model):
          self.secret_key = secret_key
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-         db.query('select * from device.'+str(self.serial)+' into device.'+str(self.serial)+'.[appliance]')
+         serial = str(self.serial)
+         db.query('select * from device.'+serial+' into device.'+str(self.serial)+'.[appliance]')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+	 db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(15m) into 15m.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(5m) into 5m.:series_name')
+	 db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          self.fanout_query_registered = True
       super(Device, self).save()
    
