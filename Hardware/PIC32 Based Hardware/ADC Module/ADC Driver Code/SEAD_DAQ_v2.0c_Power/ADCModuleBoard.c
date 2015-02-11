@@ -108,6 +108,9 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	A0_TRIS = 0;
 	RD_TRIS = 0;
 	WR_LAT = 0;
+	
+	//Status LED
+	TRISBbits.TRISB6 = 0;
 
 	/*
 	 * Depending on if you want to use a DMA transfer and what peripheral you
