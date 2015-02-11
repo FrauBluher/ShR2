@@ -100,11 +100,11 @@
            {% endfor %}
         ],
         area: {
-           initialDisplayUnit: "5 m",
+           initialDisplayUnit: "1 s",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor: "newestData",
+           followAnchor: true,
         },
-        currentTime: {enabled: false},
         advanced:{timeUpdateInterval: 300},
      });
    {% endif %}
@@ -116,7 +116,16 @@ function realTimeData() {
    var timeout;
    if (displayUnit == 'm') {
       period = 'now - ' + interval + ' minutes'
-      timeout = interval * 60 * 1000
+      timeout = interval * 60 * 900
+   }
+   else if (displayUnit == 's') {
+      period = 'now - ' + interval + ' seconds'
+      timeout = interval * 900
+   }
+   else {
+      // Update everything on the hour. Fix later.
+      period = 'now - ' + interval + ' hours'
+      timeout = interval * 60 * 60 * 900
    }
    var start = +Date.parse(period);
    var stop = +Date.parse('now');

@@ -83,13 +83,13 @@ def group_by_mean(serial, unit, start, stop):
    mean = {}
    to_merge = []
    for appliance in appliances:
-      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop)
+      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop+' limit 1000')
       if (len(group)): group = group[0]['points']
       else: return None
-      # hack
+      # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
-         s = [s[0],s[2]]
+         s = [s[0]-28800,s[2]]
          new_group.append(s)
       to_merge += new_group
    data = merge_subs(to_merge)

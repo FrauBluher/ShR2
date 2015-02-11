@@ -4,11 +4,11 @@ from microdata import views as microdata_views
 from home import views as home_views
 from django.contrib import admin
 
-#router = routers.DefaultRouter()
-#router.register(r'appliance-api', microdata_views.ApplianceViewSet)
-#router.register(r'device-api', microdata_views.DeviceViewSet)
-#router.register(r'event-api', microdata_views.EventViewSet)
-#router.register(r'users', home_views.UserViewSet)
+router = routers.DefaultRouter()
+router.register(r'appliance-api', microdata_views.ApplianceViewSet)
+router.register(r'device-api', microdata_views.DeviceViewSet)
+router.register(r'event-api', microdata_views.EventViewSet)
+router.register(r'users', home_views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [
@@ -20,12 +20,13 @@ urlpatterns = [
     url(r'^account/$', 'home.views.account'),
     url(r'^data/$', 'webapp.views.landing'),
     url(r'^dashboard/$', 'webapp.views.dashboard'),
-    url(r'^charts/device/(?P<serial>\d+)/(?P<unit>\w)$', 'webapp.views.charts'),
+    url(r'^charts/device/(?P<serial>\d+)/', 'webapp.views.charts'),
+    url(r'^charts/default_chart/$', 'webapp.views.default_chart'),
     url(r'^new_device/key/', 'microdata.views.new_device_key'),
     
     # Development URLs
-    #url(r'^api/', include(router.urls)),
-    #url(r'^docs/', include('rest_framework_swagger.urls')),
+    url(r'^api/', include(router.urls)),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
     url(r'^gitupdate/$', 'debug.views.gitupdate'),
     url(r'^echo/', 'debug.views.echo'),
     url(r'^echo/(?P<args>\w+)$', 'debug.views.echo_args'),
