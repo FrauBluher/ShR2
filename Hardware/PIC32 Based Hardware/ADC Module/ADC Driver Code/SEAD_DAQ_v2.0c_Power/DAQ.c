@@ -31,6 +31,8 @@
 
 
 #include "ADCModuleBoard.h"
+#include "SB_Computation.h"
+
 #include <plib.h>
 
 SampleBuffer BufferA;
@@ -38,10 +40,37 @@ SampleBuffer BufferB;
 
 static MCP391x_Info ADCInfo;
 
+
+/**
+  * @brief  Takes the buffer not used, and does useful computations on it
+  * @param  None
+  * @retval None
+  */
+void ComputeBuffer(void)
+{
+        uint8_t RMS_Value = 0;
+        uint8_t currentBuffer = CurrentBuffer();
+        if (currentBuffer == BUFFER_A) {
+                if (BufferB.bufferFull) {
+                        //compute things on the buffer!
+                        RMS_Value = SB_RMS(&BufferB);
+                }
+        } else if (currentBuffer == BUFFER_B) {
+                if (BufferA.bufferFull) {
+                        //compute things on the buffer!
+                        RMS_Value = SB_RMS(&BufferA);
+                }
+        }
+        //TODO: DMA these variables, instead of the whole SampleBuffer s
+}
+
+
 int main(void)
 {
 	ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo);
 	while (1) {
-		;
+                //grabs the buffer that isn't being DMA'D at that point
+		//does copmutations with it
+                ComputeBuffer();
 	}
 }

@@ -7,6 +7,7 @@
       <itemPath>ADCModuleBoard.h</itemPath>
       <itemPath>DMA_Transfer.h</itemPath>
       <itemPath>MCP391x.h</itemPath>
+      <itemPath>SB_Computation.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,6 +20,7 @@
       <itemPath>DAQ.c</itemPath>
       <itemPath>DMA_Transfer.c</itemPath>
       <itemPath>MCP391x.c</itemPath>
+      <itemPath>SB_Computation.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -218,6 +220,7 @@
         <property key="UART4" value="true"/>
         <property key="UART5" value="true"/>
         <property key="UART6" value="true"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>

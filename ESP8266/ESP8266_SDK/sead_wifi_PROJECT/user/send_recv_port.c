@@ -33,12 +33,12 @@ os_event_t    recv_messageQueue[recv_messageQueueLen];
 os_event_t    store_send_messageQueue[store_send_messageQueueLen];
 
 //initialize the user state to receive
-rss_state user_state = receive_idle;
+rss_state user_state = IDLE;
 
 //flag that checks to see if it should echo rx
 bool echoFlag = TRUE;
 //flag that tells you if you are connected to an access point?
-bool connected = FALSE;
+bool nosend = FALSE;
 //are we storing data?
 bool storing = FALSE;
 //are we sending data?
@@ -76,25 +76,17 @@ recv_message(os_event_t *events) {
 void ICACHE_FLASH_ATTR
 send_recv_store_fsm(char temp) {
 	switch(user_state) {
-	case receive_idle:
+	case IDLE:
 		case_idle(temp);
 		break;
-	case receive:
+	case RECEIVE:
 		case_recv(temp);
 		break;
-	case idle_store:
+	case STORE:
 		case_store(temp);
 		break;
-	case idle_send:
-		case_send(temp);
-		break;
-	//reveiving and storing at the same time
-	case receive_store:
+	case RECEIVE_STORE:
 		case_recv_store(temp);
-		break;
-	//receiving and sending at the same time
-	case receive_send:
-		case_recv_send(temp);
 		break;
 	//default case, will never happen hopefully
 	default:
@@ -112,22 +104,23 @@ send_recv_store_fsm(char temp) {
   * @retval None!
   */
 
+//what happens when we are not receiving anything interesting
 void ICACHE_FLASH_ATTR
 case_idle(char temp) {
 	//if the character is a dollar sign, we are no longer idle and
 	//a message is beginning!
 	if (temp == '$') {
-		user_state = receive;
-		//puts shit on the buffer
+		user_state = RECEIVE;
+		//puts the char on the buffer
 		put_buffer(temp);
-	//if we have info to send
-	} else if (size_send_buffer() > 0) {
+	}
+	//if we have info to send, send it
+	if (sending == FALSE && storing == FALSE && size_send_buffer() > 0) {
 		sending = TRUE;
 		system_os_post(store_send_messagePrio, 0, 0);
-		user_state = idle_send;
 	}
 }
-
+//what happens when we have received the beginning of a message
 void ICACHE_FLASH_ATTR
 case_recv(char temp) {
 	if (temp == '\n') {
@@ -135,76 +128,68 @@ case_recv(char temp) {
 		//nmea checksum on the buffer
 		if (checksum_buffer()) {
 			//store it into the circular buffer
-			uart0_sendStr("\r\nchecksum succeeded...\r\n");
+			os_printf("\r\nchecksum succeeded...\r\n");
 			print_buffer();
 			storing = TRUE;
 			//swap and then reset current buffer
 			swap_buffer();
 			reset_buffer();
+			if (sending == TRUE) {
+				nosend = TRUE;
+			} else if (size_send_buffer() > 0) {
+				sending = TRUE;
+			}
 			system_os_post(store_send_messagePrio, 0, 0);
-			user_state = idle_store;
+			user_state = STORE;
 		} else {
-			uart0_sendStr("\r\nchecksum failed...\r\n");
+			os_printf("\r\nchecksum failed...\r\n");
 			print_buffer();
 			reset_buffer();
-			user_state = receive_idle;
+			user_state = IDLE;
 		}
-	} else if (put_buffer(temp)) {
-		//if we were successful in pushing, check to see if we can send?
-		
-	} else {
+	} else if (!put_buffer(temp)) {
 		//if the buffer overflows, then reset the buffer and go back
 		//to idle. This is the case that puts things into the buffer
+		os_printf("\r\noverflow\r\n");
 		print_buffer();
 		reset_buffer();
-		user_state = receive_idle;
+		user_state = IDLE;
 	}
 }
-
+//what happens when we have finished receiving a message (storing)
 void ICACHE_FLASH_ATTR
 case_store(char temp) {
 	//send stuff right after storing?
-	if (storing == FALSE && temp != '$' && size_send_buffer() < 0) {
+	if (storing == FALSE && temp != '$' && size_send_buffer() > 0) {
 		sending = TRUE;
+		user_state = IDLE;
 		system_os_post(store_send_messagePrio, 0, 0);
-		user_state = idle_send;
 	} else if (storing == FALSE && temp != '$') {
-		user_state = receive_idle;
+		user_state = IDLE;
+	} else if (storing == FALSE && temp == '$' && size_send_buffer() > 0) {
+		sending = TRUE;
+		user_state = RECEIVE;
+		//puts shit on the buffer
+		put_buffer(temp);
+		system_os_post(store_send_messagePrio, 0, 0);
 	} else if (storing == FALSE && temp == '$') {
-		user_state = receive;
+		user_state = RECEIVE;
 		//puts shit on the buffer
 		put_buffer(temp);
 	} else if (storing == TRUE && temp == '$') {
-		user_state = receive_store;
+		user_state = RECEIVE_STORE;
 		//puts shit on the buffer
 		put_buffer(temp);
 	} else if (storing == TRUE && temp != '$') {
-		user_state = idle_store;
+		user_state = STORE;
 	}
 }
-
-void ICACHE_FLASH_ATTR
-case_send(char temp) {
-	if (sending == FALSE && temp != '$') {
-		user_state = receive_idle;
-	} else if (sending == FALSE && temp == '$') {
-		user_state = receive;
-		//put shit on the buffer
-		put_buffer(temp);
-	} else if (sending == TRUE && temp == '$') {
-		user_state = receive_send;
-		//puts shit on the buffer
-		put_buffer(temp);
-	} else if (sending == TRUE && temp != '$') {
-		user_state = idle_send;
-	}
-}
-
+//what happens when we are storing a message while we received new input
 void ICACHE_FLASH_ATTR
 case_recv_store(char temp) {
 	if (storing == FALSE && temp != '\n') {
 		put_buffer(temp);
-		user_state = receive;
+		user_state = RECEIVE;
 	} else if (storing == FALSE && temp == '\n') {
 		if (checksum_buffer()) {
 			//store it into the circular buffer
@@ -214,62 +199,34 @@ case_recv_store(char temp) {
 			//swap and then reset buffer
 			swap_buffer();
 			reset_buffer();
+			if (sending == TRUE) {
+				nosend = TRUE;
+			} else if (size_send_buffer() > 0) {
+				sending = TRUE;
+			}
 			system_os_post(store_send_messagePrio, 0, 0);
-			user_state = idle_store;
+			user_state = STORE;
 		} else {
 			uart0_sendStr("\r\nchecksum failed...\r\n");
 			print_buffer();			
 			reset_buffer();
-			user_state = receive_idle;
+			user_state = IDLE;
 		}
 	} else if (storing == TRUE && temp != '\n') {
 		//continue to receive shit and store, in case of overflow
 		if (!put_buffer(temp)) {
+			os_printf("\r\noverflow\r\n");
 			print_buffer();
 			reset_buffer();
-			user_state = idle_store;
+			user_state = STORE;
+		} else {
+			user_state = RECEIVE_STORE;
 		}
-		user_state = receive_store;
 	} else if (storing == TRUE && temp == '\n') {
 		//too fast for the buffers to handle, reset and drop message
+		os_printf("\r\ndropped.\r\n");
 		reset_buffer();
-		user_state = idle_store;
-	}
-}
-
-void ICACHE_FLASH_ATTR
-case_recv_send(char temp) {
-	if (sending == FALSE && temp != '\n') {
-		if (!put_buffer(temp)) {
-			print_buffer();
-			reset_buffer();
-			user_state = idle_store;
-		}
-		user_state = receive;
-	} else if (sending == FALSE && temp == '\n') {
-		if (checksum_buffer()) {
-			//store it into the circular buffer
-			uart0_sendStr("\r\nchecksum succeeded...\r\n");
-			print_buffer();
-			storing = TRUE;
-			//swap and reset buffer
-			swap_buffer();
-			reset_buffer();
-			system_os_post(store_send_messagePrio, 0, 0);
-			user_state = idle_store;
-		} else {
-			uart0_sendStr("\r\nchecksum failed...\r\n");
-			print_buffer();
-			reset_buffer();
-			user_state = receive_idle;
-		}
-	} else if (sending == TRUE && temp != '\n') {
-		put_buffer(temp);
-		user_state = receive_send;
-	} else if (sending == TRUE && temp == '\n') {
-		//drop message, got a message before we could send
-		reset_buffer();
-		user_state = idle_send;
+		user_state = STORE;
 	}
 }
 
@@ -281,7 +238,8 @@ case_recv_send(char temp) {
   */
 void ICACHE_FLASH_ATTR
 store_send_message(os_event_t *events) {
-	if (user_state == idle_store || user_state == receive_store) {
+	//always store before we send, if this happens twice
+	if (user_state == STORE || user_state == RECEIVE_STORE) {
 		os_printf("\r\nstoring...\r\n");
 		if (push_send_buffer()) {
 			os_printf("\r\nsucceeded...\r\n");
@@ -290,11 +248,12 @@ store_send_message(os_event_t *events) {
 		}
 		storing = FALSE;
 	}
-	if (user_state == idle_send || user_state == receive_send) {
-		uart0_sendStr("\r\nsending...\r\n");
+	//then send
+	if (sending == TRUE && nosend == FALSE) {
+		os_printf("\r\nsending...\r\n");
 		//we can't tell when it's done sending after this, so 
-		//the magic sending flag will be set to false after it is done
-		//or if the function failed to queue up tcp sending
+		//the sending flag will be false after the command
+		//to send the data has been issued
 		if (!send_pop_buffer()) {
 			sending = FALSE;
 		}
@@ -310,6 +269,7 @@ store_send_message(os_event_t *events) {
 void ICACHE_FLASH_ATTR
 done_sending(void) {
 	sending = FALSE;
+	nosend = FALSE;
 }
 
 /**

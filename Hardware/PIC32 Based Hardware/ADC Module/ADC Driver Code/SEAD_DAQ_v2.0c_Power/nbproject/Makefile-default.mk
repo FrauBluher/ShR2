@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=ADCModuleBoard.c DAQ.c DMA_Transfer.c MCP391x.c
+SOURCEFILES_QUOTED_IF_SPACED=ADCModuleBoard.c DAQ.c DMA_Transfer.c MCP391x.c SB_Computation.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/DAQ.o ${OBJECTDIR}/DMA_Transfer.o ${OBJECTDIR}/MCP391x.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/ADCModuleBoard.o.d ${OBJECTDIR}/DAQ.o.d ${OBJECTDIR}/DMA_Transfer.o.d ${OBJECTDIR}/MCP391x.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/DAQ.o ${OBJECTDIR}/DMA_Transfer.o ${OBJECTDIR}/MCP391x.o ${OBJECTDIR}/SB_Computation.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/ADCModuleBoard.o.d ${OBJECTDIR}/DAQ.o.d ${OBJECTDIR}/DMA_Transfer.o.d ${OBJECTDIR}/MCP391x.o.d ${OBJECTDIR}/SB_Computation.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/DAQ.o ${OBJECTDIR}/DMA_Transfer.o ${OBJECTDIR}/MCP391x.o
+OBJECTFILES=${OBJECTDIR}/ADCModuleBoard.o ${OBJECTDIR}/DAQ.o ${OBJECTDIR}/DMA_Transfer.o ${OBJECTDIR}/MCP391x.o ${OBJECTDIR}/SB_Computation.o
 
 # Source Files
-SOURCEFILES=ADCModuleBoard.c DAQ.c DMA_Transfer.c MCP391x.c
+SOURCEFILES=ADCModuleBoard.c DAQ.c DMA_Transfer.c MCP391x.c SB_Computation.c
 
 
 CFLAGS=
@@ -118,6 +118,12 @@ ${OBJECTDIR}/MCP391x.o: MCP391x.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/MCP391x.o 
 	@${FIXDEPS} "${OBJECTDIR}/MCP391x.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/MCP391x.o.d" -o ${OBJECTDIR}/MCP391x.o MCP391x.c   
 	
+${OBJECTDIR}/SB_Computation.o: SB_Computation.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/SB_Computation.o.d 
+	@${RM} ${OBJECTDIR}/SB_Computation.o 
+	@${FIXDEPS} "${OBJECTDIR}/SB_Computation.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/SB_Computation.o.d" -o ${OBJECTDIR}/SB_Computation.o SB_Computation.c   
+	
 else
 ${OBJECTDIR}/ADCModuleBoard.o: ADCModuleBoard.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -142,6 +148,12 @@ ${OBJECTDIR}/MCP391x.o: MCP391x.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/MCP391x.o.d 
 	@${RM} ${OBJECTDIR}/MCP391x.o 
 	@${FIXDEPS} "${OBJECTDIR}/MCP391x.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/MCP391x.o.d" -o ${OBJECTDIR}/MCP391x.o MCP391x.c   
+	
+${OBJECTDIR}/SB_Computation.o: SB_Computation.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/SB_Computation.o.d 
+	@${RM} ${OBJECTDIR}/SB_Computation.o 
+	@${FIXDEPS} "${OBJECTDIR}/SB_Computation.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/SB_Computation.o.d" -o ${OBJECTDIR}/SB_Computation.o SB_Computation.c   
 	
 endif
 
