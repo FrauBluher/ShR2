@@ -16,7 +16,9 @@
 #include "buffers.h"
 #include "send_recv_port.h"
 
+//server name and device ID number
 #define SERVER_NAME "seads.brabsmit.com"
+#define DEVICE_ID	"3"
 
 //test string to send to server
 #define GET_ECHO 	"GET /echo/ HTTP/1.1\r\n"\
@@ -26,6 +28,15 @@
 
 //"Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0\r\n"
 
+// http request to create the device
+#define POST_DEVICE	"POST /api/device-api/ HTTP/1.1\r\n"\
+					"User-Agent: ESP8266\r\n"\
+					"Host: seads.brabsmit.com\r\n"\
+					"Accept: */*\r\n"\
+					"Content-Type: application/json\r\n"\
+					"Content-Length: %u\r\n\r\n"\
+					"{\"serial\":\"%s\"}"
+
 //the preamble of the post request
 #define POST_REQUEST "POST /api/event-api/ HTTP/1.1\r\n"\
 					 "User-Agent: ESP8266\r\n"\
@@ -34,9 +45,9 @@
 					 "Content-Type: application/json\r\n"\
 					 "Content-Length: %u\r\n\r\n%s"
 //format string for json data
-#define JSON_DATA "{\"device\": \"/api/device-api/%u/\", \"wattage\":\"%d\", \"timestamp\":\"%s\"}"
+#define JSON_DATA	"{\"device\": \"/api/device-api/%s/\", \"wattage\":\"%d\", \"timestamp\":\"%s\"}"
 
-uint8_t device_id = 3;
+bool make_device = FALSE;
 
 //len 81
 //AT+CIPSEND=81
@@ -62,7 +73,7 @@ bool server_config = false;
 
 
 void print_espconn_state(espconn *serv_connection) {
-	os_printf("State is: %d\r\n", serv_connection->state);
+	os_printf("espconn state is: %d\r\n", serv_connection->state);
 }
 
 //occasionally gets stuck in sending phase.
@@ -93,13 +104,21 @@ send_http_request(send_data_t *temp) {
 //sends it on the serv_conn connection
 sint8 ICACHE_FLASH_ATTR
 package_send(espconn *serv_conn) {
-	//sends the echo thingy
+	//init variables
 	char json_data[512] = "";
 	char send_data[1024] = "";
 	uint16_t chars_written = 0;
-	chars_written = os_sprintf(json_data, JSON_DATA, device_id,
-		data_to_send->wattage,
-		data_to_send->timestamp);
+	//create device if we haven't done it yet
+	if (!make_device) {
+		chars_written = os_sprintf(send_data, POST_DEVICE,
+			13 + strlen(DEVICE_ID), DEVICE_ID);
+		os_printf("\r\nSend Data:\r\n%s", send_data);
+		espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
+		make_device = TRUE;
+	}
+	//send regular data
+	chars_written = os_sprintf(json_data, JSON_DATA, DEVICE_ID,
+		data_to_send->wattage, data_to_send->timestamp);
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
 	os_printf("\r\nSend Data:\r\n%s", send_data);

@@ -49,4 +49,5 @@ User-Agent: ESP8266
 Host: seads.brabsmit.com
 Accept: */*
 
+curl -X POST seads.brabsmit.com/api/device-api/ -d '{"serial":"3"}' -H "Content-Type: application/json" -v
 

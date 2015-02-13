@@ -151,8 +151,8 @@ checksum_buffer(void) {
 
 bool ICACHE_FLASH_ATTR
 push_send_buffer(void) {
-	//os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-	//	send_buffer.head, send_buffer.tail, send_buffer.count);
+	os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+		send_buffer.head, send_buffer.tail, send_buffer.count);
 	//initialize temp pointer to the buffer not being used by receive
 	uart_buffer_t *temp_ptr = NULL;
 	bool return_value = true;
@@ -171,9 +171,9 @@ push_send_buffer(void) {
 	//incriment if successfully processed message and copied values over
 	send_buffer.head++;
 	if (send_buffer.capacity == send_buffer.count) {
-		//overwrite the oldest item at the tail
+		//overwrite the oldest item at the tail by incrimenting
 		send_buffer.tail++;
-		if (send_buffer.tail > send_buffer.tail) {
+		if (send_buffer.tail > send_buffer.buffer_end) {
 			send_buffer.tail = 0;
 		}
 		if (send_buffer.head > send_buffer.buffer_end) {
@@ -186,8 +186,8 @@ push_send_buffer(void) {
 		}
 		send_buffer.count++;
 	}
-	//os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-	//	send_buffer.head, send_buffer.tail, send_buffer.count);
+	os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+		send_buffer.head, send_buffer.tail, send_buffer.count);
 	return return_value;
 }
 
@@ -200,8 +200,8 @@ push_send_buffer(void) {
 
 bool ICACHE_FLASH_ATTR
 send_pop_buffer(void) {
-	/*os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-		send_buffer.head, send_buffer.tail, send_buffer.count);*/
+	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+		send_buffer.head, send_buffer.tail, send_buffer.count);
 	//return if there was nothing on the buffer
 	if (send_buffer.count == 0) {
 		return false;
@@ -226,15 +226,16 @@ pop_pop_buffer(void) {
 	if (send_buffer.count == 0) {
 		return;
 	}
-	//decriment the tail and the number of things in the circular buffer
+	//decriment the count
+	//incriment the tail
 	send_buffer.count--;
-	if (send_buffer.tail == send_buffer.buffer_end) {
+	if (send_buffer.tail > send_buffer.buffer_end) {
 		send_buffer.tail = 0;
 	} else {
 		send_buffer.tail++;
 	}
-	/*os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-		send_buffer.head, send_buffer.tail, send_buffer.count);*/
+	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+		send_buffer.head, send_buffer.tail, send_buffer.count);
 }
 
 /**

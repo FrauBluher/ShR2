@@ -11,7 +11,7 @@
 #define __BUFFERS_H
 
 #define max_uart_buff_size 255
-#define max_send_buff_size 10
+#define max_send_buff_size 20
 
 //character buffer for uart
 typedef struct {
