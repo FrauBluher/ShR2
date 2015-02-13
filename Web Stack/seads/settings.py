@@ -32,7 +32,7 @@ STATICFILES_FINDERS = (
    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-STATIC_URL = '/home/seads/webapp/static/'
+STATIC_URL = '/home/ubuntu/seads/webapp/static/'
 
 STATIC_ROOT = '/static/'
 
@@ -78,6 +78,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'rest_framework',
     'rest_framework_swagger',
+    'gmapi',
     'microdata',
     'webapp',
     'home',

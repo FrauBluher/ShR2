@@ -30,26 +30,23 @@ def chartify(data):
 
 @login_required(login_url='/signin/')
 def landing(request):
-   public_devices = Device.objects.filter(private=False)
    user = request.user.id
    my_devices = Device.objects.filter(owner=user)
-   context = {'public_devices': public_devices, 'my_devices': my_devices}
+   context = {'my_devices': my_devices}
    return render(request, 'base/landing.html', context)
 
 @login_required(login_url='/signin/')
 def dashboard(request):
-   public_devices = Device.objects.filter(private=False)
    user = request.user.id
    if request.user.is_authenticated():
       my_devices = Device.objects.filter(owner=user)
-   else: my_devices = public_devices
+   else: my_devices = None
    device = my_devices[0] if my_devices else None
    result = []
    if (device != None):
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       result = db.query('select * from "'+str(device.serial)+'" limit 1;')[0]
-   context = {'public_devices': public_devices,
-              'my_devices': my_devices,
+   context = {'my_devices': my_devices,
               'appliances': result['columns'][2:]
               }
    return render(request, 'base/dashboard.html', context)

@@ -1,0 +1,17 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %}SEADS_debug{% endblock %}
+{% block page_class %}gmapi-page{% endblock %}
+
+{% block content %}
+{% include "base/navbar.html" %}
+</nav>
+   <div class="container">
+      <form action="" method="post" style="margin-top:50px;">
+        {% csrf_token %}
+        {{ form.map }}
+      </form>
+   </div>
+</div>
+<script src="{{ STATIC_URL }}/webapp/js/jquery.gmapi.js" type="text/javascript"></script>
+{% endblock %}

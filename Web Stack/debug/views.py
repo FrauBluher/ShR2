@@ -3,10 +3,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from microdata.models import Event, Device, Appliance
 from django import forms
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.forms import ModelChoiceField
 
 from influxdb import client as influxdb
+from gmapi import maps
+from gmapi.forms.widgets import GoogleMap
 
 import git
 import random
@@ -30,6 +32,18 @@ class DatadelForm(forms.Form):
 
 class DevForm(forms.Form):
    method = forms.ChoiceField(choices=(('datagen','datagen'),('datadel','datadel')))
+
+class MapForm(forms.Form):
+   map = forms.Field(widget=GoogleMap(attrs={'width':510,'height':510}))
+
+def gmapi(request):
+   gmap = maps.Map(opts = {
+        'center':maps.LatLng(38,-97),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':3,'mapTypeControlOptions':{
+           'style': maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+   })
+   context = {'form': MapForm(initial={'map':gmap})}
+   return render_to_response('gmapi.html',context)
 
 @csrf_exempt
 def gitupdate(request):
