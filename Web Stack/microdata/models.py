@@ -19,9 +19,9 @@ class Device(models.Model):
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
    serial = models.IntegerField(unique=True, primary_key=True)
    name = models.CharField(max_length=30, blank=True, null=True)
-   zipcode = models.CharField(max_length=5, blank=True, null=True)
-   private = models.BooleanField(default=False)
-   registered = models.BooleanField(default=False)
+   #zipcode = models.CharField(max_length=5, blank=True, null=True)
+   #private = models.BooleanField(default=False)
+   registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)
     
    def save(self, **kwargs):
@@ -38,11 +38,24 @@ class Device(models.Model):
 	 db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(15m) into 15m.:series_name')
-         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(5m) into 5m.:series_name')
 	 db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          self.fanout_query_registered = True
       super(Device, self).save()
+
+   def delete(self, *args, **kwargs):
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      serial = str(self.serial)
+      series = db.query('list series')[0]['points']
+      # delete series
+      for s in series:
+         if 'device.'+serial in s[1]:
+            db.query('drop series '+s[1])
+      # delete continuous queries
+      queries = db.query('list continuous queries')[0]['points']
+      for q in queries:
+         if 'device.'+serial in q[2]:
+            db.query('drop continuous query '+str(q[1]))
+      super(Device, self).delete()
    
    def __unicode__(self):
       return self.name    

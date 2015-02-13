@@ -89,7 +89,7 @@
               data:{
                  index:{{ forloop.counter }}+1,
                  aggregation:"avg",
-                 noDataPolicy:"skip"
+                 //noDataPolicy:"skip"
               },
               stack: "default",
               style:{
@@ -119,7 +119,8 @@ function realTimeData() {
       timeout = interval * 60 * 900
    }
    else if (displayUnit == 's') {
-      period = 'now - ' + interval + ' seconds'
+      var delay = (2 + parseInt(interval)).toString();
+      period = 'now - ' + delay + ' seconds'
       timeout = interval * 900
    }
    else {
@@ -131,7 +132,6 @@ function realTimeData() {
    var stop = +Date.parse('now');
    var get_url = '/charts/device/{{ my_devices.0.serial }}/?unit='+displayUnit+'&from='+start+'&to='+stop;
    $.get(get_url, function (ajax_data) {
-      console.log(ajax_data);
       chart.addData({unit: displayUnit, values: ajax_data.data});
    });
    setTimeout(realTimeData, timeout);

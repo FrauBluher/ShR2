@@ -1,0 +1,34 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %}SEADS_debug{% endblock %}
+{% block page_class %}gmapi-page{% endblock %}
+
+{% block content %}
+{% include "base/navbar.html" %}
+</nav>
+   <div class="container">
+      <form action="" method="post" style="margin-top:50px;">
+        {% csrf_token %}
+        {{ form.map }} {{ form.media.js }}
+      </form>
+   </div>
+</div>
+
+<script>
+function post_position(position) {
+   console.log(position.coords.latitude+', '+position.coords.longitude)
+   $.post('/debug/position/',
+          { 
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          },
+          function(ajax_data) {
+            $('.container').html(ajax_data);
+          }
+   );
+}
+$(function() {
+   navigator.geolocation.getCurrentPosition(post_position);
+});
+</script>
+{% endblock %}

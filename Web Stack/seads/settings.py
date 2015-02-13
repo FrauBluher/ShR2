@@ -15,6 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # bad idea - move elsewhere
 WUNDERGROUND_KEY = '24e5a1d55557f6d5'
 OWM_KEY = 'b19ab21f2b0f046b8ec430fae9e28a84'
+GOOGLE_API_KEY = 'AIzaSyAZvP6Z9ia_oCJjmFORgVyVTnQMkJMbFTw'
 
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',
@@ -31,9 +32,11 @@ STATICFILES_FINDERS = (
    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-STATIC_URL = '/home/seads/webapp/static/'
+#STATIC_URL = '/home/ubuntu/seads/webapp/static/'
 
 STATIC_ROOT = '/static/'
+
+GEOIP_PATH = '/webapp/static/webapp/dat/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -74,9 +77,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'django.contrib.gis',
     'rest_framework.authtoken',
     'rest_framework',
     'rest_framework_swagger',
+    'gmapi',
     'microdata',
     'webapp',
     'home',
