@@ -15,6 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # bad idea - move elsewhere
 WUNDERGROUND_KEY = '24e5a1d55557f6d5'
 OWM_KEY = 'b19ab21f2b0f046b8ec430fae9e28a84'
+GOOGLE_API_KEY = 'AIzaSyAZvP6Z9ia_oCJjmFORgVyVTnQMkJMbFTw'
 
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',

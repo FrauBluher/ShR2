@@ -19,16 +19,16 @@ class Device(models.Model):
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
    serial = models.IntegerField(unique=True, primary_key=True)
    name = models.CharField(max_length=30, blank=True, null=True)
-   zipcode = models.CharField(max_length=5, blank=True, null=True)
-   private = models.BooleanField(default=False)
-   registered = models.BooleanField(default=False)
+   #zipcode = models.CharField(max_length=5, blank=True, null=True)
+   #private = models.BooleanField(default=False)
+   registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)
     
    def save(self, **kwargs):
-      if self.secret_key == None:
-         secret_key =  ''.join(random.choice(string.digits) for i in range(3))
-         secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
-         self.secret_key = secret_key
+      #if self.secret_key == None:
+      #   secret_key =  ''.join(random.choice(string.digits) for i in range(3))
+      #   secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
+      #   self.secret_key = secret_key
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          serial = str(self.serial)
