@@ -9,6 +9,7 @@ from django.forms import ModelChoiceField
 from influxdb import client as influxdb
 from gmapi import maps
 from gmapi.forms.widgets import GoogleMap
+from django.contrib.gis.geoip import GeoIP
 
 import git
 import random
@@ -36,9 +37,27 @@ class DevForm(forms.Form):
 class MapForm(forms.Form):
    map = forms.Field(widget=GoogleMap(attrs={'width':510,'height':510}))
 
-def gmapi(request):
+@csrf_exempt
+def position(request):
+   lat = float(request.POST.get('lat', ''))
+   lon = float(request.POST.get('lon', ''))
    gmap = maps.Map(opts = {
-        'center':maps.LatLng(38,-97),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':3,'mapTypeControlOptions':{
+        'center':maps.LatLng(lat,lon),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':11,'mapTypeControlOptions':{
+           'style': maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+   })
+   context = {'form': MapForm(initial={'map':gmap})}
+   return render_to_response('gmapi_form.html',context)
+
+def gmapi(request):
+   g = GeoIP(path='/home/ubuntu/seads-git/ShR2/Web Stack/webapp/static/webapp/dat/')
+   ip = request.META.get('REMOTE_ADDR', None)
+   lat = 37
+   lon = -122
+   if ip:
+      lat,lon = g.lat_lon(ip)
+   gmap = maps.Map(opts = {
+        'center':maps.LatLng(lat,lon),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':9,'mapTypeControlOptions':{
            'style': maps.MapTypeControlStyle.DROPDOWN_MENU
         },
    })

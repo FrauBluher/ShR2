@@ -32,9 +32,11 @@ STATICFILES_FINDERS = (
    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-STATIC_URL = '/home/ubuntu/seads/webapp/static/'
+#STATIC_URL = '/home/ubuntu/seads/webapp/static/'
 
 STATIC_ROOT = '/static/'
+
+GEOIP_PATH = '/webapp/static/webapp/dat/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -75,6 +77,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'django.contrib.gis',
     'rest_framework.authtoken',
     'rest_framework',
     'rest_framework_swagger',

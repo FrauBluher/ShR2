@@ -25,10 +25,10 @@ class Device(models.Model):
    fanout_query_registered = models.BooleanField(default=False, editable=False)
     
    def save(self, **kwargs):
-      #if self.secret_key == None:
-      #   secret_key =  ''.join(random.choice(string.digits) for i in range(3))
-      #   secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
-      #   self.secret_key = secret_key
+      if self.secret_key == None:
+         secret_key =  ''.join(random.choice(string.digits) for i in range(3))
+         secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
+         self.secret_key = secret_key
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          serial = str(self.serial)
