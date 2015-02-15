@@ -1,4 +1,7 @@
-<form action="" method="post" style="margin-top:50px;">
-        {% csrf_token %}
-        {{ form.map }} {{ form.media.js }}
-</form>
+{{ form.map }} {{ form.media.js }}
+<script>
+window.myobj = {
+   markerOver: function() { this.openInfoWindow();},
+   markerOut: function() { this.closeInfoWindow();}
+};
+</script>

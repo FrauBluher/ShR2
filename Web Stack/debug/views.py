@@ -8,6 +8,7 @@ from django.forms import ModelChoiceField
 
 from influxdb import client as influxdb
 from gmapi import maps
+from gmapi.maps import Geocoder
 from gmapi.forms.widgets import GoogleMap
 from django.contrib.gis.geoip import GeoIP
 
@@ -39,12 +40,21 @@ class MapForm(forms.Form):
 
 @csrf_exempt
 def position(request):
-   lat = float(request.POST.get('lat', ''))
-   lon = float(request.POST.get('lon', ''))
+   lat = float(request.POST.get('lat', 0))
+   lon = float(request.POST.get('lon', 0))
    gmap = maps.Map(opts = {
-        'center':maps.LatLng(lat,lon),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':11,'mapTypeControlOptions':{
+        'center':maps.LatLng(lat,lon),
+        'mapTypeId':maps.MapTypeId.ROADMAP,
+        'zoom':15,
+        'mapTypeControlOptions':{
            'style': maps.MapTypeControlStyle.DROPDOWN_MENU
         },
+   })
+   marker = maps.Marker(opts = {
+        'map': gmap,
+        'position': maps.LatLng(lat,lon),
+        'draggable':True,
+        'title':"Drag me!"
    })
    context = {'form': MapForm(initial={'map':gmap})}
    return render_to_response('gmapi_form.html',context)
