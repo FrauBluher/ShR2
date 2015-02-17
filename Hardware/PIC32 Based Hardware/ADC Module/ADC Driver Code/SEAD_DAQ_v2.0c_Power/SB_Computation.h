@@ -10,7 +10,7 @@
 
 #include "DMA_Transfer.h"
 
-uint8_t SB_RMS(SampleBuffer *);
+uint32_t SB_RMS(SampleBuffer *);
 
 #endif	/* SB_COMPUTATION_H */
 
