@@ -7,28 +7,62 @@
 {% include "base/navbar.html" %}
 </nav>
    <div class="container">
-      <form action="" method="post" style="margin-top:50px;">
-        {% csrf_token %}
+      <input style="width: 510px; margin-top: 50px" id="autocomplete" placeholder="Enter address of SEADS device"
+         onFocus="geolocate()" type="text"></input>
+      <div id="map-container">
         {{ form.map }} {{ form.media.js }}
-      </form>
+      </div>
    </div>
 </div>
 
 <script>
-function post_position(position) {
-   console.log(position.coords.latitude+', '+position.coords.longitude)
+function post_position(position, marker) {
+   if (marker === undefined) marker = true;
    $.post('/debug/position/',
           { 
             lat: position.coords.latitude,
-            lon: position.coords.longitude
+            lon: position.coords.longitude,
+            marker: marker,
           },
           function(ajax_data) {
-            $('.container').html(ajax_data);
+            $('#map-container').html(ajax_data);
           }
    );
 }
+
+var placeSearch, autocomplete;
+
+function fillInAddress() {
+   var place = autocomplete.getPlace();
+   var lat = place.geometry.location.k;
+   var lon = place.geometry.location.D;
+   console.log(lat+", "+lon);
+   var position = {'coords':{'latitude':lat, 'longitude':lon}};
+   post_position(position, false)
+}
+
+function geolocate() {
+   if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+         var geolocation = new google.maps.LatLng(
+            position.coords.latitude, position.coords.longitude);
+         var circle = new google.maps.Circle({
+            center: geolocation,
+            radius: position.coords.accuracy
+         });
+         autocomplete.setBounds(circle.getBounds());
+      });
+   }
+}
+
 $(function() {
    navigator.geolocation.getCurrentPosition(post_position);
+   autocomplete = new google.maps.places.Autocomplete(
+      /** @type {HTMLInputElement} */(document.getElementById('autocomplete')),
+      { types: ['geocode'] });
+   google.maps.event.addListener(autocomplete, 'place_changed', function() {
+      fillInAddress();
+   });
 });
 </script>
 {% endblock %}
