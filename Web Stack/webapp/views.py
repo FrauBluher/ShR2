@@ -28,12 +28,14 @@ def chartify(data):
       values.append(tmp)
    return values
 
+
 @login_required(login_url='/signin/')
 def landing(request):
    user = request.user.id
    my_devices = Device.objects.filter(owner=user)
    context = {'my_devices': my_devices}
    return render(request, 'base/landing.html', context)
+
 
 @login_required(login_url='/signin/')
 def dashboard(request):
@@ -51,6 +53,7 @@ def dashboard(request):
               }
    return render(request, 'base/dashboard.html', context)
 
+
 def merge_subs(lst_of_lsts):
     res = []
     for row in lst_of_lsts:
@@ -61,6 +64,7 @@ def merge_subs(lst_of_lsts):
         else:
             res.append(row)
     return res
+
 
 def group_by_mean(serial, unit, start, stop):
    if (unit == 'y'): unit = 'm'
@@ -100,6 +104,8 @@ def group_by_mean(serial, unit, start, stop):
           }
    return data
 
+
+@login_required(login_url='/signin/')
 def default_chart(request):
    if request.method == 'GET':
       user = request.user.id
@@ -120,6 +126,8 @@ def default_chart(request):
                     }
       return render(request, 'base/dashboard.html', context)
 
+
+@login_required(login_url='/signin/')
 def charts(request, serial):
    if request.method == 'GET':
       unit = request.GET.get('unit','')
@@ -128,6 +136,7 @@ def charts(request, serial):
       return HttpResponse(json.dumps(group_by_mean(serial,unit,start,stop)), content_type="application/json")
 
 
+@login_required(login_url='/signin/')
 def charts_deprecated(request, serial, unit):
    warnings.warn("Generating chart data from sqlite deprecated. See new charts() using InfluxDB.", DeprecationWarning)
    if request.method == 'GET':
@@ -148,4 +157,12 @@ def charts_deprecated(request, serial, unit):
          response_data['dataLimitFrom'] = events[0].timestamp
          response_data['dataLimitTo'] = events[len(events)-1].timestamp
       return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+@login_required(login_url='/signin/')
+def settings(request):
+  user = request.user.id
+  devices = Device.objects.filter(owner=user)
+  context = {}
+  context['devices'] = devices
+  return render(request, 'base/settings.html', context)
       

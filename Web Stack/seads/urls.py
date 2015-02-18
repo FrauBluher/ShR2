@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^signout/$', 'home.views.signout'),
     url(r'^register/$', 'home.views.register'),
     url(r'^account/$', 'home.views.account'),
+    url(r'^settings/$', 'webapp.views.settings'),
     url(r'^data/$', 'webapp.views.landing'),
     url(r'^dashboard/$', 'webapp.views.dashboard'),
     url(r'^charts/device/(?P<serial>\d+)/', 'webapp.views.charts'),
