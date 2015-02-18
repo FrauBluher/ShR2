@@ -1,0 +1,150 @@
+
+<head>
+  <style>
+    .controls {
+      margin-top: 16px;
+      border: 1px solid transparent;
+      border-radius: 2px 0 0 2px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      height: 32px;
+      outline: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #pac-input {
+      background-color: #fff;
+      padding: 0 11px 0 13px;
+      width: 400px;
+      font-family: Roboto;
+      font-size: 15px;
+      font-weight: 300;
+      text-overflow: ellipsis;
+    }
+
+    #pac-input:focus {
+      border-color: #4d90fe;
+      margin-left: -1px;
+      padding-left: 14px;  /* Regular padding-left + 1. */
+      width: 401px;
+    }
+
+    .pac-container {
+      font-family: Roboto;
+    }
+
+    #type-selector {
+      color: #fff;
+      background-color: #4d90fe;
+      padding: 5px 11px 0px 11px;
+    }
+
+    #type-selector label {
+      font-family: Roboto;
+      font-size: 13px;
+      font-weight: 300;
+    }
+  </style>
+</head>
+
+<div id="locationFormWrapper">
+   <span>Drag the marker to the location of your new device</span>
+   <form id="locationForm" action="" method="post">
+      {% csrf_token %}
+      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+      <div style="height: 510px;" id="map-canvas"></div>
+      <input id="submit" type="submit" value="Submit">
+   </form>
+</div>
+
+
+<script>
+
+var map, placeSearch, autocomplete, marker;
+
+$(function() {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +
+      '&signed_in=true&libraries=places&callback=initialize';
+  document.body.appendChild(script);
+});
+
+$('#submit').click(function(e){
+      e.preventDefault();
+      console.log(marker.getPosition.k+","+marker.getPosition.D);
+      $.post('/new_device/location/',
+         {'latitude': marker.getPosition.k,
+          'longitude': marker.getPosition.D},
+         function(data, status, xhr){
+            $('#locationFormWrapper').html(data);
+         });
+});
+// Note: This example requires that you consent to location sharing when
+// prompted by your browser. If you see a blank space instead of the map, this
+// is probably because you have denied permission for location sharing.
+
+function initialize() {
+  var mapOptions = {
+    zoom: 17
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  // Try HTML5 geolocation
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+
+      marker = new google.maps.Marker({
+        map: map,
+        position: pos,
+        draggable: true
+      });
+
+      map.setCenter(pos);
+    }, function() {
+      handleNoGeolocation(true);
+    });
+  }
+
+  var input = /** @type {HTMLInputElement} */(
+      document.getElementById('pac-input'));
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    marker.setVisible(false);
+    var place = autocomplete.getPlace();
+    if (!place.geometry) {
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);  // Why 17? Because it looks good.
+    }
+    marker.setPosition(place.geometry.location);
+    marker.setVisible(true);
+
+    var address = '';
+    if (place.address_components) {
+      address = [
+        (place.address_components[0] && place.address_components[0].short_name || ''),
+        (place.address_components[1] && place.address_components[1].short_name || ''),
+        (place.address_components[2] && place.address_components[2].short_name || '')
+      ].join(' ');
+    }
+
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>

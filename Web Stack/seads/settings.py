@@ -32,7 +32,7 @@ STATICFILES_FINDERS = (
    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-#STATIC_URL = '/home/ubuntu/seads/webapp/static/'
+STATIC_URL = '/home/ubuntu/seads/webapp/static/'
 
 STATIC_ROOT = '/static/'
 
