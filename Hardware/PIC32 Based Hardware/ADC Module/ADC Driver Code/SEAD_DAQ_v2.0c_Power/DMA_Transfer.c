@@ -136,13 +136,19 @@ void BufferToPMP_Init(void)
 
 void BufferToPMP_TransferA(uint16_t transferSize)
 {
-	DmaChnSetTxfer(pmpChn, BufA->BufferArray, (void*) &PMDIN, transferSize, 1, 1);
+	DmaChnSetTxfer(pmpChn, testBuffer, (void*) &PMDIN, strlen(testBuffer), 1, 1);
 	DmaChnStartTxfer(pmpChn, DMA_WAIT_NOT, 0);
 }
 
 void BufferToPMP_TransferB(uint16_t transferSize)
 {
-	DmaChnSetTxfer(pmpChn, BufB->BufferArray, (void*) &PMDIN, transferSize, 1, 1);
+	DmaChnSetTxfer(pmpChn, testBuffer, (void*) &PMDIN, strlen(testBuffer), 1, 1);
+	DmaChnStartTxfer(pmpChn, DMA_WAIT_NOT, 0);
+}
+
+void BufferToPMP_Transfer(uint8_t *buffer, uint16_t transferSize)
+{
+        DmaChnSetTxfer(pmpChn, buffer, (void*) &PMDIN, transferSize, 1, 1);
 	DmaChnStartTxfer(pmpChn, DMA_WAIT_NOT, 0);
 }
 
@@ -217,6 +223,13 @@ uint8_t BufferToUART_TransferB(uint16_t transferSize)
 	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0);
 }
 
+uint8_t BufferToUART_Transfer(uint8_t *buffer, uint16_t transferSize)
+{
+        DmaChnSetTxfer(uartTxChn, buffer, (void*) &U3TXREG, transferSize, 1, 1);
+	DmaChnSetEvEnableFlags(uartTxChn, DMA_EV_BLOCK_DONE); // enable the transfer done interrupt: all the characters transferred
+	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0);
+}
+
 void __ISR(_DMA0_VECTOR) DmaHandler0(void)
 {
 	//StartSPIAcquisition(BUFFER_A);
@@ -246,10 +259,10 @@ void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 
 	if (currentBuffer == BUFFER_A) {
 		StartSPIAcquisition(BUFFER_B);
-		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
+		DMA_CRC_Calc(BufB->BufferArray, BUFFERLENGTH);
 	} else if (currentBuffer == BUFFER_B) {
 		StartSPIAcquisition(BUFFER_A);
-		DMA_CRC_Calc(BufB->BufferArray, BUFFERLENGTH);
+		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
 	}
 
 	DmaChnClrEvFlags(DMA_CHANNEL2, DMA_EV_ALL_EVNTS);
@@ -279,9 +292,9 @@ void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 		BufA->BufferArray[BUFFERLENGTH + 5] = (crc & 0x00FF0000) >> 16;
 		BufA->BufferArray[BUFFERLENGTH + 6] = (crc & 0x0000FF00) >> 8;
 		BufA->BufferArray[BUFFERLENGTH + 7] = (crc & 0x000000FF);
-
+                //Starts transfer of the buffer + crc checksum
 		//BufferToUART_TransferA(BUFFERLENGTH + END_MESSAGE);
-		BufferToPMP_TransferA(BUFFERLENGTH + END_MESSAGE);
+		//BufferToPMP_TransferA(BUFFERLENGTH + END_MESSAGE);
 
 		currentBuffer = BUFFER_B;
 
@@ -294,9 +307,9 @@ void __ISR(_DMA_4_VECTOR) DmaHandler4(void)
 		BufB->BufferArray[BUFFERLENGTH + 5] = (crc & 0x00FF0000) >> 16;
 		BufB->BufferArray[BUFFERLENGTH + 6] = (crc & 0x0000FF00) >> 8;
 		BufB->BufferArray[BUFFERLENGTH + 7] = (crc & 0x000000FF);
-
+                //Starts transfer of the buffer + crc checksum
 		//BufferToUART_TransferB(BUFFERLENGTH + END_MESSAGE);
-		BufferToPMP_TransferB(BUFFERLENGTH + END_MESSAGE);
+		//BufferToPMP_TransferB(BUFFERLENGTH + END_MESSAGE);
 
 		currentBuffer = BUFFER_A;
 	}

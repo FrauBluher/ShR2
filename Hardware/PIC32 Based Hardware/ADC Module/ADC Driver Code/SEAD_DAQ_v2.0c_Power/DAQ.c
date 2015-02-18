@@ -34,43 +34,52 @@
 #include "SB_Computation.h"
 
 #include <plib.h>
+#include <stdbool.h>
 
 SampleBuffer BufferA;
 SampleBuffer BufferB;
 
 static MCP391x_Info ADCInfo;
 
-
 /**
-  * @brief  Takes the buffer not used, and does useful computations on it
-  * @param  None
-  * @retval None
-  */
-void ComputeBuffer(void)
+ * @brief  Takes the buffer not used, and does useful computations on it
+ * @param  None
+ * @retval None
+ */
+void ComputeBuffer(uint8_t currentBuffer)
 {
-        uint8_t RMS_Value = 0;
-        uint8_t currentBuffer = CurrentBuffer();
-        if (currentBuffer == BUFFER_A) {
-                if (BufferB.bufferFull) {
-                        //compute things on the buffer!
-                        RMS_Value = SB_RMS(&BufferB);
-                }
-        } else if (currentBuffer == BUFFER_B) {
-                if (BufferA.bufferFull) {
-                        //compute things on the buffer!
-                        RMS_Value = SB_RMS(&BufferA);
-                }
-        }
-        //TODO: DMA these variables, instead of the whole SampleBuffer s
+	uint32_t RMS_Value = 0;
+	if (currentBuffer == BUFFER_A) {
+		//compute things on the buffer!
+		RMS_Value = SB_RMS(&BufferB);
+		//TODO: DMA these variables, instead of the whole SampleBuffer s
+		uint8_t send_buf[20];
+		uint8_t write_len = sprintf(send_buf, "b=%014d\r\n", RMS_Value);
+		BufferToPMP_Transfer(send_buf, write_len);
+	} else if (currentBuffer == BUFFER_B) {
+		//compute things on the buffer!
+		RMS_Value = SB_RMS(&BufferA);
+		//TODO: DMA these variables, instead of the whole SampleBuffer s
+		uint8_t send_buf[20];
+		uint8_t write_len = sprintf(send_buf, "a=%014d\r\n", RMS_Value);
+		BufferToPMP_Transfer(send_buf, write_len);
+	}
 }
-
 
 int main(void)
 {
 	ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo);
+	uint8_t prevBuffer = CurrentBuffer();
+	uint8_t currentBuffer;
 	while (1) {
-                //grabs the buffer that isn't being DMA'D at that point
+		//grabs the buffer that isn't being DMA'D at that point
 		//does copmutations with it
-                ComputeBuffer();
+
+		currentBuffer = CurrentBuffer();
+		if (currentBuffer != prevBuffer) {
+			prevBuffer = currentBuffer;
+			ComputeBuffer(currentBuffer);
+		}
+
 	}
 }
