@@ -130,7 +130,7 @@ def default_chart(request):
 @login_required(login_url='/signin/')
 def charts(request, serial):
    if request.method == 'GET':
-      unit = request.GET.get('unit','')
+      unit = request.GET.get_weather('unit','')
       start = request.GET.get('from','')
       stop = request.GET.get('to','')
       return HttpResponse(json.dumps(group_by_mean(serial,unit,start,stop)), content_type="application/json")
@@ -141,7 +141,7 @@ def charts_deprecated(request, serial, unit):
    warnings.warn("Generating chart data from sqlite deprecated. See new charts() using InfluxDB.", DeprecationWarning)
    if request.method == 'GET':
       user = request.user.id
-      devices = Device.objects.filter(Q(owner=user) | Q(private=False), serial=serial)
+      devices = Device.objects.filter(owner=user, serial=serial)
       device = devices[0] if devices else None
       events = Event.objects.filter(device=device)
       response_data = {}
@@ -160,9 +160,19 @@ def charts_deprecated(request, serial, unit):
 
 @login_required(login_url='/signin/')
 def settings(request):
-  user = request.user.id
-  devices = Device.objects.filter(owner=user)
   context = {}
-  context['devices'] = devices
-  return render(request, 'base/settings.html', context)
+  if request.GET.get('device', False):
+    user = request.user.id
+    devices = Device.objects.filter(owner=user)
+    context['devices'] = devices
+    context['action'] = 'device'
+    return render(request, 'base/settings_device.html', context)
+  elif request.GET.get('account', False):
+    context['action'] = 'account'
+    return render(request, 'base/settings_account.html', context)
+  elif request.GET.get('dashboard', False):
+    context['aciton'] = 'dashboard'
+    return render(request, 'base/settings_dashboard.html', context)
+  else:
+    return render(request, 'base/settings.html', context)
       

@@ -7,25 +7,59 @@
 {% block content %}
 {% include "base/navbar.html" %}
 {% include "base/sidebar.html" %}
+
+<script>
+function account() {
+	$.get('/settings/',
+		{'account': true},
+		function(data) {
+			$('#settings-container').html(data);
+		}
+	);
+}
+
+function device() {
+	$.get('/settings/',
+		{'device': true},
+		function(data) {
+			$('#settings-container').html(data);
+		}
+	);
+}
+
+function dashbaord() {
+	$.get('/settings/',
+		{'dashboard': true},
+		function(data) {
+			$('#settings-container').html(data);
+		}
+	);
+}
+</script>
 <!-- END Standard Theme Template -->
-   <div id="page-wrapper">
-   <div class="container-fluid">
-      <div id='content'>
-      	{% if user.is_authenticated %}
-      <h1>Settings</h1>
-      <h2>Hello, {{ user.username }}</h2>
-      <table>
-	      <tr>My Devices</tr>
-	      <tr>
-	      	{% for device in devices %}
-	      		<td>{{ device }}</td>
-	      	{% endfor %}
-	      </tr>
-      </table>
-      {% else %}
-      <h1><a href="/signin/">Sign In</a></h1>
-      </div>
-   </div>
+<div id="page-wrapper">
+	<div class="container-fluid">
+		<div id='content'>
+			{% if user.is_authenticated %}
+			<h1>Settings</h1>
+			<h3>Hello, {{ user.username }}</h3>
+			<div class="dropdown">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+					Settings
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+					<li role="presentation"><a onclick="account()" role="menuitem" tabindex="1" href="#" id="account">Account Settings</a></li>
+					<li role="presentation"><a onclick="device()" role="menuitem" tabindex="2" href="#" id="device">Device Settings</a></li>
+					<li role="presentation"><a onclick="dashboard()" role="menuitem" tabindex="3" href="#" id="dashboard">Dashboard Settings</a></li>
+				</ul>
+			</div>
+			<div id='settings-container'></div>
+			{% else %}
+			<h1><a href="/signin/">Sign In</a></h1>
+		</div>
+	</div>
 </div>
+
 {% endif %}
 {% endblock %}
