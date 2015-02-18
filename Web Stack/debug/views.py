@@ -60,19 +60,19 @@ def position(request):
    return render_to_response('gmapi_form.html',context)
 
 def gmapi(request):
-   g = GeoIP(path='/home/ubuntu/seads-git/ShR2/Web Stack/webapp/static/webapp/dat/')
-   ip = request.META.get('REMOTE_ADDR', None)
-   lat = 37
-   lon = -122
-   if ip:
-      lat,lon = g.lat_lon(ip)
-   gmap = maps.Map(opts = {
-        'center':maps.LatLng(lat,lon),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':9,'mapTypeControlOptions':{
-           'style': maps.MapTypeControlStyle.DROPDOWN_MENU
-        },
-   })
-   context = {'form': MapForm(initial={'map':gmap})}
-   return render_to_response('gmapi.html',context)
+   #g = GeoIP(path='/home/ubuntu/seads-git/ShR2/Web Stack/webapp/static/webapp/dat/')
+   #ip = request.META.get('REMOTE_ADDR', None)
+   #lat = 37
+   #lon = -122
+   #if ip:
+   #   lat,lon = g.lat_lon(ip)
+   #gmap = maps.Map(opts = {
+   #     'center':maps.LatLng(lat,lon),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':9,'mapTypeControlOptions':{
+   #        'style': maps.MapTypeControlStyle.DROPDOWN_MENU
+   #     },
+   #})
+   #context = {'form': MapForm(initial={'map':gmap})}
+   return render_to_response('gmapi2.html')#,context)
 
 @csrf_exempt
 def gitupdate(request):
