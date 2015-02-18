@@ -27,7 +27,8 @@ uint32_t SB_RMS(SampleBuffer *buffer)
 			buffer->BufferArray[(3*CHANNEL+1) + i * 13] |
 			buffer->BufferArray[(3*CHANNEL+2) + i * 13] << 1 |
 			buffer->BufferArray[(3*CHANNEL+3) + i * 13] << 2;
-		rawrms += value * value;
+		rawrms += value;
 	}
-	return sqrt(rawrms / WINDOW_SIZE);
+	return rawrms;
+	//return sqrt(rawrms / WINDOW_SIZE);
 }
