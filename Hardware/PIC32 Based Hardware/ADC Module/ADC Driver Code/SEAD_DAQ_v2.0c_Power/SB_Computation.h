@@ -11,6 +11,7 @@
 #include "DMA_Transfer.h"
 
 uint32_t SB_RMS(SampleBuffer *);
+int32_t SB_AVG(SampleBuffer *);
 
 #endif	/* SB_COMPUTATION_H */
 

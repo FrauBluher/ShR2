@@ -48,7 +48,7 @@ static MCP391x_Info ADCInfo;
  */
 void ComputeBuffer(uint8_t currentBuffer)
 {
-	uint32_t RMS_Value = 0;
+	int32_t RMS_Value = 0;
 	if (currentBuffer == BUFFER_A) {
 		//compute things on the buffer!
 		RMS_Value = SB_RMS(&BufferB);
@@ -72,6 +72,7 @@ int main(void)
 	uint8_t prevBuffer = CurrentBuffer();
 	uint8_t currentBuffer;
 	while (1) {
+		
 		//grabs the buffer that isn't being DMA'D at that point
 		//does copmutations with it
 

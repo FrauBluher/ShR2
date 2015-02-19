@@ -9,7 +9,10 @@
 
 #include "DMA_Transfer.h"
 
-#define WINDOW_SIZE 130
+//10 cycles at sample speed 3906.25/sec
+#define WINDOW_SIZE 1562
+
+//the channel to do the calculations
 #define CHANNEL 1
 
 
@@ -23,12 +26,29 @@ uint32_t SB_RMS(SampleBuffer *buffer)
 	uint16_t i;
 	for (i = 0; i < WINDOW_SIZE; i++) {
 		// TODO: optimize with a single 32 bit load
-		uint64_t value =
+		uint32_t value =
 			buffer->BufferArray[(3*CHANNEL+1) + i * 13] |
-			buffer->BufferArray[(3*CHANNEL+2) + i * 13] << 1 |
-			buffer->BufferArray[(3*CHANNEL+3) + i * 13] << 2;
-		rawrms += value;
+			buffer->BufferArray[(3*CHANNEL+2) + i * 13] << 16 |
+			buffer->BufferArray[(3*CHANNEL+3) + i * 13] << 8;
+		value = ((value << 8) >> 8); // sign extend
+		rawrms += value * value;
 	}
-	return rawrms;
-	//return sqrt(rawrms / WINDOW_SIZE);
+	return sqrt(rawrms / WINDOW_SIZE);
+}
+
+//takes values and averages them accumulator style.
+int32_t SB_AVG(SampleBuffer *buffer)
+{
+	int64_t accumulator = 0;
+	uint16_t i;
+	for (i = 0; i < WINDOW_SIZE; i++) {
+		// TODO: optimize with a single 32 bit load
+		int32_t value =
+			buffer->BufferArray[(3*CHANNEL+1) + i * 13] |
+			buffer->BufferArray[(3*CHANNEL+2) + i * 13] << 16 |
+			buffer->BufferArray[(3*CHANNEL+3) + i * 13] << 8;
+		value = ((value << 8) >> 8); // sign extend
+		accumulator += value;
+	}
+	return (accumulator / WINDOW_SIZE);
 }
