@@ -9,6 +9,15 @@
 {% include "base/sidebar.html" %}
 
 <script>
+$(function() {
+	$.get('/settings/',
+		{'account': true},
+		function(data) {
+			$('#settings-container').html(data);
+		}
+	);
+});
+
 function account() {
 	$.get('/settings/',
 		{'account': true},
@@ -27,7 +36,7 @@ function device() {
 	);
 }
 
-function dashbaord() {
+function dashboard() {
 	$.get('/settings/',
 		{'dashboard': true},
 		function(data) {

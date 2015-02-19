@@ -1,0 +1,73 @@
+<script>
+$('#new-device').on("click", function(e) {
+  e.preventDefault();
+});
+</script>
+
+<form class="form-horizontal">
+<fieldset>
+
+<!-- Form Name -->
+<legend>Account Settings</legend>
+
+<!-- Button (Double) -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="new-device">New Device</label>
+  <div class="col-md-8">
+    <button id="new-device" name="new-device" class="btn btn-success">Click to Add Device</button>
+  </div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="username">Username</label>  
+  <div class="col-md-4">
+  <input id="username" name="username" type="text" placeholder="{{ user.username }}" class="form-control input-md">
+  </div>
+</div>
+
+<!-- Password input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="passwordinput">New Password</label>
+  <div class="col-md-4">
+    <input id="passwordinput" name="passwordinput" type="password" placeholder="*****" class="form-control input-md">
+  </div>
+</div>
+
+<!-- Password input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="passwordconfirminput">Confirm Password</label>
+  <div class="col-md-4">
+    <input id="passwordconfirminput" name="passwordconfirminput" type="password" placeholder="*****" class="form-control input-md">
+  </div>
+</div>
+
+<!-- Multiple Checkboxes -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="notification-checkboxes">Notification Settings</label>
+  <div class="col-md-4">
+  <div class="checkbox">
+    <label for="notification-checkboxes-0">
+      <input type="checkbox" name="notification-checkboxes" id="notification-checkboxes-0" value="1">
+      Option one
+    </label>
+	</div>
+  <div class="checkbox">
+    <label for="notification-checkboxes-1">
+      <input type="checkbox" name="notification-checkboxes" id="notification-checkboxes-1" value="2">
+      Option two
+    </label>
+	</div>
+  </div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="singlebutton">Single Button</label>
+  <div class="col-md-4">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Button</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
