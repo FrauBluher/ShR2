@@ -5,13 +5,14 @@ from django.contrib.auth.decorators import login_required
 from microdata.models import Device, Event, Appliance
 from django.http import HttpResponse
 from django.conf import settings
-import json
 from sets import Set
 from collections import defaultdict
 from urllib2 import Request, urlopen, URLError
 from pyzipcode import ZipCodeDatabase
 
 import datetime
+import json
+import time
 import timeseries as ts
 import re
 from influxdb import client as influxdb
@@ -130,7 +131,7 @@ def default_chart(request):
 @login_required(login_url='/signin/')
 def charts(request, serial):
    if request.method == 'GET':
-      unit = request.GET.get('unit','')
+      unit = request.GET.get_weather('unit','')
       start = request.GET.get('from','')
       stop = request.GET.get('to','')
       return HttpResponse(json.dumps(group_by_mean(serial,unit,start,stop)), content_type="application/json")
@@ -141,7 +142,7 @@ def charts_deprecated(request, serial, unit):
    warnings.warn("Generating chart data from sqlite deprecated. See new charts() using InfluxDB.", DeprecationWarning)
    if request.method == 'GET':
       user = request.user.id
-      devices = Device.objects.filter(Q(owner=user) | Q(private=False), serial=serial)
+      devices = Device.objects.filter(owner=user, serial=serial)
       device = devices[0] if devices else None
       events = Event.objects.filter(device=device)
       response_data = {}
@@ -158,11 +159,31 @@ def charts_deprecated(request, serial, unit):
          response_data['dataLimitTo'] = events[len(events)-1].timestamp
       return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+def device_is_online(device):
+  if device:
+    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+    result = db.query('select * from device.'+str(device.serial)+' limit 1;')[0]['points'][0]
+    return int(time.time()) - int(result[0]) < 10
+
+
 @login_required(login_url='/signin/')
 def settings(request):
-  user = request.user.id
-  devices = Device.objects.filter(owner=user)
   context = {}
-  context['devices'] = devices
-  return render(request, 'base/settings.html', context)
+  user = request.user.id
+  if request.GET.get('device', False):
+    devices = Device.objects.filter(owner=user)
+    for device in devices:
+      device.online = device_is_online(device)
+    context['devices'] = devices
+    context['action'] = 'device'
+    return render(request, 'base/settings_device.html', context)
+  elif request.GET.get('account', False):
+    context['user'] = user
+    context['action'] = 'account'
+    return render(request, 'base/settings_account.html', context)
+  elif request.GET.get('dashboard', False):
+    context['aciton'] = 'dashboard'
+    return render(request, 'base/settings_dashboard.html', context)
+  else:
+    return render(request, 'base/settings.html', context)
       

@@ -1,0 +1,254 @@
+<head>
+  <style>
+    .controls {
+      margin-top: 16px;
+      border: 1px solid transparent;
+      border-radius: 2px 0 0 2px;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      height: 32px;
+      outline: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #pac-input {
+      background-color: #fff;
+      padding: 0 11px 0 13px;
+      width: 400px;
+      font-family: Roboto;
+      font-size: 15px;
+      font-weight: 300;
+      text-overflow: ellipsis;
+    }
+
+    #pac-input:focus {
+      border-color: #4d90fe;
+      margin-left: -1px;
+      padding-left: 14px;  /* Regular padding-left + 1. */
+      width: 401px;
+    }
+
+    .pac-container {
+      font-family: Roboto;
+    }
+
+    #type-selector {
+      color: #fff;
+      background-color: #4d90fe;
+      padding: 5px 11px 0px 11px;
+    }
+
+    #type-selector label {
+      font-family: Roboto;
+      font-size: 13px;
+      font-weight: 300;
+    }
+  </style>
+</head>
+
+<script>
+$('#remove-device').on('click', function(e) {
+	e.preventDefault();
+});
+</script>
+
+<form class="form-horizontal">
+<fieldset>
+
+<!-- Form Name -->
+<legend>Device Settings</legend>
+
+<div class="form-group">
+	<label class="col-md-4 control-label" for="textinput">Select Device</label>  
+	<div class="col-md-4">
+		<select>
+			{% for device in devices %}
+			<option>{{ device }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Device Name</label>  
+  <div class="col-md-4">
+  <input id="name" name="textinput" type="text" placeholder="{{ devices.0.name }}" class="form-control input-md">
+  </div>
+</div>
+
+<!-- Status icon-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Connection Status</label>  
+  <div class="col-md-4">
+  {% if devices.0.online %}
+  	<button class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Connected</button>
+  {% else %}
+  	<button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Disconnected</button>
+  {% endif %}
+  </div>
+</div>
+
+<!-- Select Basic -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="selectbasic">Utility Company</label>
+  <div class="col-md-4">
+    <select id="rate-plan" name="selectbasic" class="form-control">
+      <option value="1">Pacific Gas and Electric Co</option>
+      <option value="2">Option two</option>
+    </select>
+  </div>
+</div>
+
+<!-- Select Basic -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="selectbasic">Rate Plan</label>
+  <div class="col-md-4">
+    <select id="rate-plan" name="selectbasic" class="form-control">
+      <option value="1">Option one</option>
+      <option value="2">Option two</option>
+    </select>
+  </div>
+</div>
+
+<!-- Select Basic -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="selectbasic">Territory</label>
+  <div class="col-md-4">
+    <select id="territory" name="selectbasic" class="form-control">
+      <option value="1">Option one</option>
+      <option value="2">Option two</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group">
+	<label class="col-md-4 control-label" for="selectbasic">Location</label>
+		<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+		<div style="height:500px; width:500px" id="map-canvas"></div>
+	</div>
+</div>
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="singlebutton">Save Changes</label>
+  <div class="col-md-4">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+  </div>
+</div>
+</fieldset>
+
+<fieldset>
+
+<legend>Danger Zone</legend>
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="remove-device">Remove Device</label>
+  <div class="col-md-4">
+    <button id="remove-device" name="remove-device" class="btn btn-danger">Click to Remove This Device</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+
+
+<script>
+$(function() {
+	var script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +
+		'&signed_in=true&libraries=places&callback=initialize';
+	document.body.appendChild(script);
+});
+</script>
+
+
+<script>
+// Note: This example requires that you consent to location sharing when
+// prompted by your browser. If you see a blank space instead of the map, this
+// is probably because you have denied permission for location sharing.
+
+var map, placeSearch, autocomplete;
+
+var poop = "{{ devices.0.online }}";
+
+function initialize() {
+  var mapOptions = {
+    zoom: 17
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  // Try HTML5 geolocation
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+
+      var marker = new google.maps.Marker({
+        map: map,
+        position: pos,
+        title: 'My Location',
+        draggable: true
+      });
+
+      map.setCenter(pos);
+    }, function() {
+      handleNoGeolocation(true);
+    });
+  }
+
+  var input = /** @type {HTMLInputElement} */(
+      document.getElementById('pac-input'));
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+
+  var marker = new google.maps.Marker({
+    map: map,
+    anchorPoint: new google.maps.Point(0, -29),
+    draggable: true
+  });
+
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    marker.setVisible(false);
+    var place = autocomplete.getPlace();
+    if (!place.geometry) {
+      return;
+    }
+
+    // If the place has a geometry, then present it on a map.
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);  // Why 17? Because it looks good.
+    }
+    marker.setIcon(/** @type {google.maps.Icon} */({
+      url: place.icon,
+      size: new google.maps.Size(71, 71),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(17, 34),
+      scaledSize: new google.maps.Size(35, 35)
+    }));
+    marker.setPosition(place.geometry.location);
+    marker.setVisible(true);
+
+    var address = '';
+    if (place.address_components) {
+      address = [
+        (place.address_components[0] && place.address_components[0].short_name || ''),
+        (place.address_components[1] && place.address_components[1].short_name || ''),
+        (place.address_components[2] && place.address_components[2].short_name || '')
+      ].join(' ');
+    }
+
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
