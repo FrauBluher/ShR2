@@ -30,7 +30,7 @@ uint32_t SB_RMS(SampleBuffer *buffer)
 	for (i = 0; i < WINDOW_SIZE; i++) {
 		// TODO: optimize with a single 32 bit load
 		uint32_t value =
-			buffer->BufferArray[(3*CHANNEL+1) + i * 13] |
+			buffer->BufferArray[(3*CHANNEL+1) + i * 13] | // this should be +0 for channel 0
 			buffer->BufferArray[(3*CHANNEL+2) + i * 13] << 16 |
 			buffer->BufferArray[(3*CHANNEL+3) + i * 13] << 8;
 		value = ((value << 8) >> 8); // sign extend
@@ -39,7 +39,7 @@ uint32_t SB_RMS(SampleBuffer *buffer)
 	return sqrt(rawrms / WINDOW_SIZE);
 }
 
-//takes values and averages them accumulator style.
+//takes values and averages them accumulator style
 int32_t SB_AVG(SampleBuffer *buffer)
 {
 	int64_t accumulator = 0;

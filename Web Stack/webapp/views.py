@@ -165,6 +165,21 @@ def device_is_online(device):
     result = db.query('select * from device.'+str(device.serial)+' limit 1;')[0]['points'][0]
     return int(time.time()) - int(result[0]) < 10
 
+class Object:
+   def __init__(self, serial):
+      self.serial = serial
+    
+@login_required(login_url='/signin/')
+def device_status(request):
+   connected = False
+   if request.method == 'GET':
+      serial = request.GET.get('serial', None)
+      if (serial):
+         device = Object(serial)
+         connected = device_is_online(device)
+   context = {}
+   context['connected'] = connected
+   return HttpResponse(json.dumps(context), content_type="application/json") 
 
 @login_required(login_url='/signin/')
 def settings(request):
@@ -178,7 +193,6 @@ def settings(request):
     context['action'] = 'device'
     return render(request, 'base/settings_device.html', context)
   elif request.GET.get('account', False):
-    context['user'] = user
     context['action'] = 'account'
     return render(request, 'base/settings_account.html', context)
   elif request.GET.get('dashboard', False):

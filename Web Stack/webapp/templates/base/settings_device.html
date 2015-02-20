@@ -43,37 +43,108 @@
       font-size: 13px;
       font-weight: 300;
     }
+    .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+ 
+   @keyframes spin {
+      from { transform: scale(1) rotate(0deg);}
+      to { transform: scale(1) rotate(360deg);}
+   }
+
+   @-webkit-keyframes spinw {
+      from { -webkit-transform: rotate(0deg);}
+      to { -webkit-transform: rotate(360deg);}
+   }
+
+   @-moz-keyframes spinm {
+      from { -moz-transform: rotate(0deg);}
+      to { -moz-transform: rotate(360deg);}
+   }
   </style>
 </head>
 
 <script>
-$('#remove-device').on('click', function(e) {
+$('.btn').on('click', function(e) {
 	e.preventDefault();
+});
+$('#btn-status').on('click', function(e) {
+   $(this).addClass('disabled');
+   $(this).removeClass('btn-danger');
+   $(this).removeClass('btn-success');
+   $('#btn-icon').removeClass('glyphicon-ok');
+   $('#btn-icon').removeClass('glyphicon-remove');
+   $('#btn-icon').addClass('glyphicon-refresh');
+   $('#btn-icon').addClass('glyphicon-refresh-animate');
+   var btn = $(this);
+   $.get('/settings/device/status/',
+      {'serial': {{ devices.0.serial }}},
+      function(status) {
+         btn.removeClass('disabled');
+         if (status.connected) {
+            btn.html('');
+            jQuery('<span/>', {
+               id: 'btn-icon',
+               class: 'glyphicon glyphicon-ok'
+            }).appendTo(btn)
+            btn.append(' Connected');
+            btn.addClass('btn-success');
+            $('#btn-icon').addClass('glyphicon-ok');
+            $('#btn-icon').removeClass('glyphicon-refresh');
+            $('#btn-icon').removeClass('glyphicon-refresh-animate');
+         } else {
+            btn.html('');
+            jQuery('<span/>', {
+               id: 'btn-icon',
+               class: 'glyphicon glyphicon-remove'
+            }).appendTo(btn)
+            btn.append(' Disconnected');
+            btn.addClass('btn-danger');
+            $('#btn-icon').addClass('glyphicon-remove');
+            $('#btn-icon').removeClass('glyphicon-refresh');
+            $('#btn-icon').removeClass('glyphicon-refresh-animate');
+         }
+      }
+   );
 });
 </script>
 
 <form class="form-horizontal">
 <fieldset>
 
+<!-- Single button -->
+<div class="form-group">
+   <label class="col-md-4 control-label" for="textinput">Select Device</label>  
+   <div class="btn-group">
+      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+         {{ devices.0 }} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+         {% for device in devices %}
+            <li><a href="#">{{ device }}</a></li>
+         {% endfor %}
+      </ul>
+   </div>
+</div>
+</fieldset>
+
+<fieldset>
+
 <!-- Form Name -->
 <legend>Device Settings</legend>
 
-<div class="form-group">
-	<label class="col-md-4 control-label" for="textinput">Select Device</label>  
-	<div class="col-md-4">
-		<select>
-			{% for device in devices %}
-			<option>{{ device }}</option>
-			{% endfor %}
-		</select>
-	</div>
-</div>
-
+<!-- Text input-->
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">Device Name</label>  
-  <div class="col-md-4">
-  <input id="name" name="textinput" type="text" placeholder="{{ devices.0.name }}" class="form-control input-md">
+  <label class="col-md-4 control-label" for="username">Device Name</label>  
+  <div class="col-md-2">
+  <input id="username" name="username" value="{{ devices.0 }}" type="text" class="form-control input-md">
+  </div>
+  <div class="col-md-2">
+  <button id="submit-username" name="singlebutton" class="btn btn-primary">Rename</button>
   </div>
 </div>
 
@@ -82,12 +153,22 @@ $('#remove-device').on('click', function(e) {
   <label class="col-md-4 control-label" for="textinput">Connection Status</label>  
   <div class="col-md-4">
   {% if devices.0.online %}
-  	<button class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Connected</button>
+  	<button id="btn-status" class="btn btn-success">
+      <span id="btn-icon" class="glyphicon glyphicon-ok"></span> Connected
+   </button>
   {% else %}
-  	<button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Disconnected</button>
+  	<button id="btn-status" class="btn btn-danger">
+      <span id="btn-icon" class="glyphicon glyphicon-remove"></span> Disconnected
+   </button>
   {% endif %}
   </div>
 </div>
+
+</fieldset>
+
+<fieldset>
+
+<legend>Utility Information</legend>
 
 <!-- Select Basic -->
 <div class="form-group">
@@ -122,16 +203,22 @@ $('#remove-device').on('click', function(e) {
   </div>
 </div>
 
+</fieldset>
+
+<fieldset>
+
+<legend>Location Information</legend>
+
 <div class="form-group">
 	<label class="col-md-4 control-label" for="selectbasic">Location</label>
-		<input id="pac-input" class="controls" type="text" placeholder="Search Box">
-		<div style="height:500px; width:500px" id="map-canvas"></div>
+   <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+   <div style="height:500px; width:50%" id="map-canvas"></div>
 	</div>
 </div>
 
 <!-- Button -->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="singlebutton">Save Changes</label>
+  <label class="col-md-4 control-label" for="singlebutton">Save Location</label>
   <div class="col-md-4">
     <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
   </div>

@@ -1,7 +1,7 @@
 <!-- BEGIN Standard Theme Template -->
 {% extends "_layouts/base.html" %}
 
-{% block page_title %}SEADS - Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
 {% block page_class %}settings{% endblock %}
 
 {% block content %}
@@ -14,8 +14,11 @@ $(function() {
 		{'account': true},
 		function(data) {
 			$('#settings-container').html(data);
-		}
-	);
+         $('.activate').each(function(i) {
+            $(this).removeClass("active");
+         });
+         $('#account-li').addClass("active");
+      });
 });
 
 function account() {
@@ -23,6 +26,10 @@ function account() {
 		{'account': true},
 		function(data) {
 			$('#settings-container').html(data);
+         $('.activate').each(function(i) {
+            $(this).removeClass("active");
+         });
+         $('#account-li').addClass("active");
 		}
 	);
 }
@@ -32,6 +39,10 @@ function device() {
 		{'device': true},
 		function(data) {
 			$('#settings-container').html(data);
+         $('.activate').each(function(i) {
+            $(this).removeClass("active");
+         });
+         $('#device-li').addClass("active");
 		}
 	);
 }
@@ -41,6 +52,10 @@ function dashboard() {
 		{'dashboard': true},
 		function(data) {
 			$('#settings-container').html(data);
+         $('.activate').each(function(i) {
+            $(this).removeClass("active");
+         });
+         $('#dashboard-li').addClass("active");
 		}
 	);
 }
@@ -48,22 +63,20 @@ function dashboard() {
 <!-- END Standard Theme Template -->
 <div id="page-wrapper">
 	<div class="container-fluid">
-		<div id='content'>
+		<div class="row">
 			{% if user.is_authenticated %}
 			<h1>Settings</h1>
-			<h3>Hello, {{ user.username }}</h3>
-			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-					Settings
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-					<li role="presentation"><a onclick="account()" role="menuitem" tabindex="1" href="#" id="account">Account Settings</a></li>
-					<li role="presentation"><a onclick="device()" role="menuitem" tabindex="2" href="#" id="device">Device Settings</a></li>
-					<li role="presentation"><a onclick="dashboard()" role="menuitem" tabindex="3" href="#" id="dashboard">Dashboard Settings</a></li>
-				</ul>
-			</div>
-			<div id='settings-container'></div>
+			<h3>Hello, {{ user.get_username }}</h3>
+         <div class="col-md-2 panel panel-default">
+            <ul class="nav nav-pills nav-stacked">
+               <li id="account-li" class="activate" role="presentation"><a onclick="account()" role="menuitem"href="#" id="account">Account</a></li>
+               <li id="device-li" class="activate" role="presentation"><a onclick="device()" role="menuitem" href="#" id="device">Device</a></li>
+               <li id="dashboard-li" class="activate" role="presentation"><a onclick="dashboard()" role="menuitem" href="#" id="dashboard">Dashboard</a></li>
+            </ul>
+         </div>
+         <div class="col-md-8">
+            <div id='settings-container'></div>
+         </div>
 			{% else %}
 			<h1><a href="/signin/">Sign In</a></h1>
 		</div>
