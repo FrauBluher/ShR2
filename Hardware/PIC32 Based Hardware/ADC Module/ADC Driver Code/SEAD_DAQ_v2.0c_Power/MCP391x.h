@@ -166,16 +166,25 @@ typedef struct {
  *          000 = Gain is 1 (DEFAULT)
  *
  */
+
+/**
+ * @brief PGA Settings for the channels
+ */
+#define PGA_CH0_CONF 0b011
+#define PGA_CH1_CONF 0b011
+#define PGA_CH2_CONF 0b011
+#define PGA_CH3_CONF 0b011
+
 typedef struct {
 
     union {
         uint32_t wholeRegister;
 
         struct {
-            unsigned PHA_CH0 : 3;
-            unsigned PHA_CH1 : 3;
-            unsigned PHA_CH2 : 3;
-            unsigned PHA_CH3 : 3;
+            unsigned PGA_CH0 : 3;
+            unsigned PGA_CH1 : 3;
+            unsigned PGA_CH2 : 3;
+            unsigned PGA_CH3 : 3;
             unsigned : 24;
         };
     };

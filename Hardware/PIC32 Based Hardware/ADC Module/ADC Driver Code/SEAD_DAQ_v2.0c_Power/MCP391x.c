@@ -78,17 +78,18 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 
 	//24 bit two's compliment
 	MCP.offCalCh0Reg.OFFCAL = 0x0;
-	MCP.offCalCh1Reg.OFFCAL = -33255;
+	MCP.offCalCh1Reg.OFFCAL = -30000;
 	MCP.offCalCh2Reg.OFFCAL = 0x0;
 	MCP.offCalCh3Reg.OFFCAL = 0x0;
 
 	MCP.phaseReg.PHASEA = 0;
 	MCP.phaseReg.PHASEB = 0;
-
-	MCP.gainReg.PHA_CH0 = 0b011;
-	MCP.gainReg.PHA_CH1 = 0b011;
-	MCP.gainReg.PHA_CH2 = 0b011;
-	MCP.gainReg.PHA_CH3 = 0b011;
+	
+	//Programmable gain amplifier config
+	MCP.gainReg.PGA_CH0 = PGA_CH0_CONF;
+	MCP.gainReg.PGA_CH1 = PGA_CH1_CONF;
+	MCP.gainReg.PGA_CH2 = PGA_CH2_CONF;
+	MCP.gainReg.PGA_CH3 = PGA_CH3_CONF;
 
 	MCP.modReg.wholeRegister = 0;
 
