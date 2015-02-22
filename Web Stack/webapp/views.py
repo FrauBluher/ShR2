@@ -51,6 +51,22 @@ class UserForm(forms.Form):
       required=False
   )
 
+  def __init__(self, user, *args, **kwargs):
+    super(UserForm, self).__init__(*args, **kwargs)
+    if user:
+      notifications = []
+      i = 1
+      for notification in user.usersettings.notifications.all():
+        notifications.append((str(i), notification))
+        i += 1
+      self.fields['notifications'] = forms.ChoiceField(
+        widget=forms.CheckboxSelectMultiple(),
+        choices=(
+           notifications
+          ),
+        required=False
+  )
+
   def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
@@ -233,7 +249,7 @@ def settings(request):
       context['devices'] = devices
       return render(request, 'base/settings_device.html', context)
     elif request.GET.get('account', False):
-      context['form'] = UserForm()
+      context['form'] = UserForm(request.user)
       return render(request, 'base/settings_account.html', context)
     elif request.GET.get('dashboard', False):
       return render(request, 'base/settings_dashboard.html')
