@@ -1,10 +1,17 @@
 <script>
-$('#new-device').on("click", function(e) {
+$('#submit-username').on("click", function(e) {
   e.preventDefault();
+  $.post('/settings/',
+    $('form#user-form').serialize(),
+    function (data) {
+      console.log(data);
+    });
 });
 </script>
 
-<form class="form-horizontal">
+<form id="user-form" action="/settings/" method=post class="form-horizontal">
+
+{% csrf_token %}
 
 <fieldset>
 
@@ -15,7 +22,8 @@ $('#new-device').on("click", function(e) {
 <div class="form-group">
   <label class="col-md-4 control-label" for="username">Username</label>  
   <div class="col-md-4">
-  <input id="username" name="username" value="{{ user.get_username }}" type="text" class="form-control input-md">
+  {{ form.new_username }}
+  <!--input id="id_new_username" name="username" type="text" placeholder="{{ user.get_username }}" class="form-control input-md"-->
   <button style="margin-top:10px;" id="submit-username" name="singlebutton" class="btn btn-primary">Rename</button>
   </div>
 </div>
@@ -24,7 +32,8 @@ $('#new-device').on("click", function(e) {
 <div class="form-group">
   <label class="col-md-4 control-label" for="passwordinput">New Password</label>
   <div class="col-md-4">
-    <input id="passwordinput" name="passwordinput" type="password" placeholder="*****" class="form-control input-md">
+    {{ form.password1 }}
+    <!--input id="passwordinput" name="passwordinput" type="password" placeholder="*****" class="form-control input-md"-->
   </div>
 </div>
 
@@ -32,7 +41,8 @@ $('#new-device').on("click", function(e) {
 <div class="form-group">
   <label class="col-md-4 control-label" for="passwordconfirminput">Confirm Password</label>
   <div class="col-md-4">
-    <input id="passwordconfirminput" name="passwordconfirminput" type="password" placeholder="*****" class="form-control input-md">
+    {{ form.password2 }}
+    <!--input id="passwordconfirminput" name="passwordconfirminput" type="password" placeholder="*****" class="form-control input-md"-->
     <button style="margin-top:10px;" id="submit-password" name="singlebutton" class="btn btn-primary">Change Password</button>
   </div>
 </div>
@@ -45,8 +55,9 @@ $('#new-device').on("click", function(e) {
 <!-- Multiple Checkboxes -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="notification-checkboxes">Notification Settings</label>
-  <div class="col-md-4">
-     <div class="checkbox">
+  <div class="col-md-8">
+    {{ form.notifications }}
+     <!--div class="checkbox">
        <label for="notification-checkboxes-0">
          <input type="checkbox" name="notification-checkboxes" id="notification-checkboxes-0" value="1">
          Option one
@@ -57,7 +68,7 @@ $('#new-device').on("click", function(e) {
          <input type="checkbox" name="notification-checkboxes" id="notification-checkboxes-1" value="2">
          Option two
        </label>
-      </div>
+      </div-->
   </div>
 </div>
 </fieldset>

@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from microdata.models import Device, Event, Appliance
+from django.contrib.auth.models import User
+from django import forms
 from django.http import HttpResponse
 from django.conf import settings
 from sets import Set
@@ -18,6 +21,46 @@ import re
 from influxdb import client as influxdb
 
 # Create your views here.
+
+# UserForm is a customized version of an AuthenticationForm
+class UserForm(forms.Form):
+  new_username = forms.CharField(max_length=254,
+                                 min_length=1,
+                                 required=False,
+                                 widget=forms.TextInput(attrs={
+                                    'class' : 'form-control input-md'}))
+  error_messages = {
+    'password_mismatch': ("The two password fields didn't match."),
+  }
+  password1 = forms.CharField(label=("Password"),
+      widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
+      required=False)
+  password2 = forms.CharField(label=("Password confirmation"),
+      widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
+      help_text=("Enter the same password as above, for verification."),
+      required=False)
+  notifications = forms.ChoiceField(
+      widget=forms.CheckboxSelectMultiple,
+      choices=(
+         ("1", "Don't send any email"),
+         ("2", "Weekly consumption details"),
+         ("3", "Monthly consumption details"),
+         ("4", "When we detect irregular household consumption"),
+         ("5", "When we detect an irregular device"),
+        ),
+      required=False
+  )
+
+  def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError(
+                self.error_messages['password_mismatch'],
+                code='password_mismatch',
+            )
+        return password2
+
 
 def chartify(data):
    warnings.warn("chartify method no longer used for InfluxDB.", DeprecationWarning)
@@ -131,7 +174,7 @@ def default_chart(request):
 @login_required(login_url='/signin/')
 def charts(request, serial):
    if request.method == 'GET':
-      unit = request.GET.get_weather('unit','')
+      unit = request.GET.get('unit','')
       start = request.GET.get('from','')
       stop = request.GET.get('to','')
       return HttpResponse(json.dumps(group_by_mean(serial,unit,start,stop)), content_type="application/json")
@@ -185,19 +228,29 @@ def device_status(request):
 def settings(request):
   context = {}
   user = request.user.id
-  if request.GET.get('device', False):
-    devices = Device.objects.filter(owner=user)
-    for device in devices:
-      device.online = device_is_online(device)
-    context['devices'] = devices
-    context['action'] = 'device'
-    return render(request, 'base/settings_device.html', context)
-  elif request.GET.get('account', False):
-    context['action'] = 'account'
-    return render(request, 'base/settings_account.html', context)
-  elif request.GET.get('dashboard', False):
-    context['aciton'] = 'dashboard'
-    return render(request, 'base/settings_dashboard.html', context)
-  else:
-    return render(request, 'base/settings.html', context)
+  if request.method == 'GET':
+    if request.GET.get('device', False):
+      devices = Device.objects.filter(owner=user)
+      for device in devices:
+        device.online = device_is_online(device)
+      context['devices'] = devices
+      return render(request, 'base/settings_device.html', context)
+    elif request.GET.get('account', False):
+      context['form'] = UserForm()
+      return render(request, 'base/settings_account.html', context)
+    elif request.GET.get('dashboard', False):
+      return render(request, 'base/settings_dashboard.html')
+    else: return render(request, 'base/settings.html')
+
+  elif request.method == 'POST':
+    form = UserForm(request.POST)
+    if form.is_valid():
+      new_username = form.cleaned_data['new_username']
+      user = User.objects.get(username = request.user)
+      user.username = new_username
+      user.save()
+      success = True
+      return HttpResponse(json.dumps({'success': success}), content_type="application/json")
+  else: return render(request, 'base/settings.html')
+
       

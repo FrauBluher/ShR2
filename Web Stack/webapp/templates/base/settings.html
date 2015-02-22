@@ -66,7 +66,6 @@ function dashboard() {
 		<div class="row">
 			{% if user.is_authenticated %}
 			<h1>Settings</h1>
-			<h3>Hello, {{ user.get_username }}</h3>
          <div class="col-md-2 panel panel-default">
             <ul class="nav nav-pills nav-stacked">
                <li id="account-li" class="activate" role="presentation"><a onclick="account()" role="menuitem"href="#" id="account">Account</a></li>

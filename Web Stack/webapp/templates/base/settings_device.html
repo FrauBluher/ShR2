@@ -140,8 +140,8 @@ $('#btn-status').on('click', function(e) {
 <!-- Text input-->
 <div class="form-group">
   <label class="col-md-4 control-label" for="username">Device Name</label>  
-  <div class="col-md-2">
-  <input id="username" name="username" value="{{ devices.0 }}" type="text" class="form-control input-md">
+  <div class="col-md-4">
+  <input id="username" name="device-name" value="{{ devices.0 }}" type="text" class="form-control input-md">
   </div>
   <div class="col-md-2">
   <button id="submit-username" name="singlebutton" class="btn btn-primary">Rename</button>
@@ -173,7 +173,7 @@ $('#btn-status').on('click', function(e) {
 <!-- Select Basic -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Utility Company</label>
-  <div class="col-md-4">
+  <div class="col-md-6">
     <select id="rate-plan" name="selectbasic" class="form-control">
       <option value="1">Pacific Gas and Electric Co</option>
       <option value="2">Option two</option>
@@ -184,7 +184,7 @@ $('#btn-status').on('click', function(e) {
 <!-- Select Basic -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Rate Plan</label>
-  <div class="col-md-4">
+  <div class="col-md-6">
     <select id="rate-plan" name="selectbasic" class="form-control">
       <option value="1">Option one</option>
       <option value="2">Option two</option>
@@ -195,7 +195,7 @@ $('#btn-status').on('click', function(e) {
 <!-- Select Basic -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Territory</label>
-  <div class="col-md-4">
+  <div class="col-md-6">
     <select id="territory" name="selectbasic" class="form-control">
       <option value="1">Option one</option>
       <option value="2">Option two</option>
@@ -212,7 +212,7 @@ $('#btn-status').on('click', function(e) {
 <div class="form-group">
 	<label class="col-md-4 control-label" for="selectbasic">Location</label>
    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-   <div style="height:500px; width:50%" id="map-canvas"></div>
+   <div style="height:500px; width:100%" id="map-canvas"></div>
 	</div>
 </div>
 
