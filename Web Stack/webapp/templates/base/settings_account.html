@@ -1,15 +1,82 @@
+<head>
+  <style>
+    .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+    }
+ 
+   @keyframes spin {
+      from { transform: scale(1) rotate(0deg);}
+      to { transform: scale(1) rotate(360deg);}
+   }
+
+   @-webkit-keyframes spinw {
+      from { -webkit-transform: rotate(0deg);}
+      to { -webkit-transform: rotate(360deg);}
+   }
+
+   @-moz-keyframes spinm {
+      from { -moz-transform: rotate(0deg);}
+      to { -moz-transform: rotate(360deg);}
+   }
+  </style>
+</head>
+
+<!-- I could probably write a generic function for these. -->
 <script>
-$('#submit-username').on("click", function(e) {
-  e.preventDefault();
-  $.post('/settings/',
-    $('form#user-form').serialize(),
-    function (data) {
-      console.log(data);
-    });
-});
+  $('#submit-username').on("click", function(e) {
+    e.preventDefault();
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#username-status').html(span);
+    $.post('/settings/',
+      $('form#username-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#username-status').html(span);
+      });
+  });
 </script>
 
-<form id="user-form" action="/settings/" method=post class="form-horizontal">
+
+<script>
+  $('#submit-password').on("click", function(e) {
+    e.preventDefault();
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#password-status').html(span);
+    $.post('/settings/',
+      $('form#password-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#password-status').html(span);
+      });
+  });
+</script>
+
+<script>
+  $('#checkbox-container').children().on("click", function(e) {
+    $.post('/settings/',
+      $('form#notification-form').serialize(),
+      function (data) {
+        console.log(data);
+      });
+  });
+</script>
+
+<form id="username-form" class="form-horizontal">
 
 {% csrf_token %}
 
@@ -26,7 +93,13 @@ $('#submit-username').on("click", function(e) {
   <!--input id="id_new_username" name="username" type="text" placeholder="{{ user.get_username }}" class="form-control input-md"-->
   <button style="margin-top:10px;" id="submit-username" name="singlebutton" class="btn btn-primary">Rename</button>
   </div>
+  <div id="username-status" class="col-md-2"></div>
 </div>
+</form>
+
+<form id="password-form">
+
+{% csrf_token %}
 
 <!-- Password input-->
 <div class="form-group">
@@ -35,6 +108,7 @@ $('#submit-username').on("click", function(e) {
     {{ form.password1 }}
     <!--input id="passwordinput" name="passwordinput" type="password" placeholder="*****" class="form-control input-md"-->
   </div>
+  <div id="password-status" class="col-md-2"></div>
 </div>
 
 <!-- Password input-->
@@ -50,13 +124,21 @@ $('#submit-username').on("click", function(e) {
 </fieldset>
 
 <fieldset>
+</form>
+<form id="notification-form">
+
+{% csrf_token %}
 
 <legend>Notification Preferences</legend>
 <!-- Multiple Checkboxes -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="notification-checkboxes">Notification Settings</label>
-  <div class="col-md-8">
-    {{ form.notifications }}
+  <div class="col-md-8" id="checkbox-container">
+    {% for notification in form.notifications %}
+      <div class="checkbox">
+         {{ notification }}
+      </div>
+    {% endfor %}
      <!--div class="checkbox">
        <label for="notification-checkboxes-0">
          <input type="checkbox" name="notification-checkboxes" id="notification-checkboxes-0" value="1">

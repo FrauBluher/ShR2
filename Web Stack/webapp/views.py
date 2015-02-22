@@ -40,7 +40,7 @@ class UserForm(forms.Form):
       help_text=("Enter the same password as above, for verification."),
       required=False)
   notifications = forms.ChoiceField(
-      widget=forms.CheckboxSelectMultiple,
+      widget=forms.CheckboxSelectMultiple(),
       choices=(
          ("1", "Don't send any email"),
          ("2", "Weekly consumption details"),
@@ -55,10 +55,7 @@ class UserForm(forms.Form):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError(
-                self.error_messages['password_mismatch'],
-                code='password_mismatch',
-            )
+            return None
         return password2
 
 
@@ -243,13 +240,25 @@ def settings(request):
     else: return render(request, 'base/settings.html')
 
   elif request.method == 'POST':
+    success = False
     form = UserForm(request.POST)
     if form.is_valid():
-      new_username = form.cleaned_data['new_username']
       user = User.objects.get(username = request.user)
-      user.username = new_username
-      user.save()
-      success = True
+      new_username = form.cleaned_data['new_username']
+      password1 = form.cleaned_data['password1']
+      password2 = form.cleaned_data['password2']
+      notifications = form.cleaned_data['notifications']
+      if new_username:
+        user.username = new_username
+        user.save()
+        success = True
+      elif password1 and password2 and form.clean_password2():
+        user.set_password(password1)
+        user.save()
+        success = True
+      elif notifications:
+        success = True
+        #TODO build in notifications functionality
       return HttpResponse(json.dumps({'success': success}), content_type="application/json")
   else: return render(request, 'base/settings.html')
 
