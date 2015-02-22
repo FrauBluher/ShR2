@@ -12,6 +12,7 @@
 
 uint32_t SB_RMS(SampleBuffer *);
 int32_t SB_AVG(SampleBuffer *);
+int32_t SB_VOL(int32_t);
 
 #endif	/* SB_COMPUTATION_H */
 
