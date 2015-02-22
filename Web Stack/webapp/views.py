@@ -41,6 +41,7 @@ class UserForm(forms.Form):
       required=False)
   notifications = forms.ChoiceField(
       widget=forms.CheckboxSelectMultiple(),
+      # Default choices
       choices=(
          ("1", "Don't send any email"),
          ("2", "Weekly consumption details"),
