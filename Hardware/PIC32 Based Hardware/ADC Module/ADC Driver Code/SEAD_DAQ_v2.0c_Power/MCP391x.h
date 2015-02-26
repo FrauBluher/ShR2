@@ -170,10 +170,10 @@ typedef struct {
 /**
  * @brief PGA Settings for the channels
  */
-#define PGA_CH0_CONF 0b011
-#define PGA_CH1_CONF 0b011
-#define PGA_CH2_CONF 0b011
-#define PGA_CH3_CONF 0b011
+#define PGA_CH0_CONF 0b000
+#define PGA_CH1_CONF 0b000
+#define PGA_CH2_CONF 0b000
+#define PGA_CH3_CONF 0b000
 
 typedef struct {
 
@@ -582,4 +582,3 @@ typedef struct {
 uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo);
 
 #endif	/* ADS85XH_H */
-

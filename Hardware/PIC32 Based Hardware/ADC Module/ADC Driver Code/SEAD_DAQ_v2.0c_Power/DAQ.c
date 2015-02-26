@@ -48,17 +48,17 @@ static MCP391x_Info ADCInfo;
  */
 void ComputeBuffer(uint8_t currentBuffer)
 {
-	int32_t RMS_Value = 0;
+	int64_t RMS_Value = 0;
 	if (currentBuffer == BUFFER_A) {
 		//compute things on the buffer!
-		RMS_Value = SB_AVG(&BufferB);
+		RMS_Value = SB_RMS(&BufferB);
 		//TODO: DMA these variables, instead of the whole SampleBuffer s
 		uint8_t send_buf[20];
 		uint8_t write_len = sprintf(send_buf, "b=%014d\r\n", RMS_Value);
 		BufferToPMP_Transfer(send_buf, write_len);
 	} else if (currentBuffer == BUFFER_B) {
 		//compute things on the buffer!
-		RMS_Value = SB_AVG(&BufferA);
+		RMS_Value = SB_RMS(&BufferA);
 		//TODO: DMA these variables, instead of the whole SampleBuffer s
 		uint8_t send_buf[20];
 		uint8_t write_len = sprintf(send_buf, "a=%014d\r\n", RMS_Value);
