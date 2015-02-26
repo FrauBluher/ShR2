@@ -105,10 +105,13 @@
            initialDisplayAnchor: "newestData",
            followAnchor: true,
         },
-        advanced:{timeUpdateInterval: 300},
+        currentTime: {
+           enabled: true,
+           serverTime: {{ server_time }},
+        }
      });
    {% endif %}
-
+/*
 function realTimeData() {
    var interval = chart.displayUnit().split(' ')[0];
    var displayUnit = chart.displayUnit().slice(-1);
@@ -119,8 +122,8 @@ function realTimeData() {
       timeout = interval * 60 * 900
    }
    else if (displayUnit == 's') {
-      var delay = (2 + parseInt(interval)).toString();
-      period = 'now - ' + delay + ' seconds'
+      //var delay = (2 + parseInt(interval)).toString();
+      period = 'now - ' + interval + ' seconds'
       timeout = interval * 900
    }
    else {
@@ -128,8 +131,8 @@ function realTimeData() {
       period = 'now - ' + interval + ' hours'
       timeout = interval * 60 * 60 * 900
    }
-   var start = +Date.parse(period);
-   var stop = +Date.parse('now');
+   var start = Math.floor(+Date.parse(period)/1000);
+   var stop = Math.floor(+Date.parse('now')/1000);
    var get_url = '/charts/device/{{ my_devices.0.serial }}/?unit='+displayUnit+'&from='+start+'&to='+stop;
    $.get(get_url, function (ajax_data) {
       chart.addData({unit: displayUnit, values: ajax_data.data});
@@ -149,5 +152,5 @@ function waitForChart() {
 $(function() {
    waitForChart();
 });
-
+*/
 </script>

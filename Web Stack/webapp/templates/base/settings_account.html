@@ -21,6 +21,19 @@
       from { -moz-transform: rotate(0deg);}
       to { -moz-transform: rotate(360deg);}
    }
+  .pac-container {
+    background-color: #FFF;
+    z-index: 20;
+    position: fixed;
+    display: inline-block;
+    float: left;
+  }
+  .modal{
+    z-index: 20;
+  }
+  .modal-backdrop{
+    z-index: 10;        
+  }​
   </style>
 </head>
 
@@ -37,6 +50,7 @@
         span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
         if (data.success) {
           span.addClass("glyphicon glyphicon-ok");
+          $('#id_new_username').val(data.username);
         } else {
           span.addClass("glyphicon glyphicon-remove");
         }
@@ -74,6 +88,12 @@
         console.log(data);
       });
   });
+</script>
+
+<script>
+$(function() {
+  $('#id_new_username').val("{{ user.get_username }}")
+});
 </script>
 
 <form id="username-form" class="form-horizontal">

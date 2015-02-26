@@ -25,8 +25,8 @@ class DeviceModelChoiceField(ModelChoiceField):
 class DatagenForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
    appliances = forms.ModelMultipleChoiceField(label='Appliances', queryset=Appliance.objects.all())
-   start = forms.IntegerField(label='Start (10-digit timestamp)')
-   stop = forms.IntegerField(label='Stop (10-digit timestamp)')
+   start = forms.IntegerField(label='Start (10-digit timestamp) UTC')
+   stop = forms.IntegerField(label='Stop (10-digit timestamp) UTC')
    resolution = forms.IntegerField(label='Resolution (seconds)')
 
 class DatadelForm(forms.Form):
