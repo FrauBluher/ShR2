@@ -226,7 +226,12 @@ def charts_deprecated(request, serial, unit):
 def device_is_online(device):
   if device:
     db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-    result = db.query('select * from device.'+str(device.serial)+' limit 1;')[0]['points'][0]
+    result = [0,]
+    try:
+      result = db.query('select * from device.'+str(device.serial)+' limit 1;')[0]['points'][0]
+    except:
+      # bypasses 400 error thrown by InfluxDB if series does not exist
+      pass
     return int(time.time()) - int(result[0]) < 10
 
 class Object:

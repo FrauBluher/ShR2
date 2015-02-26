@@ -17,6 +17,9 @@ from microdata.models import Device, Event, Appliance
 
 from influxdb import client as influxdb
 
+from geoposition import Geoposition
+import json
+
 
 class KeyForm(forms.Form):
    alphabetic = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetical characters are allowed.')
@@ -63,19 +66,21 @@ class EventViewSet(viewsets.ModelViewSet):
    #permission_classes = (permissions.IsAuthenticated,)
    #authentication_classes = (authentication.TokenAuthentication,)
 
-
-def new_device_success(request, lat, lon):
-   context = {'latitude':lat,'longitude':lon}
-   return render(request, 'base/success.html', context)
-
 @csrf_exempt
-def new_device_location(request):
+def new_device_location(request, serial):
    if request.method == 'POST':
-      latitude = request.POST.get('latitude', 0)
-      longitude = request.POST.get('longitude', 0)
-      return new_device_success(request, latitude, longitude)
+      latitude = float(request.POST.get('latitude'))
+      longitude = float(request.POST.get('longitude'))
+      context = {}
+      if latitude and longitude:
+         device = Device.objects.get(serial=serial)
+         device.position = Geoposition(latitude, longitude)
+         device.save()
+         context['latitude'] = latitude
+         context['longitude'] = longitude
+         return render(request, 'base/success.html', context)
 
-   return render(request, 'base/location.html')
+   return render(request, 'base/location.html', {'serial':serial})
     
 def new_device_key(request):
    error = False
@@ -91,15 +96,15 @@ def new_device_key(request):
          secret_key += form.cleaned_data['char2']
          secret_key += form.cleaned_data['char3']
          secret_key += form.cleaned_data['char4']
-         devices = Device.objects.filter(registered=False, secret_key = secret_key.upper())
+         devices = Device.objects.filter(registered=False, secret_key=secret_key.upper())
          device = devices[0] if devices else None
          if device:
             device.owner = request.user
             device.registered = True
-            #device.save()
+            device.save()
             created = True
             request.method = 'GET'
-            return new_device_location(request)
+            return new_device_location(request, device.serial)
          else: error = True
    else:
       form = KeyForm()

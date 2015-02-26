@@ -4,6 +4,7 @@ import random
 import string
 from django.core.exceptions import SuspiciousOperation
 from influxdb import client as influxdb
+from geoposition.fields import GeopositionField
 
 # Create your models here.
 
@@ -19,7 +20,7 @@ class Device(models.Model):
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
    serial = models.IntegerField(unique=True, primary_key=True)
    name = models.CharField(max_length=30, blank=True, null=True)
-   #zipcode = models.CharField(max_length=5, blank=True, null=True)
+   position = GeopositionField(blank=True, null=True)
    #private = models.BooleanField(default=False)
    registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)

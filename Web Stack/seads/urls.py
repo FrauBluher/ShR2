@@ -10,6 +10,7 @@ router.register(r'device-api', microdata_views.DeviceViewSet)
 router.register(r'event-api', microdata_views.EventViewSet)
 router.register(r'users', home_views.UserViewSet)
 
+admin.autodiscover()
 # Wire up our API using automatic URL routing.
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -25,7 +26,7 @@ urlpatterns = [
     url(r'^charts/device/(?P<serial>\d+)/', 'webapp.views.charts'),
     url(r'^charts/default_chart/$', 'webapp.views.default_chart'),
     url(r'^new_device/key/', 'microdata.views.new_device_key'),
-    url(r'^new_device/location/', 'microdata.views.new_device_location'),
+    url(r'^new_device/location/(?P<serial>\d+)/', 'microdata.views.new_device_location'),
     
     # Development URLs
     url(r'^api/', include(router.urls)),

@@ -49,7 +49,7 @@
 
 <div id="locationFormWrapper">
    <span>Drag the marker to the location of your new device</span>
-   <form id="locationForm" action="" method="post">
+   <form id="locationForm">
       {% csrf_token %}
       <input id="pac-input" class="controls" type="text" placeholder="Search Box">
       <div style="height: 510px;" id="map-canvas"></div>
@@ -72,11 +72,13 @@ $(function() {
 
 $('#submit').click(function(e){
       e.preventDefault();
-      console.log(marker.getPosition.k+","+marker.getPosition.D);
-      $.post('/new_device/location/',
-         {'latitude': marker.getPosition.k,
-          'longitude': marker.getPosition.D},
-         function(data, status, xhr){
+      latitude = marker.getPosition().k;
+      longitude = marker.getPosition().D;
+      console.log(latitude+","+longitude);
+      $.post('/new_device/location/{{ serial }}/',
+         {'latitude': latitude,
+          'longitude': longitude},
+         function(data){
             $('#locationFormWrapper').html(data);
          });
 });
