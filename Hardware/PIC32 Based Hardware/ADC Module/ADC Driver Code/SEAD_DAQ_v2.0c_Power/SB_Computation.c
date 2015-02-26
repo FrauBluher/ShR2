@@ -12,6 +12,7 @@
 #include "MCP391x.h"
 
 //10 cycles at sample speed 3906.25/sec
+//should not exceed 2^15 32768 to prevent overflow
 #define WINDOW_SIZE 1562
 
 //the channel to do the calculations
@@ -30,23 +31,27 @@
 
 uint32_t SB_RMS(SampleBuffer *buffer)
 {
-	float rawrms = 0;
-	uint16_t i;
-	//TODO find the the most efficient way to scale
+	uint64_t rawrms = 0;
+	uint32_t i;
+
+	// TODO: check disassembly to see if this is optimized to a single constant
 	float s = 1.2 /(1<<24 * 1<<PGA_CH1_CONF);
+	s *= s;
+	s /= WINDOW_SIZE;
+
 	for (i = 0; i < WINDOW_SIZE; i++) {
 		// TODO: optimize with a single 32 bit load
 		int64_t value =
 			buffer->BufferArray[(3*CHANNEL+1) + i * 13] | // this should be +0 for channel 0
 			buffer->BufferArray[(3*CHANNEL+2) + i * 13] << 16 |
 			buffer->BufferArray[(3*CHANNEL+3) + i * 13] << 8;
-		value = ((value << 40) >> 40); // sign extend
-		float v = value * s;
-		rawrms += (v * v);
+		value = ((value << 40) >> 40); // sign extends
+		rawrms += (value * value);
 	}
 	// PGA_CH1_CONF
-	float x = sqrt(rawrms / WINDOW_SIZE);
+	float x = sqrt(rawrms * s);
 	// float rms = x * s / sqrt(WINDOW_SIZE);
+	// TODO: check disassembly to see if optimized to x * 78618.6
 	float arms = 1.309 * 1000 * x * 20 / 0.333;
 	return (uint32_t)arms;
 }
