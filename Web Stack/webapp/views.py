@@ -13,7 +13,7 @@ from collections import defaultdict
 from urllib2 import Request, urlopen, URLError
 from pyzipcode import ZipCodeDatabase
 
-import datetime
+from datetime import datetime
 import json
 import time
 import timeseries as ts
@@ -32,6 +32,13 @@ class UserForm(forms.Form):
   error_messages = {
     'password_mismatch': ("The two password fields didn't match."),
   }
+  choices = [
+    ("1", "Don't send any email"),
+    ("2", "Weekly consumption details"),
+    ("3", "Monthly consumption details"),
+    ("4", "When we detect irregular household consumption"),
+    ("5", "When we detect an irregular device"),
+  ]
   password1 = forms.CharField(label=("Password"),
       widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
       required=False)
@@ -43,37 +50,34 @@ class UserForm(forms.Form):
       widget=forms.CheckboxSelectMultiple(),
       # Default choices
       choices=(
-         ("1", "Don't send any email"),
-         ("2", "Weekly consumption details"),
-         ("3", "Monthly consumption details"),
-         ("4", "When we detect irregular household consumption"),
-         ("5", "When we detect an irregular device"),
+         choices,
         ),
       required=False
   )
 
-  def __init__(self, user, *args, **kwargs):
+  def __init__(self, *args, **kwargs):
+    user = kwargs.pop('user', None)
     super(UserForm, self).__init__(*args, **kwargs)
     if user:
-      notifications = []
+      self.choices = []
       i = 1
-      for notification in user.usersettings.notifications.all():
-        notifications.append((str(i), notification))
+      for choice in user.usersettings.notifications.all():
+        self.choices.append((str(i), choice))
         i += 1
       self.fields['notifications'] = forms.ChoiceField(
         widget=forms.CheckboxSelectMultiple(),
         choices=(
-           notifications
+           self.choices
           ),
         required=False
   )
 
   def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
-            return None
-        return password2
+    password1 = self.cleaned_data.get("password1")
+    password2 = self.cleaned_data.get("password2")
+    if password1 and password2 and password1 != password2:
+        return None
+    return password2
 
 
 def chartify(data):
@@ -107,7 +111,8 @@ def dashboard(request):
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       result = db.query('select * from "'+str(device.serial)+'" limit 1;')[0]
    context = {'my_devices': my_devices,
-              'appliances': result['columns'][2:]
+              'appliances': result['columns'][2:],
+              'server_time': time.time()*1000,
               }
    return render(request, 'base/dashboard.html', context)
 
@@ -125,11 +130,12 @@ def merge_subs(lst_of_lsts):
 
 
 def group_by_mean(serial, unit, start, stop):
+   queries = []
    if (unit == 'y'): unit = 'm'
    if (start == ''): start = 'now() - 1d'
-   else: start = '\''+datetime.datetime.fromtimestamp(int(start)/1000).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: start = '\''+datetime.datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
-   else: stop = '\''+datetime.datetime.fromtimestamp(int(stop)/1000).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: stop = '\''+datetime.datetime.fromtimestamp(int(stop)).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
@@ -142,23 +148,25 @@ def group_by_mean(serial, unit, start, stop):
    mean = {}
    to_merge = []
    for appliance in appliances:
-      group = db.query('select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop+' limit 1000')
+      query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
+      group = db.query(query)
+      queries.append(query)
       if (len(group)): group = group[0]['points']
-      else: return None
+      #else: return None
       # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
-         s = [s[0]-28800,s[2]]
+         s = [s[0],s[2]]
          new_group.append(s)
       to_merge += new_group
    data = merge_subs(to_merge)
    for point in data:
       point.insert(1, sum(point[1:]))
-   if (len(data) < 1): return None
+   if (len(data) < 1): data.append([None,])
    data = {'data': data,
            'unit': unit,
            'dataLimitFrom': data[len(data)-1][0],
-           'dataLimitTo': data[0][0],
+           'queries': queries,
           }
    return data
 
@@ -166,8 +174,6 @@ def group_by_mean(serial, unit, start, stop):
 @login_required(login_url='/signin/')
 def default_chart(request):
    if request.method == 'GET':
-      user = request.user.id
-      device = Device.objects.filter(owner=user)[0]
       context = {}
       if (device):
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
@@ -181,6 +187,7 @@ def default_chart(request):
                else: appliances.add(appliance[-1])
          context = {'my_devices': [device],
                     'appliances': appliances,
+                    'server_time': time.time()*1000,
                     }
       return render(request, 'base/dashboard.html', context)
 
@@ -242,41 +249,44 @@ def device_status(request):
 def settings(request):
   context = {}
   user = request.user.id
+  template = 'base/settings.html'
   if request.method == 'GET':
     if request.GET.get('device', False):
       devices = Device.objects.filter(owner=user)
       for device in devices:
         device.online = device_is_online(device)
       context['devices'] = devices
-      return render(request, 'base/settings_device.html', context)
+      template = 'base/settings_device.html'
     elif request.GET.get('account', False):
-      context['form'] = UserForm(request.user)
-      return render(request, 'base/settings_account.html', context)
+      context['form'] = UserForm(user=request.user)
+      template = 'base/settings_account.html'
     elif request.GET.get('dashboard', False):
-      return render(request, 'base/settings_dashboard.html')
-    else: return render(request, 'base/settings.html')
+      template = 'base/settings_dashboard.html'
+    return render(request, template, context)
 
   elif request.method == 'POST':
-    success = False
-    form = UserForm(request.POST)
-    if form.is_valid():
+    context['success'] = False
+    template = 'base/settings_account.html'
+    form = UserForm(request.POST, user=None)
+    if form.is_valid() or request.POST.get('notifications', False):
       user = User.objects.get(username = request.user)
       new_username = form.cleaned_data['new_username']
       password1 = form.cleaned_data['password1']
       password2 = form.cleaned_data['password2']
-      notifications = form.cleaned_data['notifications']
+      notifications = request.POST.get('notifications')
       if new_username:
         user.username = new_username
         user.save()
-        success = True
+        context['success'] = True
+        context['username'] = user.username
       elif password1 and password2 and form.clean_password2():
         user.set_password(password1)
         user.save()
-        success = True
+        context['success'] = True
       elif notifications:
-        success = True
-        #TODO build in notifications functionality
-      return HttpResponse(json.dumps({'success': success}), content_type="application/json")
+        context['success'] = True
+        
+    return HttpResponse(json.dumps(context), content_type="application/json")
   else: return render(request, 'base/settings.html')
 
       
