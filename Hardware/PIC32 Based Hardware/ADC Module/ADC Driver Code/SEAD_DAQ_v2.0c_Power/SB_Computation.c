@@ -47,7 +47,7 @@ uint32_t SB_RMS(SampleBuffer *buffer)
 	// PGA_CH1_CONF
 	float x = sqrt(rawrms / WINDOW_SIZE);
 	// float rms = x * s / sqrt(WINDOW_SIZE);
-	float arms = 1000 * x * 20 / 0.333;
+	float arms = 1.309 * 1000 * x * 20 / 0.333;
 	return (uint32_t)arms;
 }
 
