@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from microdata.models import Device, Event, Appliance
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django import forms
 from django.http import HttpResponse
@@ -79,6 +80,43 @@ class UserForm(forms.Form):
         return None
     return password2
 
+class DeviceForm(forms.Form):
+  new_name = forms.CharField(max_length=254,
+                             min_length=1,
+                             required=False,
+                             widget=forms.TextInput(attrs={
+                              'class' : 'form-control input-md'
+                              })
+                            )
+  utility_company_choices = []
+  rate_plan_choices = []
+  territory_choices = []
+  utility_companies = forms.ModelChoiceField(
+    utility_company_choices,
+    required=False)
+  rate_plans = forms.ModelChoiceField(
+    rate_plan_choices,
+    required=False)
+  territories = forms.ModelChoiceField(
+    territory_choices,
+    required=False)
+
+  def __init__(self, *args, **kwargs):
+    device = kwargs.pop('device', None)
+    super(DeviceForm, self).__init(*args, **kwargs)
+    if device:
+      self.utility_company_choices = device.devicesettings.utility_companies.all()
+      self.rate_plan_choices = device.devicesettings.rate_plans.all()
+      self.territory_choices = device.devicesettings.territories.all()
+      utility_companies = forms.ModelChoiceField(
+        utility_company_choices,
+        required=False)
+      rate_plans = forms.ModelChoiceField(
+        rate_plan_choices,
+        required=False)
+      territories = forms.ModelChoiceField(
+        territory_choices,
+        required=False)
 
 def chartify(data):
    warnings.warn("chartify method no longer used for InfluxDB.", DeprecationWarning)
@@ -250,47 +288,58 @@ def device_status(request):
    context['connected'] = connected
    return HttpResponse(json.dumps(context), content_type="application/json") 
 
+@csrf_exempt
 @login_required(login_url='/signin/')
 def settings(request):
   context = {}
   user = request.user.id
   template = 'base/settings.html'
   if request.method == 'GET':
+
     if request.GET.get('device', False):
       devices = Device.objects.filter(owner=user)
       for device in devices:
         device.online = device_is_online(device)
       context['devices'] = devices
       template = 'base/settings_device.html'
+
     elif request.GET.get('account', False):
       context['form'] = UserForm(user=request.user)
       template = 'base/settings_account.html'
+
     elif request.GET.get('dashboard', False):
       template = 'base/settings_dashboard.html'
     return render(request, template, context)
 
+
   elif request.method == 'POST':
     context['success'] = False
-    template = 'base/settings_account.html'
-    form = UserForm(request.POST, user=None)
-    if form.is_valid() or request.POST.get('notifications', False):
-      user = User.objects.get(username = request.user)
-      new_username = form.cleaned_data['new_username']
-      password1 = form.cleaned_data['password1']
-      password2 = form.cleaned_data['password2']
-      notifications = request.POST.get('notifications')
-      if new_username:
-        user.username = new_username
-        user.save()
-        context['success'] = True
-        context['username'] = user.username
-      elif password1 and password2 and form.clean_password2():
-        user.set_password(password1)
-        user.save()
-        context['success'] = True
-      elif notifications:
-        context['success'] = True
-        
+
+    group = request.POST.get('group')
+    if group == 'device':
+      
+      context['success'] = True
+
+    else:
+      template = 'base/settings_account.html'
+      form = UserForm(request.POST, user=None)
+      if form.is_valid() or request.POST.get('notifications', False):
+        user = User.objects.get(username = request.user)
+        new_username = form.cleaned_data['new_username']
+        password1 = form.cleaned_data['password1']
+        password2 = form.cleaned_data['password2']
+        notifications = request.POST.get('notifications')
+        if new_username:
+          user.username = new_username
+          user.save()
+          context['success'] = True
+          context['username'] = user.username
+        elif password1 and password2 and form.clean_password2():
+          user.set_password(password1)
+          user.save()
+          context['success'] = True
+        elif notifications:
+          context['success'] = True
     return HttpResponse(json.dumps(context), content_type="application/json")
   else: return render(request, 'base/settings.html')
 

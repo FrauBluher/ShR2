@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from webapp.models import UserSettings, Notification
+from webapp.models import UserSettings, Notification, UtilityCompany, RatePlan, Territory
 
 # Define an inline admin descriptor for UserSettings model
 # which acts a bit like a singleton
@@ -22,4 +22,8 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 admin.site.register(Notification)
+
+admin.site.register(UtilityCompany)
+admin.site.register(RatePlan)
+admin.site.register(Territory)
 

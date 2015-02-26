@@ -1,3 +1,5 @@
+<!-- TODO devices dropdown needs implementing. Everything is using devices.0 right now. -->
+
 <head>
   <style>
     .controls {
@@ -220,7 +222,7 @@ $('#btn-status').on('click', function(e) {
 <div class="form-group">
   <label class="col-md-4 control-label" for="singlebutton">Save Location</label>
   <div class="col-md-4">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+    <button id="save-location" name="singlebutton" class="btn btn-primary">Submit</button>
   </div>
 </div>
 </fieldset>
@@ -251,15 +253,22 @@ $(function() {
 });
 </script>
 
+<script>
+$('#save-location').on("click", function(e) {
+  e.preventDefault();
+  $.post('/settings/', 
+    {'group': 'device'},
+    function(data) {
+      console.log(data);
+    }
+  );
+});
+</script>
+
 
 <script>
-// Note: This example requires that you consent to location sharing when
-// prompted by your browser. If you see a blank space instead of the map, this
-// is probably because you have denied permission for location sharing.
 
 var map, placeSearch, autocomplete;
-
-var poop = "{{ devices.0.online }}";
 
 function initialize() {
   var mapOptions = {
@@ -268,24 +277,17 @@ function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
 
-  // Try HTML5 geolocation
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = new google.maps.LatLng(position.coords.latitude,
-                                       position.coords.longitude);
+  var pos = new google.maps.LatLng({{ devices.0.position.latitude }},
+                                   {{ devices.0.position.longitude}});
 
-      var marker = new google.maps.Marker({
-        map: map,
-        position: pos,
-        title: 'My Location',
-        draggable: true
-      });
+  var marker = new google.maps.Marker({
+    map: map,
+    position: pos,
+    title: 'Location of {{ devices.0.name }}',
+    draggable: true
+  });
 
-      map.setCenter(pos);
-    }, function() {
-      handleNoGeolocation(true);
-    });
-  }
+  map.setCenter(pos);
 
   var input = /** @type {HTMLInputElement} */(
       document.getElementById('pac-input'));
@@ -323,15 +325,6 @@ function initialize() {
     }));
     marker.setPosition(place.geometry.location);
     marker.setVisible(true);
-
-    var address = '';
-    if (place.address_components) {
-      address = [
-        (place.address_components[0] && place.address_components[0].short_name || ''),
-        (place.address_components[1] && place.address_components[1].short_name || ''),
-        (place.address_components[2] && place.address_components[2].short_name || '')
-      ].join(' ');
-    }
 
   });
 }
