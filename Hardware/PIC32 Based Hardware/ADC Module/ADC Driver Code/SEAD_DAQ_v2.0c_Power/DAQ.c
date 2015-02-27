@@ -29,12 +29,12 @@
  * @brief 	Main loop for the DAQ.
  */
 
+#include <plib.h>
+#include <stdbool.h>
 
 #include "ADCModuleBoard.h"
 #include "SB_Computation.h"
-
-#include <plib.h>
-#include <stdbool.h>
+#include "nmea0183.h"
 
 SampleBuffer BufferA;
 SampleBuffer BufferB;
@@ -48,21 +48,29 @@ static MCP391x_Info ADCInfo;
  */
 void ComputeBuffer(uint8_t currentBuffer)
 {
-	int64_t RMS_Value = 0;
+	//initialize variables
+	int32_t RMS_Value = 0;
+	uint8_t send_buf[20];
+	uint8_t write_len;
+	//handle which buffer we are using
 	if (currentBuffer == BUFFER_A) {
 		//compute things on the buffer!
 		RMS_Value = SB_RMS(&BufferB);
-		//TODO: DMA these variables, instead of the whole SampleBuffer s
-		uint8_t send_buf[20];
-		uint8_t write_len = sprintf(send_buf, "b=%014d\r\n", RMS_Value);
+		write_len = sprintf(send_buf, "b=%014d\r\n", RMS_Value);
 		BufferToPMP_Transfer(send_buf, write_len);
+		char *message = create_message(TALKER, MESSAGE_TYPE,
+			2, RMS_Value, 1424982789);
+		BufferToPMP_Transfer(message, strlen(message));
+		destroy_message(message);
 	} else if (currentBuffer == BUFFER_B) {
 		//compute things on the buffer!
 		RMS_Value = SB_RMS(&BufferA);
-		//TODO: DMA these variables, instead of the whole SampleBuffer s
-		uint8_t send_buf[20];
-		uint8_t write_len = sprintf(send_buf, "a=%014d\r\n", RMS_Value);
+		write_len = sprintf(send_buf, "a=%014d\r\n", RMS_Value);
 		BufferToPMP_Transfer(send_buf, write_len);
+		char *message = create_message(TALKER, MESSAGE_TYPE,
+			2, RMS_Value, 1424982789);
+		BufferToPMP_Transfer(message, strlen(message));
+		destroy_message(message);
 	}
 }
 
