@@ -23,6 +23,14 @@ from influxdb import client as influxdb
 
 # Create your views here.
 
+def make_choices(queryset):
+  choices = []
+  i = 1
+  for choice in queryset:
+    choices.append((str(i), choice))
+    i += 1
+  return choices
+
 # UserForm is a customized version of an AuthenticationForm
 class UserForm(forms.Form):
   new_username = forms.CharField(max_length=254,
@@ -33,13 +41,7 @@ class UserForm(forms.Form):
   error_messages = {
     'password_mismatch': ("The two password fields didn't match."),
   }
-  choices = [
-    ("1", "Don't send any email"),
-    ("2", "Weekly consumption details"),
-    ("3", "Monthly consumption details"),
-    ("4", "When we detect irregular household consumption"),
-    ("5", "When we detect an irregular device"),
-  ]
+  choices = []
   password1 = forms.CharField(label=("Password"),
       widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
       required=False)
@@ -60,18 +62,14 @@ class UserForm(forms.Form):
     user = kwargs.pop('user', None)
     super(UserForm, self).__init__(*args, **kwargs)
     if user:
-      self.choices = []
-      i = 1
-      for choice in user.usersettings.notifications.all():
-        self.choices.append((str(i), choice))
-        i += 1
+      self.choices = make_choices(user.usersettings.notifications.all())
       self.fields['notifications'] = forms.ChoiceField(
         widget=forms.CheckboxSelectMultiple(),
         choices=(
            self.choices
           ),
         required=False
-  )
+      )
 
   def clean_password2(self):
     password1 = self.cleaned_data.get("password1")
@@ -79,6 +77,8 @@ class UserForm(forms.Form):
     if password1 and password2 and password1 != password2:
         return None
     return password2
+
+
 
 class DeviceForm(forms.Form):
   new_name = forms.CharField(max_length=254,
@@ -91,32 +91,58 @@ class DeviceForm(forms.Form):
   utility_company_choices = []
   rate_plan_choices = []
   territory_choices = []
-  utility_companies = forms.ModelChoiceField(
-    utility_company_choices,
-    required=False)
-  rate_plans = forms.ModelChoiceField(
-    rate_plan_choices,
-    required=False)
-  territories = forms.ModelChoiceField(
-    territory_choices,
-    required=False)
+
+  utility_companies = forms.ChoiceField(
+    widget=forms.Select(attrs={'class':'form-control'}),
+    choices=(
+      utility_company_choices
+    ),
+    required=False
+  )
+  rate_plans = forms.ChoiceField(
+    widget=forms.Select(attrs={'class':'form-control'}),
+    choices=(
+      rate_plan_choices
+    ),
+    required=False
+  )
+  territories = forms.ChoiceField(
+    widget=forms.Select(attrs={'class':'form-control'}),
+    choices=(
+      territory_choices
+    ),
+    required=False
+  )
 
   def __init__(self, *args, **kwargs):
     device = kwargs.pop('device', None)
-    super(DeviceForm, self).__init(*args, **kwargs)
+    super(DeviceForm, self).__init__(*args, **kwargs)
     if device:
-      self.utility_company_choices = device.devicesettings.utility_companies.all()
-      self.rate_plan_choices = device.devicesettings.rate_plans.all()
-      self.territory_choices = device.devicesettings.territories.all()
-      utility_companies = forms.ModelChoiceField(
-        utility_company_choices,
-        required=False)
-      rate_plans = forms.ModelChoiceField(
-        rate_plan_choices,
-        required=False)
-      territories = forms.ModelChoiceField(
-        territory_choices,
-        required=False)
+      self.utility_company_choices = make_choices(device.devicesettings.utility_companies.all())
+      self.rate_plan_choices = make_choices(device.devicesettings.rate_plans.all())
+      self.territory_choices = make_choices(device.devicesettings.territories.all())
+
+      self.fields['utility_companies'] = forms.ChoiceField(
+        widget=forms.Select(attrs={'class':'form-control'}),
+        choices=(
+          self.utility_company_choices
+        ),
+        required=False
+      )
+      self.fields['rate_plans'] = forms.ChoiceField(
+        widget=forms.Select(attrs={'class':'form-control'}),
+        choices=(
+          self.rate_plan_choices
+        ),
+        required=False
+      )
+      self.fields['territories'] = forms.ChoiceField(
+        widget=forms.Select(attrs={'class':'form-control'}),
+        choices=(
+          self.territory_choices
+        ),
+        required=False
+      )
 
 def chartify(data):
    warnings.warn("chartify method no longer used for InfluxDB.", DeprecationWarning)
@@ -288,6 +314,7 @@ def device_status(request):
    context['connected'] = connected
    return HttpResponse(json.dumps(context), content_type="application/json") 
 
+# TODO form only generates for devices.first()
 @csrf_exempt
 @login_required(login_url='/signin/')
 def settings(request):
@@ -301,6 +328,7 @@ def settings(request):
       for device in devices:
         device.online = device_is_online(device)
       context['devices'] = devices
+      context['form'] = DeviceForm(device=devices.first())
       template = 'base/settings_device.html'
 
     elif request.GET.get('account', False):
@@ -317,7 +345,8 @@ def settings(request):
 
     group = request.POST.get('group')
     if group == 'device':
-      
+      template = 'base/settings_device.html'
+
       context['success'] = True
 
     else:
@@ -339,6 +368,7 @@ def settings(request):
           user.save()
           context['success'] = True
         elif notifications:
+          #TODO 
           context['success'] = True
     return HttpResponse(json.dumps(context), content_type="application/json")
   else: return render(request, 'base/settings.html')

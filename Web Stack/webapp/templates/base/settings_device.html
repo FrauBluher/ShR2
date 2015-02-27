@@ -114,7 +114,13 @@ $('#btn-status').on('click', function(e) {
 });
 </script>
 
-<form class="form-horizontal">
+<script>
+$(function() {
+  $('#id_new_name').val("{{ devices.0 }}")
+});
+</script>
+
+<form id="select-device-form" class="form-horizontal">
 <fieldset>
 
 <!-- Single button -->
@@ -132,6 +138,9 @@ $('#btn-status').on('click', function(e) {
    </div>
 </div>
 </fieldset>
+</form>
+
+<form id="name-form" class="form-horizontal">
 
 <fieldset>
 
@@ -143,12 +152,17 @@ $('#btn-status').on('click', function(e) {
 <div class="form-group">
   <label class="col-md-4 control-label" for="username">Device Name</label>  
   <div class="col-md-4">
-  <input id="username" name="device-name" value="{{ devices.0 }}" type="text" class="form-control input-md">
+  {{ form.new_name }}
+  <!--input id="username" name="id_new_name" value="{{ devices.0 }}" type="text" class="form-control input-md"-->
   </div>
   <div class="col-md-2">
   <button id="submit-username" name="singlebutton" class="btn btn-primary">Rename</button>
   </div>
 </div>
+
+</form>
+
+<form id='device-status-form' class='form-horizontal'>
 
 <!-- Status icon-->
 <div class="form-group">
@@ -167,6 +181,9 @@ $('#btn-status').on('click', function(e) {
 </div>
 
 </fieldset>
+</form>
+
+<form id='utility-company-form' class='form-horizontal'>
 
 <fieldset>
 
@@ -176,32 +193,31 @@ $('#btn-status').on('click', function(e) {
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Utility Company</label>
   <div class="col-md-6">
-    <select id="rate-plan" name="selectbasic" class="form-control">
-      <option value="1">Pacific Gas and Electric Co</option>
-      <option value="2">Option two</option>
-    </select>
+    {{ form.utility_companies }}
   </div>
 </div>
+
+</form>
+
+<form id='rate-plan-form' class='form-horizontal'>
 
 <!-- Select Basic -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Rate Plan</label>
   <div class="col-md-6">
-    <select id="rate-plan" name="selectbasic" class="form-control">
-      <option value="1">Option one</option>
-      <option value="2">Option two</option>
-    </select>
+    {{ form.rate_plans }}
   </div>
 </div>
+
+</form>
+
+<form id='territory-form' class='form-horizontal'>
 
 <!-- Select Basic -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Territory</label>
   <div class="col-md-6">
-    <select id="territory" name="selectbasic" class="form-control">
-      <option value="1">Option one</option>
-      <option value="2">Option two</option>
-    </select>
+    {{ form.territories }}
   </div>
 </div>
 
@@ -272,6 +288,7 @@ var map, placeSearch, autocomplete;
 
 function initialize() {
   var mapOptions = {
+    scrollwheel: false,
     zoom: 17
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
