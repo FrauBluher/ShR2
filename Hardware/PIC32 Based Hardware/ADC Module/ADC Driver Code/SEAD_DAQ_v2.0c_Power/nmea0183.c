@@ -7,18 +7,38 @@
  */
 
 #include <string.h>
-#include <stdbool.h>
 #include <stdlib.h>
+
+#include "nmea0183.h"
+
+//max size for buffer size
+#define max_uart_buff_size 255
 
 /**
   * @brief  creates the nmea message to send to the ESP
-  * @param  talker ID, type ID, and then arguments like watt, and time
+  * @param  talker ID, type ID, and then number of additional arguments
   * @retval a handle to the created malloced string, or NULL if failed
   */
-char *create_message(char *talker, char *type, uint32_t wattage,
-		     uint32_t timestamp)
+char *create_message(char *talker, char *message_type, uint8_t arg_num, ...)
 {
-	;
+	va_list valist;
+	uint8_t i;
+	uint32_t number;
+	char buffer[max_uart_buff_size] = {0};
+	//start of a message
+	buffer[0] = '$';
+	strcat(buffer, talker);
+	strcat(buffer, message_type);
+	//initialize valist for arg_num number of arguments
+	va_start(valist, arg_num);
+	//access all the arguments in the valist
+	for (i = 0; i < arg_num; i++) {
+		number = va_arg(valist, uint32_t);
+		sprintf(buffer + strlen(buffer), ",%u", number);
+	}
+	strcat(buffer, "\r\n");
+	va_end(valist);
+	return strdup(buffer);
 }
 
 /**
