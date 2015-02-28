@@ -120,7 +120,80 @@ $(function() {
 });
 </script>
 
+<script>
+  $('#submit-name').on("click", function(e) {
+    e.preventDefault();
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#name-status').html(span);
+    $.post('/settings/device/{{ devices.0.serial }}',
+      $('form#name-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+          $('#id_new_name').val(data.new_name);
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#name-status').html(span);
+      });
+  });
+</script>
+
+<script>
+  $('#company-dropdown').on("change", function(e) {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#company`-status').html(span);
+    $.post('/settings/device/{{ devices.0.serial }}', 
+      $('form#utility-company-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#company-status').html(span);
+      });
+  });
+  $('#rate-dropdown').on("change", function(e) {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#rate-plan-status').html(span);
+    $.post('/settings/device/{{ devices.0.serial }}', 
+      $('form#rate-plan-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#rate-plan-status').html(span);
+      });
+  });
+  $('#territory-dropdown').on("change", function(e) {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#territory-status').html(span);
+    $.post('/settings/device/{{ devices.0.serial }}', 
+      $('form#territory-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#territory-status').html(span);
+      });
+  });
+</script>
+
 <form id="select-device-form" class="form-horizontal">
+{% csrf_token %}
 <fieldset>
 
 <!-- Single button -->
@@ -141,7 +214,7 @@ $(function() {
 </form>
 
 <form id="name-form" class="form-horizontal">
-
+{% csrf_token %}
 <fieldset>
 
 <!-- Form Name -->
@@ -150,20 +223,21 @@ $(function() {
 <!-- Text input-->
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="username">Device Name</label>  
+  <label class="col-md-4 control-label" for="name">Device Name</label>  
   <div class="col-md-4">
   {{ form.new_name }}
   <!--input id="username" name="id_new_name" value="{{ devices.0 }}" type="text" class="form-control input-md"-->
   </div>
   <div class="col-md-2">
-  <button id="submit-username" name="singlebutton" class="btn btn-primary">Rename</button>
+  <button id="submit-name" name="singlebutton" class="btn btn-primary">Rename</button>
   </div>
+  <div id="name-status" class="col-md-2"></div>
 </div>
 
 </form>
 
 <form id='device-status-form' class='form-horizontal'>
-
+{% csrf_token %}
 <!-- Status icon-->
 <div class="form-group">
   <label class="col-md-4 control-label" for="textinput">Connection Status</label>  
@@ -184,7 +258,7 @@ $(function() {
 </form>
 
 <form id='utility-company-form' class='form-horizontal'>
-
+{% csrf_token %}
 <fieldset>
 
 <legend>Utility Information</legend>
@@ -195,34 +269,40 @@ $(function() {
   <div class="col-md-6">
     {{ form.utility_companies }}
   </div>
+  <div id="company-status" class="col-md-2"></div>
 </div>
 
 </form>
 
 <form id='rate-plan-form' class='form-horizontal'>
-
+{% csrf_token %}
 <!-- Select Basic -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Rate Plan</label>
   <div class="col-md-6">
     {{ form.rate_plans }}
   </div>
+  <div id="rate-plan-status" class="col-md-2"></div>
 </div>
 
 </form>
 
 <form id='territory-form' class='form-horizontal'>
-
+{% csrf_token %}
 <!-- Select Basic -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Territory</label>
   <div class="col-md-6">
     {{ form.territories }}
   </div>
+  <div id="territory-status" class="col-md-2"></div>
 </div>
 
 </fieldset>
+</form>
 
+<form id='location-form' class='form-horizontal'>
+{% csrf_token %}
 <fieldset>
 
 <legend>Location Information</legend>
@@ -242,7 +322,9 @@ $(function() {
   </div>
 </div>
 </fieldset>
+</form>
 
+<form id='remove-device-form' class='form-horizontal'>
 <fieldset>
 
 <legend>Danger Zone</legend>
@@ -251,13 +333,59 @@ $(function() {
 <div class="form-group">
   <label class="col-md-4 control-label" for="remove-device">Remove Device</label>
   <div class="col-md-4">
-    <button id="remove-device" name="remove-device" class="btn btn-danger">Click to Remove This Device</button>
+    <button id="remove-device" data-toggle="modal" data-target="#remove-device-modal" name="remove-device" class="btn btn-danger">Click to Remove This Device</button>
   </div>
 </div>
 
 </fieldset>
-</form>
+</form> 
 
+<!-- remove-device-modal -->
+<div class="modal fade" id="remove-device-modal" tabindex="-1" role="dialog" aria-labelledby="remove-device-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Remove {{ devices.0.name }}?</h4>
+      </div>
+      <div class="modal-body" id="modalBody">
+        This action cannot be undone. All data associated with this device will also be deleted.
+        <br><br>
+        If you are sure you want to do this, enter the name of the device below:
+        <br><br><br>
+       <div class='col-md-6 col-md-offset-2'>
+        <input id="remove-name" name="id-remove-name" placeholder="Device Name" style="text-align:center;" type="text" class="form-control input-md">
+       </div>
+       <div class='col-md-2' id='remove-status'></div>
+       <button type="button" id="submit-remove-device" class="btn btn-danger btn-block">Remove Device</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#submit-remove-device').on("click", function(e) {
+  e.preventDefault();
+  $('#remove-status').html(span);
+  if ($('#remove-name').val() == "{{ devices.0.name }}") {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $.post('/settings/device/remove/{{ devices.0.serial }}',
+      {submitted_name: $('#remove-name').val()},
+      function(data) {
+        if (data.success) {
+          $('#modal-body').html('Device Removed.');
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+          span.removeClass('glyphicon-refresh');
+          span.removeClass('glyphicon-refresh-animate');
+          $('#remove-status').html(span);
+        }
+      }
+    );
+  }
+});
+</script>
 
 <script>
 $(function() {
@@ -272,8 +400,13 @@ $(function() {
 <script>
 $('#save-location').on("click", function(e) {
   e.preventDefault();
-  $.post('/settings/', 
-    {'group': 'device'},
+  latitude = marker.getPosition().k;
+  longitude = marker.getPosition().D;
+  $.post('/settings/device/location/{{ devices.0.serial }}',
+    {
+      latitude: latitude,
+      longitude: longitude,
+    },
     function(data) {
       console.log(data);
     }

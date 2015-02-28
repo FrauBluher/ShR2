@@ -40,62 +40,74 @@
 
 <!-- I could probably write a generic function for these. -->
 <script>
+function create_error_message(element, message) {
+   /*
+   <element>
+   <div class="alert alert-danger" role="alert">
+      Error: message
+   </div>
+   */
+   div = $('<div/>');
+   div.html("Error: "+message);
+   div.addClass('alert alert-danger error');
+   div.insertAfter(element);
+}
+
   $('#submit-username').on("click", function(e) {
     e.preventDefault();
     var span = $("<span/>");
     span.addClass('glyphicon-refresh glyphicon-refresh-animate');
     $('#username-status').html(span);
-    $.post('/settings/',
+    $.post('/settings/account/',
       $('form#username-form').serialize(),
       function (data) {
         span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
         if (data.success) {
           span.addClass("glyphicon glyphicon-ok");
           $('#id_new_username').val(data.username);
+          $('.error').remove();
         } else {
           span.addClass("glyphicon glyphicon-remove");
+          create_error_message($('#id_new_username'), data.errors[0]);
         }
         $('#username-status').html(span);
       });
   });
-</script>
 
-
-<script>
   $('#submit-password').on("click", function(e) {
     e.preventDefault();
     var span = $("<span/>");
     span.addClass('glyphicon-refresh glyphicon-refresh-animate');
     $('#password-status').html(span);
-    $.post('/settings/',
+    $.post('/settings/account/',
       $('form#password-form').serialize(),
       function (data) {
         span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
         if (data.success) {
           span.addClass("glyphicon glyphicon-ok");
+          $('.error').remove();
         } else {
           span.addClass("glyphicon glyphicon-remove");
+          create_error_message($('#id_password2'), data.errors[0]);
         }
         $('#password-status').html(span);
       });
   });
-</script>
 
-<script>
   $('#checkbox-container').children().on("click", function(e) {
-    $.post('/settings/',
+    $.post('/settings/account/',
       $('form#notification-form').serialize(),
       function (data) {
         console.log(data);
       });
   });
-</script>
 
-<script>
 $(function() {
   $('#id_new_username').val("{{ user.get_username }}")
 });
 </script>
+
+<div id='dumb'></div>
 
 <form id="username-form" class="form-horizontal">
 
