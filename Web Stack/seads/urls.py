@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^charts/default_chart/$', 'webapp.views.default_chart'),
     url(r'^new_device/key/', 'microdata.views.new_device_key'),
     url(r'^new_device/location/(?P<serial>\d+)/', 'microdata.views.new_device_location'),
+    url(r'^api/timestamp/$', 'microdata.views.timestamp'),
     
     # Development URLs
     url(r'^api/', include(router.urls)),
