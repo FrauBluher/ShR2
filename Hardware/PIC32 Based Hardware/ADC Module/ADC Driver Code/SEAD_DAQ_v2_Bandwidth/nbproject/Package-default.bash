@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/SEAD_DAQ_v2.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=SEAD_DAQ_v2.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=seaddaqv2/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/SEAD_DAQ_v2_Bandwidth.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=SEAD_DAQ_v2_Bandwidth.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=seaddaqv2bandwidth/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/seaddaqv2/bin
+makeDirectory ${TMPDIR}/seaddaqv2bandwidth/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/seaddaqv2.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/seaddaqv2bandwidth.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/seaddaqv2.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/seaddaqv2bandwidth.tar *
 checkReturnCode
 
 # Cleanup
