@@ -7,7 +7,7 @@
 {% block content %}
 {% include "base/navbar.html" %}
 {% include "base/sidebar.html" %}
-
+<!-- END Standard Theme Template -->
 <script>
 $(function() {
 	$.get('/settings/',
@@ -60,7 +60,10 @@ function dashboard() {
 	);
 }
 </script>
-<!-- END Standard Theme Template -->
+
+<script src='https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places' type="text/javascript"></script>;
+
+
 <div id="page-wrapper">
 	<div class="container-fluid">
 		<div class="row">

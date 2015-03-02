@@ -346,8 +346,7 @@ def settings(request):
       for device in devices:
         device.online = device_is_online(device)
       context['devices'] = devices
-      context['form'] = SettingsForm(device=devices.first())
-      template = 'base/settings_device.html'
+      template = 'base/settings_device_base.html'
 
     elif request.GET.get('account', False):
       context['form'] = SettingsForm(user=request.user)
@@ -356,6 +355,20 @@ def settings(request):
     elif request.GET.get('dashboard', False):
       template = 'base/settings_dashboard.html'
     return render(request, template, context)
+
+@login_required(login_url='/signin/')
+def settings_change_device(request):
+   context = {}
+   if request.method == 'GET':
+      serial = request.GET.get('serial')
+      if serial:
+         user = User.objects.get(username = request.user)
+         device = Device.objects.get(serial=serial)
+         if device.owner == user:
+            context['device'] = device
+            context['form'] = SettingsForm(device=device)
+   return render(request, 'base/settings_device.html', context)
+         
 
 @login_required(login_url='/signin/')
 def settings_account(request):

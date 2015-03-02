@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^settings/$', 'webapp.views.settings'),
     url(r'^settings/account/$', 'webapp.views.settings_account'),
     url(r'^settings/device/(?P<serial>\d+)$', 'webapp.views.settings_device'),
+    url(r'^settings/change_device/$', 'webapp.views.settings_change_device'),
     url(r'^settings/dashboard/$', 'webapp.views.settings_dashboard'),
     url(r'^settings/device/status/$', 'webapp.views.device_status'),
     url(r'^settings/device/location/(?P<serial>\d+)$', 'webapp.views.device_location'),
