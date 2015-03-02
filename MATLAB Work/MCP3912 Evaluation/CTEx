@@ -1,0 +1,11 @@
+close all;
+%% MCP3912 Initial Testing
+% Linear Sweep 0-8kHz
+Y = fft(VarName2, 4096);
+Pyy = Y.*conj(Y) / 4096;
+f = 16000/4096*(0:2047);
+
+plot(f, Pyy(1:2048))
+
+title('Power spectral density: Sweep 0 - 8 kHz');
+xlabel('Frequency (Hz)');
