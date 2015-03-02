@@ -36,7 +36,8 @@
 #define MAX32
 
 #include <stdint.h>
-#define BUFFERLENGTH 13*2000
+//changed buffer length to satisfy 1hz because it's configured for 3.90625Ksamples/sec
+#define BUFFERLENGTH 13*3906
 #define END_MESSAGE 8
 
 enum {

@@ -33,10 +33,14 @@ char *create_message(char *talker, char *message_type, uint8_t arg_num, ...)
 	va_start(valist, arg_num);
 	//access all the arguments in the valist
 	for (i = 0; i < arg_num; i++) {
+		//adds all number of things
 		number = va_arg(valist, uint32_t);
 		sprintf(buffer + strlen(buffer), ",%u", number);
 	}
-	strcat(buffer, "\r\n");
+	//end of message
+	strcat(buffer, "*");
+	//appends the checksum to the end of the message
+	sprintf(buffer + strlen(buffer), "%x\r\n", checksum(buffer));
 	va_end(valist);
 	return strdup(buffer);
 }

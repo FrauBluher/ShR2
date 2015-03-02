@@ -78,7 +78,7 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 
 	//24 bit two's compliment
 	MCP.offCalCh0Reg.OFFCAL = 0x0;
-	MCP.offCalCh1Reg.OFFCAL = 0x0;//-5590;
+	MCP.offCalCh1Reg.OFFCAL = -5590;//-5590;
 	MCP.offCalCh2Reg.OFFCAL = 0x0;
 	MCP.offCalCh3Reg.OFFCAL = 0x0;
 
