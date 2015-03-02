@@ -1,0 +1,49 @@
+<!-- TODO devices dropdown needs implementing. Everything is using devices.0 right now. -->
+<script>
+$('.device-dropdown').click(function() {
+   $('.selected-device').html($(this).html()+" ");
+   span = $('<span/>')
+   span.addClass('caret');
+   $('.selected-device').append(span);
+   var serial = $(this).attr('id');
+   $('.selected-device').attr('id',serial);
+   $.get('/settings/change_device/',
+      {'serial': serial},
+      function(data) {
+         $('#forms-container').html(data);
+      }
+   );
+});
+
+$(function() {
+   $.get('/settings/change_device/',
+      {'serial': '{{ devices.0.serial }}'},
+      function(data) {
+         $('#forms-container').html(data);
+      }
+   );
+});
+</script>
+
+<form id="select-device-form" class="form-horizontal">
+{% csrf_token %}
+<fieldset>
+
+<!-- Single button -->
+<div class="form-group">
+   <label class="col-md-4 control-label" for="textinput">Select Device</label>  
+   <div class="btn-group">
+      <button type="button" id='{{ devices.0.serial }}' class="selected-device btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+         {{ devices.0 }} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+         {% for device in devices %}
+            <li><a href="#" class='device-dropdown' id='{{ device.serial }}'>{{ device }}</a></li>
+         {% endfor %}
+      </ul>
+   </div>
+</div>
+</fieldset>
+</form>
+
+<div id='forms-container'></div>

@@ -1,8 +1,5 @@
 from django.shortcuts import render
-from django.shortcuts import render_to_response
-from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
 from microdata.models import Device, Event, Appliance
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
@@ -11,20 +8,29 @@ from django.http import HttpResponse
 from django.conf import settings
 from sets import Set
 from collections import defaultdict
-from urllib2 import Request, urlopen, URLError
-from pyzipcode import ZipCodeDatabase
+from django.contrib.auth import authenticate, login
+
+from django.db import IntegrityError
 
 from datetime import datetime
 import json
 import time
-import timeseries as ts
 import re
 from influxdb import client as influxdb
 
 # Create your views here.
 
+def make_choices(queryset):
+  choices = []
+  i = 1
+  for choice in queryset:
+    choices.append((str(i), choice))
+    i += 1
+  return choices
+
 # UserForm is a customized version of an AuthenticationForm
-class UserForm(forms.Form):
+class SettingsForm(forms.Form):
+  # User settings
   new_username = forms.CharField(max_length=254,
                                  min_length=1,
                                  required=False,
@@ -33,13 +39,7 @@ class UserForm(forms.Form):
   error_messages = {
     'password_mismatch': ("The two password fields didn't match."),
   }
-  choices = [
-    ("1", "Don't send any email"),
-    ("2", "Weekly consumption details"),
-    ("3", "Monthly consumption details"),
-    ("4", "When we detect irregular household consumption"),
-    ("5", "When we detect an irregular device"),
-  ]
+  choices = []
   password1 = forms.CharField(label=("Password"),
       widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
       required=False)
@@ -56,31 +56,7 @@ class UserForm(forms.Form):
       required=False
   )
 
-  def __init__(self, *args, **kwargs):
-    user = kwargs.pop('user', None)
-    super(UserForm, self).__init__(*args, **kwargs)
-    if user:
-      self.choices = []
-      i = 1
-      for choice in user.usersettings.notifications.all():
-        self.choices.append((str(i), choice))
-        i += 1
-      self.fields['notifications'] = forms.ChoiceField(
-        widget=forms.CheckboxSelectMultiple(),
-        choices=(
-           self.choices
-          ),
-        required=False
-  )
-
-  def clean_password2(self):
-    password1 = self.cleaned_data.get("password1")
-    password2 = self.cleaned_data.get("password2")
-    if password1 and password2 and password1 != password2:
-        return None
-    return password2
-
-class DeviceForm(forms.Form):
+  # Device settings
   new_name = forms.CharField(max_length=254,
                              min_length=1,
                              required=False,
@@ -91,32 +67,100 @@ class DeviceForm(forms.Form):
   utility_company_choices = []
   rate_plan_choices = []
   territory_choices = []
-  utility_companies = forms.ModelChoiceField(
-    utility_company_choices,
-    required=False)
-  rate_plans = forms.ModelChoiceField(
-    rate_plan_choices,
-    required=False)
-  territories = forms.ModelChoiceField(
-    territory_choices,
-    required=False)
+
+  utility_companies = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'company-dropdown'
+          }
+        ),
+    choices=(
+      utility_company_choices
+    ),
+    required=False
+  )
+  rate_plans = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'rate-dropdown'
+          }
+        ),
+    choices=(
+      rate_plan_choices
+    ),
+    required=False
+  )
+  territories = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'territory-dropdown'
+          }
+        ),
+    choices=(
+      territory_choices
+    ),
+    required=False
+  )
 
   def __init__(self, *args, **kwargs):
+    user = kwargs.pop('user', None)
     device = kwargs.pop('device', None)
-    super(DeviceForm, self).__init(*args, **kwargs)
+    super(SettingsForm, self).__init__(*args, **kwargs)
+    if user:
+      self.choices = make_choices(user.usersettings.notifications.all())
+      self.fields['notifications'] = forms.ChoiceField(
+        widget=forms.CheckboxSelectMultiple(),
+        choices=(
+           self.choices
+          ),
+        required=False
+      )
     if device:
-      self.utility_company_choices = device.devicesettings.utility_companies.all()
-      self.rate_plan_choices = device.devicesettings.rate_plans.all()
-      self.territory_choices = device.devicesettings.territories.all()
-      utility_companies = forms.ModelChoiceField(
-        utility_company_choices,
-        required=False)
-      rate_plans = forms.ModelChoiceField(
-        rate_plan_choices,
-        required=False)
-      territories = forms.ModelChoiceField(
-        territory_choices,
-        required=False)
+      self.utility_company_choices = make_choices(device.devicesettings.utility_companies.all())
+      self.rate_plan_choices = make_choices(device.devicesettings.rate_plans.all())
+      self.territory_choices = make_choices(device.devicesettings.territories.all())
+
+      self.fields['utility_companies'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'company-dropdown'
+          }
+        ),
+        choices=(
+          self.utility_company_choices
+        ),
+        required=False
+      )
+      self.fields['rate_plans'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'rate-dropdown'
+          }
+        ),
+        choices=(
+          self.rate_plan_choices
+        ),
+        required=False
+      )
+      self.fields['territories'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'territory-dropdown'
+          }
+        ),
+        choices=(
+          self.territory_choices
+        ),
+        required=False
+      )
+
+  def clean_password2(self):
+    password1 = self.cleaned_data.get("password1")
+    password2 = self.cleaned_data.get("password2")
+    if password1 and password2 and password1 != password2:
+        raise forms.ValidationError(self.error_messages['password_mismatch'])
+    return password2
+
 
 def chartify(data):
    warnings.warn("chartify method no longer used for InfluxDB.", DeprecationWarning)
@@ -288,6 +332,7 @@ def device_status(request):
    context['connected'] = connected
    return HttpResponse(json.dumps(context), content_type="application/json") 
 
+# TODO form only generates for devices.first()
 @csrf_exempt
 @login_required(login_url='/signin/')
 def settings(request):
@@ -301,46 +346,157 @@ def settings(request):
       for device in devices:
         device.online = device_is_online(device)
       context['devices'] = devices
-      template = 'base/settings_device.html'
+      template = 'base/settings_device_base.html'
 
     elif request.GET.get('account', False):
-      context['form'] = UserForm(user=request.user)
+      context['form'] = SettingsForm(user=request.user)
       template = 'base/settings_account.html'
 
     elif request.GET.get('dashboard', False):
       template = 'base/settings_dashboard.html'
     return render(request, template, context)
 
+@login_required(login_url='/signin/')
+def settings_change_device(request):
+   context = {}
+   if request.method == 'GET':
+      serial = request.GET.get('serial')
+      if serial:
+         user = User.objects.get(username = request.user)
+         device = Device.objects.get(serial=serial)
+         if device.owner == user:
+            context['device'] = device
+            context['form'] = SettingsForm(device=device)
+   return render(request, 'base/settings_device.html', context)
+         
 
-  elif request.method == 'POST':
+@login_required(login_url='/signin/')
+def settings_account(request):
+  context = {}
+  errors = Set()
+  if request.method == 'POST':
     context['success'] = False
+    form = SettingsForm(request.POST)
 
-    group = request.POST.get('group')
-    if group == 'device':
-      
-      context['success'] = True
-
-    else:
+    if form.is_valid() or request.POST.get('notifications', False):
+      user = User.objects.get(username = request.user)
+      new_username = form.cleaned_data['new_username']
+      password1 = form.cleaned_data['password1']
+      password2 = form.cleaned_data['password2']
+      notifications = request.POST.get('notifications')
       template = 'base/settings_account.html'
-      form = UserForm(request.POST, user=None)
-      if form.is_valid() or request.POST.get('notifications', False):
-        user = User.objects.get(username = request.user)
-        new_username = form.cleaned_data['new_username']
-        password1 = form.cleaned_data['password1']
-        password2 = form.cleaned_data['password2']
-        notifications = request.POST.get('notifications')
-        if new_username:
+
+      if new_username:
+        try:
           user.username = new_username
           user.save()
           context['success'] = True
           context['username'] = user.username
-        elif password1 and password2 and form.clean_password2():
+        except IntegrityError:
+          errors.add("Username taken")
+
+      if password1 and password2:
+        try:
+          form.clean_password2()
           user.set_password(password1)
           user.save()
+          auth_user = authenticate(username=request.user, password=password1)
+          if user is not None:
+            login(request, auth_user)
           context['success'] = True
-        elif notifications:
-          context['success'] = True
+        except forms.ValidationError, e:
+          errors.add('; '.join(e.messages))
+
+      if notifications:
+        #TODO 
+        context['success'] = True
+    
+    context['errors'] = list(errors)
     return HttpResponse(json.dumps(context), content_type="application/json")
   else: return render(request, 'base/settings.html')
 
+@login_required(login_url='/signin/')
+def settings_device(request, serial):
+  context = {}
+  if request.method == 'POST':
+    context['success'] = False
+    form = SettingsForm(request.POST)
+
+    if form.is_valid() or request.POST.get('notifications', False):
+      user = User.objects.get(username = request.user)
+      new_name = form.cleaned_data['new_name']
+      utility_companies = form.cleaned_data['utility_companies']
+      rate_plans = form.cleaned_data['rate_plans']
+      territories = form.cleaned_data['territories']
+      template = 'base/settings_device.html'
+      device = Device.objects.get(serial=serial)
+
+      if device.owner == user:
+        if new_name:
+          device.name = new_name
+          device.save()
+          context['new_name'] = device.name
+          context['success'] = True
+        
+        if utility_companies:
+          #TODO
+          context['success'] = True
+
+        if rate_plans:
+          #TODO
+          context['success'] = True
       
+        if territories:
+          #TODO
+          context['success'] = True        
+
+    return HttpResponse(json.dumps(context), content_type="application/json")
+  else: return render(request, 'base/settings.html')
+
+@login_required(login_url='/signin/')
+def settings_dashboard(request):
+  return render(request, 'base/settings.html')
+
+@login_required(login_url='/signin/')
+@csrf_exempt
+def device_location(request, serial):
+  context = {}
+  context['success'] = False
+  if request.method == 'POST':
+    latitude = float(request.POST.get('latitude'))
+    longitude = float(request.POST.get('longitude'))
+    device = Device.objects.get(serial=serial)
+    user = User.objects.get(username=request.user)
+    if latitude and longitude and device.owner == user:
+      device.position = Geoposition(latitude, longitude)
+      device.save()
+      context['success'] = True
+  return HttpResponse(json.dumps(context), content_type="application/json")
+
+@login_required(login_url='/signin/')
+@csrf_exempt
+def remove_device(request, serial):
+  context = {}
+  context['success'] = False
+  if request.method == 'POST':
+    user = User.objects.get(username=request.user)
+    device = Device.objects.get(serial=serial)
+    submitted_name = request.POST.get('submitted_name')
+    if device.owner == user and submitted_name == device.name:
+      device.delete()
+      context['success'] = True
+  return HttpResponse(json.dumps(context), content_type="application/json")
+
+
+
+
+
+
+
+
+
+
+
+
+
+

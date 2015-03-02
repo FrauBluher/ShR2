@@ -1,4 +1,4 @@
 #!/bin/bash
 sudo rmmod ftdi_sio
 sudo rmmod usbserial
-sudo ./largeread
+sudo nice --19 ./largeread

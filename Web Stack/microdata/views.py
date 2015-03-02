@@ -19,6 +19,7 @@ from influxdb import client as influxdb
 
 from geoposition import Geoposition
 import json
+import time
 
 
 class KeyForm(forms.Form):
@@ -113,5 +114,9 @@ def new_device_key(request):
              'error':error,
              'created':created
              })
+
+def timestamp(request):
+   milliseconds = time.time()*1000
+   return HttpResponse(json.dumps(milliseconds), content_type="application/json")
 
     
