@@ -115,7 +115,18 @@ $('#btn-status').on('click', function(e) {
 });
 
 $(function() {
-  $('#id_new_name').val("{{ device }}")
+  $('#id_new_name').val("{{ device }}");
+  {% for choice in utility_company_choices %}
+      $('#company-dropdown').val("{{ choice }}")
+  {% endfor %}
+
+  {% for choice in rate_plan_choices %}
+      $('#rate-dropdown').val("{{ choice }}")
+  {% endfor %}
+
+  {% for choice in territory_choices %}
+      $('#territory-dropdown').val("{{ choice }}")
+  {% endfor %}
 });
 
   $('#submit-name').on("click", function(e) {

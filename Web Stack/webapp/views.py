@@ -9,6 +9,7 @@ from django.conf import settings
 from sets import Set
 from collections import defaultdict
 from django.contrib.auth import authenticate, login
+from webapp.models import Notification, UtilityCompany, RatePlan, Territory
 
 from django.db import IntegrityError
 
@@ -22,10 +23,8 @@ from influxdb import client as influxdb
 
 def make_choices(queryset):
   choices = []
-  i = 1
   for choice in queryset:
-    choices.append((str(i), choice))
-    i += 1
+    choices.append((choice.pk, choice.description))
   return choices
 
 # UserForm is a customized version of an AuthenticationForm
@@ -39,7 +38,6 @@ class SettingsForm(forms.Form):
   error_messages = {
     'password_mismatch': ("The two password fields didn't match."),
   }
-  choices = []
   password1 = forms.CharField(label=("Password"),
       widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
       required=False)
@@ -47,11 +45,13 @@ class SettingsForm(forms.Form):
       widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
       help_text=("Enter the same password as above, for verification."),
       required=False)
+
+  notification_choices = []
   notifications = forms.ChoiceField(
       widget=forms.CheckboxSelectMultiple(),
       # Default choices
       choices=(
-         choices,
+         notification_choices,
         ),
       required=False
   )
@@ -107,18 +107,18 @@ class SettingsForm(forms.Form):
     device = kwargs.pop('device', None)
     super(SettingsForm, self).__init__(*args, **kwargs)
     if user:
-      self.choices = make_choices(user.usersettings.notifications.all())
+      self.notification_choices = make_choices(Notification.objects.all())
       self.fields['notifications'] = forms.ChoiceField(
         widget=forms.CheckboxSelectMultiple(),
         choices=(
-           self.choices
+           self.notification_choices
           ),
         required=False
       )
     if device:
-      self.utility_company_choices = make_choices(device.devicesettings.utility_companies.all())
-      self.rate_plan_choices = make_choices(device.devicesettings.rate_plans.all())
-      self.territory_choices = make_choices(device.devicesettings.territories.all())
+      self.utility_company_choices = make_choices(UtilityCompany.objects.all())
+      self.rate_plan_choices = make_choices(RatePlan.objects.all())
+      self.territory_choices = make_choices(Territory.objects.all())
 
       self.fields['utility_companies'] = forms.ChoiceField(
         widget=forms.Select(attrs={
@@ -154,12 +154,33 @@ class SettingsForm(forms.Form):
         required=False
       )
 
+  def get_notifications(self, *args, **kwargs):
+    user = kwargs.pop('user', None)
+    if user:
+      return make_choices(user.usersettings.notifications.all())
+
+  def get_utility_companies(self, *args, **kwargs):
+    device = kwargs.pop('device', None)
+    if device:
+      return make_choices(device.devicesettings.utility_companies.all())
+
+  def get_rate_plans(self, *args, **kwargs):
+    device = kwargs.pop('device', None)
+    if device:
+      return make_choices(device.devicesettings.rate_plans.all())
+
+  def get_territories(self, *args, **kwargs):
+    device = kwargs.pop('device', None)
+    if device:
+      return make_choices(device.devicesettings.territories.all())
+
   def clean_password2(self):
     password1 = self.cleaned_data.get("password1")
     password2 = self.cleaned_data.get("password2")
     if password1 and password2 and password1 != password2:
         raise forms.ValidationError(self.error_messages['password_mismatch'])
     return password2
+
 
 
 def chartify(data):
@@ -215,9 +236,9 @@ def group_by_mean(serial, unit, start, stop):
    queries = []
    if (unit == 'y'): unit = 'm'
    if (start == ''): start = 'now() - 1d'
-   else: start = '\''+datetime.datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: start = '\''+datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
-   else: stop = '\''+datetime.datetime.fromtimestamp(int(stop)).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: stop = '\''+datetime.fromtimestamp(int(stop)).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
@@ -238,7 +259,7 @@ def group_by_mean(serial, unit, start, stop):
       # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
-         s = [s[0],s[2]]
+         s = [s[0]-28800,s[2]]
          new_group.append(s)
       to_merge += new_group
    data = merge_subs(to_merge)
@@ -257,6 +278,9 @@ def group_by_mean(serial, unit, start, stop):
 def default_chart(request):
    if request.method == 'GET':
       context = {}
+      user = User.objects.get(username=request.user)
+      devices = Device.objects.filter(owner=user)
+      device = devices.first()
       if (device):
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          result = db.query('list series')[0]
@@ -349,7 +373,12 @@ def settings(request):
       template = 'base/settings_device_base.html'
 
     elif request.GET.get('account', False):
-      context['form'] = SettingsForm(user=request.user)
+      form = SettingsForm(user=request.user)
+      context['form'] = form
+      user = User.objects.get(username=request.user)
+      context['notification_choices'] = []
+      for n in user.usersettings.notifications.all():
+         context['notification_choices'].append(n.pk)
       template = 'base/settings_account.html'
 
     elif request.GET.get('dashboard', False):
@@ -365,8 +394,18 @@ def settings_change_device(request):
          user = User.objects.get(username = request.user)
          device = Device.objects.get(serial=serial)
          if device.owner == user:
+            form = SettingsForm(device=device)
             context['device'] = device
-            context['form'] = SettingsForm(device=device)
+            context['form'] = form
+            context['utility_company_choices'] = []
+            for c in device.devicesettings.utility_companies.all():
+               context['utility_company_choices'].append(c.pk)
+            context['rate_plan_choices'] = []
+            for r in device.devicesettings.rate_plans.all():
+               context['rate_plan_choices'].append(r.pk)
+            context['territory_choices'] = []
+            for t in device.devicesettings.territories.all():
+               context['territory_choices'].append(t.pk)
    return render(request, 'base/settings_device.html', context)
          
 
@@ -374,11 +413,24 @@ def settings_change_device(request):
 def settings_account(request):
   context = {}
   errors = Set()
+  user = User.objects.get(username = request.user)
   if request.method == 'POST':
     context['success'] = False
     form = SettingsForm(request.POST)
+    notifications = request.POST.getlist('notifications', False)
+    context['notifications'] = []
+    if notifications:
+      # disassociate all notifications
+      user.usersettings.notifications.clear()
+      for notification in notifications:
+         # associate chosen notifications
+         context['notifications'].append(notification)
+         n = Notification.objects.get(pk=notification)
+         user.usersettings.notifications.add(n)
+         user.save()
+      context['success'] = True
 
-    if form.is_valid() or request.POST.get('notifications', False):
+    elif form.is_valid():
       user = User.objects.get(username = request.user)
       new_username = form.cleaned_data['new_username']
       password1 = form.cleaned_data['password1']
@@ -406,10 +458,6 @@ def settings_account(request):
           context['success'] = True
         except forms.ValidationError, e:
           errors.add('; '.join(e.messages))
-
-      if notifications:
-        #TODO 
-        context['success'] = True
     
     context['errors'] = list(errors)
     return HttpResponse(json.dumps(context), content_type="application/json")
@@ -420,35 +468,62 @@ def settings_device(request, serial):
   context = {}
   if request.method == 'POST':
     context['success'] = False
-    form = SettingsForm(request.POST)
+    user = User.objects.get(username=request.user)
+    device = Device.objects.get(serial=serial)
+    if device.owner == user:
+       form = SettingsForm(request.POST)
+       
+       utility_company = request.POST.get('utility_company', False)
+       context['utility_companies'] = []
+       rate_plan = request.POST.get('rate_plans', False)
+       context['rate_plan'] = []
+       territory = request.POST.get('territories', False)
+       context['territory'] = []
+       if utility_company:
+         # disassociate utility_company
+         device.devicesettings.utility_companies.clear()
+         # associate utility_company
+         context['utility_companies'].append(utility_company)
+         c = UtilityCompany.objects.get(pk=utility_company)
+         device.devicesettings.utility_companies.add(c)
+         device.save()
+         context['success'] = True
 
-    if form.is_valid() or request.POST.get('notifications', False):
-      user = User.objects.get(username = request.user)
-      new_name = form.cleaned_data['new_name']
-      utility_companies = form.cleaned_data['utility_companies']
-      rate_plans = form.cleaned_data['rate_plans']
-      territories = form.cleaned_data['territories']
-      template = 'base/settings_device.html'
-      device = Device.objects.get(serial=serial)
+       elif rate_plan:
+        # disassociate utility_company
+         device.devicesettings.rate_plans.clear()
+         # associate utility_company
+         context['rate_plan'].append(rate_plan)
+         r = RatePlan.objects.get(pk=rate_plan)
+         device.devicesettings.rate_plans.add(r)
+         device.save()
+         context['success'] = True
+         
+       elif territory:
+         # disassociate utility_company
+         device.devicesettings.territories.clear()
+         # associate utility_company
+         context['territory'].append(territory)
+         t = Territory.objects.get(pk=territory)
+         device.devicesettings.territories.add(t)
+         device.save()
+         context['success'] = True
 
-      if device.owner == user:
-        if new_name:
-          device.name = new_name
-          device.save()
-          context['new_name'] = device.name
-          context['success'] = True
-        
-        if utility_companies:
-          #TODO
-          context['success'] = True
+       elif form.is_valid():
+         user = User.objects.get(username = request.user)
+         new_name = form.cleaned_data['new_name']
+         utility_companies = form.cleaned_data['utility_companies']
+         rate_plans = form.cleaned_data['rate_plans']
+         territories = form.cleaned_data['territories']
+         template = 'base/settings_device.html'
+         device = Device.objects.get(serial=serial)
 
-        if rate_plans:
-          #TODO
-          context['success'] = True
-      
-        if territories:
-          #TODO
-          context['success'] = True        
+         if device.owner == user:
+           if new_name:
+             device.name = new_name
+             device.save()
+             context['new_name'] = device.name
+             context['success'] = True       
 
     return HttpResponse(json.dumps(context), content_type="application/json")
   else: return render(request, 'base/settings.html')

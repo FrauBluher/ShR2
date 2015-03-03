@@ -16,7 +16,6 @@ class UserSettings(models.Model):
    notifications = models.ManyToManyField(Notification)
 
 
-
 class UtilityCompany(models.Model):
    description = models.CharField(max_length=300)
    #TODO add model fields to describe actions
