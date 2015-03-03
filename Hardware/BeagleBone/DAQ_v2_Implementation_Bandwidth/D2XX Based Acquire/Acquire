@@ -1,0 +1,5 @@
+#!/bin/bash
+sudo rmmod ftdi_sio
+sudo rmmod usbserial
+echo $0 $*
+sudo nice --19 ./largeread $*
