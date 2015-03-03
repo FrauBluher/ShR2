@@ -15,6 +15,7 @@ $SEDAT,93,1421885767
 $SEDAT,92,1421885767
 $SEDAT,91,1424982780
 
+$SEDAT,91,1424982780*AF
 
 SE is the talker id (SEAD)
 DAT is the type of message (data)

@@ -3,7 +3,7 @@
  * 	hcrute@ucsc.edu
  * 	
  * header file for the character buffer, and data buffer
- * character buffer is size 256, and fifo
+ * character buffer is size 255, and fifo
  * 
  */
 

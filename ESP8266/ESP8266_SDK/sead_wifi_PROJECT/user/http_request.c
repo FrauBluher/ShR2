@@ -191,7 +191,7 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	serv_conn->proto.tcp=&tcp;
 	//specify port number 80 and ip address
 	serv_conn->proto.tcp->local_port=espconn_port();
-	serv_conn->proto.tcp->remote_port=80;
+	serv_conn->proto.tcp->remote_port=443;
 	os_memcpy(serv_conn->proto.tcp->remote_ip, &serv_ip->addr, 4);
 	//specify callback functions for different situations
 	espconn_regist_connectcb(serv_conn, networkConnectedCb);
