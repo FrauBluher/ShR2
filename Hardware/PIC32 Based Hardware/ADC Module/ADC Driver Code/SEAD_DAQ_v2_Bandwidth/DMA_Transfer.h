@@ -36,8 +36,7 @@
 #define MAX32
 
 #include <stdint.h>
-//changed buffer length to satisfy 1hz because it's configured for 3.90625Ksamples/sec
-#define BUFFERLENGTH 13*3906
+#define BUFFERLENGTH 13*2000
 #define END_MESSAGE 8
 
 enum {
@@ -61,11 +60,6 @@ uint8_t BufferToSpi_TransferA(uint16_t transferSize);
 uint8_t BufferToSpi_TransferB(uint16_t transferSize);
 uint8_t BufferToUART_TransferA(uint16_t transferSize);
 uint8_t BufferToUART_TransferB(uint16_t transferSize);
-
-uint8_t BufferToUART_Transfer(uint8_t *buffer, uint16_t transferSize);
-void BufferToPMP_Transfer(uint8_t *buffer, uint16_t transferSize);
-uint8_t CurrentBuffer(void);
-
 void BufferToPMP_Init(void);
 void StartSPIAcquisition(uint8_t buffer);
 void DMAStartUARTRX(void);
