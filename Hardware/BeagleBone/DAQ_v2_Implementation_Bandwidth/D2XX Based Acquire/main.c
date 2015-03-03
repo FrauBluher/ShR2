@@ -17,6 +17,7 @@
 
 #include "ftd2xx.h"
 #include "lib_crc.h"
+#include "daq_config.h"
 
 #define BUF_SIZE 0x10000
 
@@ -52,10 +53,10 @@ static uint8_t tmpBuff2[BUF_SIZE];
 static char exit_thread = 0;
 static char current_buffer = BUFFER_A;
 
+//reads from the usb uart fifio
 void *read_fifo(void *pArgs)
 {
 	(void)pArgs;
-
 	while(exit_thread != 1) {
 		if (current_buffer == BUFFER_A) {
 			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
@@ -86,81 +87,14 @@ void *read_fifo(void *pArgs)
 		}
 	}
 	(void)FT_Close(ftFIFO);
-	
 	return NULL;
 }
 
-void print_usage()
+//goes over the main acquire loop
+void acquire_loop()
 {
-	printf("Usage: Acquire [-h] [-v] [-p port] [-b bandwidth] [-f file] [-c channels]\n");
-}
-
-int main(int argc, char *argv[])
-{
-	bool verbose = false;
-	pthread_t thread_id;
 	int i;
-	FT_STATUS ftStatus;
-	(void)argc; /* Deliberately unused parameter */
-	(void)argv; /* Deliberately unused parameter */
-	//error variable for getopt [-p usb port number][-b bandwidth][-f file]
-	opterr = 0;
-	int c;
-	while ((c = getopt (argc, argv, "hvp:b:f:c:")) != -1) {
-		switch (c)
-		{
-		case 'h':
-			print_usage();
-			break;
-		case 'v':
-			verbose = true;
-			break;
-		case 'p':
-			iport = strtol(optarg, (char **)NULL, 10);
-			break;
-		case 'b':
-			bandwidth = strtol(optarg, (char **)NULL, 10);
-			break;
-		case 'f':
-			outfile = optarg;
-			break;
-		case 'c':
-			channels = strtol(optarg, (char **)NULL, 10);
-			break;
-		case '?':
-			if (optopt == 'c' || optopt =='f' || optopt == 'b' || optopt == 'p')
-				fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-			else if (isprint (optopt))
-				fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-			else
-				fprintf (stderr,
-                   "Unknown option character `\\x%x'.\n",
-                   optopt);
-			return 1;
-		default:
-			abort ();
-		}
-	}
-	//print out the 
-	if (verbose) {
-		printf("iport %d\n", iport);
-		printf("bandwidth %d\n", bandwidth);
-		printf("outfile: %s\n", outfile);
-		printf("channels: %d\n", channels);
-	}
-	
-	fh = fopen(outfile, "w");
-	if(fh == NULL) {
-		printf("Cant open source file\n");
-		return 1;
-	}	
-	ftStatus = FT_Open(0, &ftFIFO);
-	if(ftStatus != FT_OK) {
-		printf("FT_Open(%d) failed, check that ftdi_sio and"
-			"usbserial are unloaded.\r\n Use rmmod.\r\n",
-			iport);
-		return 1;
-	}
+	pthread_t thread_id;
 	FT_ResetDevice(ftFIFO);
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
 	pthread_create(&thread_id, NULL, &read_fifo, NULL);
@@ -170,7 +104,6 @@ int main(int argc, char *argv[])
 	int32_t ch3 = 0;
 	while(1) {
 		if(runningTotalA >= 26007 && current_buffer == BUFFER_B) {
-
 			for (i = 0; i < 26000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
 			}
@@ -191,7 +124,7 @@ int main(int argc, char *argv[])
 				ch3 |= (tmpBuff[i+11] << 16);
 				ch3 |= (tmpBuff[i+12] << 8);
 				ch3 |= (tmpBuff[i+10]);
-				
+				//sign extension
 				ch0 = ((ch0 << 8) >> 8);
 				ch1 = ((ch1 << 8) >> 8);
 				ch2 = ((ch2 << 8) >> 8);
@@ -227,7 +160,7 @@ int main(int argc, char *argv[])
 				ch3 |=  (tmpBuff2[i+11] << 16);
 				ch3 |=  (tmpBuff2[i+12] << 8);
 				ch3 |=  (tmpBuff2[i+10]);
-				
+				//sign extension
 				ch0 = ((ch0 << 8) >> 8);
 				ch1 = ((ch1 << 8) >> 8);
 				ch2 = ((ch2 << 8) >> 8);
@@ -245,7 +178,101 @@ int main(int argc, char *argv[])
 			rxCrc = 0xFFFF;
 		}
 	}
+	return;
+}
+
+//prints the usage for the program
+void print_usage()
+{
+	printf("Usage: Acquire [-h] [-v] [-p port] [-b bandwidth] [-f file] [-c channels]\n");
+	return;
+}
+
+//gets options, and populates global option variables
+void get_options(int argc, char **argv)
+{
+	bool verbose = false;
+	opterr = 0;
+	int c;
+	while ((c = getopt (argc, argv, "hvp:b:f:c:")) != -1) {
+		switch (c)
+		{
+		case 'h':
+			print_usage();
+			break;
+		case 'v':
+			verbose = true;
+			break;
+		case 'p':
+			iport = strtol(optarg, (char **)NULL, 10);
+			break;
+		case 'b':
+			bandwidth = strtol(optarg, (char **)NULL, 10);
+			break;
+		case 'f':
+			outfile = optarg;
+			break;
+		case 'c':
+			channels = strtol(optarg, (char **)NULL, 10);
+			break;
+		case '?':
+			if (optopt == 'c' || optopt =='f' || optopt == 'b' || optopt == 'p')
+				fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+			else if (isprint (optopt))
+				fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+			else
+				fprintf (stderr, "Unknown option character `\\x%x'.\n",
+                   optopt);
+			exit(1);
+		default:
+			abort ();
+		}
+	}
+	//print out the option config if we are in verbose mode.
+	if (verbose) {
+		printf("iport %d\n", iport);
+		printf("bandwidth %d\n", bandwidth);
+		printf("outfile: %s\n", outfile);
+		printf("channels: %d\n", channels);
+	}
+	return;
+}
+
+//packages config struct from the input parameters
+daq_config package_config()
+{
+	daq_config config;
+	return config;
+}
+
+//sends the config struct over the ft tx
+void send_config(daq_config config)
+{
+	return;
+}
+
+int main(int argc, char *argv[])
+{
+	FT_STATUS ftStatus;
+	//process options
+	get_options(argc, argv);
+	//file handle
+	fh = fopen(outfile, "w");
+	if(fh == NULL) {
+		printf("Cant open source file\n");
+		exit(1);
+	}
+	ftStatus = FT_Open(0, &ftFIFO);
+	if(ftStatus != FT_OK) {
+		printf("FT_Open(%d) failed, check that ftdi_sio and"
+			"usbserial are unloaded.\r\n Use rmmod.\r\n",
+			iport);
+		exit(1);
+	}
+	daq_config config = package_config();
+	send_config(config);
+	acquire_loop();
 	exit_thread = 1;
 	fclose(fh);
-	return 0;
+	exit(0);
 }
