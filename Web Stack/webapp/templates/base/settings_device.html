@@ -327,6 +327,7 @@ $('#submit-remove-device').on("click", function(e) {
   <div class="col-md-4">
     <button id="save-location" name="singlebutton" class="btn btn-primary">Submit</button>
   </div>
+  <div id="location-status" class="col-md-2"></div>
 </div>
 </fieldset>
 </form>
@@ -377,7 +378,7 @@ $(function() {
    initialize();
 });
 
-var map, placeSearch, autocomplete;
+var map, placeSearch, autocomplete, marker;
 
 function initialize() {
   var mapOptions = {
@@ -390,7 +391,7 @@ function initialize() {
   var pos = new google.maps.LatLng({{ device.position.latitude }},
                                    {{ device.position.longitude}});
 
-  var marker = new google.maps.Marker({
+  marker = new google.maps.Marker({
     map: map,
     position: pos,
     title: 'Location of {{ device.name }}',
@@ -405,12 +406,15 @@ function initialize() {
 
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
-
+  
+  /*
   var marker = new google.maps.Marker({
     map: map,
     anchorPoint: new google.maps.Point(0, -29),
     draggable: true
   });
+  */
+
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
     marker.setVisible(false);
@@ -441,6 +445,9 @@ function initialize() {
 
 $('#save-location').on("click", function(e) {
   e.preventDefault();
+  var span = $('<span/>');
+  span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+  $('#location-status').html(span);
   latitude = marker.getPosition().k;
   longitude = marker.getPosition().D;
   $.post('/settings/device/location/{{ device.serial }}',
@@ -449,7 +456,12 @@ $('#save-location').on("click", function(e) {
       longitude: longitude,
     },
     function(data) {
-      console.log(data);
+      span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+      if (data.success) {
+         span.addClass("glyphicon glyphicon-ok");
+      } else {
+         span.addClass("glyphicon glyphicon-remove");
+      }
     }
   );
 });

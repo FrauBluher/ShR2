@@ -10,6 +10,7 @@ from sets import Set
 from collections import defaultdict
 from django.contrib.auth import authenticate, login
 from webapp.models import Notification, UtilityCompany, RatePlan, Territory
+from geoposition import Geoposition
 
 from django.db import IntegrityError
 
