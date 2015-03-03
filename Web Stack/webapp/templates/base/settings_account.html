@@ -94,6 +94,7 @@ function create_error_message(element, message) {
       });
   });
 
+  
   $('#checkbox-container').children().on("click", function(e) {
     $.post('/settings/account/',
       $('form#notification-form').serialize(),
@@ -101,13 +102,15 @@ function create_error_message(element, message) {
         console.log(data);
       });
   });
+  
 
 $(function() {
-  $('#id_new_username').val("{{ user.get_username }}")
+  $('#id_new_username').val("{{ user.get_username }}");
+  {% for choice in notification_choices %}
+    $('input[value="{{ choice }}"]').prop('checked', true);
+  {% endfor %}
 });
 </script>
-
-<div id='dumb'></div>
 
 <form id="username-form" class="form-horizontal">
 
