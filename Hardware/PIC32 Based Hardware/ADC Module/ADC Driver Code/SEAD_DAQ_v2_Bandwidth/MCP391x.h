@@ -172,10 +172,10 @@ typedef struct {
         uint32_t wholeRegister;
 
         struct {
-            unsigned PHA_CH0 : 3;
-            unsigned PHA_CH1 : 3;
-            unsigned PHA_CH2 : 3;
-            unsigned PHA_CH3 : 3;
+            unsigned PGA_CH0 : 3;
+            unsigned PGA_CH1 : 3;
+            unsigned PGA_CH2 : 3;
+            unsigned PGA_CH3 : 3;
             unsigned : 24;
         };
     };

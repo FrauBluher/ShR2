@@ -75,13 +75,19 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.config1Reg.SHUTDOWN = 0b0000;
 	MCP.config1Reg.VREFEXT = 0;
 
+	//24 bit two's compliment
+	MCP.offCalCh0Reg.OFFCAL = 0x0;
+	MCP.offCalCh1Reg.OFFCAL = -5590;//-5590;
+	MCP.offCalCh2Reg.OFFCAL = 0x0;
+	MCP.offCalCh3Reg.OFFCAL = 0x0;
+
 	MCP.phaseReg.PHASEA = 0;
 	MCP.phaseReg.PHASEB = 0;
 
-	MCP.gainReg.PHA_CH0 = 0b011;
-	MCP.gainReg.PHA_CH1 = 0b011;
-	MCP.gainReg.PHA_CH2 = 0b011;
-	MCP.gainReg.PHA_CH3 = 0b011;
+	MCP.gainReg.PGA_CH0 = 0b011;
+	MCP.gainReg.PGA_CH1 = 0b011;
+	MCP.gainReg.PGA_CH2 = 0b011;
+	MCP.gainReg.PGA_CH3 = 0b011;
 
 	MCP.modReg.wholeRegister = 0;
 
@@ -222,9 +228,40 @@ void SPI_Write_All(void)
 	txBuf[17] = (MCP.config1Reg.wholeRegister & 0x0000FF00) >> 8;
 	txBuf[16] = (MCP.config1Reg.wholeRegister & 0x00FF0000) >> 16;
 
-	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
-	BufferToSpi_Transfer(txBuf, 19);
+	txBuf[21] = (MCP.offCalCh0Reg.wholeRegister & 0x000000FF);
+	txBuf[20] = (MCP.offCalCh0Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[19] = (MCP.offCalCh0Reg.wholeRegister & 0x00FF0000) >> 16;
 
+	txBuf[24] = (MCP.gainCalCh0Reg.wholeRegister & 0x000000FF);
+	txBuf[23] = (MCP.gainCalCh0Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[22] = (MCP.gainCalCh0Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[27] = (MCP.offCalCh1Reg.wholeRegister & 0x000000FF);
+	txBuf[26] = (MCP.offCalCh1Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[25] = (MCP.offCalCh1Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[30] = (MCP.gainCalCh1Reg.wholeRegister & 0x000000FF);
+	txBuf[29] = (MCP.gainCalCh1Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[28] = (MCP.gainCalCh1Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[33] = (MCP.offCalCh2Reg.wholeRegister & 0x000000FF);
+	txBuf[32] = (MCP.offCalCh2Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[31] = (MCP.offCalCh2Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[36] = (MCP.gainCalCh2Reg.wholeRegister & 0x000000FF);
+	txBuf[35] = (MCP.gainCalCh2Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[34] = (MCP.gainCalCh2Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[39] = (MCP.offCalCh3Reg.wholeRegister & 0x000000FF);
+	txBuf[38] = (MCP.offCalCh3Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[37] = (MCP.offCalCh3Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	txBuf[42] = (MCP.gainCalCh3Reg.wholeRegister & 0x000000FF);
+	txBuf[41] = (MCP.gainCalCh3Reg.wholeRegister & 0x0000FF00) >> 8;
+	txBuf[40] = (MCP.gainCalCh3Reg.wholeRegister & 0x00FF0000) >> 16;
+
+	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
+	BufferToSpi_Transfer(txBuf, 43);
 
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));

@@ -265,7 +265,6 @@ void SPI_Write_All(void)
 	DmaChnClrEvFlags(DMA_CHANNEL1, DMA_EV_BLOCK_DONE);
 	BufferToSpi_Transfer(txBuf, 43);
 
-
 	while (!(DmaChnGetEvFlags(DMA_CHANNEL1) & DMA_EV_BLOCK_DONE)
 		|| !(SpiChnTxBuffEmpty(SPI_CHANNEL1)));
 	for (i = 0; i < 2; i++) {
