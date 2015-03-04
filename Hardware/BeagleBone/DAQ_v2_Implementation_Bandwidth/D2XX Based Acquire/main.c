@@ -31,6 +31,7 @@ DWORD dwBytesWritten;
 DWORD fifoRxQueueSize;
 DWORD lpdwAmountInTxQueue;
 DWORD lpdwEventStatus;
+DWORD bytes;
 
 FILE * fh;
 FT_HANDLE ftFIFO;
@@ -238,16 +239,36 @@ void get_options(int argc, char **argv)
 	return;
 }
 
+daq_config default_config()
+{
+	daq_config config;
+	//config0 register for the MCP
+	config.BOOST = 0b11;
+	config.DITHER = 0b11;
+	config.EN_GAINCAL = 0;
+	config.EN_OFFCAL = 0;
+	config.OSR = 0b010; //OSR = 128
+	config.PRE = 0b00; //prescalar = 1
+	config.VREFCAL = 64;
+	//programmable gain amplifier register
+	config.PGA_CH0 = 0b011;
+	config.PGA_CH1 = 0b011;
+	config.PGA_CH2 = 0b011;
+	config.PGA_CH3 = 0b011;
+}
+
 //packages config struct from the input parameters
 daq_config package_config()
 {
-	daq_config config;
+	//create a config struct with default values
+	daq_config config = default_config();
 	return config;
 }
 
 //sends the config struct over the ft tx
 void send_config(daq_config config)
 {
+	FT_Write(ftFIFO, &config, (DWORD)sizeof(config), &bytes);
 	return;
 }
 

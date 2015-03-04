@@ -8,6 +8,18 @@
 #ifndef _DAQ_CONFIG
 #define _DAQ_CONFIG
 
+/*
+ * OSR 2:0		Resolution	-3dB Bandwidth
+ * 000	32		17			.26*DRCLK
+ * 001	64		20			.26*DRCLK
+ * 010	128		23			.26*DRCLK
+ * 011	256		24			.26*DRCLK	
+ * 100	512		24			.26*DRCLK
+ * 101	1024	24			.37*DRCLK
+ * 110	2048	24			.42*DRCLK
+ * 111	4096	24			.43*DRCLK
+*/
+
 typedef struct {
 	union {
 		uint32_t config0Reg;
@@ -22,14 +34,6 @@ typedef struct {
 			signed EN_OFFCAL : 1;
 			signed : 8;
 		};
-	};
-	union {
-		uint32_t offCalChXReg;
-		struct {
-			signed OFFCAL : 24;
-			signed : 8;
-		};
-		
 	};
 	union {
 		uint32_t gainReg;
