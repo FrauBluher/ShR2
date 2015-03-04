@@ -1,0 +1,114 @@
+<script>
+   function render_chart() {
+   {% if device %}
+     
+     var chart = new TimeChart({
+        container: document.getElementById("line-chart"),
+        data:
+        {
+            units:["y","M","d","h","m","s"],
+            timestampInSeconds: true,
+            urlByUnit:{
+               "m":"/charts/device/{{ device.serial }}/data/",
+               "M":"/charts/device/{{ device.serial }}/data/",
+               "d":"/charts/device/{{ device.serial }}/data/",
+               "h":"/charts/device/{{ device.serial }}/data/",
+               "y":"/charts/device/{{ device.serial }}/data/",
+               "s":"/charts/device/{{ device.serial }}/data/",
+            }
+        },
+        legend: { enabled: true },
+        valueAxis:{
+           "default":{
+              title: "Power (W)"
+           }
+        },
+        series:[
+            {
+              name: "Total",
+              id: "total",
+              type:"line",
+              data:{
+                index:1,
+                aggregation:"avg",
+                noDataPolicy:"skip"
+              },
+              style:{
+                lineWidth: 1,
+                smoothing: true
+              }
+            },
+           {% for appliance in appliances %}
+           {
+              name: "{{ appliance }}",
+              id:"event{{ forloop.counter }}",
+              type:"line",
+              data:{
+                 index:{{ forloop.counter }}+1,
+                 aggregation:"avg",
+                 //noDataPolicy:"skip"
+              },
+              stack: "default",
+              style:{
+                 fillColor:"{% if appliance == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' 'cyan' 'yellow' 'orange' %}{% endif %}",
+                 lineColor:""
+              }
+           },
+           {% endfor %}
+        ],
+        area: {
+           initialDisplayUnit: "5 m",
+           initialDisplayPeriod: "1 d",
+           initialDisplayAnchor: "newestData",
+           followAnchor: true,
+        },
+        currentTime: {
+           enabled: true,
+           serverTime: {{ server_time.0 }},
+        }
+     });
+   {% endif %}
+   /*
+function realTimeData() {
+   var interval = chart.displayUnit().split(' ')[0];
+   var displayUnit = chart.displayUnit().slice(-1);
+   var period;
+   var timeout;
+   if (displayUnit == 'm') {
+      period = 'now - ' + interval + ' minutes'
+      timeout = interval * 60 * 900
+   }
+   else if (displayUnit == 's') {
+      //var delay = (2 + parseInt(interval)).toString();
+      period = 'now - ' + interval + ' seconds'
+      timeout = interval * 900
+   }
+   else {
+      // Update everything on the hour. Fix later.
+      period = 'now - ' + interval + ' hours'
+      timeout = interval * 60 * 60 * 900
+   }
+   var start = Math.floor(+Date.parse(period)/1000);
+   var stop = Math.floor(+Date.parse('now')/1000);
+   var get_url = '/charts/device/{{ my_devices.0.serial }}/?unit='+displayUnit+'&from='+start+'&to='+stop;
+   $.get(get_url, function (ajax_data) {
+      chart.addData({unit: displayUnit, values: ajax_data.data});
+   });
+   setTimeout(realTimeData, timeout);
+}
+
+function waitForChart() {
+   console.log("Waiting for chart");
+   if (chart.displayUnit() != null) {
+      realTimeData();
+   } else {
+      setTimeout(waitForChart, 250);
+   }
+}
+
+$(function() {
+   waitForChart();
+});
+*/
+}
+</script>
