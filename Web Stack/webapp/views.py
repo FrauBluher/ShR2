@@ -234,7 +234,6 @@ def merge_subs(lst_of_lsts):
 
 
 def group_by_mean(serial, unit, start, stop):
-   queries = []
    if (unit == 'y'): unit = 'm'
    if (start == ''): start = 'now() - 1d'
    else: start = '\''+datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
@@ -254,7 +253,6 @@ def group_by_mean(serial, unit, start, stop):
    for appliance in appliances:
       query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
       group = db.query(query)
-      queries.append(query)
       if (len(group)): group = group[0]['points']
       #else: return None
       # hack. Remove sequence_number and timezone offset for GMT
@@ -270,10 +268,8 @@ def group_by_mean(serial, unit, start, stop):
    data = {'data': data,
            'unit': unit,
            'dataLimitFrom': data[len(data)-1][0],
-           'queries': queries,
           }
    return data
-
 
 @login_required(login_url='/signin/')
 def default_chart(request):
@@ -282,7 +278,7 @@ def default_chart(request):
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)
       device = devices.first()
-      if (device):
+      if device:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          result = db.query('list series')[0]
          appliances = Set()
@@ -292,7 +288,7 @@ def default_chart(request):
                appliance = series[1].split('device.'+str(device.serial)+'.')
                if (len(appliance) < 2): continue
                else: appliances.add(appliance[-1])
-         context = {'my_devices': [device],
+         context = {'my_devices': devices,
                     'appliances': appliances,
                     'server_time': time.time()*1000,
                     }
@@ -300,13 +296,40 @@ def default_chart(request):
 
 
 @login_required(login_url='/signin/')
-def charts(request, serial):
+def device_data(request, serial):
+   context = None
    if request.method == 'GET':
-      unit = request.GET.get('unit','')
-      start = request.GET.get('from','')
-      stop = request.GET.get('to','')
-      return HttpResponse(json.dumps(group_by_mean(serial,unit,start,stop)), content_type="application/json")
+      user = User.objects.get(username=request.user)
+      device = Device.objects.get(serial=serial)
+      if device.owner == user:
+         unit = request.GET.get('unit','')
+         start = request.GET.get('from','')
+         stop = request.GET.get('to','')
+         context = json.dumps(group_by_mean(serial,unit,start,stop))
+   return HttpResponse(context, content_type="application/json")
 
+
+@login_required(login_url='/signin/')
+def device_chart(request, serial):
+   context = {}
+   if request.method == 'GET':
+      user = User.objects.get(username=request.user)
+      device = Device.objects.get(serial=serial)
+      if device.owner == user:
+         context['device'] = device
+         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+         result = db.query('list series')[0]
+         appliances = Set()
+         for series in result['points']:
+            rg = re.compile('device.'+str(device.serial))
+            if re.match(rg, series[1]):
+               appliance = series[1].split('device.'+str(device.serial)+'.')
+               if (len(appliance) < 2): continue
+               else: appliances.add(appliance[-1])
+         context['appliances'] = appliances
+         context['server_time'] = time.time()*1000,
+   return render(request, 'base/chart.html', context)
+   
 
 @login_required(login_url='/signin/')
 def charts_deprecated(request, serial, unit):

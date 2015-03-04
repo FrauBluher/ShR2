@@ -1,16 +1,13 @@
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">Dashboard</h1>
-    </div>
-    <!-- /.col-lg-12 -->
+<div class="row" style="margin-top:20px;">
+   <div style="height:500px; width:100%" id="map-canvas"></div>
 </div>
+
 <div class="row">
     <div class="col-lg-12">
         {% if my_devices %}
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i>
-                   {{ my_devices.0.name }} at a glance
+               <div id='chart-title'>{{ my_devices.0.name }} at a glance</div>
                 <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -19,7 +16,7 @@
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
                             {% for device in my_devices %}
-                            <li><a class="chart-device" id="{{device.serial}}" href="javascript:void(0)">{{device.name}}</a>
+                            <li><a class="chart-device" id="{{device.serial}}" href='javascript:change_device({{ device.serial }},"{{ device.name }}")'>{{device.name}}</a>
                             </li>
                             {% endfor %}
                         </ul>
@@ -38,119 +35,94 @@
         {% endif %}
     </div>
     <!-- /.col-lg-8 -->
+    <div id='ajax-container'></div>
 </div>
 <!-- /.row -->
-<script type="text/javascript">
-   
-   //initial chart load, get data for first device
-   {% if my_devices %}
-     
-     chart = new TimeChart({
-        container: document.getElementById("line-chart"),
-        data:
-        {
-            units:["y","M","d","h","m","s"],
-            timestampInSeconds: true,
-            urlByUnit:{
-               "m":"/charts/device/{{ my_devices.0.serial }}/",
-               "M":"/charts/device/{{ my_devices.0.serial }}/",
-               "d":"/charts/device/{{ my_devices.0.serial }}/",
-               "h":"/charts/device/{{ my_devices.0.serial }}/",
-               "y":"/charts/device/{{ my_devices.0.serial }}/",
-               "s":"/charts/device/{{ my_devices.0.serial }}/",
-            }
-        },
-        legend: { enabled: true },
-        valueAxis:{
-           "default":{
-              title: "Power (W)"
-           }
-        },
-        series:[
-            {
-              name: "Total",
-              id: "total",
-              type:"line",
-              data:{
-                index:1,
-                aggregation:"avg",
-                noDataPolicy:"skip"
-              },
-              style:{
-                lineWidth: 1,
-                smoothing: true
-              }
-            },
-           {% for appliance in appliances %}
-           {
-              name: "{{ appliance }}",
-              id:"event{{ forloop.counter }}",
-              type:"line",
-              data:{
-                 index:{{ forloop.counter }}+1,
-                 aggregation:"avg",
-                 //noDataPolicy:"skip"
-              },
-              stack: "default",
-              style:{
-                 fillColor:"{% if appliance == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' 'cyan' 'yellow' 'orange' %}{% endif %}",
-                 lineColor:""
-              }
-           },
-           {% endfor %}
-        ],
-        area: {
-           initialDisplayUnit: "5 m",
-           initialDisplayPeriod: "1 d",
-           initialDisplayAnchor: "newestData",
-           followAnchor: true,
-        },
-        currentTime: {
-           enabled: true,
-           serverTime: {{ server_time }},
-        }
-     });
-   {% endif %}
-/*
-function realTimeData() {
-   var interval = chart.displayUnit().split(' ')[0];
-   var displayUnit = chart.displayUnit().slice(-1);
-   var period;
-   var timeout;
-   if (displayUnit == 'm') {
-      period = 'now - ' + interval + ' minutes'
-      timeout = interval * 60 * 900
-   }
-   else if (displayUnit == 's') {
-      //var delay = (2 + parseInt(interval)).toString();
-      period = 'now - ' + interval + ' seconds'
-      timeout = interval * 900
-   }
-   else {
-      // Update everything on the hour. Fix later.
-      period = 'now - ' + interval + ' hours'
-      timeout = interval * 60 * 60 * 900
-   }
-   var start = Math.floor(+Date.parse(period)/1000);
-   var stop = Math.floor(+Date.parse('now')/1000);
-   var get_url = '/charts/device/{{ my_devices.0.serial }}/?unit='+displayUnit+'&from='+start+'&to='+stop;
-   $.get(get_url, function (ajax_data) {
-      chart.addData({unit: displayUnit, values: ajax_data.data});
-   });
-   setTimeout(realTimeData, timeout);
-}
 
-function waitForChart() {
-   console.log("Waiting for chart");
-   if (chart.displayUnit() != null) {
-      realTimeData();
-   } else {
-      setTimeout(waitForChart, 250);
-   }
-}
+<script>
+function change_device(serial, name) {
+   $.get('/charts/device/'+serial+'/chart/',
+      function(data) {
+         $('#ajax-container').html(data);
+         render_chart();
+         $('#chart-title').html(name+" at a glance");
+      }
+   );
+};
 
 $(function() {
-   waitForChart();
+   $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
+      function(data) {
+         $('#ajax-container').html(data);
+         render_chart();
+      }
+   );
 });
-*/
+</script>
+
+<script>
+$(function() {
+   initialize();
+});
+
+var map, placeSearch, autocomplete;
+
+function initialize() {
+  var mapOptions = {
+    scrollwheel: false,
+    zoom: 17
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+      
+   var LatLngList = new Array ();
+
+  {% for device in my_devices %}
+     var pos = new google.maps.LatLng({{ device.position }});
+     LatLngList.push(pos)
+     var marker{{ device.serial }} = new google.maps.Marker({
+       map: map,
+       position: pos,
+       title: '{{ device.name }}',
+     });
+     var content{{ device.serial }} = '\
+         <div id="content">'+
+            '<h3 id="device-name">{{ device.name }}</h3>'+
+            '<div id="body-content">'+
+               '<p>Average Usage: ??? W</p>'+
+               '<p>Average Cost: $???</p>'+
+               '<p>Current Usage: ??? W</p>'+
+            '</div>'+
+         '</div>';
+     var infowindow{{ device.serial }} = new google.maps.InfoWindow({
+        content: content{{ device.serial }}
+     });
+     google.maps.event.addListener(marker{{ device.serial }}, 'click', function() {
+        {% for device2 in my_devices %}
+           infowindow{{ device2.serial }}.close();
+        {% endfor %}
+        infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
+        $.get('/charts/device/{{ device.serial }}/chart/',
+        function(data) {
+           $('#ajax-container').html(data);
+           render_chart();
+           $('#chart-title').html("{{ device.name }} at a glance");
+        }
+   );
+     });
+  {% endfor %}
+  
+   new DayNightOverlay({
+      map: map
+   });
+
+   var bounds = new google.maps.LatLngBounds ();
+   //  Go through each...
+   for (var i = 0, LtLgLen = LatLngList.length; i < LtLgLen; i++) {
+      //  And increase the bounds to take this point
+      bounds.extend (LatLngList[i]);
+   }
+   //  Fit these bounds to the map
+   map.fitBounds (bounds);
+}
 </script>
