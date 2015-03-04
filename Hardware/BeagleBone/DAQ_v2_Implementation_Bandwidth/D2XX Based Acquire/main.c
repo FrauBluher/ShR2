@@ -47,7 +47,8 @@ int i;
 int iport = 0;
 char *outfile = "data.txt";
 int bandwidth = 4000;
-int channels = 1;
+int channels = 4;
+bool verbose = false;
 
 static uint8_t tmpBuff[BUF_SIZE];
 static uint8_t tmpBuff2[BUF_SIZE];
@@ -189,10 +190,17 @@ void print_usage()
 	return;
 }
 
+void print_config()
+{
+	printf("iport %d\n", iport);
+	printf("bandwidth %d\n", bandwidth);
+	printf("outfile: %s\n", outfile);
+	printf("channels: %d\n", channels);
+}
+
 //gets options, and populates global option variables
 void get_options(int argc, char **argv)
 {
-	bool verbose = false;
 	opterr = 0;
 	int c;
 	while ((c = getopt (argc, argv, "hvp:b:f:c:")) != -1) {
@@ -230,12 +238,6 @@ void get_options(int argc, char **argv)
 		}
 	}
 	//print out the option config if we are in verbose mode.
-	if (verbose) {
-		printf("iport %d\n", iport);
-		printf("bandwidth %d\n", bandwidth);
-		printf("outfile: %s\n", outfile);
-		printf("channels: %d\n", channels);
-	}
 	return;
 }
 
@@ -255,13 +257,51 @@ daq_config default_config()
 	config.PGA_CH1 = 0b011;
 	config.PGA_CH2 = 0b011;
 	config.PGA_CH3 = 0b011;
+	return config;
 }
+
+/* 16MHz Clock / 4 / PRE / OSR = DRCLK
+ * PRE	OSR	Bandwidth
+ * 00	000	32500
+ * 00	001	16250
+ * 00	010	8125
+ * 00	011	4062.5
+ * 00	100	2031.25
+ * 00	101	1445.3125
+ * 00	110	820.3125
+ * 00	111	419.921875
+*/
 
 //packages config struct from the input parameters
 daq_config package_config()
 {
 	//create a config struct with default values
 	daq_config config = default_config();
+	if (bandwidth < 419.921875) {
+		config.OSR = 0b111;
+		bandwidth = 419.921875;
+	} else if (bandwidth < 820.3125) {
+		config.OSR = 0b110;
+		bandwidth = 820.3125;
+	} else if (bandwidth < 1445.3125) {
+		config.OSR = 0b101;
+		bandwidth = 1445.3125;
+	} else if (bandwidth < 2031.25) {
+		config.OSR = 0b100;
+		bandwidth = 2031.25;
+	} else if (bandwidth < 4062.5) {
+		config.OSR = 0b011;
+		bandwidth = 4062.5;
+	} else if (bandwidth < 8125) {
+		config.OSR = 0b010;
+		bandwidth = 8125;
+	} else {
+		config.OSR = 0b001;
+		bandwidth = 16250;
+	//} else {
+	//	config.OSR = 0b000;
+	//	bandwidth = 32500;
+	}
 	return config;
 }
 
@@ -291,6 +331,9 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	daq_config config = package_config();
+	if (verbose) {
+		print_config();
+	}
 	send_config(config);
 	acquire_loop();
 	exit_thread = 1;
