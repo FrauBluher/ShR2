@@ -20,6 +20,19 @@
  * 111	4096	24			.43*DRCLK
 */
 
+/* 16MHz Clock / 4 / PRE / OSR = DRCLK
+ * PRE	OSR	Bandwidth
+ * 00	000	32500
+ * 00	001	16250
+ * 00	010	8125
+ * 00	011	4062.5
+ * 00	100	2031.25
+ * 00	101	1445.3125
+ * 00	110	820.3125
+ * 00	111	419.921875
+*/
+
+
 typedef struct {
 	union {
 		uint32_t config0Reg;
@@ -41,7 +54,7 @@ typedef struct {
 			unsigned PGA_CH0 : 3;
 			unsigned PGA_CH1 : 3;
 			unsigned PGA_CH2 : 3;
-			unsigned PGA_Ch3 : 3;
+			unsigned PGA_CH3 : 3;
 			unsigned : 24;
 		};
 	};
