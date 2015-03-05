@@ -66,7 +66,9 @@ class Event(models.Model):
    event_code = models.IntegerField(blank=True, null=True)
    appliance = models.ForeignKey(Appliance, related_name='appliance', blank=True, null=True)
    timestamp = models.PositiveIntegerField(help_text='13 digits, millisecond resolution')
-   wattage = models.FloatField()
+   wattage = models.FloatField(blank=True, null=True)
+   current = models.FloatField(blank=True, null=True)
+   voltage = models.FloatField(blank=True, null=True)
 
    def save(self, **kwargs):
       appliance = self.appliance
