@@ -1,4 +1,4 @@
-<div class="row" style="margin-top:20px;">
+<div class="row">
    <div style="height:500px; width:100%" id="map-canvas"></div>
 </div>
 
@@ -38,27 +38,6 @@
     <div id='ajax-container'></div>
 </div>
 <!-- /.row -->
-
-<script>
-function change_device(serial, name) {
-   $.get('/charts/device/'+serial+'/chart/',
-      function(data) {
-         $('#ajax-container').html(data);
-         render_chart();
-         $('#chart-title').html(name+" at a glance");
-      }
-   );
-};
-
-$(function() {
-   $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
-      function(data) {
-         $('#ajax-container').html(data);
-         render_chart();
-      }
-   );
-});
-</script>
 
 <script>
 $(function() {

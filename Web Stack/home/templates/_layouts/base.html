@@ -12,6 +12,12 @@
        More info: h5bp.com/i/378 -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-touch-fullscreen" content="yes" />
+
+  <link rel="apple-touch-icon" href="{% static 'webapp/img/apple-touch-icon.png' %}" />
+
   <title>{% block page_title %}{{ _("SEADS") }}{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}{% endblock %}">
   <meta name="author" content="{% block meta_author %}{% endblock %}">
@@ -27,6 +33,7 @@
   
   <link href="{% static 'webapp/font-awesome-4.1.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'webapp/css/screen.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'webapp/css/jquery.sidr.light.css' %}" rel="stylesheet" type="text/css">
 
   {# use the CDN to get bootstrap css. can not be inside compress css block #}
   {% block cdn_css %}
@@ -43,13 +50,14 @@
   <!-- All JavaScript at the bottom, except this Modernizr build.
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
-  <script src="{% static '//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js' %}"></script>
+  <script src="{% static 'webapp/js/modernizr.min.js' %}"></script>
   <script src="{% static 'webapp/js/jquery.min.js' %}"></script>
   <script src="{% static 'webapp/js/jquery.autotab.js' %}"></script>
   <script src="{% static 'webapp/js/date.js' %}"></script>
+  <script src="{% static 'webapp/js/jquery.sidr.min.js' %}"></script>
 
 </head>
-<body style="padding-top: 40px; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif" class="{% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}>
+<body style="font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif" class="{% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}>
 {% block body %}
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
@@ -57,7 +65,6 @@
     <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
   <![endif]-->
   <header>
-    {% block header %}{% endblock %}
   </header>
 
   <div role="main">
@@ -97,7 +104,7 @@
 
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   {% block cdn_js %}
-  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
   {% endblock cdn_js %}
   
    <!-- Custom Theme JavaScript -->
