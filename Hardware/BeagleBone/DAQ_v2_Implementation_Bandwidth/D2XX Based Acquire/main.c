@@ -317,6 +317,11 @@ int main(int argc, char *argv[])
 	FT_STATUS ftStatus;
 	//process options
 	get_options(argc, argv);
+	//calculate and populate config struct
+	daq_config config = package_config();
+	if (verbose) {
+		print_config();
+	}
 	//file handle
 	fh = fopen(outfile, "w");
 	if(fh == NULL) {
@@ -329,10 +334,6 @@ int main(int argc, char *argv[])
 			"usbserial are unloaded.\r\n Use rmmod.\r\n",
 			iport);
 		exit(1);
-	}
-	daq_config config = package_config();
-	if (verbose) {
-		print_config();
 	}
 	send_config(config);
 	acquire_loop();
