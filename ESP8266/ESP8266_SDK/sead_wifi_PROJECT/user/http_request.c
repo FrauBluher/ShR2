@@ -6,12 +6,12 @@
  * 
  */
 
-#include "time.h"
-
 #include "c_types.h"
 #include "espmissingincludes.h"
 #include "user_interface.h"
 #include "espconn.h"
+#include "ssl/cert.h"
+#include "ssl/private_key.h"
 
 #include "buffers.h"
 #include "send_recv_port.h"
