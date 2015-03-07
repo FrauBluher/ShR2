@@ -74,15 +74,15 @@ $('.btn').on('click', function(e) {
 	e.preventDefault();
 });
 
-$('#btn-status').on('click', function(e) {
-   $(this).addClass('disabled');
-   $(this).removeClass('btn-danger');
-   $(this).removeClass('btn-success');
+function check_device_status(element) {
+   element.addClass('disabled');
+   element.removeClass('btn-danger');
+   element.removeClass('btn-success');
    $('#btn-icon').removeClass('glyphicon-ok');
    $('#btn-icon').removeClass('glyphicon-remove');
    $('#btn-icon').addClass('glyphicon-refresh');
    $('#btn-icon').addClass('glyphicon-refresh-animate');
-   var btn = $(this);
+   var btn = element;
    $.get('/settings/device/status/',
       {'serial': {{ device.serial }}},
       function(status) {
@@ -112,10 +112,15 @@ $('#btn-status').on('click', function(e) {
          }
       }
    );
+}
+
+$('#btn-status').on('click', function(e) {
+   check_device_status($(this));
 });
 
 $(function() {
   $('#id_new_name').val("{{ device }}");
+  check_device_status($('#btn-status'));
   {% for choice in utility_company_choices %}
       $('#company-dropdown').val("{{ choice }}")
   {% endfor %}
@@ -406,15 +411,6 @@ function initialize() {
 
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
-  
-  /*
-  var marker = new google.maps.Marker({
-    map: map,
-    anchorPoint: new google.maps.Point(0, -29),
-    draggable: true
-  });
-  */
-
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
     marker.setVisible(false);

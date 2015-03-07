@@ -209,14 +209,13 @@ def dashboard(request):
    if request.user.is_authenticated():
       my_devices = Device.objects.filter(owner=user)
    else: my_devices = None
-   device = my_devices[0] if my_devices else None
-   result = []
-   if (device != None):
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-      result = db.query('select * from "'+str(device.serial)+'" limit 1;')[0]
+   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   average_wattages = {}
+   for device in my_devices:
+      average_wattages[device.serial] = 500#db.query('select mean(wattage) from device.'+device.serial)[0]['points'][0][1]
    context = {'my_devices': my_devices,
-              'appliances': result['columns'][2:],
               'server_time': time.time()*1000,
+              'average_wattages': average_wattages,
               }
    return render(request, 'base/dashboard.html', context)
 
@@ -234,7 +233,7 @@ def merge_subs(lst_of_lsts):
 
 
 def group_by_mean(serial, unit, start, stop):
-   if (unit == 'y'): unit = 'm'
+   if unit == 'y': unit = 'm'
    if (start == ''): start = 'now() - 1d'
    else: start = '\''+datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
