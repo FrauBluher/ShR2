@@ -42,7 +42,6 @@ It's written for use with httpd, but doesn't need to be used as such.
 #define ICACHE_FLASH_ATTR
 extern char* espFsData;
 #endif
-
 #include "../mkespfsimage/espfsformat.h"
 #include "espfs.h"
 #include "httpdconfig.h"
@@ -50,8 +49,7 @@ extern char* espFsData;
 #include "heatshrink_decoder.h"
 #endif
 
-
-
+#define USE_OPTIMIZE_PRINTF
 
 struct EspFsFile {
 	EspFsHeader *header;

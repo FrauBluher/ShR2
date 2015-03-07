@@ -87,6 +87,12 @@ struct espconn {
     void *reverse;
 };
 
+enum espconn_option{
+	ESPCONN_REUSEADDR = 1,
+	ESPCONN_NODELAY,
+	ESPCONN_END
+};
+
 /******************************************************************************
  * FunctionName : espconn_connect
  * Description  : The function given as the connect
@@ -266,6 +272,16 @@ sint8 espconn_regist_disconcb(struct espconn *espconn, espconn_connect_callback 
 uint32 espconn_port(void);
 
 /******************************************************************************
+ * FunctionName : espconn_set_opt
+ * Description  : access port value for client so that we don't end up bouncing
+ *                all connections at the same time .
+ * Parameters   : none
+ * Returns      : access port value
+*******************************************************************************/
+
+sint8 espconn_set_opt(struct espconn *espconn, uint8 opt);
+
+/******************************************************************************
  * TypedefName : dns_found_callback
  * Description : Callback which is invoked when a hostname is found.
  * Parameters  : name -- pointer to the name that was looked up.
@@ -353,6 +369,22 @@ sint8 espconn_igmp_join(ip_addr_t *host_ip, ip_addr_t *multicast_ip);
  * Returns      : none
 *******************************************************************************/
 sint8 espconn_igmp_leave(ip_addr_t *host_ip, ip_addr_t *multicast_ip);
+
+/******************************************************************************
+ * FunctionName : espconn_recv_hold
+ * Description  : hold tcp receive
+ * Parameters   : espconn -- espconn to hold
+ * Returns      : none
+*******************************************************************************/
+sint8 espconn_recv_hold(struct espconn *pespconn);
+
+/******************************************************************************
+ * FunctionName : espconn_recv_unhold
+ * Description  : unhold tcp receive
+ * Parameters   : espconn -- espconn to unhold
+ * Returns      : none
+*******************************************************************************/
+sint8 espconn_recv_unhold(struct espconn *pespconn);
 
 #endif
 

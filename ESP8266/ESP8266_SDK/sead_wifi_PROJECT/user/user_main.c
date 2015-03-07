@@ -24,6 +24,12 @@
 
 #include "send_recv_port.h"
 
+/*unsigned char *default_certificate;
+unsigned int default_certificate_len;
+
+unsigned char *default_private_key;
+unsigned int default_private_key_len;*/
+
 HttpdBuiltInUrl builtInUrls[]={
 	{"/", cgiRedirect, "/index.tpl"},
 	{"/index.tpl", cgiEspFsTemplate, tplCounter},
@@ -40,7 +46,6 @@ HttpdBuiltInUrl builtInUrls[]={
 	{"*", cgiEspFsHook, NULL}, //Catch-all cgi function for the filesystem
 	{NULL, NULL, NULL}
 };
-
 
 void ICACHE_FLASH_ATTR
 user_init(void) {

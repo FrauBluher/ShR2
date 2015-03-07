@@ -6,12 +6,12 @@
  * 
  */
 
-#include "time.h"
-
 #include "c_types.h"
 #include "espmissingincludes.h"
 #include "user_interface.h"
 #include "espconn.h"
+#include "ssl/cert.h"
+#include "ssl/private_key.h"
 
 #include "buffers.h"
 #include "send_recv_port.h"
@@ -123,7 +123,7 @@ package_send(espconn *serv_conn) {
 		json_data);
 	os_printf("\r\nSend Data:\r\n%s", send_data);
 	//send the data.
-	return espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
+	return espconn_secure_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
 }
 
 static void ICACHE_FLASH_ATTR
@@ -201,7 +201,7 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	espconn_regist_sentcb(serv_conn, networkSentCb);
 	//debug 
 	print_espconn_state(serv_conn);
-	espconn_connect(serv_conn);
+	espconn_secure_connect(serv_conn);
 	//debug
 	print_espconn_state(serv_conn);
 }

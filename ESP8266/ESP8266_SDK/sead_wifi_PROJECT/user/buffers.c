@@ -9,8 +9,8 @@
 
 #include "espmissingincludes.h"
 #include "c_types.h"
-#include "osapi.h"
 #include "stdlib.h"
+#include "osapi.h"
 
 #include "buffers.h"
 #include "nmea0183.h"
