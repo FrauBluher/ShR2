@@ -210,12 +210,8 @@ def dashboard(request):
       my_devices = Device.objects.filter(owner=user)
    else: my_devices = None
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-   average_wattages = {}
-   for device in my_devices:
-      average_wattages[device.serial] = 500#db.query('select mean(wattage) from device.'+device.serial)[0]['points'][0][1]
    context = {'my_devices': my_devices,
               'server_time': time.time()*1000,
-              'average_wattages': average_wattages,
               }
    return render(request, 'base/dashboard.html', context)
 
@@ -286,14 +282,43 @@ def default_chart(request):
             if re.match(rg, series[1]):
                appliance = series[1].split('device.'+str(device.serial)+'.')
                if (len(appliance) < 2): continue
-               else: appliances.add(appliance[-1])
+               else:
+                  appliances.add(appliance[-1])
+         for device in devices:
+            try:
+               device.average = db.query('select * from average.device.'+str(device.serial))[0]['points'][0][2]
+            except:
+               pass
          context = {'my_devices': devices,
                     'appliances': appliances,
                     'server_time': time.time()*1000,
                     }
       return render(request, 'base/dashboard.html', context)
 
+      
+@login_required(login_url='/signin/')
+def get_averages(request, serial):
+   context = {}
+   if request.method == 'GET':
+      user = User.objects.get(username=request.user)
+      device = Device.objects.get(serial=serial)
+      if device.owner == user:
+         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+         result = db.query('list series')[0]
+         appliances = Set()
+         for series in result['points']:
+            rg = re.compile('device.'+str(device.serial))
+            if re.match(rg, series[1]):
+               appliance = series[1].split('device.'+str(device.serial)+'.')[-1]
+               if appliance == 'device.'+str(device.serial): continue
+               try:
+                  wattage = db.query('select * from average.device.'+str(device.serial)+'.'+appliance)
+                  context[appliance] = int(wattage[0]['points'][0][2])
+               except:
+                  pass
+   return HttpResponse(json.dumps(context), content_type="application/json")
 
+   
 @login_required(login_url='/signin/')
 def device_data(request, serial):
    context = None
