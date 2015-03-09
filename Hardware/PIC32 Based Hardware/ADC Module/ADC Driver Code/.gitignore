@@ -1,9 +1,0 @@
-Makefile-genesis.properties
-*.o
-*.d
-*.map
-*.elf
-*.hex
-build/
-debug/
-dist/
