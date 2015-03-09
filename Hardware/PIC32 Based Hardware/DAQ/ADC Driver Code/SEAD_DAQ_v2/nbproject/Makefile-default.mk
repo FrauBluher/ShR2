@@ -95,50 +95,50 @@ endif
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 ${OBJECTDIR}/ADCModuleBoard.o: ADCModuleBoard.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/ADCModuleBoard.o.d 
 	@${RM} ${OBJECTDIR}/ADCModuleBoard.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADCModuleBoard.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/ADCModuleBoard.o.d" -o ${OBJECTDIR}/ADCModuleBoard.o ADCModuleBoard.c   
 	
 ${OBJECTDIR}/DAQ.o: DAQ.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/DAQ.o.d 
 	@${RM} ${OBJECTDIR}/DAQ.o 
 	@${FIXDEPS} "${OBJECTDIR}/DAQ.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/DAQ.o.d" -o ${OBJECTDIR}/DAQ.o DAQ.c   
 	
 ${OBJECTDIR}/DMA_Transfer.o: DMA_Transfer.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/DMA_Transfer.o.d 
 	@${RM} ${OBJECTDIR}/DMA_Transfer.o 
 	@${FIXDEPS} "${OBJECTDIR}/DMA_Transfer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/DMA_Transfer.o.d" -o ${OBJECTDIR}/DMA_Transfer.o DMA_Transfer.c   
 	
 ${OBJECTDIR}/MCP391x.o: MCP391x.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/MCP391x.o.d 
 	@${RM} ${OBJECTDIR}/MCP391x.o 
 	@${FIXDEPS} "${OBJECTDIR}/MCP391x.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/MCP391x.o.d" -o ${OBJECTDIR}/MCP391x.o MCP391x.c   
 	
 else
 ${OBJECTDIR}/ADCModuleBoard.o: ADCModuleBoard.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/ADCModuleBoard.o.d 
 	@${RM} ${OBJECTDIR}/ADCModuleBoard.o 
 	@${FIXDEPS} "${OBJECTDIR}/ADCModuleBoard.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/ADCModuleBoard.o.d" -o ${OBJECTDIR}/ADCModuleBoard.o ADCModuleBoard.c   
 	
 ${OBJECTDIR}/DAQ.o: DAQ.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/DAQ.o.d 
 	@${RM} ${OBJECTDIR}/DAQ.o 
 	@${FIXDEPS} "${OBJECTDIR}/DAQ.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/DAQ.o.d" -o ${OBJECTDIR}/DAQ.o DAQ.c   
 	
 ${OBJECTDIR}/DMA_Transfer.o: DMA_Transfer.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/DMA_Transfer.o.d 
 	@${RM} ${OBJECTDIR}/DMA_Transfer.o 
 	@${FIXDEPS} "${OBJECTDIR}/DMA_Transfer.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/DMA_Transfer.o.d" -o ${OBJECTDIR}/DMA_Transfer.o DMA_Transfer.c   
 	
 ${OBJECTDIR}/MCP391x.o: MCP391x.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
+	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/MCP391x.o.d 
 	@${RM} ${OBJECTDIR}/MCP391x.o 
 	@${FIXDEPS} "${OBJECTDIR}/MCP391x.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -D_SUPPRESS_PLIB_WARNING -D_DISABLE_OPENADC10_CONFIGPORT_WARNING -MMD -MF "${OBJECTDIR}/MCP391x.o.d" -o ${OBJECTDIR}/MCP391x.o MCP391x.c   
@@ -156,7 +156,7 @@ endif
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 dist/${CND_CONF}/${IMAGE_TYPE}/SEAD_DAQ_v2.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -mdebugger -D__MPLAB_DEBUGGER_PK3=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/SEAD_DAQ_v2.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}           -mreserve=data@0x0:0x1FC -mreserve=boot@0x1FC02000:0x1FC02FEF -mreserve=boot@0x1FC02000:0x1FC024FF  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_PK3=1,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -mdebugger -D__MPLAB_DEBUGGER_PK3=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/SEAD_DAQ_v2.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__ICD2RAM=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_PK3=1,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"
 	
 else
 dist/${CND_CONF}/${IMAGE_TYPE}/SEAD_DAQ_v2.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
