@@ -209,13 +209,8 @@ def dashboard(request):
    if request.user.is_authenticated():
       my_devices = Device.objects.filter(owner=user)
    else: my_devices = None
-   device = my_devices[0] if my_devices else None
-   result = []
-   if (device != None):
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-      result = db.query('select * from "'+str(device.serial)+'" limit 1;')[0]
+   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    context = {'my_devices': my_devices,
-              'appliances': result['columns'][2:],
               'server_time': time.time()*1000,
               }
    return render(request, 'base/dashboard.html', context)
@@ -234,7 +229,7 @@ def merge_subs(lst_of_lsts):
 
 
 def group_by_mean(serial, unit, start, stop):
-   if (unit == 'y'): unit = 'm'
+   if unit == 'y': unit = 'm'
    if (start == ''): start = 'now() - 1d'
    else: start = '\''+datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
@@ -287,14 +282,43 @@ def default_chart(request):
             if re.match(rg, series[1]):
                appliance = series[1].split('device.'+str(device.serial)+'.')
                if (len(appliance) < 2): continue
-               else: appliances.add(appliance[-1])
+               else:
+                  appliances.add(appliance[-1])
+         for device in devices:
+            try:
+               device.average = db.query('select * from average.device.'+str(device.serial))[0]['points'][0][2]
+            except:
+               pass
          context = {'my_devices': devices,
                     'appliances': appliances,
                     'server_time': time.time()*1000,
                     }
       return render(request, 'base/dashboard.html', context)
 
+      
+@login_required(login_url='/signin/')
+def get_averages(request, serial):
+   context = {}
+   if request.method == 'GET':
+      user = User.objects.get(username=request.user)
+      device = Device.objects.get(serial=serial)
+      if device.owner == user:
+         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+         result = db.query('list series')[0]
+         appliances = Set()
+         for series in result['points']:
+            rg = re.compile('device.'+str(device.serial))
+            if re.match(rg, series[1]):
+               appliance = series[1].split('device.'+str(device.serial)+'.')[-1]
+               if appliance == 'device.'+str(device.serial): continue
+               try:
+                  wattage = db.query('select * from average.device.'+str(device.serial)+'.'+appliance)
+                  context[appliance] = int(wattage[0]['points'][0][2])
+               except:
+                  pass
+   return HttpResponse(json.dumps(context), content_type="application/json")
 
+   
 @login_required(login_url='/signin/')
 def device_data(request, serial):
    context = None

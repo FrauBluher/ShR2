@@ -46,7 +46,7 @@
               data:{
                  index:{{ forloop.counter }}+1,
                  aggregation:"avg",
-                 //noDataPolicy:"skip"
+                 noDataPolicy:"skip"
               },
               stack: "default",
               style:{
@@ -68,7 +68,8 @@
         }
      });
    {% endif %}
-   /*
+
+/*
 function realTimeData() {
    var interval = chart.displayUnit().split(' ')[0];
    var displayUnit = chart.displayUnit().slice(-1);
@@ -90,10 +91,17 @@ function realTimeData() {
    }
    var start = Math.floor(+Date.parse(period)/1000);
    var stop = Math.floor(+Date.parse('now')/1000);
-   var get_url = '/charts/device/{{ my_devices.0.serial }}/?unit='+displayUnit+'&from='+start+'&to='+stop;
-   $.get(get_url, function (ajax_data) {
-      chart.addData({unit: displayUnit, values: ajax_data.data});
-   });
+   var get_url = '/charts/device/{{ device.serial }}/data/'
+   $.get(get_url,
+      {
+         'unit':displayUnit,
+         'from':start,
+         'to':stop,
+      },
+      function (ajax_data) {
+         chart.addData({unit: displayUnit, values: ajax_data.data});
+      }
+   );
    setTimeout(realTimeData, timeout);
 }
 
@@ -107,8 +115,10 @@ function waitForChart() {
 }
 
 $(function() {
-   waitForChart();
+   //waitForChart();
+   realTimeData();
 });
 */
+
 }
 </script>

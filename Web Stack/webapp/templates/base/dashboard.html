@@ -40,8 +40,24 @@
 <!-- /.row -->
 
 <script>
+
+function get_average(serial) {
+   $.get('/device/get_averages/'+serial+'/',
+      function(data) {
+         var average = 0;
+         $.each(data, function(key, value) {
+            average += parseInt(value);
+         });
+         $('#body-content-'+serial).html(average);
+      }
+   );
+}
+
 $(function() {
    initialize();
+   {% for device in my_devices %}
+   get_average({{ device.serial }});
+   {% endfor %}
 });
 
 var map, placeSearch, autocomplete;
@@ -67,8 +83,8 @@ function initialize() {
      var content{{ device.serial }} = '\
          <div id="content">'+
             '<h3 id="device-name">{{ device.name }}</h3>'+
-            '<div id="body-content">'+
-               '<p>Average Usage: ??? W</p>'+
+            '<div id="body-content-{{ device.serial }}">'+
+               '<p>Average Usage: ???W</p>'+
                '<p>Average Cost: $???</p>'+
                '<p>Current Usage: ??? W</p>'+
             '</div>'+
