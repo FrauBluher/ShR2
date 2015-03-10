@@ -5,7 +5,7 @@ from home.serializers import UserSerializer
 class ApplianceSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Appliance
-		fields = ('name', 'serial')
+		fields = ('name', 'serial', 'chart_color')
 
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
    

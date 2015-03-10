@@ -5,12 +5,14 @@ import string
 from django.core.exceptions import SuspiciousOperation
 from influxdb import client as influxdb
 from geoposition.fields import GeopositionField
+from paintstore.fields import ColorPickerField
 
 # Create your models here.
 
 class Appliance(models.Model):
    serial = models.IntegerField(unique=True)
    name = models.CharField(max_length=50, unique=True)
+   chart_color = ColorPickerField()
 
    def __unicode__(self):
       return self.name
@@ -40,6 +42,7 @@ class Device(models.Model):
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ into average.:series_name')
          self.fanout_query_registered = True
       super(Device, self).save()
@@ -84,8 +87,12 @@ class Event(models.Model):
       query['columns'] = ['time', 'appliance', 'wattage']
       data.append(query)
       db.write_points(data)
+      # TODO debug output for checkoff
+      if self.device in (Device.objects.get(serial=3), Device.objects.get(serial=4)):
+         with open('/home/ubuntu/events.log', 'w+') as f:
+            f.write(self.device.name + ': ' + str(self.timestamp) + ': ' + str(self.wattage) + ', ' + str(self.current) + ', ' + str(self.voltage) + '\n')
       #super(Event, self).save()
 
    def __unicode__(self):
       return str(self.timestamp)
-
+      

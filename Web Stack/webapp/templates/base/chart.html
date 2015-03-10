@@ -1,5 +1,6 @@
 <script>
    function render_chart() {
+    console.log("{% for appliance in appliances %} {{ appliance }} {% endfor %}");
    {% if device %}
      
      var chart = new TimeChart({
@@ -50,7 +51,7 @@
               },
               stack: "default",
               style:{
-                 fillColor:"{% if appliance == 'Unknown' %}grey{% else %}{% cycle 'red' 'blue' 'green' 'purple' 'cyan' 'yellow' 'orange' %}{% endif %}",
+                 fillColor:"{{ appliance.chart_color }}",
                  lineColor:""
               }
            },
@@ -62,10 +63,12 @@
            initialDisplayAnchor: "newestData",
            followAnchor: true,
         },
+        /*
         currentTime: {
            enabled: true,
            serverTime: {{ server_time.0 }},
         }
+        */
      });
    {% endif %}
 

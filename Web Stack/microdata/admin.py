@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from microdata.models import Device
+from microdata.models import Device, Appliance, Event
 from webapp.models import DeviceSettings
 # Register your models here.
 
@@ -15,5 +15,11 @@ class DeviceAdmin(admin.ModelAdmin):
    readonly_fields=('secret_key',)
    inlines = (DeviceSettingsInline,)
 
+class ApplianceAdmin(admin.ModelAdmin):
+   list_display = ('name','pk','serial','chart_color',)
+
+
 #admin.site.unregister(Device)
 admin.site.register(Device, DeviceAdmin)
+admin.site.register(Appliance, ApplianceAdmin)
+admin.site.register(Event)

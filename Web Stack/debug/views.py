@@ -102,7 +102,43 @@ def influxgen(request):
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
          resolution = form.cleaned_data['resolution']
-         wattages = {'Unknown':{'avg':700, 'stdev':20}, 'Computer':{'avg':100, 'stdev':50}, 'Toaster':{'avg':20, 'stdev':20}, 'Refrigerator':{'avg':400,'stdev':200}, 'Television':{'avg':60,'stdev':60}}
+         wattages = {
+            'Unknown':{
+              'avg':700,
+              'cutoff':0,
+              'max':1500,
+            },
+              'Computer':{
+              'avg':200,
+              'cutoff':50,
+              'max':350,
+            },
+              'Toaster':{
+              'avg':20,
+              'cutoff':0,
+              'max':60,
+            },
+              'Refrigerator':{
+              'avg':400,
+              'cutoff':0,
+              'max':600,
+            },
+              'Television':{
+              'avg':100,
+              'cutoff':50,
+              'max':200,
+            },
+              'Oven':{
+              'avg':700,
+              'cutoff':600,
+              'max':1000,
+            },
+              'Heater':{
+              'avg':700,
+              'cutoff':600,
+              'max':1000,
+            },
+          }
          count = 0
          data = []
          data_dict = {}
@@ -112,7 +148,16 @@ def influxgen(request):
          for i in numpy.arange(start, stop, resolution):
             point_list = [i]
             for appliance in appliances:
-               point_list = [i, appliance.name, wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['stdev'],wattages[appliance.name]['stdev'])]
+               wattage = wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['avg']*0.1,wattages[appliance.name]['avg']*0.1)
+               wattage_to_append = 0
+               if wattage > wattages[appliance.name]['max']:
+                  wattage_to_append = wattages[appliance.name]['max']
+               elif wattage < wattages[appliance.name]['cutoff']:
+                  wattage_to_append = 0
+               else:
+                  wattages[appliance.name]['avg'] = wattage
+                  wattage_to_append = wattage
+               point_list = [i, appliance.name, wattage_to_append]
                count += 1
                data_dict['points'].append(point_list)
          data.append(data_dict)

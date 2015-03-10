@@ -253,7 +253,8 @@ def group_by_mean(serial, unit, start, stop):
       # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
-         s = [s[0]-28800,s[2]]
+         # use 28800 for daylight savings
+         s = [s[0]-25200,s[2]]
          new_group.append(s)
       to_merge += new_group
    data = merge_subs(to_merge)
@@ -284,11 +285,6 @@ def default_chart(request):
                if (len(appliance) < 2): continue
                else:
                   appliances.add(appliance[-1])
-         for device in devices:
-            try:
-               device.average = db.query('select * from average.device.'+str(device.serial))[0]['points'][0][2]
-            except:
-               pass
          context = {'my_devices': devices,
                     'appliances': appliances,
                     'server_time': time.time()*1000,
@@ -339,18 +335,24 @@ def device_chart(request, serial):
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
+
       if device.owner == user:
          context['device'] = device
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          result = db.query('list series')[0]
-         appliances = Set()
+         appliance_names = Set()
+
          for series in result['points']:
             rg = re.compile('device.'+str(device.serial))
             if re.match(rg, series[1]):
-               appliance = series[1].split('device.'+str(device.serial)+'.')
-               if (len(appliance) < 2): continue
-               else: appliances.add(appliance[-1])
-         context['appliances'] = appliances
+               appliance_name = series[1].split('device.'+str(device.serial)+'.')
+               if (len(appliance_name) < 2): continue
+               else: appliance_names.add(appliance_name[-1])
+
+         context['appliances'] = []
+         for name in appliance_names:
+           context['appliances'].append(Appliance.objects.get(name=name));
+
          context['server_time'] = time.time()*1000,
    return render(request, 'base/chart.html', context)
    

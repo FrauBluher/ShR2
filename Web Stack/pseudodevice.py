@@ -54,7 +54,7 @@ def main():
       sys.exit(1)
       
    print "Checking if device exists on server..."
-   url = 'https://seads.brabsmit.com/api/device-api/'+str(serial)+'/'
+   url = 'http://seads.brabsmit.com/api/device-api/'+str(serial)+'/'
    r = requests.get(url)
    device = Device()
    if r.status_code == 200:
@@ -84,10 +84,10 @@ def main():
       print "ETA: "+datetime.datetime.fromtimestamp(
             int(time.time()+size-28800)
          ).strftime('%Y-%m-%d %H:%M:%S')
-      url = 'https://seads.brabsmit.com/api/event-api/'
+      url = 'http://seads.brabsmit.com/api/event-api/'
       headers = {'content-type': 'application/json'}
       widgets = [device.name+': ', Percentage(), ' ', Bar(), ' ', ETA()]
-      if verbose: pbar = ProgressBar(widgets=widgets, maxval=size).start()
+      pbar = ProgressBar(widgets=widgets, maxval=size).start()
       for i in range(size):
          ts = time.time()
          for appliance in appliances:

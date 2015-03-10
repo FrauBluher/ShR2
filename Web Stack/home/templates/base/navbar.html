@@ -238,12 +238,16 @@
 </div>
 
 <div id="sidr">
-    <!-- Your content -->
+    {% if my_devices %}
+    Devices
     <ul>
-        <li><a href="#">List 1</a></li>
-        <li class="active"><a href="#">List 2</a></li>
-        <li><a href="#">List 3</a></li>
+        {% for device in my_devices %}
+        <li><a href="#">{{ device }}</a></li>
+        {% endfor %}
     </ul>
+    {% else %}
+        No Devices to display
+    {% endif %}
 </div>
 
 <script>

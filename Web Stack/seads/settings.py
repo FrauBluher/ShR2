@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     'rest_framework_swagger',
     'gmapi',
     'geoposition',
+    'paintstore',
     'microdata',
     'webapp',
     'home',
