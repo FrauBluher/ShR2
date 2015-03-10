@@ -333,6 +333,7 @@ def device_data(request, serial):
 def device_chart(request, serial):
    context = {}
    if request.method == 'GET':
+      stack = request.GET.get('stack')
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
 
@@ -353,7 +354,8 @@ def device_chart(request, serial):
          for name in appliance_names:
            context['appliances'].append(Appliance.objects.get(name=name));
 
-         context['server_time'] = time.time()*1000,
+         context['server_time'] = time.time()*1000
+         context['stack'] = stack == 'true'
    return render(request, 'base/chart.html', context)
    
 

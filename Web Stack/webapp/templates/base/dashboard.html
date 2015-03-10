@@ -7,18 +7,16 @@
         {% if my_devices %}
         <div class="panel panel-default">
             <div class="panel-heading">
-               <div id='chart-title'>{{ my_devices.0.name }} at a glance</div>
+               <div id='chart-title' value='{{ my_devices.0.serial }}'>{{ my_devices.0.name }} at a glance</div>
                 <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Change Device
+                            Change Chart Type
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            {% for device in my_devices %}
-                            <li><a class="chart-device" id="{{device.serial}}" href='javascript:change_device({{ device.serial }},"{{ device.name }}")'>{{device.name}}</a>
-                            </li>
-                            {% endfor %}
+                            <li><a class="chart-stack" id="stack" href='javascript:refresh_chart(true)'>Stacked</a></li>
+                            <li><a class="chart-stack" id="unstack" href='javascript:refresh_chart(false)'>Unstacked</a></li>
                         </ul>
                     </div>
                 </div>
@@ -40,6 +38,22 @@
 <!-- /.row -->
 
 <script>
+
+function refresh_chart(stack) {
+  var device_serial = $('#chart-title').val();
+  var device_name = $('#chart-title').html().split(' at a glance')[0]
+  $.get('/charts/device/'+device_serial+'/chart/',
+    {
+      'stack': stack
+    },
+    function(data) {
+      $('#ajax-container').html(data);
+      render_chart();
+      $('#chart-title').html(device_name+" at a glance");
+      $('#chart-title').val(device_serial);
+    }
+  );
+}
 
 function get_average(serial) {
    $.get('/device/get_averages/'+serial+'/',
@@ -98,12 +112,16 @@ function initialize() {
         {% endfor %}
         infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
         $.get('/charts/device/{{ device.serial }}/chart/',
-        function(data) {
-           $('#ajax-container').html(data);
-           render_chart();
-           $('#chart-title').html("{{ device.name }} at a glance");
-        }
-   );
+          {
+             'stack': true
+          },
+          function(data) {
+             $('#ajax-container').html(data);
+             render_chart();
+             $('#chart-title').html("{{ device.name }} at a glance");
+             $('#chart-title').val("{{ device.serial }}");
+          }
+        );
      });
   {% endfor %}
   

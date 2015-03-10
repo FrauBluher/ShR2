@@ -1,6 +1,5 @@
 <script>
    function render_chart() {
-    console.log("{% for appliance in appliances %} {{ appliance }} {% endfor %}");
    {% if device %}
      
      var chart = new TimeChart({
@@ -49,7 +48,7 @@
                  aggregation:"avg",
                  noDataPolicy:"skip"
               },
-              stack: "default",
+              {% if stack %}stack: "default",{% endif %}
               style:{
                  fillColor:"{{ appliance.chart_color }}",
                  lineColor:""
