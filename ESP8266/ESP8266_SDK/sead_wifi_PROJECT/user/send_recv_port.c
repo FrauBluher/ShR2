@@ -261,6 +261,8 @@ store_send_message(os_event_t *events) {
 	}
 }
 
+//pretty sure i must manage where i call this function better:
+
 /**
   * @brief  Sets sending flag to false
   * @param  None

@@ -131,14 +131,14 @@ bool ICACHE_FLASH_ATTR
 checksum_buffer(void) {
 	//checks the uart buffer, strict OFF for now
 	//that means it doesn't require a checksum
-	uart0_sendStr("checksumming:\r\n");
-	uart0_sendStr(uart_buffer->buffer);
+	uart0_sendStr("checksumming message\r\n");
+	//uart0_sendStr(uart_buffer->buffer);
 	if (check(uart_buffer->buffer, false)) {
 		return true;
 	} else {
 		return false;
 	}
-	uart0_sendStr(uart_buffer->buffer);
+	//uart0_sendStr(uart_buffer->buffer);
 }
 
 /******************************SEND BUFFER*****************************/
@@ -151,8 +151,8 @@ checksum_buffer(void) {
 
 bool ICACHE_FLASH_ATTR
 push_send_buffer(void) {
-	os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-		send_buffer.head, send_buffer.tail, send_buffer.count);
+	//os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+	//	send_buffer.head, send_buffer.tail, send_buffer.count);
 	//initialize temp pointer to the buffer not being used by receive
 	uart_buffer_t *temp_ptr = NULL;
 	bool return_value = true;
@@ -200,8 +200,6 @@ push_send_buffer(void) {
 
 bool ICACHE_FLASH_ATTR
 send_pop_buffer(void) {
-	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-		send_buffer.head, send_buffer.tail, send_buffer.count);
 	//return if there was nothing on the buffer
 	if (send_buffer.count == 0) {
 		return false;
@@ -210,6 +208,8 @@ send_pop_buffer(void) {
 	if (!send_http_request(&send_buffer.buffer[send_buffer.tail])) {
 		return false;
 	}
+	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+		send_buffer.head, send_buffer.tail, send_buffer.count);
 	//if initializing the request was successful, return true
 	return true;
 }
@@ -229,10 +229,9 @@ pop_pop_buffer(void) {
 	//decriment the count
 	//incriment the tail
 	send_buffer.count--;
+	send_buffer.tail++;
 	if (send_buffer.tail > send_buffer.buffer_end) {
 		send_buffer.tail = 0;
-	} else {
-		send_buffer.tail++;
 	}
 	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
 		send_buffer.head, send_buffer.tail, send_buffer.count);

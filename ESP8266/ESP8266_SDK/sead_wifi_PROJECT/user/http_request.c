@@ -13,6 +13,7 @@
 #include "ssl/cert.h"
 #include "ssl/private_key.h"
 
+#include "uart.h"
 #include "buffers.h"
 #include "send_recv_port.h"
 
@@ -49,6 +50,12 @@
 
 bool make_device = FALSE;
 
+//approximately in seconds
+#define WIFI_CONFIG_TIMEOUT 30
+
+//connection tries
+uint8_t connect_try = 0;
+
 //len 81
 //AT+CIPSEND=81
 
@@ -79,25 +86,40 @@ void print_espconn_state(espconn *serv_connection) {
 //occasionally gets stuck in sending phase.
 bool ICACHE_FLASH_ATTR
 send_http_request(send_data_t *temp) {
+	bool return_value = false;
 	//check to see if we have an IP address and we are in STA mode
 	//1 stands for STA mode 2 is AP and 3 is both STA+AP
 	if (wifi_station_get_connect_status() == STATION_GOT_IP &&
 		wifi_get_opmode() == 1) {
-		os_printf("Connected and have an ip addr\r\n");
+		os_printf("Station has IP address\r\n");
 		data_to_send = temp;
 		//if the server connection isn't up???? start it
 		if (serv_conn.state == ESPCONN_NONE ||
 			serv_conn.state == ESPCONN_CLOSE) {
 			network_start();
-		} else {
+		} else if (serv_conn.state == ESPCONN_CONNECT) {
 			sint8 d = package_send(&serv_conn);
-			done_sending();
 		}
-		return true;
+		return_value = true;
+	} else if (wifi_get_opmode() == 1) {
+		//go back into AP mode after 5 unsuccessfull attempts
+		if (connect_try++ >= WIFI_CONFIG_TIMEOUT) {
+			connect_try = 0;
+			os_printf("System resetting for wifi config\r\n");
+			wifi_set_opmode(2);
+			system_restart();
+		} else {
+			os_printf("System going into AP mode after %d more attempts\r\n",
+					  WIFI_CONFIG_TIMEOUT - connect_try);
+		}
+		return_value = false;
 	} else {
-		os_printf("No ip addr\r\n");
-		return false;
+		os_printf("No ip addr and not in STA mode\r\n");
+		return_value = false;
 	}
+	//finished with initiating networking requests
+	done_sending();
+	return return_value;
 }
 
 //formates the data from data_to_send to json
@@ -121,7 +143,8 @@ package_send(espconn *serv_conn) {
 		data_to_send->wattage, data_to_send->timestamp);
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
-	os_printf("\r\nSend Data:\r\n%s", send_data);
+	os_printf("\r\nSend Data:\r\nT:%s\r\nW:%d\r\n", data_to_send->timestamp,
+				data_to_send->wattage);
 	//send the data.
 	return espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
 }
@@ -133,14 +156,22 @@ networkSentCb(void *arg) {
   //incriments circular buffer tail (POP POP)
   pop_pop_buffer();
 }
- 
+
 static void ICACHE_FLASH_ATTR
 networkRecvCb(void *arg, char *data, unsigned short len) {
+	uint8_t i;
 	os_printf("recv\r\n");
 	print_espconn_state((espconn *)arg);
 	//print out what was received
 	espconn *serv_conn=(espconn *)arg;
-	os_printf("%s\r\n", data);
+	//print out only the http code returned 
+	for (i = 0; i < 12; i++) {
+		uart0_putChar(data[i]);
+	}
+	uart0_putChar('\r');
+	uart0_putChar('\n');
+	//jsonparse_state json_state;
+	//jsonparse_setup(json_state, data, len);
 	print_espconn_state(serv_conn);
 }
 
@@ -149,25 +180,25 @@ static void ICACHE_FLASH_ATTR
 networkConnectedCb(void *arg) {
 	os_printf("conn_start\r\n");
 	print_espconn_state((espconn *)arg);
-	sint8 d = package_send((espconn *)arg);
 	os_printf("conn_end\r\n");
 	print_espconn_state((espconn *)arg);
 	//set sending flag to false
-	done_sending();
 }
 
 //TODO handle reconnection?
 static void ICACHE_FLASH_ATTR
 networkReconCb(void *arg, sint8 err) {
 	server_config = false;
-	os_printf("rcon");
+	os_printf("rcon\r\n");
+	espconn_disconnect((espconn *)arg);
 	print_espconn_state((espconn *)arg);
 }
 
 static void ICACHE_FLASH_ATTR
 networkDisconCb(void *arg) {
 	server_config = false;
-	os_printf("dcon");
+	os_printf("dcon\r\n");
+	espconn_disconnect((espconn *)arg);
 	print_espconn_state((espconn *)arg);
 }
 
@@ -177,14 +208,13 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	static esp_tcp tcp;
 	espconn *serv_conn=(espconn *)arg;
 	if (serv_ip==NULL) {
-		os_printf("\r\nNS lookup failed :/\r\n");
+		os_printf("\r\nNS lookup failed\r\n");
 		return;
 	}
-	
+	//the destination IP address from NS lookup
 	os_printf("\r\nDST: %d.%d.%d.%d\r\n",
 	*((uint8 *)&serv_ip->addr), *((uint8 *)&serv_ip->addr + 1),
 	*((uint8 *)&serv_ip->addr + 2), *((uint8 *)&serv_ip->addr + 3));
-	
 	//specify the connection to be tcp
 	serv_conn->type=ESPCONN_TCP;
 	serv_conn->state=ESPCONN_NONE;
@@ -199,7 +229,7 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	espconn_regist_reconcb(serv_conn, networkReconCb);
 	espconn_regist_recvcb(serv_conn, networkRecvCb);
 	espconn_regist_sentcb(serv_conn, networkSentCb);
-	//debug 
+	//debug
 	print_espconn_state(serv_conn);
 	espconn_connect(serv_conn);
 	//debug
