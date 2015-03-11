@@ -273,8 +273,8 @@ def default_chart(request):
       context = {}
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)
-      device = devices.first()
-      if device:
+
+      for device in devices:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          result = db.query('list series')[0]
          appliances = Set()
@@ -285,8 +285,11 @@ def default_chart(request):
                if (len(appliance) < 2): continue
                else:
                   appliances.add(appliance[-1])
+         average_wattage = 0
+         for appliance in appliances:
+            average_wattage += db.query('select * from average.device.'+str(device.serial)+'.'+appliance)[0]['points'][0][2]
+         device.average_wattage = int(average_wattage)
          context = {'my_devices': devices,
-                    'appliances': appliances,
                     'server_time': time.time()*1000,
                     }
       return render(request, 'base/dashboard.html', context)
@@ -351,8 +354,14 @@ def device_chart(request, serial):
                else: appliance_names.add(appliance_name[-1])
 
          context['appliances'] = []
+         # place Unknown appliance at front of list
+         unknown_appliance = Appliance.objects.get(serial=0)
+         if unknown_appliance.name in appliance_names:
+            context['appliances'].append(unknown_appliance)
          for name in appliance_names:
-           context['appliances'].append(Appliance.objects.get(name=name));
+            appliance = Appliance.objects.get(name=name)
+            if appliance != unknown_appliance:
+               context['appliances'].append(Appliance.objects.get(name=name));
 
          context['server_time'] = time.time()*1000
          context['stack'] = stack == 'true'
@@ -390,7 +399,7 @@ def device_is_online(device):
     except:
       # bypasses 400 error thrown by InfluxDB if series does not exist
       pass
-    return int(time.time()) - int(result[0]) < 10
+    return int(time.time()) - int(result[0]) < 4000
 
 class Object:
    def __init__(self, serial):

@@ -98,9 +98,9 @@ function initialize() {
          <div id="content">'+
             '<h3 id="device-name">{{ device.name }}</h3>'+
             '<div id="body-content-{{ device.serial }}">'+
-               '<p>Average Usage: ???W</p>'+
-               '<p>Average Cost: $???</p>'+
-               '<p>Current Usage: ??? W</p>'+
+               '<p><strong>Average Usage:</strong> {{ device.average_wattage }}W</p>'+
+               '<p><strong>Average Cost:</strong> $???</p>'+
+               '<p><strong>Current Usage:</strong> ??? W</p>'+
             '</div>'+
          '</div>';
      var infowindow{{ device.serial }} = new google.maps.InfoWindow({
