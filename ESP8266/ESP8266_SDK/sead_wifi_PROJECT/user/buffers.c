@@ -148,7 +148,6 @@ checksum_buffer(void) {
   * @param  None
   * @retval returns false if failed to get fields, and true if succeeded
   */
-
 bool ICACHE_FLASH_ATTR
 push_send_buffer(void) {
 	//os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
@@ -197,11 +196,11 @@ push_send_buffer(void) {
   * @retval returns false if failed to send and pop,
   * and true if succeeded
   */
-
 bool ICACHE_FLASH_ATTR
 send_pop_buffer(void) {
 	//return if there was nothing on the buffer
 	if (send_buffer.count == 0) {
+		done_sending();
 		return false;
 	}
 	//establish tcp connection with seads.brabsmit.com on port 80
@@ -220,7 +219,6 @@ send_pop_buffer(void) {
   * @retval returns false if failed to send and pop,
   * and true if succeeded
   */
-
 void ICACHE_FLASH_ATTR
 pop_pop_buffer(void) {
 	if (send_buffer.count == 0) {

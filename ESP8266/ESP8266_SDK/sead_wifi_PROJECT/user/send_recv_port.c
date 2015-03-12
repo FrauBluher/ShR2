@@ -37,8 +37,6 @@ rss_state user_state = IDLE;
 
 //flag that checks to see if it should echo rx
 bool echoFlag = TRUE;
-//flag that tells you if you are connected to an access point?
-bool nosend = FALSE;
 //are we storing data?
 bool storing = FALSE;
 //are we sending data?
@@ -73,6 +71,11 @@ recv_message(os_event_t *events) {
 	ETS_UART_INTR_ENABLE();
 }
 
+/**
+  * @brief  Continuously called state machine, for message processing
+  * @param  contains the uart character received
+  * @retval None
+  */
 void ICACHE_FLASH_ATTR
 send_recv_store_fsm(char temp) {
 	switch(user_state) {
@@ -114,13 +117,13 @@ case_idle(char temp) {
 		//puts the char on the buffer
 		put_buffer(temp);
 	}
-	//if we have info to send, send it
-	if (sending == FALSE && storing == FALSE && size_send_buffer() > 0) {
-		sending = TRUE;
-		system_os_post(store_send_messagePrio, 0, 0);
-	}
 }
-//what happens when we have received the beginning of a message
+
+/**
+  * @brief  The state when we are in the middle of receiving a message
+  * @param  Temp contains the uart data received for that interval
+  * @retval None
+  */
 void ICACHE_FLASH_ATTR
 case_recv(char temp) {
 	if (temp == '\n') {
@@ -134,11 +137,6 @@ case_recv(char temp) {
 			//swap and then reset current buffer
 			swap_buffer();
 			reset_buffer();
-			if (sending == TRUE) {
-				nosend = TRUE;
-			} else if (size_send_buffer() > 0) {
-				sending = TRUE;
-			}
 			system_os_post(store_send_messagePrio, 0, 0);
 			user_state = STORE;
 		} else {
@@ -156,22 +154,24 @@ case_recv(char temp) {
 		user_state = IDLE;
 	}
 }
-//what happens when we have finished receiving a message (storing)
+
+
+/**
+  * @brief  The state when we are done receiving a message (store it)
+  * @param  Temp contains the uart data received for that interval
+  * @retval None
+  */
 void ICACHE_FLASH_ATTR
 case_store(char temp) {
 	//send stuff right after storing?
 	if (storing == FALSE && temp != '$' && size_send_buffer() > 0) {
-		sending = TRUE;
 		user_state = IDLE;
-		system_os_post(store_send_messagePrio, 0, 0);
 	} else if (storing == FALSE && temp != '$') {
 		user_state = IDLE;
 	} else if (storing == FALSE && temp == '$' && size_send_buffer() > 0) {
-		sending = TRUE;
 		user_state = RECEIVE;
 		//puts shit on the buffer
 		put_buffer(temp);
-		system_os_post(store_send_messagePrio, 0, 0);
 	} else if (storing == FALSE && temp == '$') {
 		user_state = RECEIVE;
 		//puts shit on the buffer
@@ -184,7 +184,13 @@ case_store(char temp) {
 		user_state = STORE;
 	}
 }
-//what happens when we are storing a message while we received new input
+
+/**
+  * @brief  The state when we are storing and received a new message
+  * 		beginning
+  * @param  Temp contains the uart data received for that interval
+  * @retval None
+  */
 void ICACHE_FLASH_ATTR
 case_recv_store(char temp) {
 	if (storing == FALSE && temp != '\n') {
@@ -199,11 +205,6 @@ case_recv_store(char temp) {
 			//swap and then reset buffer
 			swap_buffer();
 			reset_buffer();
-			if (sending == TRUE) {
-				nosend = TRUE;
-			} else if (size_send_buffer() > 0) {
-				sending = TRUE;
-			}
 			system_os_post(store_send_messagePrio, 0, 0);
 			user_state = STORE;
 		} else {
@@ -248,20 +249,33 @@ store_send_message(os_event_t *events) {
 		}
 		storing = FALSE;
 	}
-	//then send
-	if (sending == TRUE && nosend == FALSE) {
+}
+
+/**
+  * @brief  Timer driven function call for checking to see if we have
+  * 		data to format and send out to the server
+  * @param  None
+  * @retval None
+  */
+static void ICACHE_FLASH_ATTR
+send_timer_cb(void *arg) {
+	//sending timer
+	static ETSTimer send_timer;
+	//checks to see if we should send
+	if (sending == FALSE && size_send_buffer() > 0) {
 		os_printf("\r\nsending...\r\n");
+		sending = TRUE;
 		//we can't tell when it's done sending after this, so 
 		//the sending flag will be false after the command
 		//to send the data has been issued
 		if (!send_pop_buffer()) {
 			sending = FALSE;
 		}
-		//we will not know wether is not it was successfull from here
 	}
+	os_timer_disarm(&send_timer);
+	os_timer_setfn(&send_timer, send_timer_cb, NULL);
+	os_timer_arm(&send_timer, 1000, 0);
 }
-
-//pretty sure i must manage where i call this function better:
 
 /**
   * @brief  Sets sending flag to false
@@ -271,7 +285,6 @@ store_send_message(os_event_t *events) {
 void ICACHE_FLASH_ATTR
 done_sending(void) {
 	sending = FALSE;
-	nosend = FALSE;
 }
 
 /**
@@ -279,16 +292,15 @@ done_sending(void) {
   * @param  None
   * @retval None
   */
-
 void ICACHE_FLASH_ATTR
 send_recv_init(void) {
 	//indicates the uart has first priority, and a queue length of 64
-	//bytes to execute
 	system_os_task(recv_message, recv_messagePrio,
 				   recv_messageQueue, recv_messageQueueLen);
 	//storing messages have second priority
 	system_os_task(store_send_message, store_send_messagePrio,
 				   store_send_messageQueue, store_send_messageQueueLen);
+	send_timer_cb(0);
 }
 
 /**

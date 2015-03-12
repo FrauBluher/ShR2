@@ -37,7 +37,7 @@ typedef struct {
 	union {
 		uint32_t config0Reg;
 		struct {
-			signed VREFCAL : 8;
+			signed VREFCAL : 8; 
 			signed : 5;
 			signed OSR : 3;
 			signed PRE : 2;
