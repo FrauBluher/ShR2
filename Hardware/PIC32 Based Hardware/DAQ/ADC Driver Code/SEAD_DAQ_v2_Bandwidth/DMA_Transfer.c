@@ -42,6 +42,10 @@
 
 #define SYS_FREQ (80000000L)
 #define	GetPeripheralClock()		(SYS_FREQ/(1 << OSCCONbits.PBDIV))
+#define BAUD_RATE 115200
+
+bool wait_for_config = false;
+bool config_ready = false;
 
 uint8_t inited = 0;
 uint8_t currentBuffer = BUFFER_A;
@@ -64,7 +68,7 @@ uint8_t BufferToUART_Init(void)
 {
 	UARTConfigure(UART3, UART_ENABLE_PINS_TX_RX_ONLY | UART_ENABLE_HIGH_SPEED);
 	UARTSetLineControl(UART3, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
-	UARTSetDataRate(UART3, GetPeripheralClock(), 921600);
+	UARTSetDataRate(UART3, GetPeripheralClock(), BAUD_RATE);
 	UARTEnable(UART3, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX));
 
 	DmaChnOpen(uartTxChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
@@ -217,11 +221,30 @@ uint8_t BufferToUART_TransferB(uint16_t transferSize)
 	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0);
 }
 
+// bool wait_for_config = false;
+// bool config_ready = false;
+void SetReadyForConfigure() {
+	if (!config_ready) {
+		wait_for_config = true;
+	}
+}
+
+// If the data is ready to configure sets up the struct and then returns true
+// If the data is not ready return false
+bool GetConfig(daq_config *config) {
+	if (!config_ready) return false;
+
+	memcpy(config, dmaBuff, sizeof(daq_config));
+	return true;
+}
+
 void __ISR(_DMA0_VECTOR) DmaHandler0(void)
 {
 	//StartSPIAcquisition(BUFFER_A);
 
-	//PUT CONTROLS FOR THE DAQ HERE.  CONFIG, ETC.
+	if (wait_for_config) {
+		config_ready = true;
+	}
 
 	DmaChnClrEvFlags(DMA_CHANNEL0, DMA_EV_BLOCK_DONE);
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL0));

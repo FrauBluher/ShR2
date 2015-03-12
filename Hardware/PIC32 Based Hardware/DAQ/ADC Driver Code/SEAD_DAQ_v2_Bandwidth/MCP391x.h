@@ -38,6 +38,7 @@
 #define MCP3912
 
 #include <stdint.h>
+#include "daq_config.h"
 
 /**
  * @brief MCP3912 ADC Result Data
@@ -570,7 +571,7 @@ typedef struct {
  * @param MCP391xInfo A pointer to a MCP391x_Info struct which will be updated.
  * @return Returns EXIT_SUCCESS if the device responds with the set configuration.
  */
-uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo);
+uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo, daq_config *config);
 
 #endif	/* ADS85XH_H */
 

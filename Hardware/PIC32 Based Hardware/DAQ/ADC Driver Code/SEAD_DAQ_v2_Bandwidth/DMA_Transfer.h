@@ -36,6 +36,8 @@
 #define MAX32
 
 #include <stdint.h>
+#include <stdbool.h>
+#include "daq_config.h"
 #define BUFFERLENGTH 13*2000
 #define END_MESSAGE 8
 
@@ -63,6 +65,10 @@ uint8_t BufferToUART_TransferB(uint16_t transferSize);
 void BufferToPMP_Init(void);
 void StartSPIAcquisition(uint8_t buffer);
 void DMAStartUARTRX(void);
+
+void SetReadyForConfigure();
+// returns true if config is valid
+bool GetConfig(daq_config *config);
 
 #endif	/* SPI_DMA_TRANSFER_H */
 

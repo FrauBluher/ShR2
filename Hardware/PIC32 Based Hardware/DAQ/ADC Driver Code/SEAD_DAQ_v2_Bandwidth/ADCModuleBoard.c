@@ -135,7 +135,14 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 		Nop();
 	}
 
-	MCP391x_Init(MCPInfo);
+	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
+	INTEnableInterrupts();
+	daq_config config;
+	SetReadyForConfigure();
+	while (!GetConfig(&config));
+	INTDisableInterrupts();
+
+	MCP391x_Init(MCPInfo, &config);
 
 	for (i = 0; i < 400; i++) {
 		Nop();
