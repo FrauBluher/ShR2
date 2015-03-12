@@ -14,12 +14,15 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #include "ftd2xx.h"
 #include "lib_crc.h"
 #include "daq_config.h"
 
 #define BUF_SIZE 0x10000
+#define BAUD_RATE 115200
+#define MAX_CONFIG_SIZE 255
 
 enum {
 	BUFFER_A,
@@ -64,7 +67,7 @@ void *read_fifo(void *pArgs)
 			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
 			FT_Read(ftFIFO, &tmpBuff[runningTotalA], fifoRxQueueSize, &dwBytesRead);
 			runningTotalA += dwBytesRead;
-		
+
 			if (fifoRxQueueSize > 4000) {
 				fprintf(stdout, "ERROR: toRead: %i > 4000.  DATA WILL BE CORRUPTED!\r\n", fifoRxQueueSize);
 				fflush(stdout);
@@ -308,7 +311,41 @@ daq_config package_config()
 //sends the config struct over the ft tx
 void send_config(daq_config config)
 {
-	FT_Write(ftFIFO, &config, (DWORD)sizeof(config), &bytes);
+	FT_STATUS ftStatus;
+    FT_HANDLE ftUart;
+
+    ftStatus = FT_Open(1, &ftUart);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to open device (%d)", (int)ftStatus);
+        exit(1);
+    }
+
+    ftStatus = FT_SetBaudRate(ftUart, BAUD_RATE);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to set baud rate (%d)", (int)ftStatus);
+        FT_Close(ftUart);
+        exit(1);
+    }
+
+    // validate that this is big enough for our data
+    assert(sizeof(config) < MAX_CONFIG_SIZE);
+
+    ftStatus = FT_Write(ftUart, &config, (DWORD)sizeof(config), &bytes);
+    if (ftStatus != FT_OK || bytes != sizeof(config)) {
+        fprintf(stderr, "Unable to send config (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+
+    ftStatus = FT_Write(ftUart, "\r\n", 2, &bytes);
+    if (ftStatus != FT_OK || bytes != 2) {
+        fprintf(stderr, "Unable to send newline (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+
+    FT_Close(ftUart);
+
 	return;
 }
 
