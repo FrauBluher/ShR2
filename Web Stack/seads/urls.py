@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^new_device/key/', 'microdata.views.new_device_key'),
     url(r'^new_device/location/(?P<serial>\d+)/', 'microdata.views.new_device_location'),
     url(r'^api/timestamp/$', 'microdata.views.timestamp'),
-    url(r'^device/get_averages/(?P<serial>\d+)/', 'webapp.views.get_averages'),
+    url(r'^device/get_wattage_usage/', 'webapp.views.get_wattage_usage'),
     
     # Development URLs
     url(r'^api/', include(router.urls)),

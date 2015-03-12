@@ -270,51 +270,42 @@ def group_by_mean(serial, unit, start, stop):
 @login_required(login_url='/signin/')
 def default_chart(request):
    if request.method == 'GET':
-      context = {}
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)
-
-      for device in devices:
-         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-         result = db.query('list series')[0]
-         appliances = Set()
-         for series in result['points']:
-            rg = re.compile('device.'+str(device.serial))
-            if re.match(rg, series[1]):
-               appliance = series[1].split('device.'+str(device.serial)+'.')
-               if (len(appliance) < 2): continue
-               else:
-                  appliances.add(appliance[-1])
-         average_wattage = 0
-         for appliance in appliances:
-            average_wattage += db.query('select * from average.device.'+str(device.serial)+'.'+appliance)[0]['points'][0][2]
-         device.average_wattage = int(average_wattage)
-         context = {'my_devices': devices,
-                    'server_time': time.time()*1000,
-                    }
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      context = {'my_devices': devices,
+                 'server_time': time.time()*1000,
+                }
       return render(request, 'base/dashboard.html', context)
 
       
 @login_required(login_url='/signin/')
-def get_averages(request, serial):
+def get_wattage_usage(request):
    context = {}
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
+      serial = request.GET.get('serial')
       device = Device.objects.get(serial=serial)
       if device.owner == user:
-         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-         result = db.query('list series')[0]
-         appliances = Set()
-         for series in result['points']:
-            rg = re.compile('device.'+str(device.serial))
-            if re.match(rg, series[1]):
-               appliance = series[1].split('device.'+str(device.serial)+'.')[-1]
-               if appliance == 'device.'+str(device.serial): continue
-               try:
-                  wattage = db.query('select * from average.device.'+str(device.serial)+'.'+appliance)
-                  context[appliance] = int(wattage[0]['points'][0][2])
-               except:
-                  pass
+        db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+        result = db.query('list series')[0]
+        appliances = Set()
+        for series in result['points']:
+           rg = re.compile('device.'+str(device.serial))
+           if re.match(rg, series[1]):
+              appliance = series[1].split('device.'+str(device.serial)+'.')
+              if (len(appliance) < 2): continue
+              else:
+                 appliances.add(appliance[-1])
+        average_wattage = 0
+        current_wattage = 0
+        for appliance in appliances:
+           average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
+           this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance)[0]['points'][0]
+           if this_wattage[0] > time.time() - 1000:
+              current_wattage += this_wattage[2]
+        context['average_wattage'] = int(average_wattage)
+        context['current_wattage'] = int(current_wattage)
    return HttpResponse(json.dumps(context), content_type="application/json")
 
    

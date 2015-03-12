@@ -43,7 +43,6 @@ class Device(models.Model):
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
-         db.query('select mean(wattage) from /^device.'+serial+'.*/ into average.:series_name')
          self.fanout_query_registered = True
       super(Device, self).save()
 

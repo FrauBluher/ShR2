@@ -55,23 +55,57 @@ function refresh_chart(stack) {
   );
 }
 
-function get_average(serial) {
-   $.get('/device/get_averages/'+serial+'/',
-      function(data) {
-         var average = 0;
-         $.each(data, function(key, value) {
-            average += parseInt(value);
-         });
-         $('#body-content-'+serial).html(average);
-      }
-   );
+var contentArray = {}
+{% for device in my_devices %}
+contentArray['{{ device.serial }}'] = '';
+var marker{{ device.serial }};
+var infowindow{{ device.serial }};
+
+{% endfor %}
+
+function get_wattage_usage() {
+   {% for device in my_devices %}
+    $.get('/device/get_wattage_usage/',
+        { serial: {{ device.serial }} },
+        function(data) {
+           var current_wattage, average_wattage;
+           if (data.average_wattage > data.current_wattage) {
+              current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+           } else {
+              current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+              
+           }
+           average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
+           contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Average Cost:</strong>$???</p>'+ current_wattage +'</div></div>';
+           infowindow{{ device.serial }} = new google.maps.InfoWindow({
+            content: contentArray['{{ device.serial }}']
+           });
+
+           google.maps.event.addListener(marker{{ device.serial }}, 'click', function() {
+             {% for device2 in my_devices %}
+              infowindow{{ device2.serial }}.close();
+             {% endfor %}
+             infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
+             $.get('/charts/device/{{ device.serial }}/chart/',
+               {
+                'stack': true
+               },
+               function(data) {
+                 $('#ajax-container').html(data);
+                 render_chart();
+                 $('#chart-title').html("{{ device.name }} at a glance");
+                 $('#chart-title').val("{{ device.serial }}");
+               }
+             );
+           });
+        }
+     );
+   {% endfor %}
 }
 
 $(function() {
+   get_wattage_usage();
    initialize();
-   {% for device in my_devices %}
-   get_average({{ device.serial }});
-   {% endfor %}
 });
 
 var map, placeSearch, autocomplete;
@@ -88,41 +122,16 @@ function initialize() {
 
   {% for device in my_devices %}
      var pos = new google.maps.LatLng({{ device.position }});
-     LatLngList.push(pos)
-     var marker{{ device.serial }} = new google.maps.Marker({
+     LatLngList.push(pos);
+
+     marker{{ device.serial }} = new google.maps.Marker({
        map: map,
        position: pos,
        title: '{{ device.name }}',
      });
-     var content{{ device.serial }} = '\
-         <div id="content">'+
-            '<h3 id="device-name">{{ device.name }}</h3>'+
-            '<div id="body-content-{{ device.serial }}">'+
-               '<p><strong>Average Usage:</strong> {{ device.average_wattage }}W</p>'+
-               '<p><strong>Average Cost:</strong> $???</p>'+
-               '<p><strong>Current Usage:</strong> ??? W</p>'+
-            '</div>'+
-         '</div>';
-     var infowindow{{ device.serial }} = new google.maps.InfoWindow({
-        content: content{{ device.serial }}
-     });
-     google.maps.event.addListener(marker{{ device.serial }}, 'click', function() {
-        {% for device2 in my_devices %}
-           infowindow{{ device2.serial }}.close();
-        {% endfor %}
-        infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
-        $.get('/charts/device/{{ device.serial }}/chart/',
-          {
-             'stack': true
-          },
-          function(data) {
-             $('#ajax-container').html(data);
-             render_chart();
-             $('#chart-title').html("{{ device.name }} at a glance");
-             $('#chart-title').val("{{ device.serial }}");
-          }
-        );
-     });
+
+     
+
   {% endfor %}
   
    new DayNightOverlay({
