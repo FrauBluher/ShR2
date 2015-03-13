@@ -99,11 +99,11 @@ void *read_fifo(void *pArgs)
 void acquire_loop(daq_config config)
 {
 	int i;
-	//scalars for bin to milliamp conversion.
-	double ch0_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH0) * 0.333);
-	double ch1_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH1) * 0.333);
-	double ch2_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH2) * 0.333);
-	double ch3_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH3) * 0.333);
+	//scalars for bin to microamp conversion.
+	double ch0_scalar = (31416) / (16777216 * (1<<3) * 0.333);
+	double ch1_scalar = (31416) / (16777216 * (1<<3) * 0.333);
+	double ch2_scalar = (31416) / (16777216 * (1<<3) * 0.333);
+	double ch3_scalar = (31416) / (16777216 * (1<<3) * 0.333);
 	pthread_t thread_id;
 	FT_ResetDevice(ftFIFO);
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
