@@ -65,12 +65,24 @@ void *read_fifo(void *pArgs)
 	while(exit_thread != 1) {
 		if (current_buffer == BUFFER_A) {
 			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
-			FT_Read(ftFIFO, &tmpBuff[runningTotalA], fifoRxQueueSize, &dwBytesRead);
+			DWORD size = 0;
+            // we have room for the data
+            if (runningTotalA + fifoRxQueueSize < BUF_SIZE) {
+                size = fifoRxQueueSize;
+            }
+            // read as much as we can
+            else {
+                size = BUF_SIZE - runningTotalA;
+				fprintf(stderr, "ERROR: Not enough room in buffer for data. DATA MAY BE CORRUPTED!\n");
+				fflush(stderr);
+            }
+
+            FT_Read(ftFIFO, &tmpBuff[runningTotalA], size, &dwBytesRead);
 			runningTotalA += dwBytesRead;
 
 			if (fifoRxQueueSize > 4000) {
-				fprintf(stdout, "ERROR: toRead: %i > 4000.  DATA WILL BE CORRUPTED!\r\n", fifoRxQueueSize);
-				fflush(stdout);
+				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
+				fflush(stderr);
 			}
 
 			if (runningTotalA >= 26007) {
@@ -78,12 +90,24 @@ void *read_fifo(void *pArgs)
 			}
 		} else if (current_buffer == BUFFER_B) {
 			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
-			FT_Read(ftFIFO, &tmpBuff2[runningTotalB], fifoRxQueueSize, &dwBytesRead);
+
+            DWORD size = 0;
+            // we have room for the data
+            if (runningTotalB + fifoRxQueueSize < BUF_SIZE) {
+                size = fifoRxQueueSize;
+            }
+            // read as much as we can
+            else {
+                size = BUF_SIZE - runningTotalB;
+				fprintf(stderr, "ERROR: Not enough room in buffer for data. DATA MAY BE CORRUPTED!\n");
+				fflush(stdout);
+            }
+            FT_Read(ftFIFO, &tmpBuff2[runningTotalB], size, &dwBytesRead);
 			runningTotalB += dwBytesRead;
 
 			if (fifoRxQueueSize > 4000) {
-				fprintf(stdout, "ERROR: toRead: %i > 4000.  DATA WILL BE CORRUPTED!\r\n", fifoRxQueueSize);
-				fflush(stdout);
+				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
+				fflush(stderr);
 			}
 
 			if (runningTotalB >= 26007) {
