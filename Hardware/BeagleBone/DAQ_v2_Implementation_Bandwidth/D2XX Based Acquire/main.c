@@ -96,9 +96,14 @@ void *read_fifo(void *pArgs)
 }
 
 //goes over the main acquire loop
-void acquire_loop()
+void acquire_loop(daq_config config)
 {
 	int i;
+	//scalars for bin to milliamp conversion.
+	double ch0_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH0) * 0.333);
+	double ch1_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH1) * 0.333);
+	double ch2_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH2) * 0.333);
+	double ch3_scalar = (1.309 * 1200 * 20) / ((1<<24) * (1<<config.PGA_CH3) * 0.333);
 	pthread_t thread_id;
 	FT_ResetDevice(ftFIFO);
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
@@ -134,7 +139,10 @@ void acquire_loop()
 				ch1 = ((ch1 << 8) >> 8);
 				ch2 = ((ch2 << 8) >> 8);
 				ch3 = ((ch3 << 8) >> 8);
-				fprintf(fh, "%i, %i, %i, %i\r\n", ch0, ch1, ch2, ch3);
+				//milliamps conversion here
+				fprintf(fh, "%f, %f, %f, %f\r\n",
+						ch0 * ch0_scalar, ch1 * ch1_scalar,
+						ch2 * ch2_scalar, ch3 * ch3_scalar);
 				//fprintf(fh, "%08X, %08X, %08X, %08X i=%i\r\n", ch0, ch1, ch2, ch3, i);
 				i += 13;
 				ch0 = 0;
@@ -170,7 +178,10 @@ void acquire_loop()
 				ch1 = ((ch1 << 8) >> 8);
 				ch2 = ((ch2 << 8) >> 8);
 				ch3 = ((ch3 << 8) >> 8);
-				fprintf(fh, "%i, %i, %i, %i\r\n", ch0, ch1, ch2, ch3);
+				//milliamps conversion here
+				fprintf(fh, "%f, %f, %f, %f\r\n",
+						ch0 * ch0_scalar, ch1 * ch1_scalar,
+						ch2 * ch2_scalar, ch3 * ch3_scalar);
 				//fprintf(fh, "%08X, %08X, %08X, %08X i=%i\r\n", ch0, ch1, ch2, ch3, i);
 				i += 13;
 				ch0 = 0;
@@ -211,6 +222,7 @@ void get_options(int argc, char **argv)
 		{
 		case 'h':
 			print_usage();
+			exit(0);
 			break;
 		case 'v':
 			verbose = true;
@@ -373,7 +385,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	send_config(config);
-	acquire_loop();
+	acquire_loop(config);
 	exit_thread = 1;
 	fclose(fh);
 	exit(0);
