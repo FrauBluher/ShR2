@@ -6,6 +6,7 @@ from django.core.exceptions import SuspiciousOperation
 from influxdb import client as influxdb
 from geoposition.fields import GeopositionField
 from paintstore.fields import ColorPickerField
+import json
 
 # Create your models here.
 
@@ -66,32 +67,40 @@ class Device(models.Model):
 
 class Event(models.Model):
    device = models.ForeignKey(Device)
-   event_code = models.IntegerField(blank=True, null=True)
-   appliance = models.ForeignKey(Appliance, related_name='appliance', blank=True, null=True)
-   timestamp = models.PositiveIntegerField(help_text='13 digits, millisecond resolution')
-   wattage = models.FloatField(blank=True, null=True)
-   current = models.FloatField(blank=True, null=True)
-   voltage = models.FloatField(blank=True, null=True)
-
+   dataPoints = models.CharField(max_length=1000,
+                                 help_text='Expects a JSON encoded string of values:'+\
+                                           '['+\
+                                           '   {timestamp(int),\n'+\
+                                           '   wattage(float, optional),\n'+\
+                                           '   current(float, optional),\n'+\
+                                           '   voltage(float, optional),\n'+\
+                                           '   appliance(float, optional),\n'+\
+                                           '   event_code(int, optional)}\n'+\
+                                           ',...]')
+                                 
    def save(self, **kwargs):
-      appliance = self.appliance
-      if self.appliance == None:
-         # link to the 'Unknown' appliance
-         appliance = Appliance.objects.filter(serial=0)[0]
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-      data = []
-      query = {}
-      query['points'] = [[self.timestamp, appliance.name, self.wattage]]
-      query['name'] = 'device.'+str(self.device.serial)
-      query['columns'] = ['time', 'appliance', 'wattage']
-      data.append(query)
-      db.write_points(data)
-      # TODO debug output for checkoff
-      if self.device in (Device.objects.get(serial=3), Device.objects.get(serial=4)):
-         with open('/home/ubuntu/events.log', 'w+') as f:
-            f.write(self.device.name + ': ' + str(self.timestamp) + ': ' + str(self.wattage) + ', ' + str(self.current) + ', ' + str(self.voltage) + '\n')
-      #super(Event, self).save()
-
+      dataPoints = json.loads(self.dataPoints)
+      for point in dataPoints:
+         timestamp   = point.get('timestamp')
+         wattage     = point.get('wattage')
+         current     = point.get('current')
+         voltage     = point.get('voltage')
+         appliance   = point.get('appliance')
+         event_code  = point.get('event_code')
+         if (timestamp and (wattage or current or voltage)):
+            if appliance == None:
+               appliance = Appliance.objects.get(serial=0) # Unknown appliance
+            db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+            data = []
+            query = {}
+            query['points'] = [[timestamp, appliance.name, wattage, current, voltage]]
+            query['name'] = 'device.'+str(self.device.serial)
+            query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage']
+            data.append(query)
+            db.write_points(data)
+      super(Event, self).save()
+      
    def __unicode__(self):
-      return str(self.timestamp)
+      return str(self.device.name+':'+self.dataPoints)
+
       

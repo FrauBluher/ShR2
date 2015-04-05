@@ -18,4 +18,4 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
    
    class Meta:
       model = Event
-      fields = ('device', 'event_code', 'appliance', 'timestamp', 'wattage', 'current', 'voltage')
+      fields = ('device', 'dataPoints')

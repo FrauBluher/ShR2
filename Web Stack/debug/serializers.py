@@ -4,8 +4,6 @@ from microdata.models import Device
 
 
 
-
-
 class TestEventSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = TestEvent
