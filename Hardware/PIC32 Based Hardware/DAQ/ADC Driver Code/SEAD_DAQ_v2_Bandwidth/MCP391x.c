@@ -54,7 +54,7 @@ int j;
  * @param MCP391x_Params A pointer to a MCP391x_Info struct which will be updated.
  * @return Returns EXIT_SUCCESS if the device responds with the set configuration.
  */
-uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
+uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo, daq_config *config)
 {
 	//Setting bits for configuration of the MCP3912;
 	// CLK = 16MHZ
@@ -62,6 +62,7 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	// OSR = 64, PRE = 1  -->  DataRate = 62.5kspS
 	// For OSR >= 256, 3dB rolloff for Sinc filter is .29 * 62.5kspS
 	//	so: 18.125 kHz Effective BW
+	/*
 	MCP.config0Reg.BOOST = 0b11;
 	MCP.config0Reg.DITHER = 0b11;
 	MCP.config0Reg.EN_GAINCAL = 0;
@@ -69,6 +70,8 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.config0Reg.OSR = 0b010; //OSR = 128
 	MCP.config0Reg.PRE = 0b00; // 0b11 = 8, 0b10 = 4, 0b01 = 2, 0 = 1
 	MCP.config0Reg.VREFCAL = 64;
+	*/
+	MCP.config0Reg.wholeRegister = config->config0Reg;
 
 	MCP.config1Reg.CLKEXT = 0; //This should be set to zero for oscillator :: TESTING
 	MCP.config1Reg.RESET = 0b0000;
@@ -84,10 +87,13 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.phaseReg.PHASEA = 0;
 	MCP.phaseReg.PHASEB = 0;
 
+	/*
 	MCP.gainReg.PGA_CH0 = 0b011;
 	MCP.gainReg.PGA_CH1 = 0b011;
 	MCP.gainReg.PGA_CH2 = 0b011;
 	MCP.gainReg.PGA_CH3 = 0b011;
+	*/
+	MCP.gainReg.wholeRegister = config->gainReg;
 
 	MCP.modReg.wholeRegister = 0;
 

@@ -21,7 +21,6 @@
   * @retval checksum output XOR of all the bytes in the sentence, not
   * including the initial dollar sign
   */
-
 uint8_t ICACHE_FLASH_ATTR
 checksum(const char *string) {
 	uint8_t check = 0;
@@ -120,7 +119,6 @@ get_talker(const char *string) {
   * @param  string, fields
   * @retval success or failure
   */
-
 bool ICACHE_FLASH_ATTR
 process_message(char *string, uint16_t *wattage, char *timestamp) {
 	char *buff_ptr = NULL;
@@ -165,4 +163,3 @@ process_message(char *string, uint16_t *wattage, char *timestamp) {
 	os_printf("watt: %d\r\n", *wattage);
 	return return_value;
 }
-

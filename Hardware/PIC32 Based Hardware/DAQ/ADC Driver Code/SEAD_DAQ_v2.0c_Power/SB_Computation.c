@@ -76,6 +76,7 @@ int32_t SB_AVG(SampleBuffer *buffer)
 
 //returns the volts in microvolts depending on the PGA setting
 //of the input number
+//STUB!
 uint32_t SB_VOL(void)
 {
 	int64_t range;

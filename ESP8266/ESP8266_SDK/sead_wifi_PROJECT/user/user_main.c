@@ -47,6 +47,12 @@ HttpdBuiltInUrl builtInUrls[]={
 	{NULL, NULL, NULL}
 };
 
+/**
+  * @brief  Initialization code to start the uart interrupts, and local
+  * 		webserver
+  * @param  None
+  * @retval None
+  */
 void ICACHE_FLASH_ATTR
 user_init(void) {
 	uart_init(BIT_RATE_115200);

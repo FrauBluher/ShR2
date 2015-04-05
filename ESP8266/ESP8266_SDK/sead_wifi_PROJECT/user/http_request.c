@@ -78,12 +78,20 @@ send_data_t *data_to_send = NULL;
 //flag to tell if we have already configured tcp connection to the server.
 bool server_config = false;
 
-
+/**
+  * @brief  Prints debug information to uart about the espconn state
+  * @param  ESP Connection struct
+  * @retval None
+  */
 void print_espconn_state(espconn *serv_connection) {
 	os_printf("espconn state is: %d\r\n", serv_connection->state);
 }
 
-//occasionally gets stuck in sending phase.
+/**
+  * @brief  Main logic controlling the http connection, and requests
+  * @param  Data to send
+  * @retval True if succeeded, false if failed to send
+  */
 bool ICACHE_FLASH_ATTR
 send_http_request(send_data_t *temp) {
 	bool return_value = false;
@@ -122,8 +130,11 @@ send_http_request(send_data_t *temp) {
 	return return_value;
 }
 
-//formates the data from data_to_send to json
-//sends it on the serv_conn connection
+/**
+  * @brief  Formatts and packages data to be sent, and sends it
+  * @param  The server connection
+  * @retval True if succeeded, false if failed
+  */
 sint8 ICACHE_FLASH_ATTR
 package_send(espconn *serv_conn) {
 	//init variables
@@ -149,6 +160,11 @@ package_send(espconn *serv_conn) {
 	return espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
 }
 
+/**
+  * @brief  Server connection callback on data sent
+  * @param  The esp connection
+  * @retval None
+  */
 static void ICACHE_FLASH_ATTR
 networkSentCb(void *arg) {
   os_printf("sent\r\n");
@@ -157,6 +173,11 @@ networkSentCb(void *arg) {
   pop_pop_buffer();
 }
 
+/**
+  * @brief  Received callback for server connection
+  * @param  The esp connection
+  * @retval None
+  */
 static void ICACHE_FLASH_ATTR
 networkRecvCb(void *arg, char *data, unsigned short len) {
 	uint8_t i;
@@ -175,7 +196,11 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 	print_espconn_state(serv_conn);
 }
 
-//callback for being initially connected
+/**
+  * @brief  Server connection callback on network initially connected
+  * @param  The esp connection
+  * @retval None
+  */
 static void ICACHE_FLASH_ATTR
 networkConnectedCb(void *arg) {
 	os_printf("conn_start\r\n");
@@ -185,7 +210,11 @@ networkConnectedCb(void *arg) {
 	//set sending flag to false
 }
 
-//TODO handle reconnection?
+/**
+  * @brief  Server connection callback on disconnect with reconnect
+  * @param  The esp connection
+  * @retval None
+  */
 static void ICACHE_FLASH_ATTR
 networkReconCb(void *arg, sint8 err) {
 	server_config = false;
@@ -194,6 +223,11 @@ networkReconCb(void *arg, sint8 err) {
 	print_espconn_state((espconn *)arg);
 }
 
+/**
+  * @brief  Server connection callback on disconnect
+  * @param  The esp connection
+  * @retval None
+  */
 static void ICACHE_FLASH_ATTR
 networkDisconCb(void *arg) {
 	server_config = false;
@@ -202,6 +236,11 @@ networkDisconCb(void *arg) {
 	print_espconn_state((espconn *)arg);
 }
 
+/**
+  * @brief  Server connection callback on server connection found
+  * @param  The esp connection, server ip, and hostname
+  * @retval None
+  */
 static void ICACHE_FLASH_ATTR
 networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	//initializing connection arguments
@@ -236,6 +275,11 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	print_espconn_state(serv_conn);
 }
 
+/**
+  * @brief  Server connection initialization/reinitialization
+  * @param  None
+  * @retval None
+  */
 void ICACHE_FLASH_ATTR
 network_start(void) {
 	os_printf("Looking up server...\r\n");

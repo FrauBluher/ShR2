@@ -14,12 +14,15 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <assert.h>
 
 #include "ftd2xx.h"
 #include "lib_crc.h"
 #include "daq_config.h"
 
 #define BUF_SIZE 0x10000
+#define BAUD_RATE 115200
+#define MAX_CONFIG_SIZE 255
 
 enum {
 	BUFFER_A,
@@ -62,12 +65,24 @@ void *read_fifo(void *pArgs)
 	while(exit_thread != 1) {
 		if (current_buffer == BUFFER_A) {
 			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
-			FT_Read(ftFIFO, &tmpBuff[runningTotalA], fifoRxQueueSize, &dwBytesRead);
+			DWORD size = 0;
+            // we have room for the data
+            if (runningTotalA + fifoRxQueueSize < BUF_SIZE) {
+                size = fifoRxQueueSize;
+            }
+            // read as much as we can
+            else {
+                size = BUF_SIZE - runningTotalA;
+				fprintf(stderr, "ERROR: Not enough room in buffer for data. DATA MAY BE CORRUPTED!\n");
+				fflush(stderr);
+            }
+
+            FT_Read(ftFIFO, &tmpBuff[runningTotalA], size, &dwBytesRead);
 			runningTotalA += dwBytesRead;
-		
+
 			if (fifoRxQueueSize > 4000) {
-				fprintf(stdout, "ERROR: toRead: %i > 4000.  DATA WILL BE CORRUPTED!\r\n", fifoRxQueueSize);
-				fflush(stdout);
+				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
+				fflush(stderr);
 			}
 
 			if (runningTotalA >= 26007) {
@@ -75,12 +90,24 @@ void *read_fifo(void *pArgs)
 			}
 		} else if (current_buffer == BUFFER_B) {
 			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
-			FT_Read(ftFIFO, &tmpBuff2[runningTotalB], fifoRxQueueSize, &dwBytesRead);
+
+            DWORD size = 0;
+            // we have room for the data
+            if (runningTotalB + fifoRxQueueSize < BUF_SIZE) {
+                size = fifoRxQueueSize;
+            }
+            // read as much as we can
+            else {
+                size = BUF_SIZE - runningTotalB;
+				fprintf(stderr, "ERROR: Not enough room in buffer for data. DATA MAY BE CORRUPTED!\n");
+				fflush(stdout);
+            }
+            FT_Read(ftFIFO, &tmpBuff2[runningTotalB], size, &dwBytesRead);
 			runningTotalB += dwBytesRead;
 
 			if (fifoRxQueueSize > 4000) {
-				fprintf(stdout, "ERROR: toRead: %i > 4000.  DATA WILL BE CORRUPTED!\r\n", fifoRxQueueSize);
-				fflush(stdout);
+				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
+				fflush(stderr);
 			}
 
 			if (runningTotalB >= 26007) {
@@ -93,9 +120,14 @@ void *read_fifo(void *pArgs)
 }
 
 //goes over the main acquire loop
-void acquire_loop()
+void acquire_loop(daq_config config)
 {
 	int i;
+	//scalars for bin to microamp conversion.
+	double ch0_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH0) * 0.333);
+	double ch1_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH1) * 0.333);
+	double ch2_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH2) * 0.333);
+	double ch3_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH3) * 0.333);
 	pthread_t thread_id;
 	FT_ResetDevice(ftFIFO);
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
@@ -131,7 +163,10 @@ void acquire_loop()
 				ch1 = ((ch1 << 8) >> 8);
 				ch2 = ((ch2 << 8) >> 8);
 				ch3 = ((ch3 << 8) >> 8);
-				fprintf(fh, "%i, %i, %i, %i\r\n", ch0, ch1, ch2, ch3);
+				//milliamps conversion here
+				fprintf(fh, "%f, %f, %f, %f\r\n",
+						ch0 * ch0_scalar, ch1 * ch1_scalar,
+						ch2 * ch2_scalar, ch3 * ch3_scalar);
 				//fprintf(fh, "%08X, %08X, %08X, %08X i=%i\r\n", ch0, ch1, ch2, ch3, i);
 				i += 13;
 				ch0 = 0;
@@ -167,7 +202,10 @@ void acquire_loop()
 				ch1 = ((ch1 << 8) >> 8);
 				ch2 = ((ch2 << 8) >> 8);
 				ch3 = ((ch3 << 8) >> 8);
-				fprintf(fh, "%i, %i, %i, %i\r\n", ch0, ch1, ch2, ch3);
+				//milliamps conversion here
+				fprintf(fh, "%f, %f, %f, %f\r\n",
+						ch0 * ch0_scalar, ch1 * ch1_scalar,
+						ch2 * ch2_scalar, ch3 * ch3_scalar);
 				//fprintf(fh, "%08X, %08X, %08X, %08X i=%i\r\n", ch0, ch1, ch2, ch3, i);
 				i += 13;
 				ch0 = 0;
@@ -208,6 +246,7 @@ void get_options(int argc, char **argv)
 		{
 		case 'h':
 			print_usage();
+			exit(0);
 			break;
 		case 'v':
 			verbose = true;
@@ -253,10 +292,10 @@ daq_config default_config()
 	config.PRE = 0b00; //prescalar = 1
 	config.VREFCAL = 64;
 	//programmable gain amplifier register
-	config.PGA_CH0 = 0b011;
-	config.PGA_CH1 = 0b011;
-	config.PGA_CH2 = 0b011;
-	config.PGA_CH3 = 0b011;
+	config.PGA_CH0 = 0b000;
+	config.PGA_CH1 = 0b000;
+	config.PGA_CH2 = 0b000;
+	config.PGA_CH3 = 0b000;
 	return config;
 }
 
@@ -308,7 +347,41 @@ daq_config package_config()
 //sends the config struct over the ft tx
 void send_config(daq_config config)
 {
-	FT_Write(ftFIFO, &config, (DWORD)sizeof(config), &bytes);
+	FT_STATUS ftStatus;
+    FT_HANDLE ftUart;
+
+    ftStatus = FT_Open(1, &ftUart);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to open device (%d)", (int)ftStatus);
+        exit(1);
+    }
+
+    ftStatus = FT_SetBaudRate(ftUart, BAUD_RATE);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to set baud rate (%d)", (int)ftStatus);
+        FT_Close(ftUart);
+        exit(1);
+    }
+
+    // validate that this is big enough for our data
+    assert(sizeof(config) < MAX_CONFIG_SIZE);
+
+    ftStatus = FT_Write(ftUart, &config, (DWORD)sizeof(config), &bytes);
+    if (ftStatus != FT_OK || bytes != sizeof(config)) {
+        fprintf(stderr, "Unable to send config (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+
+    ftStatus = FT_Write(ftUart, "\r\n", 2, &bytes);
+    if (ftStatus != FT_OK || bytes != 2) {
+        fprintf(stderr, "Unable to send newline (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+
+    FT_Close(ftUart);
+
 	return;
 }
 
@@ -336,7 +409,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	send_config(config);
-	acquire_loop();
+	acquire_loop(config);
 	exit_thread = 1;
 	fclose(fh);
 	exit(0);
