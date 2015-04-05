@@ -1,5 +1,9 @@
 <div class="row">
    <div style="height:400px; width:100%;" id="map-canvas"></div>
+   <button id="map-slide-toggle" style="width:100%;"type="button" class="btn btn-default" aria-label="Left-Align">
+      <span id="map-slide-icon" class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>
+   <span id="map-slide-text">Hide Map</span>
+   </button>
 </div>
 
 <div class="row">
@@ -103,9 +107,25 @@ function get_wattage_usage() {
    {% endfor %}
 }
 
+var map_open = true;
+
 $(function() {
    get_wattage_usage();
    initialize();
+   $('#map-slide-toggle').on('click', function() {
+      if (map_open) {
+         $('#map-canvas').slideUp();
+         $('#map-slide-text').html('Show Map');
+         $('#map-slide-icon').removeClass('glyphicon-menu-up');
+         $('#map-slide-icon').addClass('glyphicon-menu-down')
+      } else {
+         $('#map-canvas').slideDown();
+         $('#map-slide-text').html('Hide Map');
+         $('#map-slide-icon').removeClass('glyphicon-menu-down');
+         $('#map-slide-icon').addClass('glyphicon-menu-up');
+      }
+      map_open = !map_open;
+   });
 });
 
 var map, placeSearch, autocomplete;
