@@ -78,6 +78,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_extensions',
     'django.contrib.gis',
+    'dbbackup',
     'rest_framework.authtoken',
     'rest_framework',
     'rest_framework_swagger',

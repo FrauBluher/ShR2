@@ -18,6 +18,14 @@ import json
 import numpy
 import re
 
+from debug.models import TestEvent
+from rest_framework import viewsets
+from debug.serializers import TestEventSerializer
+
+class TestEventViewSet(viewsets.ModelViewSet):
+    queryset = TestEvent.objects.all()
+    serializer_class = TestEventSerializer
+
 class DeviceModelChoiceField(ModelChoiceField):
    def label_from_instance(self, obj):
       return "%s (%i)" % (obj, obj.serial)

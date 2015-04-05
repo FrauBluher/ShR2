@@ -3,12 +3,15 @@ from rest_framework import routers, serializers, viewsets
 from microdata import views as microdata_views
 from home import views as home_views
 from django.contrib import admin
+from debug.views import TestEventViewSet
 
 router = routers.DefaultRouter()
 router.register(r'appliance-api', microdata_views.ApplianceViewSet)
 router.register(r'device-api', microdata_views.DeviceViewSet)
 router.register(r'event-api', microdata_views.EventViewSet)
 router.register(r'users', home_views.UserViewSet)
+
+router.register(r'testevent', TestEventViewSet)
 
 admin.autodiscover()
 # Wire up our API using automatic URL routing.
