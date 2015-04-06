@@ -798,8 +798,9 @@ body.outlook p {
                           <td>
 
                             <h1>{{ interval }} Consumption Details</h1>
-                                 <p class="lead">Hi {{ user_firstname }}, </p>
-                                 <img width="250" height="250" src="{{ plot_location }}">
+                                 <p class="lead">Hi {{ user_firstname }}, here is a summary of your consumption details over the past {{ period }}.</p>
+                                 <p> This report was generated automatically on {{ time }}.</p>
+                                 <img style="width:100%;" src="{{ plot_location }}">
                           </td>
                           <td class="expander"></td>
                         </tr>
