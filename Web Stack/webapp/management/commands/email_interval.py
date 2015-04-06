@@ -7,6 +7,16 @@ from botocore.exceptions import ClientError
 from django.conf import settings
 from matplotlib import pyplot as plt
 import numpy as np
+from django.template import Context, Template
+import os
+
+def render_chart(user):
+   x = np.linspace(0, 10)
+   with plt.style.context('fivethirtyeight'):
+      plt.plot(x, np.sin(x) + x + np.random.randn(50))
+      plt.plot(x, np.sin(x) + 0.5 * x + np.random.randn(50))
+      plt.plot(x, np.sin(x) + 2 * x + np.random.randn(50))
+   plt.savefig(settings.STATIC_PATH+'/webapp/img/'+user.username+'_plot.png')
 
 class Command(BaseCommand):
    args = '<weekly, monthly>'
@@ -25,30 +35,26 @@ class Command(BaseCommand):
                if notification.pk == intervals[args[0]]['pk']:
                   # current user requests the given interval
                   destination = {'ToAddresses': [user.email]}
-                  
-                  x = np.linspace(0, 10)
-                  with plt.style.context('fivethirtyeight'):
-                     plt.plot(x, np.sin(x) + x + np.random.randn(50))
-                     plt.plot(x, np.sin(x) + 0.5 * x + np.random.randn(50))
-                     plt.plot(x, np.sin(x) + 2 * x + np.random.randn(50))
-                  plt.savefig('/home/ubuntu/seads-git/ShR2/Web Stack/webapp/static/webapp/img/'+user.username+'_plot.png')
-                  
-                  html = ""
-                  with open("/home/ubuntu/seads-git/ShR2/Web Stack/webapp/management/commands/consumption_details.txt", "r") as f:
-                     html = f.read()
-                  html.format(organization = settings.ORG_NAME,
-                              interval = interval,
-                              interval_lower = interval.lower(),
-                              user_firstname = user.first_name,
-                              plot_location = 'http://seads.brabsmit.com/static/webapp/img/'+user.username+'_plot.png'
-                              )
+                  text = ""
+                  with open(settings.STATIC_PATH+"/webapp/email/consumption_details.txt", "r") as f:
+                     text = f.read()
+                  render_chart(user)
+                  template = Template(text)
+                  context = Context({
+                             'organization': settings.ORG_NAME,
+                             'base_url': settings.BASE_URL,
+                             'interval': interval,
+                             'interval_lower': interval.lower(),
+                             'user_firstname': user.first_name,
+                             'plot_location': 'http://'+settings.BASE_URL+'/static/webapp/img/'+user.username+'_plot.png'
+                           })
                   message = {
                      'Subject': {
                         'Data': 'SEADS ' + intervals[args[0]]['alt-text'] + ' Consumption Details'
                      },
                      'Body': {
                         'Html': {
-                           'Data': html
+                           'Data': template.render(context)
                         }
                      }
                   }
