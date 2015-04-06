@@ -18,8 +18,47 @@ import datetime
 import numpy as np
 from calendar import monthrange
 import random
+from math import factorial
 
 # This command will generate a figure in the STATIC_PATH for every user.
+
+class Object:
+   def __init__(self, device, value, hungriest):
+      self.device = device
+      self.value = value
+      self.hungriest = hungriest
+
+def get_average_usage(user, interval):
+   start = 'now() - 1w'
+   unit = 'h'
+   if interval['pk'] == 13:
+      start = 'now() - 1M'
+      unit = 'd'
+      
+   stop = 'now()'
+   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   result = db.query('list series')[0]
+   averages = {}
+   for device in Device.objects.filter(owner=user):
+      appliances = Set()
+      for series in result['points']:
+        rg = re.compile('device.'+str(device.serial))
+        if re.match(rg, series[1]):
+           appliance = series[1].split('device.'+str(device.serial)+'.')
+           if (len(appliance) < 2): continue
+           else:
+              appliances.add(appliance[-1])
+      average_wattage = 0
+      hungriest_appliance = [None, 0]
+      for appliance in appliances:
+        wattage = db.query('select * from 1'+unit+'.device.'+str(device.serial)+'.'+appliance +\
+                           ' where time > '+start+' and time < '+stop)[0]['points'][0][2]
+        average_wattage += wattage
+        if wattage > hungriest_appliance[1]:
+           hungriest_appliance = [appliance, int(wattage)]
+      averages[str(device.serial)] = [int(average_wattage), hungriest_appliance]
+   return averages
+
    
 def render_chart(user, interval):
    date_today = datetime.datetime.today()
@@ -33,7 +72,7 @@ def render_chart(user, interval):
       
    stop = 'now()'
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-   fig = plt.figure(figsize=(10, 5), dpi=100)
+   fig = plt.figure(figsize=(10, 5), dpi=100) # 1000px * 500px figure
    plt.ylabel('Watts')
    for device in Device.objects.filter(owner=user):
       points = {}
@@ -86,6 +125,10 @@ class Command(BaseCommand):
                   with open(settings.STATIC_PATH+"/webapp/email/consumption_details.txt", "r") as f:
                      text = f.read()
                   randbits, str_time = render_chart(user, intervals[args[0]])
+                  average_objects = []
+                  averages = get_average_usage(user, intervals[args[0]])
+                  for key, value in averages.iteritems():
+                     average_objects.append(Object(Device.objects.get(serial=key), value[0], value[1]))
                   template = Template(text)
                   context = Context({
                              'time': str_time,
@@ -95,11 +138,14 @@ class Command(BaseCommand):
                              'interval_lower': interval.lower(),
                              'period': interval.lower()[:-2],
                              'user_firstname': user.first_name,
-                             'plot_location': 'http://'+settings.BASE_URL+'/static/webapp/img/'+ intervals[args[0]]['alt-text'] + '_' + str(user.pk)+'_'+randbits+'_plot.png'
+                             'plot_location': 'http://'+settings.BASE_URL+'/static/webapp/img/'+\
+                                             intervals[args[0]]['alt-text'] + '_' + str(user.pk)+'_'+randbits+'_plot.png',
+                             'average_objects': average_objects,
+                             'devices': Device.objects.filter(owner=user),
                            })
                   message = {
                      'Subject': {
-                        'Data': 'SEADS ' + intervals[args[0]]['alt-text'] + ' Consumption Details'
+                        'Data': settings.ORG_NAME + ' ' + intervals[args[0]]['alt-text'] + ' Consumption Details'
                      },
                      'Body': {
                         'Html': {

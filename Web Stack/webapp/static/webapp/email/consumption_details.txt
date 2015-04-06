@@ -810,6 +810,36 @@ body.outlook p {
                   </tr>
                 </table>
 
+                <table class="row">
+                  <td>
+                  <h3>Device Statistics</h3>
+                  </td>
+                  <tr>
+                    <td>
+                      Device Name
+                    </td>
+                    <td>
+                      Average (W)
+                    </td>
+                    <td>
+                      Hungriest Appliance
+                    </td>
+                  </tr>
+                  {% for average in average_objects %}
+                  <tr>
+                    <td>
+                      {{ average.device }}
+                    </td>
+                    <td>
+                      {{ average.value }}
+                    </td>
+                    <td>
+                      {{ average.hungriest.0 }}:{{ average.hungriest.1 }}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </table>
+
                 <table class="row callout">
                   <tr>
                     <td class="wrapper last">
@@ -836,8 +866,8 @@ body.outlook p {
                         <tr>
                           <td>
 
-                            <h3>Title Ipsum <small>This is a note.</small></h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                            <h3>What is The Big Idea <small>A look back on the previous {{ period }}</small></h3>
+                            <p>This section should provide a short description of what was so interesting about the previous {{ period }} that should stand out and be interesting to the user. The goal is to keep the user interested so they don't unsubscribe.</p>
 
                           </td>
                           <td class="expander"></td>
@@ -860,7 +890,7 @@ body.outlook p {
                             <table class="button">
                               <tr>
                                 <td>
-                                  <a href="#">Click Me!</a>
+                                  <a href="{{ base_url }}">Click Me!</a>
                                 </td>
                               </tr>
                             </table>
