@@ -51,11 +51,14 @@ def get_average_usage(user, interval):
       average_wattage = 0
       hungriest_appliance = [None, 0]
       for appliance in appliances:
-        wattage = db.query('select * from 1'+unit+'.device.'+str(device.serial)+'.'+appliance +\
-                           ' where time > '+start+' and time < '+stop)[0]['points'][0][2]
-        average_wattage += wattage
-        if wattage > hungriest_appliance[1]:
-           hungriest_appliance = [appliance, int(wattage)]
+         try:
+            wattage = db.query('select * from 1'+unit+'.device.'+str(device.serial)+'.'+appliance +\
+                               ' where time > '+start+' and time < '+stop)[0]['points'][0][2]
+            average_wattage += wattage
+            if wattage > hungriest_appliance[1]:
+               hungriest_appliance = [appliance, int(wattage)]
+         except:
+            pass
       averages[str(device.serial)] = [int(average_wattage), hungriest_appliance]
    return averages
 
@@ -86,7 +89,10 @@ def render_chart(user, interval):
             else: appliances.add(appliance[-1])
       for appliance in appliances:
          query = 'select * from 1'+unit+'.device.'+str(device.serial)+'.'+appliance+' where time > '+start+' and time < '+stop
-         group = db.query(query)
+         try:
+            group = db.query(query)
+         except:
+            continue
          if (len(group)): group = group[0]['points']
          for s in group:
             if s[0] in points:
@@ -99,9 +105,21 @@ def render_chart(user, interval):
       x = np.array([date_today - datetime.timedelta(hours=i) for i in range(len(y))])
       if interval['pk'] == 13:
          x = np.array([date_today - datetime.timedelta(days=i) for i in range(len(y))])
-      plt.plot(x, y)
-   plt.savefig(settings.STATIC_PATH+'/webapp/img/' + interval['alt-text'] + '_' + str(user.pk)+'_'+randbits+'_plot.png')
-   return [randbits, strftime("%a, %d %b %Y %H:%M:%S +0000", date_gmtime)]
+      if (len(y) > 0):
+         plt.plot(x, y, label=device)
+   plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=2, mode="expand", borderaxespad=0.)
+   filepath = settings.STATIC_PATH+'/webapp/img/'
+   filename = interval['alt-text'] + '_' + str(user.pk)+'_'+randbits+'_plot.png'
+   plt.savefig(filepath + filename, bbox_inches="tight")
+   s3 = boto3.resource('s3')
+   data = open(filepath + filename, 'rb')
+   bucket = s3.Bucket(settings.S3_BUCKET)
+   expires = datetime.datetime.today() + datetime.timedelta(days=90)
+   bucket.put_object(Key='email/'+filename, Body=data, ACL='public-read', Expires=str(expires))
+   resource_url = 'https://'+settings.S3_BUCKET+'.s3.amazonaws.com/email/'+filename
+   os.remove(filepath + filename)
+   return [resource_url, strftime("%a, %d %b %Y %H:%M:%S +0000", date_gmtime)]
          
 
 class Command(BaseCommand):
@@ -124,7 +142,7 @@ class Command(BaseCommand):
                   text = ""
                   with open(settings.STATIC_PATH+"/webapp/email/consumption_details.txt", "r") as f:
                      text = f.read()
-                  randbits, str_time = render_chart(user, intervals[args[0]])
+                  plot_url, str_time = render_chart(user, intervals[args[0]])
                   average_objects = []
                   averages = get_average_usage(user, intervals[args[0]])
                   for key, value in averages.iteritems():
@@ -138,8 +156,7 @@ class Command(BaseCommand):
                              'interval_lower': interval.lower(),
                              'period': interval.lower()[:-2],
                              'user_firstname': user.first_name,
-                             'plot_location': 'http://'+settings.BASE_URL+'/static/webapp/img/'+\
-                                             intervals[args[0]]['alt-text'] + '_' + str(user.pk)+'_'+randbits+'_plot.png',
+                             'plot_location': plot_url,
                              'average_objects': average_objects,
                              'devices': Device.objects.filter(owner=user),
                            })

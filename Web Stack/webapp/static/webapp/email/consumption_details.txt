@@ -81,7 +81,7 @@ td {
 }
 
 table, tr, td {
-  padding: 0;
+  padding: 15px;
   vertical-align: top;
   text-align: left;
 }
@@ -810,20 +810,18 @@ body.outlook p {
                   </tr>
                 </table>
 
+                <h3>Device Statistics</h3>
                 <table class="row">
-                  <td>
-                  <h3>Device Statistics</h3>
-                  </td>
                   <tr>
-                    <td>
+                    <th>
                       Device Name
-                    </td>
-                    <td>
-                      Average (W)
-                    </td>
-                    <td>
+                    </th>
+                    <th>
+                      Average Power
+                    </th>
+                    <th>
                       Hungriest Appliance
-                    </td>
+                    </th>
                   </tr>
                   {% for average in average_objects %}
                   <tr>
@@ -831,10 +829,10 @@ body.outlook p {
                       {{ average.device }}
                     </td>
                     <td>
-                      {{ average.value }}
+                      {{ average.value }}W
                     </td>
                     <td>
-                      {{ average.hungriest.0 }}:{{ average.hungriest.1 }}
+                      {{ average.hungriest.0 }}: {{ average.hungriest.1 }}W
                     </td>
                   </tr>
                   {% endfor %}

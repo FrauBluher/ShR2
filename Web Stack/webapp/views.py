@@ -300,10 +300,13 @@ def get_wattage_usage(request):
         average_wattage = 0
         current_wattage = 0
         for appliance in appliances:
-           average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
-           this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance)[0]['points'][0]
-           if this_wattage[0] > time.time() - 1000:
-              current_wattage += this_wattage[2]
+           try:
+              average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
+              this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance)[0]['points'][0]
+              if this_wattage[0] > time.time() - 1000:
+                 current_wattage += this_wattage[2]
+           except:
+              pass
         context['average_wattage'] = int(average_wattage)
         context['current_wattage'] = int(current_wattage)
    return HttpResponse(json.dumps(context), content_type="application/json")
