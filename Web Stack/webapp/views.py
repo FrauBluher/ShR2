@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django import forms
 from django.http import HttpResponse
-from django.conf import settings
+from django.conf import settings as django_settings
 from sets import Set
 from collections import defaultdict
 from django.contrib.auth import authenticate, login
@@ -438,6 +438,7 @@ def settings(request):
 
     elif request.GET.get('dashboard', False):
       template = 'base/settings_dashboard.html'
+    context['farmer_installed'] = 'farmer' in django_settings.INSTALLED_APPS
     return render(request, template, context)
 
 @login_required(login_url='/signin/')
@@ -461,6 +462,7 @@ def settings_change_device(request):
             context['territory_choices'] = []
             for t in device.devicesettings.territories.all():
                context['territory_choices'].append(t.pk)
+   context['farmer_installed'] = 'farmer' in django_settings.INSTALLED_APPS
    return render(request, 'base/settings_device.html', context)
          
 
@@ -579,7 +581,7 @@ def settings_device(request, serial):
              device.save()
              context['new_name'] = device.name
              context['success'] = True       
-
+    context['farmer_installed'] = 'farmer' in django_settings.INSTALLED_APPS
     return HttpResponse(json.dumps(context), content_type="application/json")
   else: return render(request, 'base/settings.html')
 
