@@ -90,18 +90,21 @@ def main():
       pbar = ProgressBar(widgets=widgets, maxval=size).start()
       for i in range(size):
          ts = time.time()
+         dataPoints = []
          for appliance in appliances:
-            payload = {
-               'device': '/api/device-api/'+str(serial)+'/',
-               'timestamp': int(ts),
-               'wattage': random.randint(int(appliance.avg/1.3), int(appliance.avg*1.3)),
-               'appliance': appliance.hyperlink,
-            }
-            r = requests.post(url, data=json.dumps(payload), headers=headers)
-            if r.status_code != 201:
-               print 'Error: event not created'
-               print payload
-               print r.text
+            dataPoints.append({"timestamp":int(ts),
+                              "wattage": random.randint(int(appliance.avg/1.3), int(appliance.avg*1.3)),
+                              "appliance_pk": appliance.pk
+                              })
+         payload = {
+            'device': '/api/device-api/'+str(serial)+'/',
+            'dataPoints': json.dumps(dataPoints),
+         }
+         r = requests.post(url, data=json.dumps(payload), headers=headers)
+         if r.status_code != 201:
+            print 'Error: event not created'
+            print payload
+            print r.text
          if verbose: pbar.update(i)
          time.sleep(1)
       pbar.finish()

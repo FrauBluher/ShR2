@@ -20,6 +20,7 @@ class Appliance(models.Model):
 
 class Device(models.Model):
    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+   ip_address = models.GenericIPAddressField()
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
    serial = models.IntegerField(unique=True, primary_key=True)
    name = models.CharField(max_length=30, blank=True, null=True)
@@ -74,7 +75,7 @@ class Event(models.Model):
                                            '   wattage(float, optional),\n'+\
                                            '   current(float, optional),\n'+\
                                            '   voltage(float, optional),\n'+\
-                                           '   appliance(float, optional),\n'+\
+                                           '   appliance_pk(int, optional),\n'+\
                                            '   event_code(int, optional)}\n'+\
                                            ',...]')
                                  
@@ -85,11 +86,13 @@ class Event(models.Model):
          wattage     = point.get('wattage')
          current     = point.get('current')
          voltage     = point.get('voltage')
-         appliance   = point.get('appliance')
+         appliance_pk= point.get('appliance_pk')
          event_code  = point.get('event_code')
          if (timestamp and (wattage or current or voltage)):
-            if appliance == None:
+            if appliance_pk == None:
                appliance = Appliance.objects.get(serial=0) # Unknown appliance
+            else:
+               appliance = Appliance.objects.get(pk=appliance_pk)
             db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
             data = []
             query = {}

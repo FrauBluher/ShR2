@@ -17,6 +17,12 @@ WUNDERGROUND_KEY = '24e5a1d55557f6d5'
 OWM_KEY = 'b19ab21f2b0f046b8ec430fae9e28a84'
 GOOGLE_API_KEY = 'AIzaSyAZvP6Z9ia_oCJjmFORgVyVTnQMkJMbFTw'
 
+SES_EMAIL = 'seadsystems@gmail.com'
+S3_BUCKET = 'elasticbeanstalk-us-west-2-062302560606'
+
+ORG_NAME = 'SEADS'
+BASE_URL = 'seads.brabsmit.com'
+
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',
     BASE_DIR + '/webapp/templates/',
@@ -32,7 +38,7 @@ STATICFILES_FINDERS = (
    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
-STATIC_URL = '/home/ubuntu/seads-git/ShR2/Web Stack/webapp/static/'
+STATIC_PATH = '/home/ubuntu/seads-git/ShR2/Web Stack/webapp/static/'
 
 STATIC_ROOT = '/static/'
 
