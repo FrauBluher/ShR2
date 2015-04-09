@@ -15,6 +15,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <math.h>
 
 #include "ftd2xx.h"
 #include "lib_crc.h"
@@ -124,7 +125,7 @@ void acquire_loop(daq_config config)
 {
 	int i;
 	//scalars for bin to microamp conversion.
-	double ch0_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH0) * 0.333);
+	double ch0_scalar = (1.2 * sqrt(2) * 121.9 / -0.5623) / ((1<<24) * (1<<config.PGA_CH0));
 	double ch1_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH1) * 0.333);
 	double ch2_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH2) * 0.333);
 	double ch3_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH3) * 0.333);
