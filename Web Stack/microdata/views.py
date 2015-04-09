@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.validators import RegexValidator
 from django.http import HttpResponse
 from django import forms
+from django.core import serializers
 
 from rest_framework import permissions, authentication
 from rest_framework.response import Response
@@ -45,8 +46,7 @@ class ApplianceViewSet(viewsets.ModelViewSet):
    """
    queryset = Appliance.objects.all()
    serializer_class = ApplianceSerializer
-   #permission_classes = (permissions.IsAuthenticated,)
-   #authentication_classes = (authentication.TokenAuthentication,)
+
 
 class DeviceViewSet(viewsets.ModelViewSet):
    """
@@ -54,9 +54,13 @@ class DeviceViewSet(viewsets.ModelViewSet):
    """
    queryset = Device.objects.all()
    serializer_class = DeviceSerializer
-   #lookup_field = 'serial'
-   #permission_classes = (permissions.IsAuthenticated,)
-   #authentication_classes = (authentication.TokenAuthentication,)
+   
+   def create(self, request):
+      ip_address = request.META.get('REMOTE_ADDR')
+      serial = request.DATA.get('serial')
+      device = Device.objects.create(ip_address=ip_address, serial=serial)
+      data = serializers.serialize('json', [device,], fields=('owner', 'ip_address', 'secret_key', 'serial', 'name', 'registered','fanout_query_registered'))
+      return HttpResponse(data, content_type="application/json")
 
 class EventViewSet(viewsets.ModelViewSet):
    """
@@ -64,8 +68,14 @@ class EventViewSet(viewsets.ModelViewSet):
    """
    queryset = Event.objects.all()
    serializer_class = EventSerializer
-   #permission_classes = (permissions.IsAuthenticated,)
-   #authentication_classes = (authentication.TokenAuthentication,)
+   
+   def create(self, request):
+      serial = request.DATA.get('device').split('/')[-2:-1][0]
+      device = Device.objects.get(serial=serial)
+      event = Event.objects.create(device=device, dataPoints = request.DATA.get('dataPoints'))
+      device.ip_address = request.META.get('REMOTE_ADDR')
+      device.save()
+      return HttpResponse(json.dumps(serial), content_type="application/json")
 
 @csrf_exempt
 def new_device_location(request, serial):

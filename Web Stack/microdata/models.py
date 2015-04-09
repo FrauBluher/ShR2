@@ -20,12 +20,11 @@ class Appliance(models.Model):
 
 class Device(models.Model):
    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-   ip_address = models.GenericIPAddressField()
+   ip_address = models.GenericIPAddressField(blank=True, null=True)
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
    serial = models.IntegerField(unique=True, primary_key=True)
    name = models.CharField(max_length=30, blank=True, null=True)
    position = GeopositionField(blank=True, null=True)
-   #private = models.BooleanField(default=False)
    registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)
     

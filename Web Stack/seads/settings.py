@@ -95,6 +95,7 @@ INSTALLED_APPS = (
     'microdata',
     'webapp',
     'home',
+    'farmer',
     'debug',
 )
 
