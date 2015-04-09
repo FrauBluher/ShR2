@@ -75,7 +75,8 @@ class EventViewSet(viewsets.ModelViewSet):
       event = Event.objects.create(device=device, dataPoints = request.DATA.get('dataPoints'))
       device.ip_address = request.META.get('REMOTE_ADDR')
       device.save()
-      return HttpResponse(json.dumps(serial), content_type="application/json")
+      data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
+      return HttpResponse(json.dumps(data), content_type="application/json", status=201)
 
 @csrf_exempt
 def new_device_location(request, serial):
