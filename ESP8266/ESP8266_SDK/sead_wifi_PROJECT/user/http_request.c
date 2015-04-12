@@ -34,7 +34,7 @@
 					"User-Agent: ESP8266\r\n"\
 					"Host: seads.brabsmit.com\r\n"\
 					"Accept: */*\r\n"\
-					"Content-Type: application/json\r\n"\
+					"Content-Type: application/x-www-form-urlencoded\r\n"\
 					"Content-Length: %u\r\n\r\n"\
 					"{\"serial\":\"%s\"}"
 
@@ -43,10 +43,13 @@
 					 "User-Agent: ESP8266\r\n"\
 					 "Host: seads.brabsmit.com\r\n"\
 					 "Accept: */*\r\n"\
-					 "Content-Type: application/json\r\n"\
+					 "Content-Type: application/x-www-form-urlencoded\r\n"\
 					 "Content-Length: %u\r\n\r\n%s"
 //format string for json data
-#define JSON_DATA	"{\"device\": \"/api/device-api/%s/\", \"wattage\":\"%d\", \"timestamp\":\"%s\"}"
+#define JSON_DATA	"{\"device\":\"/api/device-api/%s/\","\
+					"\"dataPoints\":[%s]}\r\n"
+
+#define DATA_POINT	"{\"timestamp\":%s,\"wattage\":%d}"
 
 bool make_device = FALSE;
 
@@ -138,6 +141,7 @@ send_http_request(send_data_t *temp) {
 sint8 ICACHE_FLASH_ATTR
 package_send(espconn *serv_conn) {
 	//init variables
+	char data_points[512] = "";
 	char json_data[512] = "";
 	char send_data[1024] = "";
 	uint16_t chars_written = 0;
@@ -150,12 +154,13 @@ package_send(espconn *serv_conn) {
 		make_device = TRUE;
 	}
 	//send regular data
+	chars_written = os_sprintf(data_points, DATA_POINT, 
+		data_to_send->timestamp, data_to_send->wattage);
 	chars_written = os_sprintf(json_data, JSON_DATA, DEVICE_ID,
-		data_to_send->wattage, data_to_send->timestamp);
+		data_points);
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
-	os_printf("\r\nSend Data:\r\nT:%s\r\nW:%d\r\n", data_to_send->timestamp,
-				data_to_send->wattage);
+	os_printf("\r\nSend Data:\r\n%s\r\n", send_data);
 	//send the data.
 	return espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
 }
