@@ -241,10 +241,8 @@ pop_pop_buffer(void) {
   * @param  None
   * @retval returns the current size of the circular buffer
   */
-  uint8_t ICACHE_FLASH_ATTR
-  size_send_buffer(void) {
-	  return send_buffer.count;
-  }
+uint8_t ICACHE_FLASH_ATTR
+size_send_buffer(void) {
+	return send_buffer.count;
+}
   
-
-

@@ -62,7 +62,7 @@ recv_message(os_event_t *events) {
 		//just the fsm for sending, recv, and store
 		send_recv_store_fsm(temp);
 	}
-	//handles uart interrupts
+	//handles uart interrupt flags
 	if(UART_RXFIFO_FULL_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_FULL_INT_ST)) {
 		WRITE_PERI_REG(UART_INT_CLR(UART0), UART_RXFIFO_FULL_INT_CLR);
 	} else if(UART_RXFIFO_TOUT_INT_ST == (READ_PERI_REG(UART_INT_ST(UART0)) & UART_RXFIFO_TOUT_INT_ST)) {

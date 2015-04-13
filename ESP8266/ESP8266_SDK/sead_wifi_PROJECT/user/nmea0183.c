@@ -28,7 +28,6 @@ checksum(const char *string) {
 	if (*string == '$') {
 		string++;
 	}
-	
 	//XOR's everything until end of string, or asterisk
 	while(*string && *string != '*') {
 		check ^= *string++;
@@ -103,7 +102,6 @@ get_sentence(const char *string) {
 		return SENTENCE_UNKNOWN;
 	}
 }
-
 
 talker_id ICACHE_FLASH_ATTR
 get_talker(const char *string) {

@@ -45,6 +45,7 @@
 					 "Accept: */*\r\n"\
 					 "Content-Type: application/x-www-form-urlencoded\r\n"\
 					 "Content-Length: %u\r\n\r\n%s"
+
 //format string for json data
 #define JSON_DATA	"{\"device\":\"/api/device-api/%s/\","\
 					"\"dataPoints\":[%s]}\r\n"
