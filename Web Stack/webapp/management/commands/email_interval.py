@@ -110,7 +110,7 @@ def render_chart(user, interval):
    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=2, mode="expand", borderaxespad=0.)
    filepath = settings.STATIC_PATH+'/webapp/img/'
-   filename = interval['alt-text'] + '_' + str(user.pk)+'_'+randbits+'_plot.png'
+   filename = interval['alt-text'][0] + '_' + str(user.pk)+'_'+randbits+'_plot.png'
    plt.savefig(filepath + filename, bbox_inches="tight")
    s3 = boto3.resource('s3')
    data = open(filepath + filename, 'rb')
@@ -123,14 +123,18 @@ def render_chart(user, interval):
          
 
 class Command(BaseCommand):
-   args = '<weekly, monthly>'
+   args = '<daily, weekly, monthly>'
    help = 'Launches the mail service to send usage information based on the provided interval'
    
    def handle(self, *args, **options):
-      intervals = {'weekly': {'alt-text': 'Weekly', 'pk': 15}, 'monthly': {'alt-text': 'Monthly', 'pk':13}}
+      intervals = {
+                   'daily'  : {'alt-text': ['Daily',   'Day'  ], 'pk': 16},
+                   'weekly' : {'alt-text': ['Weekly',  'Week' ], 'pk': 15},
+                   'monthly': {'alt-text': ['Monthly', 'Month'], 'pk': 13},
+                  }
       # http://seads.brabsmit.com/admin/webapp/notification/
       if intervals.get(args[0] == None): raise CommandError('Interval "%s" does not exist' % arg)
-      interval = intervals[args[0]]['alt-text']
+      interval = intervals[args[0]]['alt-text'][0]
       ses = boto3.client('ses')
       for user in User.objects.all():
          try:
@@ -154,7 +158,7 @@ class Command(BaseCommand):
                              'base_url': settings.BASE_URL,
                              'interval': interval,
                              'interval_lower': interval.lower(),
-                             'period': interval.lower()[:-2],
+                             'period': intervals[args[0]]['alt-text'][1].lower(),
                              'user_firstname': user.first_name,
                              'plot_location': plot_url,
                              'average_objects': average_objects,
@@ -162,7 +166,7 @@ class Command(BaseCommand):
                            })
                   message = {
                      'Subject': {
-                        'Data': settings.ORG_NAME + ' ' + intervals[args[0]]['alt-text'] + ' Consumption Details'
+                        'Data': settings.ORG_NAME + ' ' + intervals[args[0]]['alt-text'][0] + ' Consumption Details'
                      },
                      'Body': {
                         'Html': {
@@ -172,7 +176,7 @@ class Command(BaseCommand):
                   }
                   ses.send_email(Source=settings.SES_EMAIL,
                                  Destination=destination,
-                                 Message=message)
+                                 Message=message)=
          except ObjectDoesNotExist:
             # user has no usersettings. Skip user.
             pass
