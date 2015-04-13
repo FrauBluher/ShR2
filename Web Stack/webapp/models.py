@@ -20,6 +20,9 @@ class UtilityCompany(models.Model):
    description = models.CharField(max_length=300)
    #TODO add model fields to describe actions
 
+   class Meta:
+        verbose_name_plural = "Utility Companies"
+
    def __unicode__(self):
       return self.description
 
@@ -33,6 +36,9 @@ class RatePlan(models.Model):
 class Territory(models.Model):
    description = models.CharField(max_length=300)
    #TODO add model fields to describe actions
+
+   class Meta:
+        verbose_name_plural = "Territories"
 
    def __unicode__(self):
       return self.description
