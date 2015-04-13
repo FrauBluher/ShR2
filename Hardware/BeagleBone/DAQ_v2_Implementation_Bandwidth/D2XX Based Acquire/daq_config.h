@@ -1,5 +1,5 @@
 /**
- * @file	main.c
+ * @file	daq_config.h
  * @author 	Henry Crute
  * @date	February, 2015
  * @brief 	Header shared with the DAQ firmware about sampling config
