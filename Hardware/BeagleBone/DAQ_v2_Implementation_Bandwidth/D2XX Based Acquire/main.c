@@ -50,8 +50,8 @@ int i;
 /* Variables associated with getopt */
 int iport = 0;
 char *outfile = "data.txt";
-double bandwidth = 4000;
-double actual_bandwidth = 0;
+double bandwidth = 2000;
+double frequency = 8000;
 int channels = 4;
 bool verbose = false;
 
@@ -223,7 +223,7 @@ void acquire_loop(daq_config config)
 //prints the usage for the program
 void print_usage()
 {
-	printf("Usage: Acquire [-h] [-v] [-p port] [-b frequency] [-f file] [-c channels]\n");
+	printf("Usage: Acquire [-h] [-v] [-p port] [-b bandwidth] [-f file] [-c channels]\n");
 	return;
 }
 
@@ -231,8 +231,8 @@ void print_usage()
 void print_config()
 {
 	printf("iport %d\n", iport);
-	printf("sample frequency %f\n", bandwidth);
-	printf("-3dB bandwidth %f\n", actual_bandwidth)
+	printf("sample frequency %f\n", frequency);
+	printf("-3dB bandwidth %f\n", bandwidth);
 	printf("outfile: %s\n", outfile);
 	printf("channels: %d\n", channels);
 }
@@ -326,38 +326,38 @@ daq_config package_config()
 	daq_config config = default_config();
 	//sets oversample ratio to configure bandwidth/sample frequency.
 	//this is determined by user input for the bandwidth
-	actual_bandwidth = .26 * 8125;
 	if (bandwidth < 419.921875) {
 		config.OSR = 0b111;
-		actual_bandwidth = .43 * 419.921875;
-		bandwidth = 419.921875;
+		bandwidth = .43 * 976.5625;
+		frequency = 976.5625;
 	} else if (bandwidth < 820.3125) {
 		config.OSR = 0b110;
-		actual_bandwidth = .42 * 820.3125;
-		bandwidth = 820.3125;
+		bandwidth = .42 * 1953.125;
+		frequency = 1953.125;
 	} else if (bandwidth < 1445.3125) {
-		config.OSR = 0b101;.
-		actual_bandwidth = .37 * 1445.3125;
-		bandwidth = 1445.3125;
+		config.OSR = 0b101;
+		bandwidth = .37 * 3906.25;
+		frequency = 3906.25;
 	} else if (bandwidth < 2031.25) {
 		config.OSR = 0b100;
-		actual_bandwidth = .26 * 4062.5;
-		bandwidth = 2031.25;
+		bandwidth = .26 * 7812.5;
+		frequency = 7812.5;
 	} else if (bandwidth < 4062.5) {
 		config.OSR = 0b011;
-		actual_bandwidth = .26 * 4062.5;
-		bandwidth = 4062.5;
+		bandwidth = .26 * 15625;
+		frequency = 15625;
 	} else if (bandwidth < 8125) {
 		config.OSR = 0b010;
-		actual_bandwidth = .26 * 8125;
-		bandwidth = 8125;
-	} else {
+		bandwidth = .26 * 31250;
+		frequency = 31250;
+	} else if (bandwidth < 16250) {
 		config.OSR = 0b001;
-		actual_bandwidth = .26 * 16250;
-		bandwidth = 16250;
-	//} else {
-	//	config.OSR = 0b000;
-	//	bandwidth = 32500;
+		bandwidth = .26 * 62500;
+		frequency = 62500;
+	} else {
+		config.OSR = 0b000;
+		bandwidth = .26 * 125000;
+		frequency = 125000;
 	}
 	return config;
 }
