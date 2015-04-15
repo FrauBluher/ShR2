@@ -15,6 +15,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <math.h>
 
 #include "ftd2xx.h"
 #include "lib_crc.h"
@@ -49,10 +50,12 @@ int i;
 /* Variables associated with getopt */
 int iport = 0;
 char *outfile = "data.txt";
-int bandwidth = 4000;
+double bandwidth = 2000;
+double frequency = 8000;
 int channels = 4;
 bool verbose = false;
 
+//variables for acquiring data, and buffer swapping
 static uint8_t tmpBuff[BUF_SIZE];
 static uint8_t tmpBuff2[BUF_SIZE];
 static char exit_thread = 0;
@@ -75,22 +78,18 @@ void *read_fifo(void *pArgs)
                 size = BUF_SIZE - runningTotalA;
 				fprintf(stderr, "ERROR: Not enough room in buffer for data. DATA MAY BE CORRUPTED!\n");
 				fflush(stderr);
-            }
-
+            }			
             FT_Read(ftFIFO, &tmpBuff[runningTotalA], size, &dwBytesRead);
 			runningTotalA += dwBytesRead;
-
 			if (fifoRxQueueSize > 4000) {
 				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
 				fflush(stderr);
 			}
-
 			if (runningTotalA >= 26007) {
 				current_buffer = BUFFER_B;
 			}
 		} else if (current_buffer == BUFFER_B) {
 			FT_GetStatus(ftFIFO, &fifoRxQueueSize, &lpdwAmountInTxQueue, &lpdwEventStatus);
-
             DWORD size = 0;
             // we have room for the data
             if (runningTotalB + fifoRxQueueSize < BUF_SIZE) {
@@ -104,12 +103,10 @@ void *read_fifo(void *pArgs)
             }
             FT_Read(ftFIFO, &tmpBuff2[runningTotalB], size, &dwBytesRead);
 			runningTotalB += dwBytesRead;
-
 			if (fifoRxQueueSize > 4000) {
 				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
 				fflush(stderr);
 			}
-
 			if (runningTotalB >= 26007) {
 				current_buffer = BUFFER_A;
 			}
@@ -124,7 +121,7 @@ void acquire_loop(daq_config config)
 {
 	int i;
 	//scalars for bin to microamp conversion.
-	double ch0_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH0) * 0.333);
+	double ch0_scalar = 5.435 * ((1.2 * sqrt(2) * 121.9 / -0.5623) / ((1<<24) * (1<<config.PGA_CH0)));
 	double ch1_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH1) * 0.333);
 	double ch2_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH2) * 0.333);
 	double ch3_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH3) * 0.333);
@@ -146,6 +143,7 @@ void acquire_loop(daq_config config)
 				" RX-CRX:%i\r\n", crc, rxCrc);
 			fflush(stdout);
 			for (i = 0; i < 26000;) {
+				//shifting from the uart buffer into the file variables
 				ch0 |= (tmpBuff[i+2] << 16);
 				ch0 |= (tmpBuff[i+3] << 8);
 				ch0 |= (tmpBuff[i]);
@@ -185,6 +183,7 @@ void acquire_loop(daq_config config)
 			fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
 			fflush(stdout);
 			for (i = 0; i < 26000;) {
+				//shifting from the uart buffer into the file variables
 				ch0 |=  (tmpBuff2[i+2] << 16);
 				ch0 |=  (tmpBuff2[i+3] << 8);
 				ch0 |=  (tmpBuff2[i]);
@@ -228,10 +227,12 @@ void print_usage()
 	return;
 }
 
+//prints the config from default to changed
 void print_config()
 {
 	printf("iport %d\n", iport);
-	printf("bandwidth %d\n", bandwidth);
+	printf("sample frequency %f\n", frequency);
+	printf("-3dB bandwidth %f\n", bandwidth);
 	printf("outfile: %s\n", outfile);
 	printf("channels: %d\n", channels);
 }
@@ -244,25 +245,32 @@ void get_options(int argc, char **argv)
 	while ((c = getopt (argc, argv, "hvp:b:f:c:")) != -1) {
 		switch (c)
 		{
+		//h for help
 		case 'h':
 			print_usage();
 			exit(0);
 			break;
+		//v for verbose
 		case 'v':
 			verbose = true;
 			break;
+		//p for usb port number
 		case 'p':
 			iport = strtol(optarg, (char **)NULL, 10);
 			break;
+		//b for sampling frequency
 		case 'b':
 			bandwidth = strtol(optarg, (char **)NULL, 10);
 			break;
+		//f for output file
 		case 'f':
 			outfile = optarg;
 			break;
+		//c for how many channels **** currently not supported
 		case 'c':
 			channels = strtol(optarg, (char **)NULL, 10);
 			break;
+		//unknown options
 		case '?':
 			if (optopt == 'c' || optopt =='f' || optopt == 'b' || optopt == 'p')
 				fprintf (stderr, "Option -%c requires an argument.\n", optopt);
@@ -276,10 +284,10 @@ void get_options(int argc, char **argv)
 			abort ();
 		}
 	}
-	//print out the option config if we are in verbose mode.
 	return;
 }
 
+//sets the default values in the daq config struct that is sent over
 daq_config default_config()
 {
 	daq_config config;
@@ -316,30 +324,40 @@ daq_config package_config()
 {
 	//create a config struct with default values
 	daq_config config = default_config();
+	//sets oversample ratio to configure bandwidth/sample frequency.
+	//this is determined by user input for the bandwidth
 	if (bandwidth < 419.921875) {
 		config.OSR = 0b111;
-		bandwidth = 419.921875;
+		bandwidth = .43 * 976.5625;
+		frequency = 976.5625;
 	} else if (bandwidth < 820.3125) {
 		config.OSR = 0b110;
-		bandwidth = 820.3125;
+		bandwidth = .42 * 1953.125;
+		frequency = 1953.125;
 	} else if (bandwidth < 1445.3125) {
 		config.OSR = 0b101;
-		bandwidth = 1445.3125;
+		bandwidth = .37 * 3906.25;
+		frequency = 3906.25;
 	} else if (bandwidth < 2031.25) {
 		config.OSR = 0b100;
-		bandwidth = 2031.25;
+		bandwidth = .26 * 7812.5;
+		frequency = 7812.5;
 	} else if (bandwidth < 4062.5) {
 		config.OSR = 0b011;
-		bandwidth = 4062.5;
+		bandwidth = .26 * 15625;
+		frequency = 15625;
 	} else if (bandwidth < 8125) {
 		config.OSR = 0b010;
-		bandwidth = 8125;
-	} else {
+		bandwidth = .26 * 31250;
+		frequency = 31250;
+	} else if (bandwidth < 16250) {
 		config.OSR = 0b001;
-		bandwidth = 16250;
-	//} else {
-	//	config.OSR = 0b000;
-	//	bandwidth = 32500;
+		bandwidth = .26 * 62500;
+		frequency = 62500;
+	} else {
+		config.OSR = 0b000;
+		bandwidth = .26 * 125000;
+		frequency = 125000;
 	}
 	return config;
 }
@@ -349,39 +367,37 @@ void send_config(daq_config config)
 {
 	FT_STATUS ftStatus;
     FT_HANDLE ftUart;
-
+	//opens the device
     ftStatus = FT_Open(1, &ftUart);
     if (ftStatus != FT_OK) {
         fprintf(stderr, "Unable to open device (%d)", (int)ftStatus);
         exit(1);
     }
-
+	//sets baud rate
     ftStatus = FT_SetBaudRate(ftUart, BAUD_RATE);
     if (ftStatus != FT_OK) {
         fprintf(stderr, "Unable to set baud rate (%d)", (int)ftStatus);
         FT_Close(ftUart);
         exit(1);
     }
-
     // validate that this is big enough for our data
     assert(sizeof(config) < MAX_CONFIG_SIZE);
-
+	//writes config to the uart
     ftStatus = FT_Write(ftUart, &config, (DWORD)sizeof(config), &bytes);
     if (ftStatus != FT_OK || bytes != sizeof(config)) {
         fprintf(stderr, "Unable to send config (%d) size (%d)", (int)ftStatus, bytes);
         FT_Close(ftUart);
         exit(1);
     }
-
+	//writes \r\n to terminate config to uart
     ftStatus = FT_Write(ftUart, "\r\n", 2, &bytes);
     if (ftStatus != FT_OK || bytes != 2) {
         fprintf(stderr, "Unable to send newline (%d) size (%d)", (int)ftStatus, bytes);
         FT_Close(ftUart);
         exit(1);
     }
-
+	//closes sending config
     FT_Close(ftUart);
-
 	return;
 }
 
@@ -392,6 +408,7 @@ int main(int argc, char *argv[])
 	get_options(argc, argv);
 	//calculate and populate config struct
 	daq_config config = package_config();
+	//print all configurations
 	if (verbose) {
 		print_config();
 	}
@@ -408,7 +425,9 @@ int main(int argc, char *argv[])
 			iport);
 		exit(1);
 	}
+	//sends config over to the DAQ
 	send_config(config);
+	//acquires data
 	acquire_loop(config);
 	exit_thread = 1;
 	fclose(fh);

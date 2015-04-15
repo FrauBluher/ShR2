@@ -1,4 +1,8 @@
-curl -X POST seads.brabsmit.com/api/event-api/ -d '{"device": "/api/device-api/2/", "wattage":"10", "timestamp":"1421296856"}' -H "Content-Type: application/json" -H "Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0" -v
+curl -X POST seads.brabsmit.com/api/event-api/ -d '{"device": "/api/device-api/3/", "dataPoints": "{["timestamp":1253603221, "wattage":30]}"}' -H "Content-Type: application/json" -v
+curl -X POST seads.brabsmit.com/api/event-api/ -d "{\"device\":\"/api/device-api/3/\", \"dataPoints\": [{\"timestamp\":1234,\"wattage\":3}]}" -v
+
+{\"device\":\"/api/device-api/3/\", \"dataPoints\": [{\"timestamp\":1421885767,\"wattage\":79}]}
+{\"device\":\"/api/device-api/3/\", \"dataPoints\": [{\"timestamp\":1421885767,\"wattage\":96}]}
 
 AT+CIPSTART="TCP","esp8266.allaboutee.com",80
 AT+CIPSEND=154\r\n
