@@ -44,7 +44,7 @@ class Territory(models.Model):
       return self.description
 
 
-class DeviceSettings(models.Model):
+class DeviceWebSettings(models.Model):
    device = models.OneToOneField(Device)
    utility_companies = models.ManyToManyField(UtilityCompany)
    rate_plans = models.ManyToManyField(RatePlan)

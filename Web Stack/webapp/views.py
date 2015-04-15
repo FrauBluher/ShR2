@@ -228,12 +228,12 @@ def merge_subs(lst_of_lsts):
     return res
 
 
-def group_by_mean(serial, unit, start, stop):
+def group_by_mean(serial, unit, start, stop, localtime):
    if unit == 'y': unit = 'm'
    if (start == ''): start = 'now() - 1d'
-   else: start = '\''+datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: start = '\''+datetime.fromtimestamp(int(float(start))).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
-   else: stop = '\''+datetime.fromtimestamp(int(stop)).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: stop = '\''+datetime.fromtimestamp(int(float(stop))).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
@@ -247,14 +247,17 @@ def group_by_mean(serial, unit, start, stop):
    to_merge = []
    for appliance in appliances:
       query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
+      group = []
       group = db.query(query)
       if (len(group)): group = group[0]['points']
       #else: return None
       # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
-         # use 28800 for daylight savings
-         s = [s[0]-25200,s[2]]
+         # use 28800 for daylight savings (-8 PDT)
+         # use 25200 for normal (-7 PDT)
+         #offset = time.time() - localtime
+         s = [int(round(s[0]-25200)),s[2]]
          new_group.append(s)
       to_merge += new_group
    data = merge_subs(to_merge)
@@ -264,6 +267,7 @@ def group_by_mean(serial, unit, start, stop):
    data = {'data': data,
            'unit': unit,
            'dataLimitFrom': data[len(data)-1][0],
+           'dataLimitTo': data[0][0],
           }
    return data
 
@@ -318,11 +322,12 @@ def device_data(request, serial):
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
+      localtime = int(float(request.GET.get('localtime', time.time())))
       if device.owner == user:
          unit = request.GET.get('unit','')
          start = request.GET.get('from','')
          stop = request.GET.get('to','')
-         context = json.dumps(group_by_mean(serial,unit,start,stop))
+         context = json.dumps(group_by_mean(serial,unit,start,stop, localtime))
    return HttpResponse(context, content_type="application/json")
 
 
