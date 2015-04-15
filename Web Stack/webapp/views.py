@@ -9,7 +9,7 @@ from django.conf import settings as django_settings
 from sets import Set
 from collections import defaultdict
 from django.contrib.auth import authenticate, login
-from webapp.models import Notification, UtilityCompany, RatePlan, Territory, DashboardSettings
+from webapp.models import IntervalNotification, UtilityCompany, RatePlan, Territory, DashboardSettings
 from geoposition import Geoposition
 
 from django.db import IntegrityError
@@ -111,7 +111,7 @@ class SettingsForm(forms.Form):
     device = kwargs.pop('device', None)
     super(SettingsForm, self).__init__(*args, **kwargs)
     if user:
-      self.notification_choices = make_choices(Notification.objects.all())
+      self.notification_choices = make_choices(IntervalNotification.objects.all())
       self.fields['notifications'] = forms.ChoiceField(
         widget=forms.CheckboxSelectMultiple(),
         choices=(
@@ -164,7 +164,7 @@ class SettingsForm(forms.Form):
   def get_notifications(self, *args, **kwargs):
     user = kwargs.pop('user', None)
     if user:
-      return make_choices(user.usersettings.notifications.all())
+      return make_choices(user.usersettings.interval_notification.all())
 
   def get_utility_companies(self, *args, **kwargs):
     device = kwargs.pop('device', None)
@@ -443,7 +443,7 @@ def settings(request):
       context['form'] = form
       user = User.objects.get(username=request.user)
       context['notification_choices'] = []
-      for n in user.usersettings.notifications.all():
+      for n in user.usersettings.interval_notification.all():
          context['notification_choices'].append(n.pk)
       template = 'base/settings_account.html'
 
@@ -491,12 +491,12 @@ def settings_account(request):
     context['notifications'] = []
     if notifications:
       # disassociate all notifications
-      user.usersettings.notifications.clear()
+      user.usersettings.interval_notification.clear()
       for notification in notifications:
          # associate chosen notifications
          context['notifications'].append(notification)
-         n = Notification.objects.get(pk=notification)
-         user.usersettings.notifications.add(n)
+         n = IntervalNotification.objects.get(pk=notification)
+         user.usersettings.interval_notification.add(n)
          user.save()
       context['success'] = True
 
