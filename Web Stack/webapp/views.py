@@ -9,7 +9,7 @@ from django.conf import settings as django_settings
 from sets import Set
 from collections import defaultdict
 from django.contrib.auth import authenticate, login
-from webapp.models import Notification, UtilityCompany, RatePlan, Territory
+from webapp.models import Notification, UtilityCompany, RatePlan, Territory, DashboardSettings
 from geoposition import Geoposition
 
 from django.db import IntegrityError
@@ -102,6 +102,9 @@ class SettingsForm(forms.Form):
     ),
     required=False
   )
+  stack = forms.BooleanField(
+    required=False,
+  )
 
   def __init__(self, *args, **kwargs):
     user = kwargs.pop('user', None)
@@ -116,6 +119,9 @@ class SettingsForm(forms.Form):
           ),
         required=False
       )
+      #self.fields['stack'] = forms.BooleanField(
+      #  default = DashboardSettings.objects.get(user=user),
+      #)
     if device:
       self.utility_company_choices = make_choices(UtilityCompany.objects.all())
       self.rate_plan_choices = make_choices(RatePlan.objects.all())
@@ -442,6 +448,8 @@ def settings(request):
       template = 'base/settings_account.html'
 
     elif request.GET.get('dashboard', False):
+      form = SettingsForm(user=request.user)
+      context['form'] = form
       template = 'base/settings_dashboard.html'
     context['farmer_installed'] = 'farmer' in django_settings.INSTALLED_APPS
     return render(request, template, context)

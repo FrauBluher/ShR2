@@ -4,16 +4,40 @@ from microdata.models import Device
 
 # Create your models here.
 
-class Notification(models.Model):
-   description = models.CharField(max_length=300)
-   #TODO add model fields to describe actions
+class IntervalNotification(models.Model):
+   description = models.CharField(
+      max_length=300,
+      help_text="Label to notification as shown to a user",
+   )
+   keyword = models.CharField(
+      max_length=300,
+      help_text="Keyword used to launch manage.py email_interval",
+   )
+   interval = models.CharField(
+      max_length=300,
+      help_text="Word descriptor for type of interval (i.e. Day). First letter capitalized.",
+   )
+   interval_adverb = models.CharField(
+      max_length=300,
+      help_text="Adverb of interval (i.e. Daily). First letter capitalized.",
+   )
+   time_delta = models.FloatField(
+      help_text="Time in seconds between intervals",
+   )
 
    def __unicode__(self):
       return self.description
 
+class Notification(models.Model):
+   user = models.OneToOneField(User)
+   interval_notification = models.ManyToManyField(IntervalNotification)
+
+   def __unicode__(self):
+      return 'Notification '+str(self.pk)
+
 class UserSettings(models.Model):
    user = models.OneToOneField(User)
-   notifications = models.ManyToManyField(Notification)
+   interval_notification = models.ManyToManyField(IntervalNotification)
 
 
 class UtilityCompany(models.Model):
@@ -49,3 +73,10 @@ class DeviceWebSettings(models.Model):
    utility_companies = models.ManyToManyField(UtilityCompany)
    rate_plans = models.ManyToManyField(RatePlan)
    territories = models.ManyToManyField(Territory)
+
+class DashboardSettings(models.Model):
+   user = models.OneToOneField(User)
+   stack = models.BooleanField(
+      default=True,
+      help_text="Specifies the default behavior for a graph: stacked or unstacked line chart"
+   )
