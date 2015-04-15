@@ -35,6 +35,10 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
 )
 
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'SEADS Admin',
+}
+
 LOGIN_REDIRECT_URL = '/data/'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) 

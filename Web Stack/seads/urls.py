@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 router.register(r'appliance-api', microdata_views.ApplianceViewSet)
 router.register(r'device-api', microdata_views.DeviceViewSet)
 router.register(r'event-api', microdata_views.EventViewSet)
+router.register(r'settings-api', microdata_views.DeviceSettingsViewSet)
 router.register(r'users', home_views.UserViewSet)
 
 router.register(r'testevent', TestEventViewSet)
