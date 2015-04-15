@@ -39,6 +39,7 @@ class DatagenForm(forms.Form):
 
 class DatadelForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
+   refresh_queries = forms.BooleanField(label='Refresh Queries', required=False);
 
 class DevForm(forms.Form):
    method = forms.ChoiceField(choices=(('datagen','datagen'),('datadel','datadel')))
@@ -209,13 +210,31 @@ def influxdel(request):
       form = DatadelForm(request.POST)
       count = 0
       if form.is_valid():
+         refresh_queries = form.cleaned_data['refresh_queries']
          device = form.cleaned_data['device']
+         serial = str(device.serial)
          db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
-         series = db.query('list series')[0]['points']
-         rg = re.compile('device.'+str(device.serial))
-         for s in series:
-            if rg.search(s[1]):
-               db.query('drop series '+s[1])
+         if refresh_queries is False:
+           series = db.query('list series')[0]['points']
+           rg = re.compile('device.'+serial)
+           for s in series:
+              if rg.search(s[1]):
+                 db.query('drop series '+s[1])
+         else:
+           queries = db.query('list continuous queries')[0]['points']
+           # drop old queries
+           for q in queries:
+             if 'device.'+serial in q[2]:
+               db.query('drop continuous query '+str(q[1]))
+           # add new queries
+           db.query('select * from device.'+serial+' into device.'+serial+'.[appliance]')
+           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
    else:
       form = DatadelForm()
    title = "Debug - Data Deletion"

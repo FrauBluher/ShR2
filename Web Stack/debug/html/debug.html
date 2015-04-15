@@ -12,7 +12,7 @@
       <form action="" method="post" style="margin-top:50px;">
         {% csrf_token %}
         <table>
-            {{ form.as_table }}
+            {{ form.as_p }}
         </table>
         <input type="submit" value="Submit">
       </form>
