@@ -18,6 +18,7 @@ class Appliance(models.Model):
    def __unicode__(self):
       return self.name
 
+
 class Device(models.Model):
    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
    ip_address = models.GenericIPAddressField(blank=True, null=True)
@@ -45,6 +46,8 @@ class Device(models.Model):
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
          self.fanout_query_registered = True
+      if self.name == '':
+         self.name = "Device "+str(self.serial)
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
@@ -63,7 +66,24 @@ class Device(models.Model):
       super(Device, self).delete()
    
    def __unicode__(self):
-      return self.name    
+      return self.name or 'NONAME_'+str(self.serial)
+
+class DeviceSettings(models.Model):
+   device = models.OneToOneField(Device)
+   device_serial = models.IntegerField(unique=True, primary_key=True, editable=False)
+   CHANNEL_CHOICES = (
+      (1, 'Channel 1'),
+      (2, 'Channel 2'),
+      (3, 'Channel 3'),
+      (4, 'Channel 4'),
+   )
+   main_channel = models.IntegerField(max_length=1,
+                                   choices=CHANNEL_CHOICES,
+                                   default=1)
+   def save(self, **kwargs):
+      self.device_serial = self.device.serial
+      super(DeviceSettings, self).save()
+
 
 class Event(models.Model):
    device = models.ForeignKey(Device)
@@ -80,6 +100,7 @@ class Event(models.Model):
                                  
    def save(self, **kwargs):
       dataPoints = json.loads(self.dataPoints)
+      self.dataPoints = dataPoints
       for point in dataPoints:
          timestamp   = point.get('timestamp')
          wattage     = point.get('wattage')
@@ -100,9 +121,27 @@ class Event(models.Model):
             query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage']
             data.append(query)
             db.write_points(data)
+
       super(Event, self).save()
       
    def __unicode__(self):
-      return str(self.device.name+':'+self.dataPoints)
+      return str(self.device.__unicode__()+':'+self.dataPoints)
 
-      
+
+# This model should not be registered to REST (admin only)
+class RoomType(models.Model):
+   name = models.CharField(max_length=50, unique=True)
+   appliances = models.ManyToManyField(Appliance)
+
+   def __unicode__(self):
+      return self.name
+
+# This model should not be registered to REST (admin and webapp UI only)
+class Room(models.Model):
+   roomtype = models.ForeignKey(RoomType)
+   name = models.CharField(max_length=50)
+   device = models.ForeignKey(Device)
+
+   def __unicode__(self):
+      return self.name
+
