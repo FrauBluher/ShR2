@@ -116,36 +116,43 @@ def influxgen(request):
               'avg':700,
               'cutoff':0,
               'max':1500,
+              'min':300,
             },
               'Computer':{
               'avg':200,
               'cutoff':50,
               'max':350,
+              'min':0,
             },
               'Toaster':{
               'avg':20,
               'cutoff':0,
               'max':60,
+              'min':0,
             },
               'Refrigerator':{
               'avg':400,
               'cutoff':0,
               'max':600,
+              'min':0,
             },
               'Television':{
               'avg':100,
               'cutoff':50,
               'max':200,
+              'min':0,
             },
               'Oven':{
               'avg':700,
               'cutoff':600,
               'max':1000,
+              'min':0,
             },
               'Heater':{
               'avg':700,
               'cutoff':600,
               'max':1000,
+              'min':0,
             },
           }
          count = 0
@@ -163,6 +170,8 @@ def influxgen(request):
                   wattage_to_append = wattages[appliance.name]['max']
                elif wattage < wattages[appliance.name]['cutoff']:
                   wattage_to_append = 0
+               elif wattage < wattages[appliance.name]['min']:
+                  wattage_to_append = wattages[appliance.name]['min']
                else:
                   wattages[appliance.name]['avg'] = wattage
                   wattage_to_append = wattage
