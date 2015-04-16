@@ -91,6 +91,9 @@ function get_wattage_usage() {
            infowindow{{ device.serial }} = new google.maps.InfoWindow({
             content: contentArray['{{ device.serial }}']
            });
+           {% if forloop.first %}
+           infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
+           {% endif %}
 
            google.maps.event.addListener(marker{{ device.serial }}, 'click', function() {
              {% for device2 in my_devices %}

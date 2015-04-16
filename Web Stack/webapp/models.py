@@ -1,8 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
-from microdata.models import Device
+from microdata.models import Device, Appliance
 
 # Create your models here.
+
+class EventNotification(models.Model):
+   description = models.CharField(
+      max_length=300,
+      help_text="Label to notification as shown to a user"
+   )
+   keyword = models.CharField(
+      max_length=300,
+      help_text="Keyword used to launch manage.py email_event",
+   )
+   watts_above_average = models.FloatField()
+   period_of_time = models.FloatField(
+      help_text="Period of time to watch for irregularity"
+   )
+   appliances_to_watch = models.ManyToManyField(Appliance)
+   
+   def __unicode__(self):
+      return self.description
 
 class IntervalNotification(models.Model):
    description = models.CharField(
@@ -24,11 +42,15 @@ class IntervalNotification(models.Model):
    time_delta = models.FloatField(
       help_text="Time in seconds between intervals",
    )
+   email_subject = models.CharField(max_length=300)
 
    def __unicode__(self):
       return self.description
 
 class Notification(models.Model):
+   """
+   DEPRECATED
+   """
    user = models.OneToOneField(User)
    interval_notification = models.ManyToManyField(IntervalNotification)
 
@@ -38,6 +60,7 @@ class Notification(models.Model):
 class UserSettings(models.Model):
    user = models.OneToOneField(User)
    interval_notification = models.ManyToManyField(IntervalNotification)
+   event_notification = models.ManyToManyField(EventNotification)
 
 
 class UtilityCompany(models.Model):

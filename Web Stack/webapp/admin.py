@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from webapp.models import UserSettings, UtilityCompany, RatePlan, Territory, DashboardSettings, IntervalNotification
+from webapp.models import UserSettings, UtilityCompany, RatePlan, Territory, DashboardSettings, IntervalNotification, EventNotification
 
 # Define an inline admin descriptor for UserSettings model
 # which acts a bit like a singleton
@@ -14,9 +14,9 @@ class UserSettingsInline(admin.StackedInline):
     verbose_name_plural = 'usersettings'
 
 class DashboardSettingsInline(admin.StackedInline):
-	model = DashboardSettings
-	can_delete = False
-	verbose_name_plural = 'dashboardsettings'
+   model = DashboardSettings
+   can_delete = False
+   verbose_name_plural = 'dashboardsettings'
 
 # Define a new User admin
 class UserAdmin(UserAdmin):
@@ -39,5 +39,5 @@ admin.site.register(UtilityCompany, UtilityCompanyAdmin)
 admin.site.register(RatePlan, RatePlanAdmin)
 admin.site.register(Territory, TerritoryAdmin)
 admin.site.register(IntervalNotification)
-
+admin.site.register(EventNotification)
 

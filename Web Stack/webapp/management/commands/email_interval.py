@@ -19,6 +19,7 @@ import numpy as np
 from calendar import monthrange
 import random
 from math import factorial
+from webapp.models import IntervalNotification
 
 # This command will generate a figure in the STATIC_PATH for every user.
 
@@ -133,7 +134,11 @@ def render_chart(user, notification):
          
 
 class Command(BaseCommand):
-   args = '<daily, weekly, monthly>'
+   interval_notifications = IntervalNotification.objects.all()
+   args = '<'
+   for interval_notification in interval_notifications:
+      args += interval_notification.keyword + ', '
+   args += '>'
    help = 'Launches the mail service to send usage information based on the provided interval'
    
    def handle(self, *args, **options):
