@@ -1,4 +1,4 @@
-from microdata.models import Device, Event, Appliance, DeviceSettings
+from microdata.models import Device, Event, Appliance
 from rest_framework import serializers
 from home.serializers import UserSerializer
 
@@ -19,10 +19,3 @@ class EventSerializer(serializers.HyperlinkedModelSerializer):
    class Meta:
       model = Event
       fields = ('device', 'dataPoints')
-
-
-class DeviceSettingsSerializer(serializers.ModelSerializer):
-
-	class Meta:
-		model = DeviceSettings
-		fields = ('device', 'main_channel', 'device_serial')

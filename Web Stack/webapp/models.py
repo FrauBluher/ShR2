@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from microdata.models import Device, Appliance
+from django.conf import settings
 
 # Create your models here.
 
@@ -18,6 +19,8 @@ class EventNotification(models.Model):
       help_text="Period of time to watch for irregularity"
    )
    appliances_to_watch = models.ManyToManyField(Appliance)
+   email_subject = models.CharField(max_length=300)
+   email_body = models.FileField()
    
    def __unicode__(self):
       return self.description
@@ -43,6 +46,7 @@ class IntervalNotification(models.Model):
       help_text="Time in seconds between intervals",
    )
    email_subject = models.CharField(max_length=300)
+   email_body = models.FileField()
 
    def __unicode__(self):
       return self.description

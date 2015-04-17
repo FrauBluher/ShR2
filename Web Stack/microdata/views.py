@@ -13,8 +13,8 @@ from rest_framework import permissions, authentication
 from rest_framework.response import Response
 from rest_framework import viewsets
 
-from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer, DeviceSettingsSerializer
-from microdata.models import Device, Event, Appliance, DeviceSettings
+from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer
+from microdata.models import Device, Event, Appliance
 
 from influxdb import client as influxdb
 
@@ -83,13 +83,6 @@ class EventViewSet(viewsets.ModelViewSet):
          return HttpResponse(query, content_type="application/json", status=201)
       except:
          return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
-
-class DeviceSettingsViewSet(viewsets.ModelViewSet):
-   """
-   API endpoint that allows devicesettings to be viewed or edited.
-   """
-   queryset = DeviceSettings.objects.all()
-   serializer_class = DeviceSettingsSerializer
 
 @csrf_exempt
 def new_device_location(request, serial):

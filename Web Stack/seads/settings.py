@@ -39,6 +39,9 @@ SUIT_CONFIG = {
     'ADMIN_NAME': 'SEADS Admin',
 }
 
+MEDIA_ROOT = BASE_DIR+'/webapp/static/media/'
+MEDIA_URL = '/static/media/'
+
 LOGIN_REDIRECT_URL = '/data/'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',) 

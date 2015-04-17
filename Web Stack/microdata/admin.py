@@ -1,17 +1,14 @@
 from django.contrib import admin
 
-from microdata.models import Device, Appliance, Event, RoomType, Room, DeviceSettings
+from microdata.models import Device, Appliance, Event, RoomType, Room
 from webapp.models import DeviceWebSettings
+from farmer.admin import DeviceSettingsInline
 # Register your models here.
 
 class DeviceWebSettingsInline(admin.StackedInline):
-	model = DeviceWebSettings
-	can_delete = False
-	verbose_name_plural = 'devicesettings'
-
-class DeviceSettingsInline(admin.StackedInline):
-	model = DeviceSettings
-	can_delete = False
+   model = DeviceWebSettings
+   can_delete = False
+   verbose_name_plural = 'devicesettings'
 
 class DeviceAdmin(admin.ModelAdmin):
    list_display = ('name','owner','serial','position','secret_key','registered','fanout_query_registered',)
