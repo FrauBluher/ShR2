@@ -56,5 +56,5 @@ user_init(void) {
 	uart_init(BIT_RATE_115200);
 	httpdInit(builtInUrls, 80);
 	send_recv_init();
-	os_printf("\nReady\n");
+	os_printf("\r\nready\r\n");
 }

@@ -1,6 +1,6 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
  * Implementation of the buffers for receiving, and circular buffer
  * for sending
@@ -132,7 +132,7 @@ bool ICACHE_FLASH_ATTR
 checksum_buffer(void) {
 	//checks the uart buffer, strict OFF for now
 	//that means it doesn't require a checksum
-	uart0_sendStr("checksumming message\r\n");
+	uart0_sendStr("\r\nchecksumming message\r\n");
 	//uart0_sendStr(uart_buffer->buffer);
 	if (check(uart_buffer->buffer, false)) {
 		return true;
@@ -205,11 +205,9 @@ send_pop_buffer(void) {
 		return false;
 	}
 	//establish tcp connection with seads.brabsmit.com on port 80
-	if (!send_http_request(&send_buffer.buffer[send_buffer.tail])) {
+	if (!send_http_request(&send_buffer)) {
 		return false;
 	}
-	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-		send_buffer.head, send_buffer.tail, send_buffer.count);
 	//if initializing the request was successful, return true
 	return true;
 }
@@ -245,4 +243,3 @@ uint8_t ICACHE_FLASH_ATTR
 size_send_buffer(void) {
 	return send_buffer.count;
 }
-  

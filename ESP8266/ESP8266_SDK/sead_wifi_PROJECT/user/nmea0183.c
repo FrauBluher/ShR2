@@ -85,7 +85,6 @@ check(const char *string, bool strict) {
 	if (*string && strcmp(string, "\n") && strcmp(string, "\r\n")) {
 		return false;
 	}
-	
 	return true;
 }
 

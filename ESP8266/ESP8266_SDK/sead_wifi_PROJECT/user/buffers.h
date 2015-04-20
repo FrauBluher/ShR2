@@ -1,9 +1,10 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
  * header file for the character buffer, and data buffer
  * character buffer is size 255, and fifo
+ * data buffer is subject to change
  * 
  */
 
@@ -11,6 +12,8 @@
 #define __BUFFERS_H
 
 #define max_uart_buff_size 255
+//malloc goes to the heap, and so does this
+//(cutoff somewhere between 2000-3000)
 #define max_send_buff_size 20
 
 //character buffer for uart
@@ -21,20 +24,22 @@ typedef struct {
 	uint8_t write;
 }uart_buffer_t;
 
-//exact data to send
+//exact data to populate
 typedef struct {
 	uint16_t wattage;
+	uint16_t vrms;
+	uint16_t irms;
 	char timestamp[14];
 }send_data_t;
 
 //circular buffer for sending
 typedef struct {
     send_data_t buffer[max_send_buff_size];     // data buffer
-    uint8_t buffer_end; 		// end of data buffer
-    uint8_t capacity;  			// maximum number of items in the buffer
-    uint8_t count;     			// number of items in the buffer
-    uint8_t head;      			// pointer to head
-    uint8_t tail;       		// pointer to tail
+    uint16_t buffer_end; 		// end of data buffer
+    uint16_t capacity;  		// maximum number of items in the buffer
+    uint16_t count;     		// number of items in the buffer
+    uint16_t head;      		// pointer to head
+    uint16_t tail;       		// pointer to tail
 } circular_send_buffer_t;
 
 
