@@ -17,6 +17,7 @@ import random
 import json
 import numpy
 import re
+import time
 
 from debug.models import TestEvent
 from rest_framework import viewsets
@@ -95,7 +96,7 @@ def gitupdate(request):
 
 @csrf_exempt
 def echo(request):
-   return HttpResponse(status=200)
+   return HttpResponse(str(time.time()), status=200, content_type="text/plain")
 
 @csrf_exempt
 def echo_args(request, args):
