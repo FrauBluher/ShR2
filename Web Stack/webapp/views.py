@@ -9,7 +9,7 @@ from django.conf import settings as django_settings
 from sets import Set
 from collections import defaultdict
 from django.contrib.auth import authenticate, login
-from webapp.models import Notification, UtilityCompany, RatePlan, Territory
+from webapp.models import EventNotification, IntervalNotification, UtilityCompany, RatePlan, Territory, DashboardSettings
 from geoposition import Geoposition
 
 from django.db import IntegrityError
@@ -22,10 +22,11 @@ from influxdb import client as influxdb
 
 # Create your views here.
 
-def make_choices(queryset):
+def make_choices(querysets):
   choices = []
-  for choice in queryset:
-    choices.append((choice.pk, choice.description))
+  for queryset in querysets:
+     for choice in queryset:
+       choices.append((choice.pk, choice.description))
   return choices
 
 # UserForm is a customized version of an AuthenticationForm
@@ -102,13 +103,16 @@ class SettingsForm(forms.Form):
     ),
     required=False
   )
+  stack = forms.BooleanField(
+    required=False,
+  )
 
   def __init__(self, *args, **kwargs):
     user = kwargs.pop('user', None)
     device = kwargs.pop('device', None)
     super(SettingsForm, self).__init__(*args, **kwargs)
     if user:
-      self.notification_choices = make_choices(Notification.objects.all())
+      self.notification_choices = make_choices([IntervalNotification.objects.all(), EventNotification.objects.all()])
       self.fields['notifications'] = forms.ChoiceField(
         widget=forms.CheckboxSelectMultiple(),
         choices=(
@@ -116,10 +120,13 @@ class SettingsForm(forms.Form):
           ),
         required=False
       )
+      #self.fields['stack'] = forms.BooleanField(
+      #  default = DashboardSettings.objects.get(user=user),
+      #)
     if device:
-      self.utility_company_choices = make_choices(UtilityCompany.objects.all())
-      self.rate_plan_choices = make_choices(RatePlan.objects.all())
-      self.territory_choices = make_choices(Territory.objects.all())
+      self.utility_company_choices = make_choices([UtilityCompany.objects.all(),])
+      self.rate_plan_choices = make_choices([RatePlan.objects.all(),])
+      self.territory_choices = make_choices([Territory.objects.all(),])
 
       self.fields['utility_companies'] = forms.ChoiceField(
         widget=forms.Select(attrs={
@@ -158,22 +165,22 @@ class SettingsForm(forms.Form):
   def get_notifications(self, *args, **kwargs):
     user = kwargs.pop('user', None)
     if user:
-      return make_choices(user.usersettings.notifications.all())
+      return make_choices([user.usersettings.interval_notification.all(), user.usersettings.event_notification.all()])
 
   def get_utility_companies(self, *args, **kwargs):
     device = kwargs.pop('device', None)
     if device:
-      return make_choices(device.devicesettings.utility_companies.all())
+      return make_choices([device.devicewebsettings.utility_companies.all(),])
 
   def get_rate_plans(self, *args, **kwargs):
     device = kwargs.pop('device', None)
     if device:
-      return make_choices(device.devicesettings.rate_plans.all())
+      return make_choices([device.devicewebsettings.rate_plans.all(),])
 
   def get_territories(self, *args, **kwargs):
     device = kwargs.pop('device', None)
     if device:
-      return make_choices(device.devicesettings.territories.all())
+      return make_choices([device.devicewebsettings.territories.all(),])
 
   def clean_password2(self):
     password1 = self.cleaned_data.get("password1")
@@ -228,12 +235,12 @@ def merge_subs(lst_of_lsts):
     return res
 
 
-def group_by_mean(serial, unit, start, stop):
+def group_by_mean(serial, unit, start, stop, localtime):
    if unit == 'y': unit = 'm'
    if (start == ''): start = 'now() - 1d'
-   else: start = '\''+datetime.fromtimestamp(int(start)).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: start = '\''+datetime.fromtimestamp(int(float(start))).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
-   else: stop = '\''+datetime.fromtimestamp(int(stop)).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: stop = '\''+datetime.fromtimestamp(int(float(stop))).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
@@ -247,14 +254,17 @@ def group_by_mean(serial, unit, start, stop):
    to_merge = []
    for appliance in appliances:
       query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
+      group = []
       group = db.query(query)
       if (len(group)): group = group[0]['points']
       #else: return None
       # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
-         # use 28800 for daylight savings
-         s = [s[0]-25200,s[2]]
+         # use 28800 for daylight savings (-8 PDT)
+         # use 25200 for normal (-7 PDT)
+         #offset = time.time() - localtime
+         s = [int(round(s[0]-25200)),s[2]]
          new_group.append(s)
       to_merge += new_group
    data = merge_subs(to_merge)
@@ -264,6 +274,7 @@ def group_by_mean(serial, unit, start, stop):
    data = {'data': data,
            'unit': unit,
            'dataLimitFrom': data[len(data)-1][0],
+           'dataLimitTo': data[0][0],
           }
    return data
 
@@ -318,11 +329,12 @@ def device_data(request, serial):
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
+      localtime = int(float(request.GET.get('localtime', time.time())))
       if device.owner == user:
          unit = request.GET.get('unit','')
          start = request.GET.get('from','')
          stop = request.GET.get('to','')
-         context = json.dumps(group_by_mean(serial,unit,start,stop))
+         context = json.dumps(group_by_mean(serial,unit,start,stop, localtime))
    return HttpResponse(context, content_type="application/json")
 
 
@@ -432,11 +444,13 @@ def settings(request):
       context['form'] = form
       user = User.objects.get(username=request.user)
       context['notification_choices'] = []
-      for n in user.usersettings.notifications.all():
+      for n in user.usersettings.interval_notification.all():
          context['notification_choices'].append(n.pk)
       template = 'base/settings_account.html'
 
     elif request.GET.get('dashboard', False):
+      form = SettingsForm(user=request.user)
+      context['form'] = form
       template = 'base/settings_dashboard.html'
     context['farmer_installed'] = 'farmer' in django_settings.INSTALLED_APPS
     return render(request, template, context)
@@ -454,13 +468,13 @@ def settings_change_device(request):
             context['device'] = device
             context['form'] = form
             context['utility_company_choices'] = []
-            for c in device.devicesettings.utility_companies.all():
+            for c in device.devicewebsettings.utility_companies.all():
                context['utility_company_choices'].append(c.pk)
             context['rate_plan_choices'] = []
-            for r in device.devicesettings.rate_plans.all():
+            for r in device.devicewebsettings.rate_plans.all():
                context['rate_plan_choices'].append(r.pk)
             context['territory_choices'] = []
-            for t in device.devicesettings.territories.all():
+            for t in device.devicewebsettings.territories.all():
                context['territory_choices'].append(t.pk)
    context['farmer_installed'] = 'farmer' in django_settings.INSTALLED_APPS
    return render(request, 'base/settings_device.html', context)
@@ -478,12 +492,17 @@ def settings_account(request):
     context['notifications'] = []
     if notifications:
       # disassociate all notifications
-      user.usersettings.notifications.clear()
+      user.usersettings.interval_notification.clear()
+      user.usersettings.event_notification.clear()
       for notification in notifications:
          # associate chosen notifications
          context['notifications'].append(notification)
-         n = Notification.objects.get(pk=notification)
-         user.usersettings.notifications.add(n)
+         n = IntervalNotification.objects.filter(pk=notification).first()
+         if n:
+            user.usersettings.interval_notification.add(n)
+         else:
+            n = EventNotification.objects.filter(pk=notification).first()
+            user.usersettings.event_notification.add(n)
          user.save()
       context['success'] = True
 
@@ -538,31 +557,31 @@ def settings_device(request, serial):
        context['territory'] = []
        if utility_company:
          # disassociate utility_company
-         device.devicesettings.utility_companies.clear()
+         device.devicewebsettings.utility_companies.clear()
          # associate utility_company
          context['utility_companies'].append(utility_company)
          c = UtilityCompany.objects.get(pk=utility_company)
-         device.devicesettings.utility_companies.add(c)
+         device.devicewebsettings.utility_companies.add(c)
          device.save()
          context['success'] = True
 
        elif rate_plan:
         # disassociate utility_company
-         device.devicesettings.rate_plans.clear()
+         device.devicewebsettings.rate_plans.clear()
          # associate utility_company
          context['rate_plan'].append(rate_plan)
          r = RatePlan.objects.get(pk=rate_plan)
-         device.devicesettings.rate_plans.add(r)
+         device.devicewebsettings.rate_plans.add(r)
          device.save()
          context['success'] = True
          
        elif territory:
          # disassociate utility_company
-         device.devicesettings.territories.clear()
+         device.devicewebsettings.territories.clear()
          # associate utility_company
          context['territory'].append(territory)
          t = Territory.objects.get(pk=territory)
-         device.devicesettings.territories.add(t)
+         device.devicewebsettings.territories.add(t)
          device.save()
          context['success'] = True
 

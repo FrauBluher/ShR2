@@ -21,6 +21,7 @@ from influxdb import client as influxdb
 from geoposition import Geoposition
 import json
 import time
+import ast
 
 
 class KeyForm(forms.Form):
@@ -70,13 +71,18 @@ class EventViewSet(viewsets.ModelViewSet):
    serializer_class = EventSerializer
    
    def create(self, request):
-      serial = request.DATA.get('device').split('/')[-2:-1][0]
-      device = Device.objects.get(serial=serial)
-      event = Event.objects.create(device=device, dataPoints = request.DATA.get('dataPoints'))
-      device.ip_address = request.META.get('REMOTE_ADDR')
-      device.save()
-      data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
-      return HttpResponse(json.dumps(data), content_type="application/json", status=201)
+      query = request.DATA.keys()[0]
+      query = json.loads(query)
+      try:
+         serial = query.get('device').split('/')[-2:-1][0]
+         device = Device.objects.get(serial=serial)
+         event = Event.objects.create(device=device, dataPoints = json.dumps(query.get('dataPoints')))
+         device.ip_address = request.META.get('REMOTE_ADDR')
+         device.save()
+         data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
+         return HttpResponse(query, content_type="application/json", status=201)
+      except:
+         return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
 
 @csrf_exempt
 def new_device_location(request, serial):

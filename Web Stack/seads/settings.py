@@ -8,6 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -28,6 +30,17 @@ TEMPLATE_DIRS = (
     BASE_DIR + '/webapp/templates/',
     BASE_DIR + '/debug/html/',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = TCP + (
+    'django.core.context_processors.request',
+)
+
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'SEADS Admin',
+}
+
+MEDIA_ROOT = BASE_DIR+'/webapp/static/media/'
+MEDIA_URL = '/static/media/'
 
 LOGIN_REDIRECT_URL = '/data/'
 
@@ -76,6 +89,7 @@ GRAPH_MODELS = {
 # Application definition
 
 INSTALLED_APPS = (
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -143,3 +157,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+

@@ -1,0 +1,73 @@
+<head>
+  <style>
+    .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+    }
+ 
+   @keyframes spin {
+      from { transform: scale(1) rotate(0deg);}
+      to { transform: scale(1) rotate(360deg);}
+   }
+
+   @-webkit-keyframes spinw {
+      from { -webkit-transform: rotate(0deg);}
+      to { -webkit-transform: rotate(360deg);}
+   }
+
+   @-moz-keyframes spinm {
+      from { -moz-transform: rotate(0deg);}
+      to { -moz-transform: rotate(360deg);}
+   }
+  .pac-container {
+    background-color: #FFF;
+    z-index: 20;
+    position: fixed;
+    display: inline-block;
+    float: left;
+  }
+  .modal{
+    z-index: 20;
+    margin-top: 100px;
+  }
+  .modal-backdrop{
+    z-index: 10;        
+  }​
+  </style>
+</head>
+
+<script>
+function create_error_message(element, message) {
+   /*
+   <element>
+   <div class="alert alert-danger" role="alert">
+      Error: message
+   </div>
+   */
+   div = $('<div/>');
+   div.html("Error: "+message);
+   div.addClass('alert alert-danger error');
+   div.insertAfter(element);
+}
+</script>
+
+<form id="dashboard-form" class="form-horizontal">
+
+{% csrf_token %}
+
+<fieldset>
+
+<!-- Form Name -->
+<legend>Dashboard Settings</legend>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="stack">Chart Stack</label>  
+  <div class="col-md-4">
+  {{ form.stack }}
+  </div>
+  <div id="stack-status" class="col-md-2"></div>
+</div>
+</form>

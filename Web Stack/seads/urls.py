@@ -1,15 +1,17 @@
 from django.conf.urls import url, include
 from rest_framework import routers, serializers, viewsets
-from microdata import views as microdata_views
-from home import views as home_views
+from microdata.views import ApplianceViewSet, DeviceViewSet, EventViewSet
+from farmer.views import DeviceSettingsViewSet
+from home.views import UserViewSet
 from django.contrib import admin
 from debug.views import TestEventViewSet
 
 router = routers.DefaultRouter()
-router.register(r'appliance-api', microdata_views.ApplianceViewSet)
-router.register(r'device-api', microdata_views.DeviceViewSet)
-router.register(r'event-api', microdata_views.EventViewSet)
-router.register(r'users', home_views.UserViewSet)
+router.register(r'appliance-api', ApplianceViewSet)
+router.register(r'device-api', DeviceViewSet)
+router.register(r'event-api', EventViewSet)
+router.register(r'settings-api', DeviceSettingsViewSet)
+router.register(r'users', UserViewSet)
 
 router.register(r'testevent', TestEventViewSet)
 

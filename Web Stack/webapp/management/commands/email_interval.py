@@ -19,6 +19,7 @@ import numpy as np
 from calendar import monthrange
 import random
 from math import factorial
+from webapp.models import IntervalNotification
 
 # This command will generate a figure in the STATIC_PATH for every user.
 
@@ -28,12 +29,15 @@ class Object:
       self.value = value
       self.hungriest = hungriest
 
-def get_average_usage(user, interval):
+def get_average_usage(user, notification):
    start = 'now() - 1w'
    unit = 'h'
-   if interval['pk'] == 13:
+   if notification.keyword == 'monthly':
       start = 'now() - 1M'
       unit = 'd'
+   elif notification.keyword == 'daily':
+      start = 'now() - 1d'
+      unit = 'm'
       
    stop = 'now()'
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
@@ -63,15 +67,18 @@ def get_average_usage(user, interval):
    return averages
 
    
-def render_chart(user, interval):
+def render_chart(user, notification):
    date_today = datetime.datetime.today()
    date_gmtime = gmtime()
    randbits = str(random.getrandbits(128))
    start = 'now() - 1w'
    unit = 'h'
-   if interval['pk'] == 13:
+   if notification.keyword == 'monthly':
       start = 'now() - 1M'
       unit = 'd'
+   elif notification.keyword == 'daily':
+      start = 'now() - 1d'
+      unit = 'm'
       
    stop = 'now()'
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
@@ -102,15 +109,19 @@ def render_chart(user, interval):
       y = []
       for key, value in points.iteritems():
          y.append(value)
-      x = np.array([date_today - datetime.timedelta(hours=i) for i in range(len(y))])
-      if interval['pk'] == 13:
+      x = 0
+      if notification.keyword == 'monthly':
          x = np.array([date_today - datetime.timedelta(days=i) for i in range(len(y))])
+      elif notification.keyword == 'weekly':
+         x = np.array([date_today - datetime.timedelta(hours=i) for i in range(len(y))])
+      elif notification.keyword == 'daily':
+         x = np.array([date_today - datetime.timedelta(minutes=i) for i in range(len(y))])
       if (len(y) > 0):
          plt.plot(x, y, label=device)
    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=2, mode="expand", borderaxespad=0.)
    filepath = settings.STATIC_PATH+'/webapp/img/'
-   filename = interval['alt-text'] + '_' + str(user.pk)+'_'+randbits+'_plot.png'
+   filename = notification.keyword + '_' + str(user.pk)+'_'+randbits+'_plot.png'
    plt.savefig(filepath + filename, bbox_inches="tight")
    s3 = boto3.resource('s3')
    data = open(filepath + filename, 'rb')
@@ -123,28 +134,30 @@ def render_chart(user, interval):
          
 
 class Command(BaseCommand):
-   args = '<weekly, monthly>'
+   interval_notifications = IntervalNotification.objects.all()
+   args = '<'
+   for interval_notification in interval_notifications:
+      args += interval_notification.keyword + ', '
+   args += '>'
    help = 'Launches the mail service to send usage information based on the provided interval'
    
    def handle(self, *args, **options):
-      intervals = {'weekly': {'alt-text': 'Weekly', 'pk': 15}, 'monthly': {'alt-text': 'Monthly', 'pk':13}}
       # http://seads.brabsmit.com/admin/webapp/notification/
-      if intervals.get(args[0] == None): raise CommandError('Interval "%s" does not exist' % arg)
-      interval = intervals[args[0]]['alt-text']
+      #if intervals.get(args[0]) == None: raise CommandError('Interval "%s" does not exist' % arg)
       ses = boto3.client('ses')
       for user in User.objects.all():
          try:
-            notifications = user.usersettings.notifications.all()
+            notifications = user.usersettings.interval_notification.all()
             for notification in notifications:
-               if notification.pk == intervals[args[0]]['pk']:
+               if notification.keyword == args[0]:
                   # current user requests the given interval
                   destination = {'ToAddresses': [user.email]}
                   text = ""
                   with open(settings.STATIC_PATH+"/webapp/email/consumption_details.txt", "r") as f:
                      text = f.read()
-                  plot_url, str_time = render_chart(user, intervals[args[0]])
+                  plot_url, str_time = render_chart(user, notification)
                   average_objects = []
-                  averages = get_average_usage(user, intervals[args[0]])
+                  averages = get_average_usage(user, notification)
                   for key, value in averages.iteritems():
                      average_objects.append(Object(Device.objects.get(serial=key), value[0], value[1]))
                   template = Template(text)
@@ -152,9 +165,9 @@ class Command(BaseCommand):
                              'time': str_time,
                              'organization': settings.ORG_NAME,
                              'base_url': settings.BASE_URL,
-                             'interval': interval,
-                             'interval_lower': interval.lower(),
-                             'period': interval.lower()[:-2],
+                             'interval': notification.interval,
+                             'interval_lower': notification.interval.lower(),
+                             'period': notification.interval_adverb.lower(),
                              'user_firstname': user.first_name,
                              'plot_location': plot_url,
                              'average_objects': average_objects,
@@ -162,7 +175,7 @@ class Command(BaseCommand):
                            })
                   message = {
                      'Subject': {
-                        'Data': settings.ORG_NAME + ' ' + intervals[args[0]]['alt-text'] + ' Consumption Details'
+                        'Data': settings.ORG_NAME + ' ' + notification.interval_adverb + ' Consumption Details'
                      },
                      'Body': {
                         'Html': {
@@ -172,7 +185,9 @@ class Command(BaseCommand):
                   }
                   ses.send_email(Source=settings.SES_EMAIL,
                                  Destination=destination,
-                                 Message=message)
+                                 Message=message,
+                                 ReturnPath=settings.SES_EMAIL
+                  )
          except ObjectDoesNotExist:
             # user has no usersettings. Skip user.
             pass
