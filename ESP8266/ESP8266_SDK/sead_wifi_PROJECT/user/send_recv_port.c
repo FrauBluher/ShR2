@@ -17,6 +17,7 @@
 
 #include "send_recv_port.h"
 #include "buffers.h"
+#include "http_request.h"
 
 //prototypes
 void send_recv_store_fsm(char);
@@ -27,6 +28,8 @@ void case_send(char);
 void case_recv_store(char);
 void case_recv_send(char);
 
+//default sending timer value to be possibly modified later
+uint16_t sending_timer = 5000;
 
 //os event queues for function priority queue
 os_event_t    recv_messageQueue[recv_messageQueueLen];
@@ -41,6 +44,8 @@ bool echoFlag = TRUE;
 bool storing = FALSE;
 //are we sending data?
 bool sending = FALSE;
+//do we have config?
+bool config = FALSE;
 
 /**
   * @brief  Uart receive task.
@@ -94,7 +99,7 @@ send_recv_store_fsm(char temp) {
 	//default case, will never happen hopefully
 	default:
 		if(temp == '\n') {
-			uart0_sendStr("Error State...\r\n");
+			uart0_sendStr("ERR, RESET\r\n");
 		}
 		break;
     }
@@ -106,7 +111,6 @@ send_recv_store_fsm(char temp) {
   * @param  Temp contains the uart data received for that interval
   * @retval None!
   */
-
 //what happens when we are not receiving anything interesting
 void ICACHE_FLASH_ATTR
 case_idle(char temp) {
@@ -131,7 +135,7 @@ case_recv(char temp) {
 		//nmea checksum on the buffer
 		if (checksum_buffer()) {
 			//store it into the circular buffer
-			os_printf("\r\nchecksum succeeded...\r\n");
+			os_printf("\r\nchecksum succeeded\r\n");
 			print_buffer();
 			storing = TRUE;
 			//swap and then reset current buffer
@@ -140,7 +144,7 @@ case_recv(char temp) {
 			system_os_post(store_send_messagePrio, 0, 0);
 			user_state = STORE;
 		} else {
-			os_printf("\r\nchecksum failed...\r\n");
+			os_printf("\r\nchecksum failed\r\n");
 			print_buffer();
 			reset_buffer();
 			user_state = IDLE;
@@ -199,7 +203,7 @@ case_recv_store(char temp) {
 	} else if (storing == FALSE && temp == '\n') {
 		if (checksum_buffer()) {
 			//store it into the circular buffer
-			uart0_sendStr("\r\nchecksum succeeded...\r\n");
+			uart0_sendStr("\r\nchecksum succeeded\r\n");
 			print_buffer();
 			storing = TRUE;
 			//swap and then reset buffer
@@ -208,7 +212,7 @@ case_recv_store(char temp) {
 			system_os_post(store_send_messagePrio, 0, 0);
 			user_state = STORE;
 		} else {
-			uart0_sendStr("\r\nchecksum failed...\r\n");
+			uart0_sendStr("\r\nchecksum failed\r\n");
 			print_buffer();			
 			reset_buffer();
 			user_state = IDLE;
@@ -225,15 +229,15 @@ case_recv_store(char temp) {
 		}
 	} else if (storing == TRUE && temp == '\n') {
 		//too fast for the buffers to handle, reset and drop message
-		os_printf("\r\ndropped.\r\n");
+		os_printf("\r\nmessage dropped\r\n");
 		reset_buffer();
 		user_state = STORE;
 	}
 }
 
 /**
-  * @brief  Stores the messages received in a data structure
-  * Sends messages if there is connectivity
+  * @brief  Stores the messages received in a data buffer
+  * 		Sends messages if there is connectivity
   * @param  events: not used
   * @retval None
   */
@@ -241,11 +245,11 @@ void ICACHE_FLASH_ATTR
 store_send_message(os_event_t *events) {
 	//always store before we send, if this happens twice
 	if (user_state == STORE || user_state == RECEIVE_STORE) {
-		os_printf("\r\nstoring...\r\n");
+		os_printf("\r\nstoring\r\n");
 		if (push_send_buffer()) {
-			os_printf("\r\nsucceeded...\r\n");
+			os_printf("\r\nsucceeded\r\n");
 		} else {
-			os_printf("\r\nfailed...\r\n");
+			os_printf("\r\nfailed\r\n");
 		}
 		storing = FALSE;
 	}
@@ -261,9 +265,15 @@ static void ICACHE_FLASH_ATTR
 send_timer_cb(void *arg) {
 	//sending timer
 	static ETSTimer send_timer;
+	//getting intial config
+	if (config == FALSE) {
+		if (get_http_config()) {
+			config = TRUE;
+			uart0_sendStr("config complete\r\n");
+		}
 	//checks to see if we should send
-	if (sending == FALSE && size_send_buffer() > 0) {
-		os_printf("\r\nsending...\r\n");
+	} else if (sending == FALSE && size_send_buffer() > 0) {
+		uart0_sendStr("\r\nsending\r\n");
 		sending = TRUE;
 		//we can't tell when it's done sending after this, so 
 		//the sending flag will be false after the command
@@ -274,7 +284,7 @@ send_timer_cb(void *arg) {
 	}
 	os_timer_disarm(&send_timer);
 	os_timer_setfn(&send_timer, send_timer_cb, NULL);
-	os_timer_arm(&send_timer, 1000, 0);
+	os_timer_arm(&send_timer, sending_timer, 0);
 }
 
 /**
