@@ -1,6 +1,6 @@
 /*
- *  Henry Crute
- * 	hcrute@ucsc.edu
+ * Henry Crute
+ * hcrute@ucsc.edu
  * 	
  * Implementation of tcp connection, and sending data with a request
  * 
@@ -12,6 +12,8 @@
 
 #include "buffers.h"
 
-bool send_http_request(send_data_t *);
+bool get_http_config(void);
+
+bool send_http_request(circular_send_buffer_t *);
 
 #endif
