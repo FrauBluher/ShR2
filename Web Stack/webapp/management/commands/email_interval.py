@@ -29,12 +29,16 @@ class Object:
 def get_average_usage(user, notification):
    start = 'now() - 1w'
    unit = 'h'
-   if notification.keyword == 'monthly':
+   time_interval = notification.recurrences.occurrences()[1] - notification.recurrences.occurences()[0]
+   if time_interval == datetime.timedelta(months=1):
       start = 'now() - 1M'
       unit = 'd'
-   elif notification.keyword == 'daily':
+   elif time_interval == datetime.timedelta(days=1):
       start = 'now() - 1d'
       unit = 'm'
+   elif time_interval == datetime.timedelta(years=1):
+      start = 'now() - 1y'
+      unit = 'd'
       
    stop = 'now()'
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
@@ -70,12 +74,20 @@ def render_chart(user, notification):
    randbits = str(random.getrandbits(128))
    start = 'now() - 1w'
    unit = 'h'
-   if notification.keyword == 'monthly':
+   time_interval = notification.recurrences.occurrences()[1] - notification.recurrences.occurences()[0]
+   interval_keyword = 'weekly'
+   if time_interval == datetime.timedelta(months=1):
       start = 'now() - 1M'
       unit = 'd'
-   elif notification.keyword == 'daily':
+      interval_keyword = 'monthly'
+   elif time_interval == datetime.timedelta(days=1):
       start = 'now() - 1d'
       unit = 'm'
+      interval_keyword = 'daily'
+   elif time_interval == datetime.timedelta(years=1):
+      start = 'now() - 1y'
+      unit = 'd'
+      interval_keyword = 'annually'
       
    stop = 'now()'
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
@@ -107,18 +119,18 @@ def render_chart(user, notification):
       for key, value in points.iteritems():
          y.append(value)
       x = 0
-      if notification.keyword == 'monthly':
+      if interval_keyword == 'monthly' or interval_keyword == 'annually':
          x = np.array([date_today - datetime.timedelta(days=i) for i in range(len(y))])
-      elif notification.keyword == 'weekly':
+      elif interval_keyword == 'weekly':
          x = np.array([date_today - datetime.timedelta(hours=i) for i in range(len(y))])
-      elif notification.keyword == 'daily':
+      elif interval_keyword == 'daily':
          x = np.array([date_today - datetime.timedelta(minutes=i) for i in range(len(y))])
       if (len(y) > 0):
          plt.plot(x, y, label=device)
    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
            ncol=2, mode="expand", borderaxespad=0.)
    filepath = settings.STATIC_PATH+'/webapp/img/'
-   filename = notification.keyword + '_' + str(user.pk)+'_'+randbits+'_plot.png'
+   filename = interval_keyword + '_' + str(user.pk)+'_'+randbits+'_plot.png'
    plt.savefig(filepath + filename, bbox_inches="tight")
    s3 = boto3.resource('s3')
    data = open(filepath + filename, 'rb')
@@ -131,74 +143,74 @@ def render_chart(user, notification):
          
 
 class Command(BaseCommand):
-   interval_notifications = IntervalNotification.objects.all()
-   args = '<'
-   for interval_notification in interval_notifications:
-      args += interval_notification.keyword + ', '
-   args += '>'
-   help = 'Launches the mail service to send usage information based on the provided interval'
+   help = \
+    """
+    Launches the mail service to send usage information based on the
+    provided interval.
+
+    This should never be run more than once per day.
+
+    Intervals:
+    """
+   for n in IntervalNotification.objects.all():
+     help += n.recurrences.rrules[0].to_text() + " | "
    
    def handle(self, *args, **options):
       ses = boto3.client('ses')
+      # Save the current date and time
+      today = datetime.datetime.today()
+      # Loop over all users
       for user in User.objects.all():
-         try:
-            notifications = user.usersettings.interval_notification.all()
-            for notification in notifications:
-               if notification.keyword == args[0]:
-                  # current user requests the given interval
-                  destination = {'ToAddresses': [user.email]}
-                  text = ""
-                  f = notification.email_body
-                  f.open(mode='r')
-                  text = f.read()
-                  f.close()
-                  plot_url, str_time = render_chart(user, notification)
-                  average_objects = []
-                  averages = get_average_usage(user, notification)
-                  for key, value in averages.iteritems():
-                     average_objects.append(Object(Device.objects.get(serial=key), value[0], value[1]))
-                  template = Template(text)
-                  context = Context({
-                             'time': str_time,
-                             'organization': settings.ORG_NAME,
-                             'base_url': settings.BASE_URL,
-                             'interval': notification.interval,
-                             'interval_lower': notification.interval.lower(),
-                             'period': notification.interval_adverb.lower(),
-                             'user_firstname': user.first_name,
-                             'plot_location': plot_url,
-                             'average_objects': average_objects,
-                             'devices': Device.objects.filter(owner=user),
-                           })
-                  message = {
-                     'Subject': {
-                        'Data': settings.ORG_NAME + ' ' + notification.interval_adverb + ' Consumption Details'
-                     },
-                     'Body': {
-                        'Html': {
-                           'Data': template.render(context)
-                        }
-                     }
-                  }
-                  ses.send_email(Source=settings.SES_EMAIL,
-                                 Destination=destination,
-                                 Message=message,
-                                 ReturnPath=settings.SES_EMAIL
-                  )
-         except ObjectDoesNotExist:
-            # user has no usersettings. Skip user.
-            pass
-         except ClientError:
-            # user has no email or is not verified. Skip for now.
-            pass
-            
-
-
-if __name__ == "__main__":
-  # Loop over all users
-  for user in User.objects.all():
-    # Loop over all notifications
-    for notification in user.usersettings.interval_notifications.all():
-      
+        # Loop over all notifications
+        for notification in user.usersettings.interval_notification.all():
+          if notification.recurrences.occurrences()[0].day == today.day:
+            # specified notification is scheduled to run today
+            try:
+              destination = {'ToAddresses': [user.email]}
+              text = ""
+              f = notification.email_body
+              f.open(mode='r')
+              text = f.read()
+              f.close()
+              plot_url, str_time = render_chart(user, notification)
+              average_objects = []
+              averages = get_average_usage(user, notification)
+              for key, value in averages.iteritems():
+                average_objects.append(Object(Device.objects.get(serial=key), value[0], value[1]))
+              template = Template(text)
+              rule = notification.recurrences.rrules[0]
+              context = Context({
+                         'time': str_time,
+                         'organization': settings.ORG_NAME,
+                         'base_url': settings.BASE_URL,
+                         'interval': rule.title(),
+                         'interval_lower': rule,
+                         'user_firstname': user.first_name,
+                         'plot_location': plot_url,
+                         'average_objects': average_objects,
+                         'devices': Device.objects.filter(owner=user),
+                       })
+              message = {
+                 'Subject': {
+                    'Data': settings.ORG_NAME + ' ' + notification.interval_adverb + ' Consumption Details'
+                 },
+                 'Body': {
+                    'Html': {
+                       'Data': template.render(context)
+                    }
+                 }
+              }
+              print "Sending email"
+              ses.send_email(Source=settings.SES_EMAIL,
+                             Destination=destination,
+                             Message=message,
+                             ReturnPath=settings.SES_EMAIL
+              )
+            except ObjectDoesNotExist:
+               # user has no usersettings. Skip user.
+               pass
+            except ClientError:
+               # user has no email or is not verified. Skip for now.
+               pass
 
 
