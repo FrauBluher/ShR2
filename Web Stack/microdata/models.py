@@ -113,7 +113,7 @@ class Event(models.Model):
 
 
 # This model should not be registered to REST (admin only)
-class RoomType(models.Model):
+class CircuitType(models.Model):
    name = models.CharField(max_length=50, unique=True)
    appliances = models.ManyToManyField(Appliance)
 
@@ -121,8 +121,8 @@ class RoomType(models.Model):
       return self.name
 
 # This model should not be registered to REST (admin and webapp UI only)
-class Room(models.Model):
-   roomtype = models.ForeignKey(RoomType)
+class Circuit(models.Model):
+   roomtype = models.ForeignKey(CircuitType)
    name = models.CharField(max_length=50)
    device = models.ForeignKey(Device)
 

@@ -15,13 +15,10 @@ from microdata.models import Device
 from sets import Set
 import re
 import datetime
-import numpy as np
 from calendar import monthrange
 import random
 from math import factorial
 from webapp.models import IntervalNotification
-
-# This command will generate a figure in the STATIC_PATH for every user.
 
 class Object:
    def __init__(self, device, value, hungriest):
@@ -142,8 +139,6 @@ class Command(BaseCommand):
    help = 'Launches the mail service to send usage information based on the provided interval'
    
    def handle(self, *args, **options):
-      # http://seads.brabsmit.com/admin/webapp/notification/
-      #if intervals.get(args[0]) == None: raise CommandError('Interval "%s" does not exist' % arg)
       ses = boto3.client('ses')
       for user in User.objects.all():
          try:
@@ -153,8 +148,10 @@ class Command(BaseCommand):
                   # current user requests the given interval
                   destination = {'ToAddresses': [user.email]}
                   text = ""
-                  with open(settings.STATIC_PATH+"/webapp/email/consumption_details.txt", "r") as f:
-                     text = f.read()
+                  f = notification.email_body
+                  f.open(mode='r')
+                  text = f.read()
+                  f.close()
                   plot_url, str_time = render_chart(user, notification)
                   average_objects = []
                   averages = get_average_usage(user, notification)
@@ -195,3 +192,13 @@ class Command(BaseCommand):
             # user has no email or is not verified. Skip for now.
             pass
             
+
+
+if __name__ == "__main__":
+  # Loop over all users
+  for user in User.objects.all():
+    # Loop over all notifications
+    for notification in user.usersettings.interval_notifications.all():
+      
+
+

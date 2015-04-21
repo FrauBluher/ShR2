@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from microdata.models import Device, Appliance, Event, RoomType, Room
+from microdata.models import Device, Appliance, Event, CircuitType, Circuit
 from webapp.models import DeviceWebSettings
 from farmer.admin import DeviceSettingsInline
 # Register your models here.
@@ -24,5 +24,5 @@ class ApplianceAdmin(admin.ModelAdmin):
 admin.site.register(Device, DeviceAdmin)
 admin.site.register(Appliance, ApplianceAdmin)
 admin.site.register(Event)
-admin.site.register(RoomType)
-admin.site.register(Room)
+admin.site.register(CircuitType)
+admin.site.register(Circuit)
