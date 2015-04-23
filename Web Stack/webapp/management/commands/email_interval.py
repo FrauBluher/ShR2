@@ -29,8 +29,8 @@ class Object:
 def get_average_usage(user, notification):
    start = 'now() - 1w'
    unit = 'h'
-   time_interval = notification.recurrences.occurrences()[1] - notification.recurrences.occurences()[0]
-   if time_interval == datetime.timedelta(months=1):
+   time_interval = notification.recurrences.occurrences()[1] - notification.recurrences.occurrences()[0]
+   if time_interval == datetime.timedelta(days=30):
       start = 'now() - 1M'
       unit = 'd'
    elif time_interval == datetime.timedelta(days=1):
@@ -74,9 +74,9 @@ def render_chart(user, notification):
    randbits = str(random.getrandbits(128))
    start = 'now() - 1w'
    unit = 'h'
-   time_interval = notification.recurrences.occurrences()[1] - notification.recurrences.occurences()[0]
+   time_interval = notification.recurrences.occurrences()[1] - notification.recurrences.occurrences()[0]
    interval_keyword = 'weekly'
-   if time_interval == datetime.timedelta(months=1):
+   if time_interval == datetime.timedelta(days=30):
       start = 'now() - 1M'
       unit = 'd'
       interval_keyword = 'monthly'
@@ -178,12 +178,12 @@ class Command(BaseCommand):
               for key, value in averages.iteritems():
                 average_objects.append(Object(Device.objects.get(serial=key), value[0], value[1]))
               template = Template(text)
-              rule = notification.recurrences.rrules[0]
+              rule = notification.recurrences.rrules[0].to_text()
               context = Context({
                          'time': str_time,
                          'organization': settings.ORG_NAME,
                          'base_url': settings.BASE_URL,
-                         'interval': rule.title(),
+                         'interval': str(rule).title(),
                          'interval_lower': rule,
                          'user_firstname': user.first_name,
                          'plot_location': plot_url,
@@ -192,7 +192,7 @@ class Command(BaseCommand):
                        })
               message = {
                  'Subject': {
-                    'Data': settings.ORG_NAME + ' ' + notification.interval_adverb + ' Consumption Details'
+                    'Data': settings.ORG_NAME + ' ' + str(rule).title() + ' Consumption Details'
                  },
                  'Body': {
                     'Html': {
@@ -200,7 +200,11 @@ class Command(BaseCommand):
                     }
                  }
               }
-              print "Sending email"
+              print ""
+              print "Sending email to "+user.username
+              print "Time:" + str_time
+              print settings.ORG_NAME + ' ' + str(rule).title() + ' Consumption Details'
+              print "==============================="
               ses.send_email(Source=settings.SES_EMAIL,
                              Destination=destination,
                              Message=message,
