@@ -12964,7 +12964,7 @@ Base_LabelRenderer = (function() {
     var cp, fp;
     fp = Base_Helpers.countProperties(this.frameLabels);
     cp = Base_Helpers.countProperties(this.cache);
-    console.log("Paints:" + this.numPaints + ", cached: " + this.numCachedPaints + ", cache size:" + cp + ", frame size:" + fp);
+    //console.log("Paints:" + this.numPaints + ", cached: " + this.numCachedPaints + ", cache size:" + cp + ", frame size:" + fp);
     this.numPaints = 0;
     return this.numCachedPaints = 0;
   };

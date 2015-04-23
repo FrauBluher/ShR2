@@ -42,28 +42,17 @@
     
         <div class="panel panel-default">
             <div class="panel-heading">
-                Charts by Circuit
+                Charts by Circuit: <span id="circuit-heading"></span>
                 <div class="pull-right">
-                    <nav>
-                        <ul class="pagination">
-                            <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                            {% for circuit in my_devices.0.circuits %}
-                            {% if forloop.first %}
-                            <li class="active"><a href="#">{{ circuit.name }}<span class="sr-only">(current)</span></a></li>
-                            {% else %}
-                            <li><a href="#">{{ circuit.name }}</a></li>
-                            {% endif %}
-                            {% endfor %}
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                        </ul>
-                    </nav>
+                    <div class="circuit-pagination"></div>
                 </div>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <div id="channel-line-chart"></div>
+                <div id="circuit-line-chart" class="circuit-line-chart"></div>
             </div>
         </div>
+        <div id='ajax-container2'></div>
         <!-- /.panel panel-default -->
     </div>
     <!-- /.col-lg-12 -->
@@ -75,7 +64,37 @@
 var device_serial;
 
 $(function() {
+    var circuits = [
+        {% for circuit in my_devices.0.circuits %}
+        {{ circuit.pk }},
+        {% endfor %}
+    ];
+    $('.circuit-pagination').bootpag({
+        total: {% for circuit in my_devices.0.circuits %}{% if forloop.last %}1{% else %}1+{% endif %}{% endfor %},
+        hrefVariable: 1
+    }).on("page", function(event, num){
+        $.get('/charts/device/'+device_serial+'/chart/',
+            {
+                'stack': 'true',
+                'localtime': +(new Date()/1000),
+                'circuit_pk': circuits[num-1]
+            }
+        ).done(function(data) {
+            $('#ajax-container2').html(data);
+            render_circuitChart();
+        });
+    });
   device_serial = {{ my_devices.0.serial }}
+  $.get('/charts/device/'+device_serial+'/chart/',
+        {
+            'stack': 'true',
+            'localtime': +(new Date()/1000),
+            'circuit_pk': circuits[0]
+        }
+    ).done(function(data) {
+        $('#ajax-container2').html(data);
+        render_circuitChart();
+    });
 });
 
 function refresh_chart(stack) {
@@ -87,6 +106,7 @@ function refresh_chart(stack) {
     },
     function(data) {
       $('#ajax-container1').html(data);
+      //TODO: blocks other ajax. Move to worker thread?
       render_chart();
       $('#chart-title').html(device_name+" at a glance");
     }

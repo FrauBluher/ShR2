@@ -126,6 +126,7 @@ class Circuit(models.Model):
    circuittype = models.ForeignKey(CircuitType)
    name = models.CharField(max_length=50)
    device = models.ForeignKey(Device)
+      
 
    def __unicode__(self):
       return self.name

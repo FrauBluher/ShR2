@@ -239,7 +239,7 @@ def merge_subs(lst_of_lsts):
     return res
 
 
-def group_by_mean(serial, unit, start, stop, localtime, channel):
+def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
    if unit == 'y': unit = 'm'
    if (start == ''): start = 'now() - 1d'
    else: start = '\''+datetime.fromtimestamp(int(float(start))).strftime('%Y-%m-%d %H:%M:%S')+'\''
@@ -248,12 +248,16 @@ def group_by_mean(serial, unit, start, stop, localtime, channel):
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
-   for series in result['points']:
-      rg = re.compile('device.'+str(serial))
-      if re.match(rg, series[1]):
-         appliance = series[1].split('device.'+str(serial)+'.')
-         if (len(appliance) < 2): continue
-         else: appliances.add(appliance[-1])
+   if circuit_pk:
+      circuit = Circuit.objects.get(pk=circuit_pk)
+      appliances = Set([appliance.name for appliance in circuit.circuittype.appliances.all()])
+   else:
+      for series in result['points']:
+         rg = re.compile('device.'+str(serial))
+         if re.match(rg, series[1]):
+            appliance = series[1].split('device.'+str(serial)+'.')
+            if (len(appliance) < 2): continue
+            else: appliances.add(appliance[-1])
    mean = {}
    to_merge = []
    for appliance in appliances:
@@ -342,8 +346,8 @@ def device_data(request, serial):
          unit = request.GET.get('unit','')
          start = request.GET.get('from','')
          stop = request.GET.get('to','')
-         channel = request.GET.get('channel', None)
-         context = json.dumps(group_by_mean(serial,unit,start,stop,localtime,channel))
+         circuit_pk = request.GET.get('circuit_pk')
+         context = json.dumps(group_by_mean(serial,unit,start,stop,localtime,circuit_pk))
    return HttpResponse(context, content_type="application/json")
 
 
@@ -351,22 +355,29 @@ def device_data(request, serial):
 def device_chart(request, serial):
    context = {}
    if request.method == 'GET':
+      circuit_pk = request.GET.get('circuit_pk')
       stack = request.GET.get('stack')
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
 
       if device.owner == user:
          context['device'] = device
-         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-         result = db.query('list series')[0]
-         appliance_names = Set()
 
-         for series in result['points']:
-            rg = re.compile('device.'+str(device.serial))
-            if re.match(rg, series[1]):
-               appliance_name = series[1].split('device.'+str(device.serial)+'.')
-               if (len(appliance_name) < 2): continue
-               else: appliance_names.add(appliance_name[-1])
+         appliance_names = Set()
+         if circuit_pk:
+            circuit = Circuit.objects.get(pk=circuit_pk)
+            appliance_names = Set(circuit.circuittype.appliances.all())
+            context['circuit_pk'] = circuit_pk
+            context['circuit_name'] = circuit.name
+         else:
+             db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+             result = db.query('list series')[0]
+             for series in result['points']:
+                rg = re.compile('device.'+str(device.serial))
+                if re.match(rg, series[1]):
+                   appliance_name = series[1].split('device.'+str(device.serial)+'.')
+                   if (len(appliance_name) < 2): continue
+                   else: appliance_names.add(appliance_name[-1])
 
          context['appliances'] = []
          # place Unknown appliance at front of list
