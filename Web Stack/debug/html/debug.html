@@ -9,7 +9,7 @@
    <div class="container">
       <h1>{{ title }}</h1>
       <p>{{ description }}</p>
-      <form action="" method="post" style="margin-top:50px;">
+      <form id="debug_form" action="" method="post" style="margin-top:50px;">
         {% csrf_token %}
         <table>
             {{ form.as_p }}

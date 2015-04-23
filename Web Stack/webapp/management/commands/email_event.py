@@ -15,58 +15,12 @@ from microdata.models import Device
 from sets import Set
 import re
 import datetime
-import numpy as np
 from calendar import monthrange
 import random
 from math import factorial
 from webapp.models import EventNotification
 
-# This command will generate a figure in the STATIC_PATH for every user.
 
-class Object:
-   def __init__(self, device, value, hungriest):
-      self.device = device
-      self.value = value
-      self.hungriest = hungriest
-
-def get_average_usage(user, notification):
-   start = 'now() - 1w'
-   unit = 'h'
-   if notification.keyword == 'monthly':
-      start = 'now() - 1M'
-      unit = 'd'
-   elif notification.keyword == 'daily':
-      start = 'now() - 1d'
-      unit = 'm'
-      
-   stop = 'now()'
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-   result = db.query('list series')[0]
-   averages = {}
-   for device in Device.objects.filter(owner=user):
-      appliances = Set()
-      for series in result['points']:
-        rg = re.compile('device.'+str(device.serial))
-        if re.match(rg, series[1]):
-           appliance = series[1].split('device.'+str(device.serial)+'.')
-           if (len(appliance) < 2): continue
-           else:
-              appliances.add(appliance[-1])
-      average_wattage = 0
-      hungriest_appliance = [None, 0]
-      for appliance in appliances:
-         try:
-            wattage = db.query('select * from 1'+unit+'.device.'+str(device.serial)+'.'+appliance +\
-                               ' where time > '+start+' and time < '+stop)[0]['points'][0][2]
-            average_wattage += wattage
-            if wattage > hungriest_appliance[1]:
-               hungriest_appliance = [appliance, int(wattage)]
-         except:
-            pass
-      averages[str(device.serial)] = [int(average_wattage), hungriest_appliance]
-   return averages
-
-   
 def render_chart(user, notification):
    date_today = datetime.datetime.today()
    date_gmtime = gmtime()
@@ -140,10 +94,8 @@ class Command(BaseCommand):
       args += en.keyword + ', '
    args += '>'
    help = 'Launches the mail service to send event information based on type of event triggered'
-   
+
    def handle(self, *args, **options):
-      # http://seads.brabsmit.com/admin/webapp/notification/
-      #if intervals.get(args[0]) == None: raise CommandError('Interval "%s" does not exist' % arg)
       ses = boto3.client('ses')
       for user in User.objects.all():
          try:
@@ -153,8 +105,10 @@ class Command(BaseCommand):
                   # current user requests the given interval
                   destination = {'ToAddresses': [user.email]}
                   text = ""
-                  with open(settings.STATIC_PATH+"/webapp/email/consumption_details.txt", "r") as f:
-                     text = f.read()
+                  f = notification.email_body
+                  f.open(mode='r')
+                  text = f.read()
+                  f.close()
                   plot_url, str_time = render_chart(user, notification)
                   average_objects = []
                   averages = get_average_usage(user, notification)
@@ -165,9 +119,6 @@ class Command(BaseCommand):
                              'time': str_time,
                              'organization': settings.ORG_NAME,
                              'base_url': settings.BASE_URL,
-                             'interval': notification.interval,
-                             'interval_lower': notification.interval.lower(),
-                             'period': notification.interval_adverb.lower(),
                              'user_firstname': user.first_name,
                              'plot_location': plot_url,
                              'average_objects': average_objects,
@@ -175,7 +126,7 @@ class Command(BaseCommand):
                            })
                   message = {
                      'Subject': {
-                        'Data': settings.ORG_NAME + ' ' + notification.interval_adverb + ' Consumption Details'
+                        'Data': settings.ORG_NAME + ' Irregular Appliance Usage Detected'
                      },
                      'Body': {
                         'Html': {

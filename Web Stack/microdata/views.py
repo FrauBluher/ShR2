@@ -61,7 +61,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
       serial = request.DATA.get('serial')
       device = Device.objects.create(ip_address=ip_address, serial=serial)
       data = serializers.serialize('json', [device,], fields=('owner', 'ip_address', 'secret_key', 'serial', 'name', 'registered','fanout_query_registered'))
-      return HttpResponse(data, content_type="application/json")
+      return HttpResponse(data, content_type="application/json", status=201)
 
 class EventViewSet(viewsets.ModelViewSet):
    """

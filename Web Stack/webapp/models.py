@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from microdata.models import Device, Appliance
 from django.conf import settings
+from recurrence.fields import RecurrenceField
 
 # Create your models here.
 
@@ -20,7 +21,9 @@ class EventNotification(models.Model):
    )
    appliances_to_watch = models.ManyToManyField(Appliance)
    email_subject = models.CharField(max_length=300)
-   email_body = models.FileField()
+   email_body = models.FileField(
+      help_text="Template file for email body. {{ x }} denotes template variable"
+   )
    
    def __unicode__(self):
       return self.description
@@ -30,23 +33,11 @@ class IntervalNotification(models.Model):
       max_length=300,
       help_text="Label to notification as shown to a user",
    )
-   keyword = models.CharField(
-      max_length=300,
-      help_text="Keyword used to launch manage.py email_interval",
-   )
-   interval = models.CharField(
-      max_length=300,
-      help_text="Word descriptor for type of interval (i.e. Day). First letter capitalized.",
-   )
-   interval_adverb = models.CharField(
-      max_length=300,
-      help_text="Adverb of interval (i.e. Daily). First letter capitalized.",
-   )
-   time_delta = models.FloatField(
-      help_text="Time in seconds between intervals",
-   )
+   recurrences = RecurrenceField(blank=True, null=True)
    email_subject = models.CharField(max_length=300)
-   email_body = models.FileField()
+   email_body = models.FileField(
+      help_text="Template file for email body. {{ x }} denotes template variable"
+   )
 
    def __unicode__(self):
       return self.description
@@ -63,8 +54,8 @@ class Notification(models.Model):
 
 class UserSettings(models.Model):
    user = models.OneToOneField(User)
-   interval_notification = models.ManyToManyField(IntervalNotification)
-   event_notification = models.ManyToManyField(EventNotification)
+   interval_notification = models.ManyToManyField(IntervalNotification, blank=True)
+   event_notification = models.ManyToManyField(EventNotification, blank=True)
 
 
 class UtilityCompany(models.Model):

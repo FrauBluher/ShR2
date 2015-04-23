@@ -79,7 +79,8 @@ class Event(models.Model):
                                            '   current(float, optional),\n'+\
                                            '   voltage(float, optional),\n'+\
                                            '   appliance_pk(int, optional),\n'+\
-                                           '   event_code(int, optional)}\n'+\
+                                           '   event_code(int, optional),\n'+\
+                                           '   channel(int, optional)}\n'+\
                                            ',...]')
                                  
    def save(self, **kwargs):
@@ -92,6 +93,7 @@ class Event(models.Model):
          voltage     = point.get('voltage')
          appliance_pk= point.get('appliance_pk')
          event_code  = point.get('event_code')
+         channel     = point.get('channel', 1)
          if (timestamp and (wattage or current or voltage)):
             if appliance_pk == None:
                appliance = Appliance.objects.get(serial=0) # Unknown appliance
@@ -100,9 +102,9 @@ class Event(models.Model):
             db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
             data = []
             query = {}
-            query['points'] = [[timestamp, appliance.name, wattage, current, voltage]]
+            query['points'] = [[timestamp, appliance.name, wattage, current, voltage, channel]]
             query['name'] = 'device.'+str(self.device.serial)
-            query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage']
+            query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage', 'channel']
             data.append(query)
             db.write_points(data)
 
@@ -111,9 +113,8 @@ class Event(models.Model):
    def __unicode__(self):
       return str(self.device.__unicode__()+':'+self.dataPoints)
 
-
 # This model should not be registered to REST (admin only)
-class RoomType(models.Model):
+class CircuitType(models.Model):
    name = models.CharField(max_length=50, unique=True)
    appliances = models.ManyToManyField(Appliance)
 
@@ -121,11 +122,11 @@ class RoomType(models.Model):
       return self.name
 
 # This model should not be registered to REST (admin and webapp UI only)
-class Room(models.Model):
-   roomtype = models.ForeignKey(RoomType)
+class Circuit(models.Model):
+   circuittype = models.ForeignKey(CircuitType)
    name = models.CharField(max_length=50)
    device = models.ForeignKey(Device)
+      
 
    def __unicode__(self):
       return self.name
-

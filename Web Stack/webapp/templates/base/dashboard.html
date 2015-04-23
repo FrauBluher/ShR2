@@ -37,9 +37,25 @@
         {% else %}
         <h4>You have no registered devices. <a href="javascrtipt:void(0)" data-toggle="modal" data-target="#deviceModal">Click Here</a> to register a new device</h4>
         {% endif %}
+    
+    <div id='ajax-container1'></div>
+    
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Charts by Circuit: <span id="circuit-heading"></span>
+                <div class="pull-right">
+                    <div class="circuit-pagination"></div>
+                </div>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div id="circuit-line-chart" class="circuit-line-chart"></div>
+            </div>
+        </div>
+        <div id='ajax-container2'></div>
+        <!-- /.panel panel-default -->
     </div>
-    <!-- /.col-lg-8 -->
-    <div id='ajax-container'></div>
+    <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
 
@@ -48,7 +64,37 @@
 var device_serial;
 
 $(function() {
+    var circuits = [
+        {% for circuit in my_devices.0.circuits %}
+        {{ circuit.pk }},
+        {% endfor %}
+    ];
+    $('.circuit-pagination').bootpag({
+        total: {% for circuit in my_devices.0.circuits %}{% if forloop.last %}1{% else %}1+{% endif %}{% endfor %},
+        hrefVariable: 1
+    }).on("page", function(event, num){
+        $.get('/charts/device/'+device_serial+'/chart/',
+            {
+                'stack': 'true',
+                'localtime': +(new Date()/1000),
+                'circuit_pk': circuits[num-1]
+            }
+        ).done(function(data) {
+            $('#ajax-container2').html(data);
+            render_circuitChart();
+        });
+    });
   device_serial = {{ my_devices.0.serial }}
+  $.get('/charts/device/'+device_serial+'/chart/',
+        {
+            'stack': 'true',
+            'localtime': +(new Date()/1000),
+            'circuit_pk': circuits[0]
+        }
+    ).done(function(data) {
+        $('#ajax-container2').html(data);
+        render_circuitChart();
+    });
 });
 
 function refresh_chart(stack) {
@@ -59,7 +105,8 @@ function refresh_chart(stack) {
       'localtime': +(new Date()/1000),
     },
     function(data) {
-      $('#ajax-container').html(data);
+      $('#ajax-container1').html(data);
+      //TODO: blocks other ajax. Move to worker thread?
       render_chart();
       $('#chart-title').html(device_name+" at a glance");
     }
@@ -106,7 +153,7 @@ function get_wattage_usage() {
                 'localtime': +(new Date)/1000,
                },
                function(data) {
-                 $('#ajax-container').html(data);
+                 $('#ajax-container1').html(data);
                  render_chart();
                  $('#chart-title').html("{{ device.name }} at a glance");
                  $('#chart-title').val("{{ device.serial }}");
