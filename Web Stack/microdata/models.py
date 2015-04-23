@@ -123,7 +123,7 @@ class CircuitType(models.Model):
 
 # This model should not be registered to REST (admin and webapp UI only)
 class Circuit(models.Model):
-   roomtype = models.ForeignKey(CircuitType)
+   circuittype = models.ForeignKey(CircuitType)
    name = models.CharField(max_length=50)
    device = models.ForeignKey(Device)
 

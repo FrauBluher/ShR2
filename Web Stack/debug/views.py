@@ -1,10 +1,11 @@
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from microdata.models import Event, Device, Appliance
+from microdata.models import Event, Device, Appliance, Circuit
 from django import forms
 from django.shortcuts import render, render_to_response
 from django.forms import ModelChoiceField
+from django.core import serializers
 
 from influxdb import client as influxdb
 from gmapi import maps
@@ -102,6 +103,7 @@ def echo(request):
 def echo_args(request, args):
    return HttpResponse(status=200)
 
+@csrf_exempt
 def influxgen(request):
    success = ""
    if request.method == 'POST':
@@ -112,55 +114,63 @@ def influxgen(request):
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
          resolution = form.cleaned_data['resolution']
+         circuits = Circuit.objects.filter(device=device)
          wattages = {
             'Unknown':{
               'avg':700,
               'cutoff':0,
               'max':1500,
               'min':300,
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.circuittype.appliances.all()]
             },
               'Computer':{
               'avg':200,
               'cutoff':50,
               'max':350,
               'min':0,
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.circuittype.appliances.all()]
             },
               'Toaster':{
               'avg':20,
               'cutoff':0,
               'max':60,
               'min':0,
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Toaster') in circuit.circuittype.appliances.all()]
             },
               'Refrigerator':{
               'avg':400,
               'cutoff':0,
               'max':600,
               'min':0,
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Refrigerator') in circuit.circuittype.appliances.all()]
             },
               'Television':{
               'avg':100,
               'cutoff':50,
               'max':200,
               'min':0,
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Television') in circuit.circuittype.appliances.all()]
             },
               'Oven':{
               'avg':700,
               'cutoff':600,
               'max':1000,
               'min':0,
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Oven') in circuit.circuittype.appliances.all()]
             },
               'Heater':{
               'avg':700,
               'cutoff':600,
               'max':1000,
               'min':0,
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Heater') in circuit.circuittype.appliances.all()]
             },
           }
          count = 0
          data = []
          data_dict = {}
          data_dict['name'] = "device."+str(device.serial)
-         data_dict['columns'] = ['time','appliance','wattage']
+         data_dict['columns'] = ['time','appliance','wattage','circuit']
          data_dict['points'] = []
          for i in numpy.arange(start, stop, resolution):
             point_list = [i]
@@ -176,7 +186,9 @@ def influxgen(request):
                else:
                   wattages[appliance.name]['avg'] = wattage
                   wattage_to_append = wattage
-               point_list = [i, appliance.name, wattage_to_append]
+               circuit = wattages[appliance.name]['circuit'] or [Circuit.objects.get(name='Unknown')]
+               circuit_pk = circuit[0].pk
+               point_list = [i, appliance.name, wattage_to_append, circuit_pk]
                count += 1
                data_dict['points'].append(point_list)
          data.append(data_dict)
@@ -214,6 +226,7 @@ def datagen(request):
    description = "Use this form to submit random generated data for the device chosen."
    return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
 
+@csrf_exempt
 def influxdel(request):
    success = ""
    if request.method == 'POST':
