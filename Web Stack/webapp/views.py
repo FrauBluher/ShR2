@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from microdata.models import Device, Event, Appliance
+from microdata.models import Device, Event, Appliance, Circuit
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django import forms
@@ -217,6 +217,10 @@ def dashboard(request):
       my_devices = Device.objects.filter(owner=user)
    else: my_devices = None
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   for device in my_devices:
+      device.circuits = []
+      for circuit in Circuit.objects.filter(device=device):
+         device.circuits.append(circuit)
    context = {'my_devices': my_devices,
               'server_time': time.time()*1000,
               }
@@ -235,7 +239,7 @@ def merge_subs(lst_of_lsts):
     return res
 
 
-def group_by_mean(serial, unit, start, stop, localtime):
+def group_by_mean(serial, unit, start, stop, localtime, channel):
    if unit == 'y': unit = 'm'
    if (start == ''): start = 'now() - 1d'
    else: start = '\''+datetime.fromtimestamp(int(float(start))).strftime('%Y-%m-%d %H:%M:%S')+'\''
@@ -284,6 +288,10 @@ def default_chart(request):
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      for device in devices:
+        device.circuits = []
+        for circuit in Circuit.objects.filter(device=device):
+           device.circuits.append(circuit)
       context = {'my_devices': devices,
                  'server_time': time.time()*1000,
                 }
@@ -334,7 +342,8 @@ def device_data(request, serial):
          unit = request.GET.get('unit','')
          start = request.GET.get('from','')
          stop = request.GET.get('to','')
-         context = json.dumps(group_by_mean(serial,unit,start,stop, localtime))
+         channel = request.GET.get('channel', None)
+         context = json.dumps(group_by_mean(serial,unit,start,stop,localtime,channel))
    return HttpResponse(context, content_type="application/json")
 
 

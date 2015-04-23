@@ -10,11 +10,15 @@ class DeviceWebSettingsInline(admin.StackedInline):
    can_delete = False
    verbose_name_plural = 'devicesettings'
 
+class CircuitInline(admin.StackedInline):
+	model = Circuit
+	can_delete = False
+
 class DeviceAdmin(admin.ModelAdmin):
    list_display = ('name','owner','serial','position','secret_key','registered','fanout_query_registered',)
    search_fields = ('name','serial')
    readonly_fields=('secret_key',)
-   inlines = (DeviceWebSettingsInline,DeviceSettingsInline,)
+   inlines = (DeviceWebSettingsInline,DeviceSettingsInline,CircuitInline,)
 
 class ApplianceAdmin(admin.ModelAdmin):
    list_display = ('name','pk','serial','chart_color',)

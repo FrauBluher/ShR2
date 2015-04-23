@@ -267,7 +267,7 @@ $('#simple-menu').on('click', function(e) {
 function change_device(serial, name) {
    $.get('/charts/device/'+serial+'/chart/',
       function(data) {
-         $('#ajax-container').html(data);
+         $('#ajax-container1').html(data);
          render_chart();
          $('#chart-title').html(name+" at a glance");
       }
@@ -277,7 +277,7 @@ function change_device(serial, name) {
 $(function() {
    $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
       function(data) {
-         $('#ajax-container').html(data);
+         $('#ajax-container1').html(data);
          render_chart();
       }
    );
