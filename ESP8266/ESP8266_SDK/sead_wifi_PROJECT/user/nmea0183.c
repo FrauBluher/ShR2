@@ -16,9 +16,9 @@
 #include "uart.h"
 
 /**
-  * @brief  nmea string checksum function
-  * @param  string input to check
-  * @retval checksum output XOR of all the bytes in the sentence, not
+  * @brief  Nmea string checksum function
+  * @param  String input to check
+  * @retval Checksum output XOR of all the bytes in the sentence, not
   * including the initial dollar sign
   */
 uint8_t ICACHE_FLASH_ATTR
@@ -89,9 +89,9 @@ check(const char *string, bool strict) {
 }
 
 /**
-  * @brief  returns sentence and talker types for a string
-  * @param  string
-  * @retval sentence ID or talker ID
+  * @brief  Returns sentence type for a string
+  * @param  String
+  * @retval Sentence ID
   */
 sentence_id ICACHE_FLASH_ATTR
 get_sentence(const char *string) {
@@ -102,6 +102,12 @@ get_sentence(const char *string) {
 	}
 }
 
+
+/**
+  * @brief  Returns talker type for a string
+  * @param  String
+  * @retval Talker ID
+  */
 talker_id ICACHE_FLASH_ATTR
 get_talker(const char *string) {
 	if (os_strncmp(string + 1, "SE", 2) == 0) {
@@ -112,9 +118,9 @@ get_talker(const char *string) {
 }
 
 /**
-  * @brief  populates fields from string
-  * @param  string, fields
-  * @retval success or failure
+  * @brief  Populates fields from string
+  * @param  String, fields
+  * @retval Success or failure
   */
 bool ICACHE_FLASH_ATTR
 process_message(char *string, uint16_t *wattage, char *timestamp) {
@@ -124,7 +130,7 @@ process_message(char *string, uint16_t *wattage, char *timestamp) {
 	talker_id talker = get_talker(string);
 	sentence_id sentence = get_sentence(string);
 	if (talker == TALKER_SEAD) {
-		uart0_sendStr("talker sead\r\n");
+		//uart0_sendStr("talker sead\r\n");
 		switch (sentence) {
 		case SENTENCE_DAT:
 			//process data fields
@@ -156,7 +162,7 @@ process_message(char *string, uint16_t *wattage, char *timestamp) {
 		uart0_sendStr("talker unknown\r\n");
 		return_value = false;
 	}
-	os_printf("time: %s\r\n", timestamp);
-	os_printf("watt: %d\r\n", *wattage);
+	//os_printf("time: %s\r\n", timestamp);
+	//os_printf("watt: %d\r\n", *wattage);
 	return return_value;
 }

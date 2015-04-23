@@ -10,6 +10,7 @@
 #include "espmissingincludes.h"
 #include "user_interface.h"
 #include "espconn.h"
+#include "mem.h"
 #include "ssl/cert.h"
 #include "ssl/private_key.h"
 
@@ -106,9 +107,23 @@ void print_espconn_state(espconn *serv_connection) {
 sint8 ICACHE_FLASH_ATTR
 package_send(espconn *serv_conn) {
 	//init variables
-	char data_points[1024] = "";
-	char json_data[1024] = "";
-	char send_data[1024] = "";
+	os_printf("Buffer len is %d\r\n", 300 + send_buffer_ptr->count * 40);
+	char *data_points = (char *)os_malloc(send_buffer_ptr->count * 40);
+	char *json_data = (char *)os_malloc(100 + send_buffer_ptr->count * 40);
+	char *send_data = (char *)os_malloc(300 + send_buffer_ptr->count * 40);
+	if (data_points == NULL || json_data == NULL || send_data == NULL) {
+		if (data_points != NULL) {
+			os_free(data_points);
+		}
+		if (json_data != NULL) {
+			os_free(json_data);
+		}
+		if (send_data != NULL) {
+			os_free(send_data);
+		}
+		os_printf("memory error\r\n");
+		return 0;
+	}
 	uint16_t chars_written = 0;
 	//create device if we haven't done it yet
 	//if (!make_device) {
@@ -119,6 +134,7 @@ package_send(espconn *serv_conn) {
 	//	make_device = TRUE;
 	//}
 	//send regular data
+	os_printf("\r\nData Count:\r\n%d\r\n", send_buffer_ptr->count);
 	char *data_ptr = data_points;
 	//loop over all available data to send
 	//data count is a global variable
@@ -142,10 +158,15 @@ package_send(espconn *serv_conn) {
 	//concatonates the data to send with the http header
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
-	os_printf("\r\nSend Data:\r\n%s\r\n", send_data);
+	os_printf("Actual Data Len: %d\r\n", strlen(send_data));
+	
 	//send the data.
-	return espconn_sent(serv_conn, (uint8 *)send_data,
+	sint8 retvalue = espconn_sent(serv_conn, (uint8 *)send_data,
 		strlen(send_data));
+	os_free(data_points);
+	os_free(json_data);
+	os_free(send_data);
+	return retvalue;
 }
 
 /**
@@ -168,25 +189,36 @@ networkSentCb(void *arg) {
   */
 static void ICACHE_FLASH_ATTR
 networkRecvCb(void *arg, char *data, unsigned short len) {
-	uint8_t i;
+	uint16_t i;
 	os_printf("recv\r\n");
-	print_espconn_state((espconn *)arg);
 	//print out what was received
 	espconn *serv_conn=(espconn *)arg;
-	//print out only the http code returned 
-	/*if (send_buffer_ptr == NULL) {
-		//received config hopefully
+	/*for (i = 0; i < 12; i++) {
+		uart0_putChar(data[i]);
+	}
+	uart0_putChar('\r');
+	uart0_putChar('\n');*/
+	//if we received a 404, then create the device
+	if (strncmp(data, "HTTP/1.1 404", 12) == 0) {
+		char send_data[256] = "";
+		os_printf("Creating device\r\n");
+		os_sprintf(send_data, POST_DEVICE,
+			13 + strlen(DEVICE_ID), DEVICE_ID);
+		espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
+	//received a 200, then we successfully got settings
+	} else if(strncmp(data, "HTTP/1.1 200", 12) == 0) {
+		//what we received printed out
+		os_printf("len is %d\r\n", len);
 		for (i = 0; i < len; i++) {
 			uart0_putChar(data[i]);
 		}
 		uart0_putChar('\r');
 		uart0_putChar('\n');
-	} else {*/
-	for (i = 0; i < 12; i++) {
-		uart0_putChar(data[i]);
+	//received a 201, then we successfully posted data
+	} else if(strncmp(data, "HTTP/1.1 201", 12) == 0) {
+		os_printf("CREATED\r\n");
 	}
-	uart0_putChar('\r');
-	uart0_putChar('\n');
+	
 	print_espconn_state(serv_conn);
 }
 
@@ -199,7 +231,7 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 static void ICACHE_FLASH_ATTR
 networkConnectedCb(void *arg) {
 	os_printf("conn_start\r\n");
-	config_send((espconn *)arg);
+	//config_send((espconn *)arg);
 	os_printf("conn_end\r\n");
 	print_espconn_state((espconn *)arg);
 }

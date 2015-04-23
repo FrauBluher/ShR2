@@ -12,9 +12,8 @@
 #define __BUFFERS_H
 
 #define max_uart_buff_size 255
-//malloc goes to the heap, and so does this
-//(cutoff somewhere between 2000-3000)
-#define max_send_buff_size 20
+//malloc goes to the heap, and so does this (be careful)
+#define max_send_buff_size 200
 
 //character buffer for uart
 typedef struct {

@@ -29,7 +29,7 @@ void case_recv_store(char);
 void case_recv_send(char);
 
 //default sending timer value to be possibly modified later
-uint16_t sending_timer = 5000;
+uint16_t sending_timer = 2000;
 
 //os event queues for function priority queue
 os_event_t    recv_messageQueue[recv_messageQueueLen];
@@ -99,7 +99,7 @@ send_recv_store_fsm(char temp) {
 	//default case, will never happen hopefully
 	default:
 		if(temp == '\n') {
-			uart0_sendStr("ERR, RESET\r\n");
+			uart0_sendStr("ERR, RESET PLS\r\n");
 		}
 		break;
     }
@@ -135,7 +135,7 @@ case_recv(char temp) {
 		//nmea checksum on the buffer
 		if (checksum_buffer()) {
 			//store it into the circular buffer
-			os_printf("\r\nchecksum succeeded\r\n");
+			//os_printf("\r\nchecksum succeeded\r\n");
 			print_buffer();
 			storing = TRUE;
 			//swap and then reset current buffer
@@ -144,7 +144,7 @@ case_recv(char temp) {
 			system_os_post(store_send_messagePrio, 0, 0);
 			user_state = STORE;
 		} else {
-			os_printf("\r\nchecksum failed\r\n");
+			//os_printf("\r\nchecksum failed\r\n");
 			print_buffer();
 			reset_buffer();
 			user_state = IDLE;
@@ -203,7 +203,7 @@ case_recv_store(char temp) {
 	} else if (storing == FALSE && temp == '\n') {
 		if (checksum_buffer()) {
 			//store it into the circular buffer
-			uart0_sendStr("\r\nchecksum succeeded\r\n");
+			//uart0_sendStr("\r\nchecksum succeeded\r\n");
 			print_buffer();
 			storing = TRUE;
 			//swap and then reset buffer
@@ -212,7 +212,7 @@ case_recv_store(char temp) {
 			system_os_post(store_send_messagePrio, 0, 0);
 			user_state = STORE;
 		} else {
-			uart0_sendStr("\r\nchecksum failed\r\n");
+			//uart0_sendStr("\r\nchecksum failed\r\n");
 			print_buffer();			
 			reset_buffer();
 			user_state = IDLE;
@@ -269,7 +269,7 @@ send_timer_cb(void *arg) {
 	if (config == FALSE) {
 		if (get_http_config()) {
 			config = TRUE;
-			uart0_sendStr("config complete\r\n");
+			uart0_sendStr("config\r\n");
 		}
 	//checks to see if we should send
 	} else if (sending == FALSE && size_send_buffer() > 0) {

@@ -48,7 +48,7 @@ circular_send_buffer_t send_buffer = {
 
 /******************************UART BUFFER*****************************/
 /**
-  * @brief  resets read and write pointers for uart buffer
+  * @brief  Resets read and write pointers for uart buffer
   * @param  None
   * @retval None
   */
@@ -60,7 +60,7 @@ reset_buffer(void) {
 }
 
 /**
-  * @brief  swaps out the current buffer with the another one
+  * @brief  Swaps out the current buffer with the another one
   * @param  None
   * @retval None
   */
@@ -76,7 +76,7 @@ swap_buffer(void) {
 }
 
 /**
-  * @brief  prints the buffer
+  * @brief  Prints the buffer
   * @param  None
   * @retval None
   */
@@ -132,7 +132,7 @@ bool ICACHE_FLASH_ATTR
 checksum_buffer(void) {
 	//checks the uart buffer, strict OFF for now
 	//that means it doesn't require a checksum
-	uart0_sendStr("\r\nchecksumming message\r\n");
+	//uart0_sendStr("\r\nchecksumming message\r\n");
 	//uart0_sendStr(uart_buffer->buffer);
 	if (check(uart_buffer->buffer, false)) {
 		return true;
@@ -186,8 +186,8 @@ push_send_buffer(void) {
 		}
 		send_buffer.count++;
 	}
-	os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-		send_buffer.head, send_buffer.tail, send_buffer.count);
+	//os_printf("Push:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+	//	send_buffer.head, send_buffer.tail, send_buffer.count);
 	return return_value;
 }
 
@@ -213,10 +213,9 @@ send_pop_buffer(void) {
 }
 
 /**
-  * @brief  increases the tail
+  * @brief  Increases the tail
   * @param  None
-  * @retval returns false if failed to send and pop,
-  * and true if succeeded
+  * @retval None
   */
 void ICACHE_FLASH_ATTR
 pop_pop_buffer(void) {
@@ -230,12 +229,12 @@ pop_pop_buffer(void) {
 	if (send_buffer.tail > send_buffer.buffer_end) {
 		send_buffer.tail = 0;
 	}
-	os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
-		send_buffer.head, send_buffer.tail, send_buffer.count);
+	//os_printf("Pop:\r\nhead = %d\r\ntail = %d\r\ncount = %d\r\n",
+	//	send_buffer.head, send_buffer.tail, send_buffer.count);
 }
 
 /**
-  * @brief  gets the size of the send buffer
+  * @brief  Wrapper for the size of the send buffer
   * @param  None
   * @retval returns the current size of the circular buffer
   */
