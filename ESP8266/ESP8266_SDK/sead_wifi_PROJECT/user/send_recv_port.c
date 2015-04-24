@@ -29,7 +29,7 @@ void case_recv_store(char);
 void case_recv_send(char);
 
 //default sending timer value to be possibly modified later
-uint16_t sending_timer = 2000;
+uint16_t sending_timer = 4000;
 
 //os event queues for function priority queue
 os_event_t    recv_messageQueue[recv_messageQueueLen];
@@ -136,7 +136,7 @@ case_recv(char temp) {
 		if (checksum_buffer()) {
 			//store it into the circular buffer
 			//os_printf("\r\nchecksum succeeded\r\n");
-			print_buffer();
+			//print_buffer();
 			storing = TRUE;
 			//swap and then reset current buffer
 			swap_buffer();
@@ -145,7 +145,7 @@ case_recv(char temp) {
 			user_state = STORE;
 		} else {
 			//os_printf("\r\nchecksum failed\r\n");
-			print_buffer();
+			//print_buffer();
 			reset_buffer();
 			user_state = IDLE;
 		}
@@ -153,7 +153,7 @@ case_recv(char temp) {
 		//if the buffer overflows, then reset the buffer and go back
 		//to idle. This is the case that puts things into the buffer
 		os_printf("\r\noverflow\r\n");
-		print_buffer();
+		//print_buffer();
 		reset_buffer();
 		user_state = IDLE;
 	}
@@ -204,7 +204,7 @@ case_recv_store(char temp) {
 		if (checksum_buffer()) {
 			//store it into the circular buffer
 			//uart0_sendStr("\r\nchecksum succeeded\r\n");
-			print_buffer();
+			//print_buffer();
 			storing = TRUE;
 			//swap and then reset buffer
 			swap_buffer();
@@ -213,7 +213,7 @@ case_recv_store(char temp) {
 			user_state = STORE;
 		} else {
 			//uart0_sendStr("\r\nchecksum failed\r\n");
-			print_buffer();			
+			//print_buffer();			
 			reset_buffer();
 			user_state = IDLE;
 		}
@@ -221,7 +221,7 @@ case_recv_store(char temp) {
 		//continue to receive shit and store, in case of overflow
 		if (!put_buffer(temp)) {
 			os_printf("\r\noverflow\r\n");
-			print_buffer();
+			//print_buffer();
 			reset_buffer();
 			user_state = STORE;
 		} else {
@@ -245,11 +245,11 @@ void ICACHE_FLASH_ATTR
 store_send_message(os_event_t *events) {
 	//always store before we send, if this happens twice
 	if (user_state == STORE || user_state == RECEIVE_STORE) {
-		os_printf("\r\nstoring\r\n");
+		//os_printf("\r\nstoring\r\n");
 		if (push_send_buffer()) {
-			os_printf("\r\nsucceeded\r\n");
+			//os_printf("\r\nsucceeded\r\n");
 		} else {
-			os_printf("\r\nfailed\r\n");
+			//os_printf("\r\nfailed\r\n");
 		}
 		storing = FALSE;
 	}

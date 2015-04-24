@@ -107,43 +107,23 @@ void print_espconn_state(espconn *serv_connection) {
 sint8 ICACHE_FLASH_ATTR
 package_send(espconn *serv_conn) {
 	//init variables
-	os_printf("Buffer len is %d\r\n", 300 + send_buffer_ptr->count * 40);
+	uint16_t chars_written = 0;
+	uint16_t i = 0;
 	char *data_points = (char *)os_malloc(send_buffer_ptr->count * 40);
-	char *json_data = (char *)os_malloc(100 + send_buffer_ptr->count * 40);
-	char *send_data = (char *)os_malloc(300 + send_buffer_ptr->count * 40);
-	if (data_points == NULL || json_data == NULL || send_data == NULL) {
-		if (data_points != NULL) {
-			os_free(data_points);
-		}
-		if (json_data != NULL) {
-			os_free(json_data);
-		}
-		if (send_data != NULL) {
-			os_free(send_data);
-		}
+	if (data_points == NULL) {
 		os_printf("memory error\r\n");
 		return 0;
 	}
-	uint16_t chars_written = 0;
-	//create device if we haven't done it yet
-	//if (!make_device) {
-	//	chars_written = os_sprintf(send_data, POST_DEVICE,
-	//		13 + strlen(DEVICE_ID), DEVICE_ID);
-	//	os_printf("\r\nSend Data:\r\n%s", send_data);
-	//	espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
-	//	make_device = TRUE;
-	//}
 	//send regular data
-	os_printf("\r\nData Count:\r\n%d\r\n", send_buffer_ptr->count);
+	os_printf("\r\nData Count: %d\r\n", send_buffer_ptr->count);
 	char *data_ptr = data_points;
 	//loop over all available data to send
-	//data count is a global variable
 	chars_written = os_sprintf(data_ptr, DATA_POINT,
 		send_buffer_ptr->buffer[send_buffer_ptr->tail].timestamp,
 		send_buffer_ptr->buffer[send_buffer_ptr->tail].wattage);
 	pop_pop_buffer();
 	//ensured that there is at least one data point
-	while (send_buffer_ptr->count > 0) {
+	for (i = 0; send_buffer_ptr->count > 0; i++) {
 		data_ptr += chars_written;
 		chars_written = os_sprintf(data_ptr, COMMA);
 		data_ptr += chars_written;
@@ -152,19 +132,33 @@ package_send(espconn *serv_conn) {
 			send_buffer_ptr->buffer[send_buffer_ptr->tail].wattage);
 		pop_pop_buffer();
 	}
+	char *json_data = (char *)os_malloc(100 + i * 40);
+	if (json_data == NULL) {
+		os_printf("memory error\r\n");
+		os_free(data_points);
+		return 0;
+	}
 	//concatonates json data
 	chars_written = os_sprintf(json_data, JSON_DATA, DEVICE_ID,
 		data_points);
+	os_free(data_points);
+	//allocates final data buffer
+	char *send_data = (char *)os_malloc(300 + i * 40);
+	if (send_data == NULL) {
+		os_printf("memory error\r\n");
+		os_free(json_data);
+		return 0;
+	}
 	//concatonates the data to send with the http header
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
+	os_free(json_data);
+	os_printf("Final Buf Len: %d\r\n", 300 + i * 40);
 	os_printf("Actual Data Len: %d\r\n", strlen(send_data));
-	
 	//send the data.
 	sint8 retvalue = espconn_sent(serv_conn, (uint8 *)send_data,
 		strlen(send_data));
-	os_free(data_points);
-	os_free(json_data);
+	//free the data
 	os_free(send_data);
 	return retvalue;
 }
@@ -231,7 +225,7 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 static void ICACHE_FLASH_ATTR
 networkConnectedCb(void *arg) {
 	os_printf("conn_start\r\n");
-	//config_send((espconn *)arg);
+	config_send((espconn *)arg);
 	os_printf("conn_end\r\n");
 	print_espconn_state((espconn *)arg);
 }
@@ -329,6 +323,7 @@ get_http_config(void) {
   */
 sint8 ICACHE_FLASH_ATTR
 config_send(espconn *serv_conn) {
+	os_printf("Sending get config\r\n");
 	char send_data[256] = "";
 	//format config request
 	os_sprintf(send_data, GET_SETTINGS, DEVICE_ID);
