@@ -15,9 +15,10 @@ class DeviceSettings(models.Model):
    main_channel = models.IntegerField(max_length=1,
                                    choices=CHANNEL_CHOICES,
                                    default=1)
+   transmission_rate_milliseconds = models.IntegerField(default=1000)
    def save(self, **kwargs):
       self.device_serial = self.device.serial
       super(DeviceSettings, self).save()
       
    def __unicode__(self):
-      return self.device.name + ' settings'
+      return (self.device.name or 'NONAME') + ' settings'

@@ -17,6 +17,22 @@ class Appliance(models.Model):
 
    def __unicode__(self):
       return self.name
+      
+# This model should not be registered to REST (admin only)
+class CircuitType(models.Model):
+   name = models.CharField(max_length=50, unique=True)
+   appliances = models.ManyToManyField(Appliance, blank=True)
+
+   def __unicode__(self):
+      return self.name
+
+# This model should not be registered to REST (admin and webapp UI only)
+class Circuit(models.Model):
+   circuittype = models.ForeignKey(CircuitType, null=True)
+   name = models.CharField(max_length=50, null=True)
+
+   def __unicode__(self):
+      return self.name
 
 
 class Device(models.Model):
@@ -28,6 +44,9 @@ class Device(models.Model):
    position = GeopositionField(blank=True, null=True)
    registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)
+   channel_0 = models.ForeignKey(CircuitType, related_name='Channel 0')
+   channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1')
+   channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2')
     
    def save(self, **kwargs):
       if self.secret_key == None:
@@ -116,22 +135,3 @@ class Event(models.Model):
       
    def __unicode__(self):
       return str(self.device.__unicode__()+':'+self.dataPoints)
-      
-
-# This model should not be registered to REST (admin only)
-class CircuitType(models.Model):
-   name = models.CharField(max_length=50, unique=True)
-   appliances = models.ManyToManyField(Appliance, blank=True)
-
-   def __unicode__(self):
-      return self.name
-
-# This model should not be registered to REST (admin and webapp UI only)
-class Circuit(models.Model):
-   circuittype = models.ForeignKey(CircuitType)
-   name = models.CharField(max_length=50)
-   device = models.ForeignKey(Device)
-      
-
-   def __unicode__(self):
-      return self.name

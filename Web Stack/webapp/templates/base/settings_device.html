@@ -132,6 +132,9 @@ $(function() {
   {% for choice in territory_choices %}
       $('#territory-dropdown').val("{{ choice }}")
   {% endfor %}
+  $('#channel_0-dropdown').val("{{ device.channel_0.pk }}");
+  $('#channel_1-dropdown').val("{{ device.channel_1.pk }}");
+  $('#channel_2-dropdown').val("{{ device.channel_2.pk }}");
 });
 
   $('#submit-name').on("click", function(e) {
@@ -275,6 +278,27 @@ $('#submit-remove-device').on("click", function(e) {
   {% endif %}
 </div>
 
+<div class="form-group">
+  <label class="col-md-4 control-label">Channel 0</label>  
+  <div class="col-md-4">
+    {{ form.channel_0 }}
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label">Channel 1</label>  
+  <div class="col-md-4">
+    {{ form.channel_1 }}
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label">Channel 2</label>  
+  <div class="col-md-4">
+    {{ form.channel_2 }}
+  </div>
+</div>
+
 </fieldset>
 </form>
 
@@ -331,7 +355,7 @@ $('#submit-remove-device').on("click", function(e) {
 <div class="form-group">
 	<label class="col-md-4 control-label" for="selectbasic">Location</label>
    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-   <div style="height:500px; width:100%" id="map-canvas"></div>
+   <div style="height:500px;" id="map-canvas"></div>
 	</div>
 </div>
 

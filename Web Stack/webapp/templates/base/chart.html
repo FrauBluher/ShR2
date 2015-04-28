@@ -80,17 +80,22 @@
         events: {
           onChartUpdate: function(event){
             console.info("Chart update");
-            //realTimeData();
+            realTimeData();
           }
         }
      });
    {% endif %}
 
-/*
+
 function realTimeData() {
    try {
-      var interval = chart.displayUnit().split(' ')[0];
-      var displayUnit = chart.displayUnit().slice(-1);
+      {% if circuit_pk %}
+      var chart_var = circuitChart;
+      {% else %}
+      var chart_var = chart;
+      {% endif %}
+      var interval = chart_var.displayUnit().split(' ')[0];
+      var displayUnit = chart_var.displayUnit().slice(-1);
       var period;
       var timeout = 250;
       if (displayUnit == 'm') {
@@ -116,20 +121,23 @@ function realTimeData() {
             'from':start,
             'to':stop,
             'localtime': +(new Date)/1000,
+            {% if circuit_pk %}
+            'circuit_pk': {{ circuit_pk }},
+            {% endif %}
          },
          function (ajax_data) {
             if (ajax_data.data[0][0] != null) {
-               chart.addData({unit: displayUnit, values: ajax_data.data});
+               chart_var.addData({unit: displayUnit, values: ajax_data.data});
             }
          }
       );
     } catch (e) {
-       console.info("Chart{{ circuit_pk }} not defined yet");
+       console.info("Chart not defined yet");
     }
     console.info("timeout = "+timeout)
     setTimeout(realTimeData, timeout);
 }
-*/
+
 
 function waitForChart() {
    console.info("Waiting for chart");
@@ -139,7 +147,7 @@ function waitForChart() {
    if (chart.displayUnit() != null) {
    {% endif %}
       console.info("Chart ready");
-      //realTimeData();
+      realTimeData();
    } else {
       setTimeout(waitForChart, 250);
    }

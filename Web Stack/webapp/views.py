@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from microdata.models import Device, Event, Appliance, Circuit
+from microdata.models import Device, Event, Appliance, Circuit, CircuitType
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django import forms
@@ -26,7 +26,7 @@ def make_choices(querysets):
   choices = []
   for queryset in querysets:
      for choice in queryset:
-       choices.append((choice.pk, choice.description))
+       choices.append((choice.pk, choice))
   return choices
 
 # UserForm is a customized version of an AuthenticationForm
@@ -66,6 +66,42 @@ class SettingsForm(forms.Form):
                               'class' : 'form-control input-md'
                               })
                             )
+  channel_0_choices = []
+  channel_1_choices = []
+  channel_2_choices = []
+  channel_0 = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_0-dropdown'
+          }
+        ),
+    choices=(
+      channel_0_choices
+    ),
+    required=False
+  )
+  channel_1 = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_1-dropdown'
+          }
+        ),
+    choices=(
+      channel_1_choices
+    ),
+    required=False
+  )
+  channel_2 = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_2-dropdown'
+          }
+        ),
+    choices=(
+      channel_2_choices
+    ),
+    required=False
+  )
   utility_company_choices = []
   rate_plan_choices = []
   territory_choices = []
@@ -124,6 +160,43 @@ class SettingsForm(forms.Form):
       #  default = DashboardSettings.objects.get(user=user),
       #)
     if device:
+      self.channel_0_choies = make_choices([CircuitType.objects.all(),])
+      self.channel_1_choies = make_choices([CircuitType.objects.all(),])
+      self.channel_2_choies = make_choices([CircuitType.objects.all(),])
+      
+      self.fields['channel_0'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_0-dropdown'
+          }
+        ),
+        choices=(
+          self.channel_0_choies
+        ),
+        required=False
+      )
+      self.fields['channel_1'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_1-dropdown'
+          }
+        ),
+        choices=(
+          self.channel_1_choies
+        ),
+        required=False
+      )
+      self.fields['channel_2'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_2-dropdown'
+          }
+        ),
+        choices=(
+          self.channel_2_choies
+        ),
+        required=False
+      )
       self.utility_company_choices = make_choices([UtilityCompany.objects.all(),])
       self.rate_plan_choices = make_choices([RatePlan.objects.all(),])
       self.territory_choices = make_choices([Territory.objects.all(),])
@@ -188,7 +261,6 @@ class SettingsForm(forms.Form):
     if password1 and password2 and password1 != password2:
         raise forms.ValidationError(self.error_messages['password_mismatch'])
     return password2
-
 
 
 def chartify(data):
