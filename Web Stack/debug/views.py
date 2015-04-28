@@ -159,7 +159,7 @@ def influxgen(request):
               'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Oven') in circuit.circuittype.appliances.all()]
             },
               'Heater':{
-              'avg':700,
+              'avg':8000,
               'cutoff':600,
               'max':1000,
               'min':0,
@@ -242,7 +242,7 @@ def influxdel(request):
            rg = re.compile('device.'+serial)
            for s in series:
               if rg.search(s[1]):
-                 db.query('drop series '+s[1])
+                 db.query('drop series "'+s[1]+'"')
          else:
            queries = db.query('list continuous queries')[0]['points']
            # drop old queries
