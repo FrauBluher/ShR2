@@ -24,3 +24,4 @@ The next field is a timestamp string
 Checksum will be optional as of now
 
 curl -X POST seads.brabsmit.com/api/event-api/ -d '{"device": "/api/device-api/3/", "wattage":"xxx", "timestamp":"xxxxxxxxxx"}' -H "Content-Type: application/json" -H "Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0"
+
