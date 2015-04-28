@@ -155,11 +155,62 @@ $(function() {
         $('#name-status').html(span);
       });
   });
+  
+  $('#channel_0-dropdown').on("change", function(e) {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#channel_0-status').html(span);
+    $.post('/settings/device/{{ device.serial }}', 
+      $('form#device-status-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#channel_0-status').html(span);
+      });
+  });
+  
+  $('#channel_1-dropdown').on("change", function(e) {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#channel_1-status').html(span);
+    $.post('/settings/device/{{ device.serial }}', 
+      $('form#device-status-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#channel_1-status').html(span);
+      });
+  });
+  
+  $('#channel_2-dropdown').on("change", function(e) {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#channel_2-status').html(span);
+    $.post('/settings/device/{{ device.serial }}', 
+      $('form#device-status-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#channel_2-status').html(span);
+      });
+  });
 
   $('#company-dropdown').on("change", function(e) {
     var span = $("<span/>");
     span.addClass('glyphicon-refresh glyphicon-refresh-animate');
-    $('#company`-status').html(span);
+    $('#company-status').html(span);
     $.post('/settings/device/{{ device.serial }}', 
       $('form#utility-company-form').serialize(),
       function (data) {
@@ -283,6 +334,7 @@ $('#submit-remove-device').on("click", function(e) {
   <div class="col-md-4">
     {{ form.channel_0 }}
   </div>
+  <div id="channel_0-status" class="col-md-2"></div>
 </div>
 
 <div class="form-group">
@@ -290,6 +342,7 @@ $('#submit-remove-device').on("click", function(e) {
   <div class="col-md-4">
     {{ form.channel_1 }}
   </div>
+  <div id="channel_1-status" class="col-md-2"></div>
 </div>
 
 <div class="form-group">
@@ -297,6 +350,7 @@ $('#submit-remove-device').on("click", function(e) {
   <div class="col-md-4">
     {{ form.channel_2 }}
   </div>
+  <div id="channel_2-status" class="col-md-2"></div>
 </div>
 
 </fieldset>

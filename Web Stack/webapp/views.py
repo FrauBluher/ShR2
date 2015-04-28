@@ -641,6 +641,22 @@ def settings_device(request, serial):
     if device.owner == user:
        form = SettingsForm(request.POST)
        
+       channel_0 = request.POST.get('channel_0', False)
+       channel_1 = request.POST.get('channel_0', False)
+       channel_2 = request.POST.get('channel_0', False)
+       if channel_0:
+         device.channel_0 = CircuitType.objects.get(pk=channel_0)
+         device.save()
+         context['success'] = True
+       elif channel_1:
+         device.channel_1 = CircuitType.objects.get(pk=channel_1)
+         device.save()
+         context['success'] = True
+       elif channel_2:
+         device.channel_2 = CircuitType.objects.get(pk=channel_2)
+         device.save()
+         context['success'] = True
+       
        utility_company = request.POST.get('utility_company', False)
        context['utility_companies'] = []
        rate_plan = request.POST.get('rate_plans', False)
