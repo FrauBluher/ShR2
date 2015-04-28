@@ -48,6 +48,10 @@ class Device(models.Model):
          self.fanout_query_registered = True
       if self.name == '':
          self.name = "Device "+str(self.serial)
+      from farmer.models import DeviceSettings
+      settings = DeviceSettings.objects.filter(device=self)
+      if not settings:
+         DeviceSettings.objects.create(device=self)
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
@@ -112,11 +116,12 @@ class Event(models.Model):
       
    def __unicode__(self):
       return str(self.device.__unicode__()+':'+self.dataPoints)
+      
 
 # This model should not be registered to REST (admin only)
 class CircuitType(models.Model):
    name = models.CharField(max_length=50, unique=True)
-   appliances = models.ManyToManyField(Appliance)
+   appliances = models.ManyToManyField(Appliance, blank=True)
 
    def __unicode__(self):
       return self.name
