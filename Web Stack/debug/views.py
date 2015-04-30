@@ -114,56 +114,56 @@ def influxgen(request):
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
          resolution = form.cleaned_data['resolution']
-         circuits = Circuit.objects.filter(device=device)
+         circuits = [device.channel_0, device.channel_1, device.channel_2]
          wattages = {
             'Unknown':{
               'avg':700,
               'cutoff':0,
               'max':1500,
               'min':300,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.circuittype.appliances.all()]
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.appliances.all()]
             },
               'Computer':{
               'avg':200,
               'cutoff':50,
               'max':350,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.circuittype.appliances.all()]
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.appliances.all()]
             },
               'Toaster':{
               'avg':20,
               'cutoff':0,
               'max':60,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Toaster') in circuit.circuittype.appliances.all()]
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Toaster') in circuit.appliances.all()]
             },
               'Refrigerator':{
               'avg':400,
               'cutoff':0,
               'max':600,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Refrigerator') in circuit.circuittype.appliances.all()]
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Refrigerator') in circuit.appliances.all()]
             },
               'Television':{
               'avg':100,
               'cutoff':50,
               'max':200,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Television') in circuit.circuittype.appliances.all()]
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Television') in circuit.appliances.all()]
             },
               'Oven':{
               'avg':700,
               'cutoff':600,
               'max':1000,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Oven') in circuit.circuittype.appliances.all()]
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Oven') in circuit.appliances.all()]
             },
               'Heater':{
               'avg':8000,
               'cutoff':600,
               'max':1000,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Heater') in circuit.circuittype.appliances.all()]
+              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Heater') in circuit.appliances.all()]
             },
           }
          count = 0
@@ -243,6 +243,8 @@ def influxdel(request):
            for s in series:
               if rg.search(s[1]):
                  db.query('drop series "'+s[1]+'"')
+           events = Event.objects.filter(device=device)
+           events.delete()
          else:
            queries = db.query('list continuous queries')[0]['points']
            # drop old queries
