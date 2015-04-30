@@ -635,6 +635,7 @@ def settings_account(request):
   else: return render(request, 'base/settings.html')
 
 @login_required(login_url='/signin/')
+@csrf_exempt
 def settings_device(request, serial):
   context = {}
   if request.method == 'POST':
@@ -644,20 +645,36 @@ def settings_device(request, serial):
     if device.owner == user:
        form = SettingsForm(request.POST)
        
+       custom_channel = request.POST.get('custom_channel', False)
+       appliance = request.POST.get('appliance', False)
+       add = request.POST.get('add', None)
+       if custom_channel and appliance:
+         device.channel_0 = CircuitType.objects.get(pk=6)
+         if add is True:
+            device.channel_0.appliances.add(Appliance.objects.get(pk=int(appliance)))
+         elif add is False:
+            device.channel_0.appliances.remove(Appliance.objects.get(pk=int(appliance)))
+         device.save()
+         context['success'] = True
+         return HttpResponse(json.dumps(context), content_type="application/json")
        channel_0 = request.POST.get('channel_0', False)
        channel_1 = request.POST.get('channel_1', False)
        channel_2 = request.POST.get('channel_2', False)
+       context['appliances'] = {}
        if channel_0:
          device.channel_0 = CircuitType.objects.get(pk=channel_0)
          device.save()
+         context['appliances']['channel_0'] = [x.name for x in device.channel_0.appliances.all()]
          context['success'] = True
-       elif channel_1:
+       if channel_1:
          device.channel_1 = CircuitType.objects.get(pk=channel_1)
          device.save()
+         context['appliances']['channel_1'] = [x.name for x in device.channel_1.appliances.all()]
          context['success'] = True
-       elif channel_2:
+       if channel_2:
          device.channel_2 = CircuitType.objects.get(pk=channel_2)
          device.save()
+         context['appliances']['channel_2'] = [x.name for x in device.channel_2.appliances.all()]
          context['success'] = True
        
        utility_company = request.POST.get('utility_company', False)

@@ -11,6 +11,13 @@
       outline: none;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
+    
+    .custom-header{
+      text-align: center;
+      padding: 3px;
+      background: #000;
+      color: #fff;
+    }
 
     #pac-input {
       background-color: #fff;
@@ -114,6 +121,17 @@ function check_device_status(element) {
    );
 }
 
+function make_ul(list) {
+    li_list = []
+    for (var i in list) {
+        var li = $("<li/>");
+        li.html(list[i]);
+        li_list.push(li);
+    }
+    console.log(li_list);
+    return li_list;
+}
+
 $('#btn-status').on('click', function(e) {
    check_device_status($(this));
 });
@@ -157,20 +175,63 @@ $(function() {
   });
   
   $('#channel_0-dropdown').on("change", function(e) {
-    var span = $("<span/>");
-    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
-    $('#channel_0-status').html(span);
-    $.post('/settings/device/{{ device.serial }}', 
-      $('form#device-status-form').serialize(),
-      function (data) {
-        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
-        if (data.success) {
-          span.addClass("glyphicon glyphicon-ok");
-        } else {
-          span.addClass("glyphicon glyphicon-remove");
-        }
+    if ($('#channel_0-dropdown').val() == 6) {
+        // User wants a custom circuit
+        $.get('/api/appliance-api/',
+            function(data) {
+                $('#channel_0-appliance-list').html($("<select id='channel_0-appliance-select' multiple='multiple'/>"));
+                $('#channel_0-appliance-select').multiSelect({
+                    selectableHeader: "<div class='custom-header'>Selectable items</div>",
+                    selectionHeader: "<div class='custom-header'>Selected items</div>",
+                    afterSelect: function(values){
+                        $.post('/settings/device/{{ device.serial }}',
+                            {
+                                custom_channel: 0,
+                                add: true,
+                                appliance: values[0],
+                            },
+                            function(data) {
+                                console.log(data);
+                            }
+                        );
+                    },
+                    afterDeselect: function(values){
+                        $.post('/settings/device/{{ device.serial }}',
+                            {
+                                custom_channel: 0,
+                                add: false,
+                                appliance: values,
+                            },
+                            function(data) {
+                                console.log(data);
+                            }
+                        );
+                    }
+                });
+                var selected = []
+                for(var i in data) {
+                    $('#channel_0-appliance-select').multiSelect('addOption', { value: data[i].serial, text: data[i].name, index: 0 });
+                }
+                console.log(data);
+            }
+        );
+    } else {
+        var span = $("<span/>");
+        span.addClass('glyphicon-refresh glyphicon-refresh-animate');
         $('#channel_0-status').html(span);
-      });
+        $.post('/settings/device/{{ device.serial }}', 
+          $('form#device-status-form').serialize(),
+          function (data) {
+            span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+            if (data.success) {
+              span.addClass("glyphicon glyphicon-ok");
+            } else {
+              span.addClass("glyphicon glyphicon-remove");
+            }
+            $('#channel_0-appliance-list').html(make_ul(data.appliances.channel_0));
+            $('#channel_0-status').html(span);
+          });
+      }
   });
   
   $('#channel_1-dropdown').on("change", function(e) {
@@ -186,6 +247,7 @@ $(function() {
         } else {
           span.addClass("glyphicon glyphicon-remove");
         }
+        $('#channel_1-appliance-list').html(make_ul(data.appliances.channel_1));
         $('#channel_1-status').html(span);
       });
   });
@@ -203,6 +265,7 @@ $(function() {
         } else {
           span.addClass("glyphicon glyphicon-remove");
         }
+        $('#channel_2-appliance-list').html(make_ul(data.appliances.channel_2));
         $('#channel_2-status').html(span);
       });
   });
@@ -335,6 +398,13 @@ $('#submit-remove-device').on("click", function(e) {
     {{ form.channel_0 }}
   </div>
   <div id="channel_0-status" class="col-md-2"></div>
+  <div id="channel_0-description" class="col-md-4">Common Appliances:
+    <ul id="channel_0-appliance-list">
+    {% for appliance in device.channel_0.appliances.all %}
+        <li>{{ appliance }}</li>
+    {% endfor %}
+    </ul>
+  </div>
 </div>
 
 <div class="form-group">
@@ -343,6 +413,13 @@ $('#submit-remove-device').on("click", function(e) {
     {{ form.channel_1 }}
   </div>
   <div id="channel_1-status" class="col-md-2"></div>
+  <div id="channel_1-description" class="col-md-4">Common Appliances:
+    <ul id="channel_1-appliance-list">
+    {% for appliance in device.channel_1.appliances.all %}
+        <li>{{ appliance }}</li>
+    {% endfor %}
+    </ul>
+  </div>
 </div>
 
 <div class="form-group">
@@ -351,6 +428,13 @@ $('#submit-remove-device').on("click", function(e) {
     {{ form.channel_2 }}
   </div>
   <div id="channel_2-status" class="col-md-2"></div>
+  <div id="channel_2-description" class="col-md-4">Common Appliances:
+    <ul id="channel_2-appliance-list">
+    {% for appliance in device.channel_2.appliances.all %}
+        <li>{{ appliance }}</li>
+    {% endfor %}
+    </ul>
+  </div>
 </div>
 
 </fieldset>
