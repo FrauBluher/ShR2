@@ -15,6 +15,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
 
+from webapp.models import UserSettings
+
 import git
 
 
@@ -42,6 +44,7 @@ def register(request):
                 password = form.cleaned_data.get('password2')
                 user = authenticate(username=username, password=password)
                 login(request, user)
+                UserSettings.objects.create(user=user)
                 return HttpResponseRedirect("/data/")
         else:
             form = UserCreationForm()
