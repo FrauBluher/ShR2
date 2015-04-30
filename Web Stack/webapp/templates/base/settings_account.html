@@ -28,13 +28,9 @@
     display: inline-block;
     float: left;
   }
-  .modal{
-    z-index: 20;
-    margin-top: 100px;
+  .modal-backdrop {
+    z-index: -1;
   }
-  .modal-backdrop{
-    z-index: 10;        
-  }​
   </style>
 </head>
 
@@ -211,15 +207,17 @@ $(function() {
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Add a new device</h4>
+        <h4 class="modal-title" id="deviceModalLabel">Add a new device</h4>
       </div>
       <div class="modal-body" id="modalBody">
         You'll need the secret key from your SEADS device in order to continue.
         <br><br>
         You can find the secret key on the access point created by the device.
         <br><br><br>
-       <button type="button" id="help" class="btn btn-default btn-block">Where to find the key</button>
-       <button type="button" id="enterKey" class="btn btn-primary btn-block">Enter key</button>
+        <div class="modal-footer">
+          <button type="button" id="help" class="btn btn-default btn-block">Where to find the key</button>
+          <button type="button" id="enterKey" class="btn btn-primary btn-block">Enter key</button>
+        </div>
       </div>
     </div>
   </div>

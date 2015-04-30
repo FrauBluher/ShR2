@@ -366,8 +366,9 @@ def default_chart(request):
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       for device in devices:
         device.circuits = []
-        for circuit in Circuit.objects.filter(device=device):
-           device.circuits.append(circuit)
+        device.circuits.append(device.channel_0)
+        device.circuits.append(device.channel_1)
+        device.circuits.append(device.channel_2)
       context = {'my_devices': devices,
                  'server_time': time.time()*1000,
                 }
@@ -642,8 +643,8 @@ def settings_device(request, serial):
        form = SettingsForm(request.POST)
        
        channel_0 = request.POST.get('channel_0', False)
-       channel_1 = request.POST.get('channel_0', False)
-       channel_2 = request.POST.get('channel_0', False)
+       channel_1 = request.POST.get('channel_1', False)
+       channel_2 = request.POST.get('channel_2', False)
        if channel_0:
          device.channel_0 = CircuitType.objects.get(pk=channel_0)
          device.save()
