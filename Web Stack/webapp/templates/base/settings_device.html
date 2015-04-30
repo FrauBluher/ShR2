@@ -424,6 +424,24 @@ $('#submit-remove-device').on("click", function(e) {
 </fieldset>
 </form>
 
+
+<form id='export-form' class='form-horizontal'>
+{% csrf_token %}
+<fieldset>
+
+<legend>Export Data</legend>
+
+<div class="form-group">
+    <label class="col-md-4 control-label" for="selectbasic">Export Date Range</label>
+    <div id="reportrange" class="col-md-4 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+        <span></span> <b class="caret"></b>
+    </div>
+</div>
+</fieldset>
+</form>
+
+
 <form id='remove-device-form' class='form-horizontal'>
 <fieldset>
 
@@ -463,12 +481,68 @@ $('#submit-remove-device').on("click", function(e) {
   </div>
 </div>
 
+<script type="text/javascript">
+$(function() {
+ 
+    $('#reportrange span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+ 
+    $('#reportrange').daterangepicker({
+        format: 'MM/DD/YYYY',
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment(),
+        showDropdowns: true,
+        showWeekNumbers: true,
+        timePicker: true,
+        timePickerIncrement: 1,
+        timePicker12Hour: true,
+        ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment()],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+           'This Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+        },
+        opens: 'left',
+        drops: 'up',
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-primary',
+        cancelClass: 'btn-default',
+        separator: ' to ',
+        locale: {
+            applyLabel: 'Export',
+            cancelLabel: 'Cancel',
+            fromLabel: 'From',
+            toLabel: 'To',
+            customRangeLabel: 'Custom',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr','Sa'],
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            firstDay: 1
+        }
+    }, function(start, end, label) {
+        window.location = '/settings/device/export/?serial= {{ device.serial }}&start='+start.unix()+'&end='+end.unix();
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    });
+ 
+});
+</script>
+
 
 <script>
 
 $(function() {
    initialize();
 });
+
+var $idown;  // Keep it outside of the function, so it's initialized once.
+function downloadURL(url) {
+  if ($idown) {
+    $idown.attr('src',url);
+  } else {
+    $idown = $('<iframe>', { id:'idown', src:url }).hide().appendTo('body');
+  }
+}
 
 var map, placeSearch, autocomplete, marker;
 
@@ -479,9 +553,12 @@ function initialize() {
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
-
+  {% if device.position %}
   var pos = new google.maps.LatLng({{ device.position.latitude }},
                                    {{ device.position.longitude}});
+  {% else %}
+  var pos = new google.maps.LatLng(0,0);
+  {% endif %}
 
   marker = new google.maps.Marker({
     map: map,

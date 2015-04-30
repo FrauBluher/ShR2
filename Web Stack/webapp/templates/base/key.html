@@ -1,4 +1,5 @@
 <div id="keyFormWrapper">
+    {% if form %}
    <span> Enter the secret key for your SEADS device.</span>
    <form id="keyForm" action="" method="post">
       {% csrf_token %}
@@ -17,12 +18,19 @@
       </div>
       <input id="submit" type="submit" value="Submit">
    </form>
+   {% else %}
    {% if not error and created %}
-   <div class="alert alert-success" role="alert">Paired</div>
-   {% endif %}
+   <div class="alert alert-success" role="alert">
+      <p>Pairing Complete!</p>
+      <p>Close this dialog box to continue configuring your new device.</p>
+      <p>Name: {{ device }}</p>
+      <p>Serial: {{ device.serial }}</p>
+   </div>
+   {% endif %} <!-- if not error and created -->
    {% if error %}
    <div class="alert alert-danger" role="alert">Not Paired</div>
-   {% endif %}
+   {% endif %} <!-- if error -->
+   {% endif %} <!-- if form -->
 </div>
 
 <script>

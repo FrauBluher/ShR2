@@ -11,6 +11,8 @@ from collections import defaultdict
 from django.contrib.auth import authenticate, login
 from webapp.models import EventNotification, IntervalNotification, UtilityCompany, RatePlan, Territory, DashboardSettings
 from geoposition import Geoposition
+from django.core.servers.basehttp import FileWrapper
+import cStringIO as StringIO
 
 from django.db import IntegrityError
 
@@ -747,8 +749,27 @@ def remove_device(request, serial):
       context['success'] = True
   return HttpResponse(json.dumps(context), content_type="application/json")
 
-
-
+@login_required(login_url='/signin/')
+@csrf_exempt
+def export_data(request):
+  context = {}
+  context['success'] = False
+  if request.method == 'GET':
+    serial = request.GET.get('serial')
+    user = User.objects.get(username=request.user)
+    device = Device.objects.get(serial=serial)
+    start = request.GET.get('start', 0)
+    end = request.GET.get('end', 0)
+    if device.owner == user:
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      if start is not 0 and end is not 0:
+        data = db.query('select * from device.'+str(device.serial)+' where time > '+start+'s and time < '+end+'s')
+      else:
+        data = db.query('select * from device.'+str(device.serial))
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="export.txt"'
+    response.write(data)
+    return response
 
 
 
