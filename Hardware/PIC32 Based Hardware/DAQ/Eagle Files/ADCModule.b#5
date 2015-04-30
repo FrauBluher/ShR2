@@ -142,7 +142,7 @@
 <wire x1="45" y1="36.5" x2="0" y2="36.5" width="0" layer="20"/>
 <wire x1="0" y1="36.5" x2="0" y2="0" width="0" layer="20"/>
 <wire x1="0" y1="0" x2="45" y2="0" width="0" layer="20"/>
-<text x="20.24" y="1.15" size="0.8128" layer="25" rot="R90">SEAD DAQ Unit v1.3
+<text x="20.24" y="1.15" size="0.8128" layer="25" rot="R90">SEAD DAQ Unit v1.4
 (c) Pavlo Manovi - 2014
 pavlo.me</text>
 <text x="37.07" y="4.1" size="0.8128" layer="25">ICSP</text>
