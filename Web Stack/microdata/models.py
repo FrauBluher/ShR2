@@ -44,14 +44,15 @@ class Device(models.Model):
    position = GeopositionField(blank=True, null=True)
    registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)
-   channel_0 = models.ForeignKey(CircuitType, related_name='Channel 0')
-   channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1')
-   channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2')
+   channel_0 = models.ForeignKey(CircuitType, related_name='Channel 0', blank=True, null=True)
+   channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1', blank=True, null=True)
+   channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2', blank=True, null=True)
     
    def save(self, **kwargs):
       if self.secret_key == None:
-         secret_key =  ''.join(random.choice(string.digits) for i in range(3))
-         secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
+         #secret_key =  ''.join(random.choice(string.digits) for i in range(3))
+         #secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
+         secret_key = '123SEAD'
          self.secret_key = secret_key
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
@@ -71,6 +72,10 @@ class Device(models.Model):
       settings = DeviceSettings.objects.filter(device=self)
       if not settings:
          DeviceSettings.objects.create(device=self)
+      from webapp.models import DeviceWebSettings
+      websettings = DeviceWebSettings.objects.filter(device=self)
+      if not websettings:
+         DeviceWebSettings.objects.create(device=self)
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):

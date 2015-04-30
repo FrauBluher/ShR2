@@ -83,26 +83,11 @@ class EventViewSet(viewsets.ModelViewSet):
          return HttpResponse(query, content_type="application/json", status=201)
       except:
          return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
-
-@csrf_exempt
-def new_device_location(request, serial):
-   if request.method == 'POST':
-      latitude = float(request.POST.get('latitude'))
-      longitude = float(request.POST.get('longitude'))
-      context = {}
-      if latitude and longitude:
-         device = Device.objects.get(serial=serial)
-         device.position = Geoposition(latitude, longitude)
-         device.save()
-         context['latitude'] = latitude
-         context['longitude'] = longitude
-         return render(request, 'base/success.html', context)
-
-   return render(request, 'base/location.html', {'serial':serial})
     
 def new_device_key(request):
    error = False
    created = False
+   device = None
    if request.method == 'POST':
       form = KeyForm(request.POST)
       if form.is_valid():
@@ -121,15 +106,15 @@ def new_device_key(request):
             device.registered = True
             device.save()
             created = True
-            request.method = 'GET'
-            return new_device_location(request, device.serial)
+            form = False
          else: error = True
    else:
       form = KeyForm()
    return render(request, 'base/key.html', {
              'form':form,
              'error':error,
-             'created':created
+             'created':created,
+             'device':device
              })
 
 def timestamp(request):
