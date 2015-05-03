@@ -1,7 +1,7 @@
 /**
  * @file	main.c
- * @author 	Pavlo Milo Manovi, Henry Crute
- * @date	February, 2015
+ * @author 	Pavlo Milo Manovi, Henry Crute, Andrew Ringer
+ * @date	May, 2015
  * @brief 	Main acquire script to read data from the SEAD device.
  */
 
@@ -61,6 +61,28 @@ static uint8_t tmpBuff2[BUF_SIZE];
 static char exit_thread = 0;
 static char current_buffer = BUFFER_A;
 
+//setup e
+
+// file_names
+
+FILE *current_file = NULL;
+unsigned int file_seconds = 60 * 5; // 5 minutes
+
+//file thread
+//NOTE: if seconds is faster than it takes to write 1 block we might
+void *file_timer(void *args) {
+    (void) args;
+    // assuming we don't make more than 10^10 files (10) + null plug + '_'
+    char *file_name = calloc(strlen(outfile)+12, sizeof(char));
+    int count = 0;
+    for(;;) {
+        sleep(file_seconds);
+        sprintf(file_name, "%d_%s", ++count, outfile);
+        current_file = fopen(file_name, "wb");
+    }
+    pthread_exit(NULL);
+}
+
 //reads from the usb uart fifio
 void *read_fifo(void *pArgs)
 {
@@ -78,7 +100,7 @@ void *read_fifo(void *pArgs)
                 size = BUF_SIZE - runningTotalA;
 				fprintf(stderr, "ERROR: Not enough room in buffer for data. DATA MAY BE CORRUPTED!\n");
 				fflush(stderr);
-            }			
+            }
             FT_Read(ftFIFO, &tmpBuff[runningTotalA], size, &dwBytesRead);
 			runningTotalA += dwBytesRead;
 			if (fifoRxQueueSize > 4000) {
@@ -129,19 +151,23 @@ void acquire_loop(daq_config config)
 	FT_ResetDevice(ftFIFO);
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
 	pthread_create(&thread_id, NULL, &read_fifo, NULL);
+    pthread_t file_thread;
+    current_file = fh;
+    pthread_create(&file_thread, NULL, &file_timer, NULL);
 	int32_t ch0 = 0;
 	int32_t ch1 = 0;
 	int32_t ch2 = 0;
 	int32_t ch3 = 0;
 	while(1) {
+        fh = current_file;
 		if(runningTotalA >= 26007 && current_buffer == BUFFER_B) {
 			for (i = 0; i < 26000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
 			}
 			crc = ((tmpBuff[26006] << 8) | (tmpBuff[26007]));
-			fprintf(stdout, "Block transfer complete, TX-CRC:%i,"
-				" RX-CRX:%i\r\n", crc, rxCrc);
-			fflush(stdout);
+			//fprintf(stdout, "Block transfer complete, TX-CRC:%i,"
+			//	" RX-CRX:%i\r\n", crc, rxCrc);
+			//fflush(stdout);
 			for (i = 0; i < 26000;) {
 				//shifting from the uart buffer into the file variables
 				ch0 |= (tmpBuff[i+2] << 16);
@@ -180,8 +206,8 @@ void acquire_loop(daq_config config)
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff2[i]);
 			}
 			crc = ((tmpBuff2[26006] << 8) | (tmpBuff2[26007]));
-			fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
-			fflush(stdout);
+			//fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
+			//fflush(stdout);
 			for (i = 0; i < 26000;) {
 				//shifting from the uart buffer into the file variables
 				ch0 |=  (tmpBuff2[i+2] << 16);
@@ -216,6 +242,9 @@ void acquire_loop(daq_config config)
 			runningTotalB = 0;
 			rxCrc = 0xFFFF;
 		}
+        if (fh != current_file) {
+            fclose(fh);
+        }
 	}
 	return;
 }
@@ -223,7 +252,7 @@ void acquire_loop(daq_config config)
 //prints the usage for the program
 void print_usage()
 {
-	printf("Usage: Acquire [-h] [-v] [-p port] [-b bandwidth] [-f file] [-c channels]\n");
+	printf("Usage: Acquire [-h] [-v] [-p port] [-b bandwidth] [-f file] [-c channels] [-t seconds]\n");
 	return;
 }
 
@@ -242,7 +271,7 @@ void get_options(int argc, char **argv)
 {
 	opterr = 0;
 	int c;
-	while ((c = getopt (argc, argv, "hvp:b:f:c:")) != -1) {
+	while ((c = getopt (argc, argv, "hvp:b:f:c:t:")) != -1) {
 		switch (c)
 		{
 		//h for help
@@ -270,6 +299,9 @@ void get_options(int argc, char **argv)
 		case 'c':
 			channels = strtol(optarg, (char **)NULL, 10);
 			break;
+        case 't':
+            file_seconds = atoi(optarg);
+            break;
 		//unknown options
 		case '?':
 			if (optopt == 'c' || optopt =='f' || optopt == 'b' || optopt == 'p')
