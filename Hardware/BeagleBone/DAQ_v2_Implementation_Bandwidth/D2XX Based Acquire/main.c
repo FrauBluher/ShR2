@@ -107,7 +107,7 @@ void *read_fifo(void *pArgs)
 				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
 				fflush(stderr);
 			}
-			if (runningTotalA >= 26007) {
+			if (runningTotalA > 26007) {
 				current_buffer = BUFFER_B;
 			}
 		} else if (current_buffer == BUFFER_B) {
@@ -129,7 +129,7 @@ void *read_fifo(void *pArgs)
 				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
 				fflush(stderr);
 			}
-			if (runningTotalB >= 26007) {
+			if (runningTotalB > 26007) {
 				current_buffer = BUFFER_A;
 			}
 		}
@@ -152,16 +152,18 @@ void acquire_loop(daq_config config)
 	FT_ResetDevice(ftFIFO);
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
 	pthread_create(&thread_id, NULL, &read_fifo, NULL);
-    pthread_t file_thread;
     current_file = fh;
-    pthread_create(&file_thread, NULL, &file_timer, NULL);
+    pthread_t file_thread;
+    if (file_seconds) {
+        pthread_create(&file_thread, NULL, &file_timer, NULL);
+    }
 	int32_t ch0 = 0;
 	int32_t ch1 = 0;
 	int32_t ch2 = 0;
 	int32_t ch3 = 0;
 	while(1) {
         fh = current_file;
-		if(runningTotalA >= 26007 && current_buffer == BUFFER_B) {
+		if(runningTotalA > 26007 && current_buffer == BUFFER_B) {
 			for (i = 0; i < 26000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
 			}
@@ -202,7 +204,7 @@ void acquire_loop(daq_config config)
 			fflush(fh);
 			runningTotalA = 0;
 			rxCrc = 0xFFFF;
-		} else if (runningTotalB >= 26007 && current_buffer == BUFFER_A) {
+		} else if (runningTotalB > 26007 && current_buffer == BUFFER_A) {
 			for (i = 0; i < 26000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff2[i]);
 			}
@@ -446,7 +448,14 @@ int main(int argc, char *argv[])
 		print_config();
 	}
 	//file handle
-	fh = fopen(outfile, "w");
+    if (file_seconds) {
+        char *out_name = calloc(strlen(outfile)+3, sizeof(char));
+        sprintf(out_name, "0_%s", outfile);
+	    fh = fopen(out_name, "wb");
+    }
+    else {
+	    fh = fopen(outfile, "wb");
+    }
 	if(fh == NULL) {
 		printf("Cant open source file\n");
 		exit(1);
