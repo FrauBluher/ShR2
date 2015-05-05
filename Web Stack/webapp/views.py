@@ -359,7 +359,10 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
          # use 28800 for daylight savings (-8 PDT)
          # use 25200 for normal (-7 PDT)
          #offset = time.time() - localtime
-         s = [int(round(s[0]-25200)),s[2]]
+         s[0] = int(round(s[0]-25200))
+         if len(str(s[0])) == 13:
+            s[0] = s[0]/1000
+         s = [s[0],s[2]]
          new_group.append(s)
       to_merge += new_group
    data = merge_subs(to_merge)
