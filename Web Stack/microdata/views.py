@@ -16,7 +16,7 @@ from rest_framework import viewsets
 from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer
 from microdata.models import Device, Event, Appliance
 
-from influxdb import client as influxdb
+from influxdb.influxdb08 import client as influxdb
 
 from geoposition import Geoposition
 import json
@@ -73,16 +73,16 @@ class EventViewSet(viewsets.ModelViewSet):
    def create(self, request):
       query = request.DATA.keys()[0]
       query = json.loads(query)
-      try:
-         serial = query.get('device').split('/')[-2:-1][0]
-         device = Device.objects.get(serial=serial)
-         event = Event.objects.create(device=device, dataPoints = json.dumps(query.get('dataPoints')))
-         device.ip_address = request.META.get('REMOTE_ADDR')
-         device.save()
-         data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
-         return HttpResponse(query, content_type="application/json", status=201)
-      except:
-         return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
+      #try:
+      serial = query.get('device').split('/')[-2:-1][0]
+      device = Device.objects.get(serial=serial)
+      event = Event.objects.create(device=device, dataPoints = json.dumps(query.get('dataPoints')))
+      device.ip_address = request.META.get('REMOTE_ADDR')
+      device.save()
+      data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
+      return HttpResponse(query, content_type="application/json", status=201)
+      #except:
+      #   return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
     
 def new_device_key(request):
    error = False

@@ -20,7 +20,7 @@ from datetime import datetime
 import json
 import time
 import re
-from influxdb import client as influxdb
+from influxdb.influxdb08 import client as influxdb
 
 # Create your views here.
 
@@ -49,6 +49,19 @@ class SettingsForm(forms.Form):
       widget=forms.PasswordInput(attrs={'class' : 'form-control input-md'}),
       help_text=("Enter the same password as above, for verification."),
       required=False)
+  first_name = forms.CharField(max_length=254,
+                                min_length=1,
+                                required=False,
+                                widget=forms.TextInput(attrs={
+                                    'class' : 'form-control input-md'}))
+  last_name = forms.CharField(max_length=254,
+                              min_length=1,
+                              required=False,
+                              widget=forms.TextInput(attrs={
+                                'class' : 'form-control input-md'}))
+  email = forms.EmailField(required=False,
+                           widget=forms.TextInput(attrs={
+                                'class' : 'form-control input-md'}))
 
   notification_choices = []
   notifications = forms.ChoiceField(
@@ -606,6 +619,9 @@ def settings_account(request):
       new_username = form.cleaned_data['new_username']
       password1 = form.cleaned_data['password1']
       password2 = form.cleaned_data['password2']
+      first_name = form.cleaned_data['first_name']
+      last_name = form.cleaned_data['last_name']
+      email = form.cleaned_data['email']
       notifications = request.POST.get('notifications')
       template = 'base/settings_account.html'
 
@@ -629,6 +645,17 @@ def settings_account(request):
           context['success'] = True
         except forms.ValidationError, e:
           errors.add('; '.join(e.messages))
+      if first_name and last_name:
+          user.first_name = first_name
+          user.last_name = last_name
+          user.save()
+          context['success'] = True
+          context['first_name'] = user.first_name
+          context['last_name'] = user.last_name
+      if email:
+          user.email = email
+          user.save()
+          context['success'] = True
     
     context['errors'] = list(errors)
     return HttpResponse(json.dumps(context), content_type="application/json")

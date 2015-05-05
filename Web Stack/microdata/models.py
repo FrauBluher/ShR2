@@ -3,7 +3,7 @@ from django.conf import settings
 import random
 import string
 from django.core.exceptions import SuspiciousOperation
-from influxdb import client as influxdb
+from influxdb.influxdb08 import client as influxdb
 from geoposition.fields import GeopositionField
 from paintstore.fields import ColorPickerField
 import json
@@ -115,7 +115,7 @@ class Event(models.Model):
       dataPoints = json.loads(self.dataPoints)
       self.dataPoints = dataPoints
       for point in dataPoints:
-         timestamp   = point.get('timestamp')
+         timestamp   = int(point.get('timestamp'), 16)
          wattage     = point.get('wattage')
          current     = point.get('current')
          voltage     = point.get('voltage')
@@ -134,6 +134,8 @@ class Event(models.Model):
             query['name'] = 'device.'+str(self.device.serial)
             query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage', 'channel']
             data.append(query)
+            with open("/home/ubuntu/api.log", "a") as f:
+               f.write(str(data))
             db.write_points(data)
 
       super(Event, self).save()

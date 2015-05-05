@@ -10,7 +10,7 @@ import numpy as np
 from django.template import Context, Template
 import os
 from time import gmtime, strftime
-from influxdb import client as influxdb
+from influxdb.influxdb08 import client as influxdb
 from microdata.models import Device
 from sets import Set
 import re

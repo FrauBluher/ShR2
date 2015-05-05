@@ -7,7 +7,7 @@ from django.shortcuts import render, render_to_response
 from django.forms import ModelChoiceField
 from django.core import serializers
 
-from influxdb import client as influxdb
+from influxdb.influxdb08 import client as influxdb
 from gmapi import maps
 from gmapi.maps import Geocoder
 from gmapi.forms.widgets import GoogleMap
