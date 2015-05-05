@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.contrib.auth.decorators import login_required
 from microdata.models import Device, Event, Appliance, Circuit, CircuitType
 from django.views.decorators.csrf import csrf_exempt
@@ -542,7 +542,10 @@ def settings(request):
   user = request.user.id
   template = 'base/settings.html'
   if request.method == 'GET':
-
+    goto = request.GET.get('goto')
+    if goto == 'device':
+       context['goto'] = 'device'
+       return render(request, template, context)
     if request.GET.get('device', False):
       devices = Device.objects.filter(owner=user)
       for device in devices:

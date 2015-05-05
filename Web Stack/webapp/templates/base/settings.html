@@ -58,6 +58,21 @@ function dashboard() {
 		}
 	);
 }
+
+{% if goto %}
+$(function() {
+    $.get('/settings/',
+        {'{{ goto }}': true},
+        function(data) {
+            $('#settings-container').html(data);
+         $('.activate').each(function(i) {
+            $(this).removeClass("active");
+         });
+         $('#device-li').addClass("active");
+        }
+    );
+});
+{% endif %}
 </script>
 
 <script src='https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places' type="text/javascript"></script>

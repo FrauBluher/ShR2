@@ -37,6 +37,17 @@ $('#submit').click(function(e){
          });
 });
 
+$('#back').click(function(e){
+      $.get('/new_device/',
+       {
+          forward: false,
+          page: 'key',
+       },
+       function(data){
+          $('.modal-content').html(data);
+       });
+});
+
 $(function () {
    $.autotab({ tabOnSelect: true });
    $('.digit').autotab('filter', 'number');

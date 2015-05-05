@@ -103,6 +103,9 @@ def new_device(request):
          elif page == 'help':
             if forward == 'true':
                template = 'base/new_device/first.html'
+         elif page == 'key':
+            if forward == 'false':
+               template = 'base/new_device/first.html'
       else:
          template = 'base/new_device/first.html'
    else:
