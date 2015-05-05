@@ -416,16 +416,9 @@ void reset(void)
         exit(1);
     }
 	//writes the reset string
-    ftStatus = FT_Write(ftUart, "RESET", 5, &bytes);
-    if (ftStatus != FT_OK || bytes != 5) {
+    ftStatus = FT_Write(ftUart, "RESET\n", 6, &bytes);
+    if (ftStatus != FT_OK || bytes != 6) {
         fprintf(stderr, "Unable to send config (%d) size (%d)", (int)ftStatus, bytes);
-        FT_Close(ftUart);
-        exit(1);
-    }
-	//writes \r\n to terminate config to uart
-    ftStatus = FT_Write(ftUart, "\r\n", 2, &bytes);
-    if (ftStatus != FT_OK || bytes != 2) {
-        fprintf(stderr, "Unable to send newline (%d) size (%d)", (int)ftStatus, bytes);
         FT_Close(ftUart);
         exit(1);
     }
@@ -461,9 +454,9 @@ void send_config(daq_config config)
         FT_Close(ftUart);
         exit(1);
     }
-	//writes \r\n to terminate config to uart
-    ftStatus = FT_Write(ftUart, "\r\n", 2, &bytes);
-    if (ftStatus != FT_OK || bytes != 2) {
+	//writes \n to terminate config to uart
+    ftStatus = FT_Write(ftUart, "\n", 1, &bytes);
+    if (ftStatus != FT_OK || bytes != 1) {
         fprintf(stderr, "Unable to send newline (%d) size (%d)", (int)ftStatus, bytes);
         FT_Close(ftUart);
         exit(1);
@@ -507,8 +500,9 @@ int main(int argc, char *argv[])
 			iport);
 		exit(1);
 	}
+    printf("Resetting the device...\n");
     //wait 10 seconds for device to finish booting
-    sleep(10);
+    sleep(1);
 	//sends config over to the DAQ
 	send_config(config);
 	//acquires data
