@@ -1,7 +1,7 @@
 /**
  * @file	main.c
- * @author 	Pavlo Milo Manovi, Henry Crute
- * @date	February, 2015
+ * @author 	Pavlo Milo Manovi, Henry Crute, Andrew Ringer
+ * @date	May, 2015
  * @brief 	Main acquire script to read data from the SEAD device.
  */
 
@@ -61,6 +61,28 @@ static uint8_t tmpBuff2[BUF_SIZE];
 static char exit_thread = 0;
 static char current_buffer = BUFFER_A;
 
+//setup e
+
+// file_names
+
+FILE *current_file = NULL;
+unsigned int file_seconds = 60 * 5; // 5 minutes
+
+//file thread
+//NOTE: if seconds is faster than it takes to write 1 block we might
+void *file_timer(void *args) {
+    (void) args;
+    // assuming we don't make more than 10^10 files (10) + null plug + '_'
+    char *file_name = calloc(strlen(outfile)+12, sizeof(char));
+    int count = 0;
+    for(;;) {
+        sleep(file_seconds);
+        sprintf(file_name, "%d_%s", ++count, outfile);
+        current_file = fopen(file_name, "wb");
+    }
+    pthread_exit(NULL);
+}
+
 //reads from the usb uart fifio
 void *read_fifo(void *pArgs)
 {
@@ -78,14 +100,14 @@ void *read_fifo(void *pArgs)
                 size = BUF_SIZE - runningTotalA;
 				fprintf(stderr, "ERROR: Not enough room in buffer for data. DATA MAY BE CORRUPTED!\n");
 				fflush(stderr);
-            }			
+            }
             FT_Read(ftFIFO, &tmpBuff[runningTotalA], size, &dwBytesRead);
 			runningTotalA += dwBytesRead;
 			if (fifoRxQueueSize > 4000) {
 				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
 				fflush(stderr);
 			}
-			if (runningTotalA >= 26007) {
+			if (runningTotalA > 26007) {
 				current_buffer = BUFFER_B;
 			}
 		} else if (current_buffer == BUFFER_B) {
@@ -107,7 +129,7 @@ void *read_fifo(void *pArgs)
 				fprintf(stderr, "ERROR: toRead: %i > 4000. DATA WILL BE CORRUPTED!\n", fifoRxQueueSize);
 				fflush(stderr);
 			}
-			if (runningTotalB >= 26007) {
+			if (runningTotalB > 26007) {
 				current_buffer = BUFFER_A;
 			}
 		}
@@ -121,20 +143,27 @@ void acquire_loop(daq_config config)
 {
 	int i;
 	//scalars for bin to microamp conversion.
-	double ch0_scalar = 5.435 * ((1.2 * sqrt(2) * 121.9 / -0.5623) / ((1<<24) * (1<<config.PGA_CH0)));
-	double ch1_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH1) * 0.333);
-	double ch2_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH2) * 0.333);
-	double ch3_scalar = (1200 * 20 * 1.309) / ((1<<24) * (1<<config.PGA_CH3) * 0.333);
+	//double ch0_scalar = 5.435 * ((1.2 * sqrt(2) * 121.9 / -0.5623) / ((1<<24) * (1<<config.PGA_CH0)));
+	double ch0_scalar = (1200 * 100 * 1.309 * 0.4528) / ((1<<24) * (1<<config.PGA_CH0) * 0.235);
+	double ch1_scalar = (1200 * 20  * 1.309) / ((1<<24) * (1<<config.PGA_CH1) * 0.333);
+	double ch2_scalar = (1200 * 100 * 1.309 * 0.9722) / ((1<<24) * (1<<config.PGA_CH2) * 0.235);
+	double ch3_scalar = (1200 * 20  * 1.309 * 0.8041) / ((1<<24) * (1<<config.PGA_CH3) * 0.333);
 	pthread_t thread_id;
 	FT_ResetDevice(ftFIFO);
 	FT_SetTimeouts(ftFIFO, 1000, 1000); //1 Second Timeout
 	pthread_create(&thread_id, NULL, &read_fifo, NULL);
+    current_file = fh;
+    pthread_t file_thread;
+    if (file_seconds) {
+        pthread_create(&file_thread, NULL, &file_timer, NULL);
+    }
 	int32_t ch0 = 0;
 	int32_t ch1 = 0;
 	int32_t ch2 = 0;
 	int32_t ch3 = 0;
 	while(1) {
-		if(runningTotalA >= 26007 && current_buffer == BUFFER_B) {
+        fh = current_file;
+		if(runningTotalA > 26007 && current_buffer == BUFFER_B) {
 			for (i = 0; i < 26000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
 			}
@@ -175,7 +204,7 @@ void acquire_loop(daq_config config)
 			fflush(fh);
 			runningTotalA = 0;
 			rxCrc = 0xFFFF;
-		} else if (runningTotalB >= 26007 && current_buffer == BUFFER_A) {
+		} else if (runningTotalB > 26007 && current_buffer == BUFFER_A) {
 			for (i = 0; i < 26000; i++) {
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff2[i]);
 			}
@@ -216,6 +245,9 @@ void acquire_loop(daq_config config)
 			runningTotalB = 0;
 			rxCrc = 0xFFFF;
 		}
+        if (fh != current_file) {
+            fclose(fh);
+        }
 	}
 	return;
 }
@@ -223,7 +255,7 @@ void acquire_loop(daq_config config)
 //prints the usage for the program
 void print_usage()
 {
-	printf("Usage: Acquire [-h] [-v] [-p port] [-b bandwidth] [-f file] [-c channels]\n");
+	printf("Usage: Acquire [-h] [-v] [-p port] [-b bandwidth] [-f file] [-c channels] [-t seconds]\n");
 	return;
 }
 
@@ -242,7 +274,7 @@ void get_options(int argc, char **argv)
 {
 	opterr = 0;
 	int c;
-	while ((c = getopt (argc, argv, "hvp:b:f:c:")) != -1) {
+	while ((c = getopt (argc, argv, "hvp:b:f:c:t:")) != -1) {
 		switch (c)
 		{
 		//h for help
@@ -270,6 +302,9 @@ void get_options(int argc, char **argv)
 		case 'c':
 			channels = strtol(optarg, (char **)NULL, 10);
 			break;
+        case 't':
+            file_seconds = atoi(optarg);
+            break;
 		//unknown options
 		case '?':
 			if (optopt == 'c' || optopt =='f' || optopt == 'b' || optopt == 'p')
@@ -362,6 +397,43 @@ daq_config package_config()
 	return config;
 }
 
+// resets the device
+void reset(void)
+{
+	FT_STATUS ftStatus;
+    FT_HANDLE ftUart;
+	//opens the device
+    ftStatus = FT_Open(1, &ftUart);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to open device (%d)", (int)ftStatus);
+        exit(1);
+    }
+	//sets baud rate
+    ftStatus = FT_SetBaudRate(ftUart, BAUD_RATE);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to set baud rate (%d)", (int)ftStatus);
+        FT_Close(ftUart);
+        exit(1);
+    }
+	//writes the reset string
+    ftStatus = FT_Write(ftUart, "RESET", 5, &bytes);
+    if (ftStatus != FT_OK || bytes != 5) {
+        fprintf(stderr, "Unable to send config (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+	//writes \r\n to terminate config to uart
+    ftStatus = FT_Write(ftUart, "\r\n", 2, &bytes);
+    if (ftStatus != FT_OK || bytes != 2) {
+        fprintf(stderr, "Unable to send newline (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+	//closes sending reset
+    FT_Close(ftUart);
+	return;
+}
+
 //sends the config struct over the ft tx
 void send_config(daq_config config)
 {
@@ -403,7 +475,10 @@ void send_config(daq_config config)
 
 int main(int argc, char *argv[])
 {
-	FT_STATUS ftStatus;
+    // reset the device
+    reset();
+
+    FT_STATUS ftStatus;
 	//process options
 	get_options(argc, argv);
 	//calculate and populate config struct
@@ -413,7 +488,14 @@ int main(int argc, char *argv[])
 		print_config();
 	}
 	//file handle
-	fh = fopen(outfile, "w");
+    if (file_seconds) {
+        char *out_name = calloc(strlen(outfile)+3, sizeof(char));
+        sprintf(out_name, "0_%s", outfile);
+	    fh = fopen(out_name, "wb");
+    }
+    else {
+	    fh = fopen(outfile, "wb");
+    }
 	if(fh == NULL) {
 		printf("Cant open source file\n");
 		exit(1);
@@ -425,6 +507,8 @@ int main(int argc, char *argv[])
 			iport);
 		exit(1);
 	}
+    //wait 10 seconds for device to finish booting
+    sleep(10);
 	//sends config over to the DAQ
 	send_config(config);
 	//acquires data

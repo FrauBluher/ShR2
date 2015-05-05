@@ -1233,12 +1233,12 @@ Source: 52760-1079_sd molex.pdf</description>
 <rectangle x1="0.1" y1="14" x2="12.1" y2="17.3" layer="40"/>
 <rectangle x1="0.1" y1="14" x2="12.1" y2="17.3" layer="41"/>
 <rectangle x1="0.1" y1="14" x2="12.1" y2="17.3" layer="42"/>
-<wire x1="0.8" y1="16.8" x2="11.5" y2="16.8" width="0.127" layer="21"/>
-<wire x1="11.5" y1="16.8" x2="11.5" y2="14.6" width="0.127" layer="21"/>
-<wire x1="11.5" y1="14.6" x2="0.8" y2="14.6" width="0.127" layer="21"/>
-<wire x1="0.8" y1="14.6" x2="0.8" y2="16.8" width="0.127" layer="21"/>
-<text x="4.6" y="15.1" size="1.27" layer="21" font="vector" ratio="16">ANT</text>
-<text x="6.6" y="3.4" size="1.27" layer="22" font="vector" ratio="16" rot="R90">ESP8266</text>
+<wire x1="0.8" y1="16.8" x2="11.5" y2="16.8" width="0.127" layer="20"/>
+<wire x1="11.5" y1="16.8" x2="11.5" y2="14.6" width="0.127" layer="20"/>
+<wire x1="11.5" y1="14.6" x2="0.8" y2="14.6" width="0.127" layer="20"/>
+<wire x1="0.8" y1="14.6" x2="0.8" y2="16.8" width="0.127" layer="20"/>
+<text x="4.6" y="15.1" size="1.27" layer="20" font="vector" ratio="16">ANT</text>
+<text x="6.6" y="3.4" size="1.27" layer="20" font="vector" ratio="16" rot="R90">ESP8266</text>
 <smd name="14" x="0" y="1" dx="1" dy="2" layer="1" rot="R90"/>
 <smd name="13" x="0" y="3" dx="1" dy="2" layer="1" rot="R90"/>
 <smd name="12" x="0" y="5" dx="1" dy="2" layer="1" rot="R90"/>
