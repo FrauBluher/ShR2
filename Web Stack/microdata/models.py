@@ -122,6 +122,7 @@ class Event(models.Model):
          appliance_pk= point.get('appliance_pk')
          event_code  = point.get('event_code')
          channel     = point.get('channel', 1)
+         timestamp = timestamp if len(str(timestamp)) == 13 else timestamp*1000
          if (timestamp and (wattage or current or voltage)):
             if appliance_pk == None:
                appliance = Appliance.objects.get(serial=0) # Unknown appliance
@@ -136,7 +137,7 @@ class Event(models.Model):
             data.append(query)
             with open("/home/ubuntu/api.log", "a") as f:
                f.write(str(data))
-            db.write_points(data)
+            db.write_points(data, time_precision="ms")
 
       super(Event, self).save()
       
