@@ -175,7 +175,7 @@ void DMAStartUARTRX(void)
 {
 	DmaChnOpen(uartRxChn, DMA_CHN_PRI1, DMA_OPEN_MATCH); //High priority for control.
 
-	DmaChnSetMatchPattern(uartRxChn, '\r');
+	DmaChnSetMatchPattern(uartRxChn, '\n');
 
 	DmaChnSetEventControl(uartRxChn, DMA_EV_START_IRQ_EN | DMA_EV_MATCH_EN | DMA_EV_START_IRQ(_UART3_RX_IRQ));
 
