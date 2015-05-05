@@ -1,0 +1,44 @@
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="tutorialModalLabel">Welcome to the Dashboard</h4>
+      </div>
+      <div class="modal-body" id="modalBody">
+        It looks like you're a first time user. From the dashboard, you will soon be able to view the data from your device.
+        <br><br>
+        Let's start by pairing you to your device.
+        <br><br><br>
+        <div class="modal-footer">
+          <div class="col-md-6">
+            <button type="button" id="help" class="btn btn-default btn-block">Am I ready to pair?</button>
+          </div>
+          <div class="col-md-6">
+            <button type="button" id="continue" class="btn btn-primary btn-block">Pair Device</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#continue').on('click', function(e) {
+  $.get('/new_device/',
+    {
+     forward: true,
+     page: 'first'
+    },
+    function(data) {
+        $('#modalBody').html(data);
+  });
+});
+$('#help').on('click', function(e) {
+  $.get('/new_device/',
+    {
+     forward: false,
+     page: 'first'
+    },
+    function(data) {
+        $('#modalBody').html(data);
+  });
+});
+</script>

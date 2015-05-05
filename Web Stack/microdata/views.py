@@ -84,33 +84,52 @@ class EventViewSet(viewsets.ModelViewSet):
       #except:
       #   return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
     
-def new_device_key(request):
+def new_device(request):
    error = False
    created = False
    device = None
-   if request.method == 'POST':
-      form = KeyForm(request.POST)
-      if form.is_valid():
-         secret_key =  str(form.cleaned_data['digit1'])
-         secret_key += str(form.cleaned_data['digit2'])
-         secret_key += str(form.cleaned_data['digit3'])
-         
-         secret_key += form.cleaned_data['char1']
-         secret_key += form.cleaned_data['char2']
-         secret_key += form.cleaned_data['char3']
-         secret_key += form.cleaned_data['char4']
-         devices = Device.objects.filter(registered=False, secret_key=secret_key.upper())
-         device = devices[0] if devices else None
-         if device:
-            device.owner = request.user
-            device.registered = True
-            device.save()
-            created = True
-            form = False
-         else: error = True
+   template = 'base/new_device/first.html'
+   form = None
+   forward = request.GET.get('forward', None)
+   page = request.GET.get('page', False)
+   if page:
+      if forward != None:
+         if page == 'first':
+            if forward == 'true':
+               form = KeyForm()
+               template = 'base/new_device/key.html'
+            else:
+               template = 'base/new_device/help.html'
+         elif page == 'help':
+            if forward == 'true':
+               template = 'base/new_device/first.html'
+      else:
+         template = 'base/new_device/first.html'
    else:
-      form = KeyForm()
-   return render(request, 'base/key.html', {
+      if request.method == 'POST':
+         template = 'base/new_device/result.html'
+         form = KeyForm(request.POST)
+         if form.is_valid():
+            secret_key =  str(form.cleaned_data['digit1'])
+            secret_key += str(form.cleaned_data['digit2'])
+            secret_key += str(form.cleaned_data['digit3'])
+            
+            secret_key += form.cleaned_data['char1']
+            secret_key += form.cleaned_data['char2']
+            secret_key += form.cleaned_data['char3']
+            secret_key += form.cleaned_data['char4']
+            devices = Device.objects.filter(registered=False, secret_key=secret_key.upper())
+            device = devices[0] if devices else None
+            if device:
+               device.owner = request.user
+               device.registered = True
+               device.save()
+               created = True
+               form = False
+            else: error = True
+      else:
+         form = KeyForm()
+   return render(request, template, {
              'form':form,
              'error':error,
              'created':created,

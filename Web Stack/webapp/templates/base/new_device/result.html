@@ -1,0 +1,33 @@
+{% if not error and created %}
+   <div class="alert alert-success" role="alert">
+      <p>Pairing Complete!</p>
+      <p>Name: {{ device }}</p>
+      <p>Serial: {{ device.serial }}</p>
+   </div>
+   <div class="modal-footer">
+      <button type="button" id="done" class="btn btn-primary btn-block">Configure Device</button>
+   </div>
+   {% endif %} <!-- if not error and created -->
+   {% if error %}
+   <div class="alert alert-danger" role="alert">Not Paired</div>
+   <div class="modal-footer">
+      <button type="button" id="restart" class="btn btn-primary btn-block">Restart</button>
+   </div>
+   {% endif %} <!-- if error -->
+
+<script>
+$('#done').click(function(e){
+      
+});
+
+$('#restart').click(function(e){
+      $.get('/new_device/',
+       {
+          forward: true,
+          page: 'help',
+       },
+       function(data){
+          $('.modal-content').html(data);
+       });
+});
+</script>

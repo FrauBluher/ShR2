@@ -224,5 +224,25 @@ function initialize() {
 }
 </script>
 {% else %} <!-- if my_devices -->
-<h4>You have no registered devices. <a href="/settings/">Click Here</a> to register a new device</h4>
+<h4>Welcome to the Dashboard! You have no registered devices. <a href="/settings/">Click Here</a> to register a new device</h4>
+<!-- tutorialModal -->
+<div class="modal fade" id="tutorialModal" tabindex="-1" role="dialog" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<script>
+$(function() {
+  $.get('/new_device/',
+    {
+     page: 'first'
+    },
+      function(data) {
+        $('.modal-content').html(data);
+        $('#tutorialModal').modal('show');
+  });
+});
+</script>
 {% endif %}

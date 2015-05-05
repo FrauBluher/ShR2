@@ -135,8 +135,6 @@ class Event(models.Model):
             query['name'] = 'device.'+str(self.device.serial)
             query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage', 'channel']
             data.append(query)
-            with open("/home/ubuntu/api.log", "a") as f:
-               f.write(str(data))
             db.write_points(data, time_precision="ms")
 
       super(Event, self).save()

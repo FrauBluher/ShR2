@@ -1,5 +1,4 @@
-<div id="keyFormWrapper">
-    {% if form %}
+   {% if form %}
    <span> Enter the secret key for your SEADS device.</span>
    <form id="keyForm" action="" method="post">
       {% csrf_token %}
@@ -16,22 +15,17 @@
             </tr>
          </table>
       </div>
-      <input id="submit" type="submit" value="Submit">
    </form>
-   {% else %}
-   {% if not error and created %}
-   <div class="alert alert-success" role="alert">
-      <p>Pairing Complete!</p>
-      <p>Close this dialog box to continue configuring your new device.</p>
-      <p>Name: {{ device }}</p>
-      <p>Serial: {{ device.serial }}</p>
+   <div class="modal-footer">
+      <div class="col-md-6">
+      <button type="button" tabindex="1" id="back" class="btn btn-default btn-block">Back</button>
+     </div>
+     <div class="col-md-6">
+      <button type="button" tabindex="1" id="submit" class="btn btn-primary btn-block">Submit</button>
+     </div>
    </div>
-   {% endif %} <!-- if not error and created -->
-   {% if error %}
-   <div class="alert alert-danger" role="alert">Not Paired</div>
-   {% endif %} <!-- if error -->
    {% endif %} <!-- if form -->
-</div>
+   
 
 <script>
 $('#submit').click(function(e){
@@ -39,7 +33,7 @@ $('#submit').click(function(e){
       $.post('/new_device/key/',
          $('#keyForm').serialize(), 
          function(data, status, xhr){
-            $('#keyFormWrapper').html(data);
+            $('#modalBody').html(data);
          });
 });
 
