@@ -16,6 +16,7 @@ class DeviceSettings(models.Model):
                                    choices=CHANNEL_CHOICES,
                                    default=1)
    transmission_rate_milliseconds = models.IntegerField(default=1000)
+   date_now = models.IntegerField()
    def save(self, **kwargs):
       self.device_serial = self.device.serial
       super(DeviceSettings, self).save()
