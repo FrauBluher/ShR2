@@ -168,9 +168,9 @@ void acquire_loop(daq_config config)
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff[i]);
 			}
 			crc = ((tmpBuff[26006] << 8) | (tmpBuff[26007]));
-			//fprintf(stdout, "Block transfer complete, TX-CRC:%i,"
-			//	" RX-CRX:%i\r\n", crc, rxCrc);
-			//fflush(stdout);
+			fprintf(stdout, "Block transfer complete, TX-CRC:%i,"
+				" RX-CRX:%i\r\n", crc, rxCrc);
+			fflush(stdout);
 			for (i = 0; i < 26000;) {
 				//shifting from the uart buffer into the file variables
 				ch0 |= (tmpBuff[i+2] << 16);
@@ -209,8 +209,8 @@ void acquire_loop(daq_config config)
 				rxCrc = update_crc_ccitt(rxCrc, tmpBuff2[i]);
 			}
 			crc = ((tmpBuff2[26006] << 8) | (tmpBuff2[26007]));
-			//fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
-			//fflush(stdout);
+			fprintf(stdout, "Block transfer complete, TX-CRC:%i, RX-CRX:%i\r\n", crc, rxCrc);
+			fflush(stdout);
 			for (i = 0; i < 26000;) {
 				//shifting from the uart buffer into the file variables
 				ch0 |=  (tmpBuff2[i+2] << 16);
@@ -397,6 +397,43 @@ daq_config package_config()
 	return config;
 }
 
+// resets the device
+void reset(void)
+{
+	FT_STATUS ftStatus;
+    FT_HANDLE ftUart;
+	//opens the device
+    ftStatus = FT_Open(1, &ftUart);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to open device (%d)", (int)ftStatus);
+        exit(1);
+    }
+	//sets baud rate
+    ftStatus = FT_SetBaudRate(ftUart, BAUD_RATE);
+    if (ftStatus != FT_OK) {
+        fprintf(stderr, "Unable to set baud rate (%d)", (int)ftStatus);
+        FT_Close(ftUart);
+        exit(1);
+    }
+	//writes the reset string
+    ftStatus = FT_Write(ftUart, "RESET", 5, &bytes);
+    if (ftStatus != FT_OK || bytes != 5) {
+        fprintf(stderr, "Unable to send config (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+	//writes \r\n to terminate config to uart
+    ftStatus = FT_Write(ftUart, "\r\n", 2, &bytes);
+    if (ftStatus != FT_OK || bytes != 2) {
+        fprintf(stderr, "Unable to send newline (%d) size (%d)", (int)ftStatus, bytes);
+        FT_Close(ftUart);
+        exit(1);
+    }
+	//closes sending reset
+    FT_Close(ftUart);
+	return;
+}
+
 //sends the config struct over the ft tx
 void send_config(daq_config config)
 {
@@ -438,7 +475,10 @@ void send_config(daq_config config)
 
 int main(int argc, char *argv[])
 {
-	FT_STATUS ftStatus;
+    // reset the device
+    reset();
+
+    FT_STATUS ftStatus;
 	//process options
 	get_options(argc, argv);
 	//calculate and populate config struct
@@ -467,6 +507,8 @@ int main(int argc, char *argv[])
 			iport);
 		exit(1);
 	}
+    //wait 10 seconds for device to finish booting
+    sleep(10);
 	//sends config over to the DAQ
 	send_config(config);
 	//acquires data

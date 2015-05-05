@@ -161,6 +161,8 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	INTEnableInterrupts();
 
 	StartSPIAcquisition(BUFFER_A);
+	// wait for RESET signal
+	DMAStartUARTRX();
 	//System Initialized Successfully
 	return(EXIT_SUCCESS);
 }
