@@ -49,7 +49,7 @@ int i;
 
 /* Variables associated with getopt */
 int iport = 0;
-char *outfile = "data.txt";
+char *outfile = "data";
 double bandwidth = 2000;
 double frequency = 8000;
 int channels = 4;
@@ -77,7 +77,7 @@ void *file_timer(void *args) {
     int count = 0;
     for(;;) {
         sleep(file_seconds);
-        sprintf(file_name, "%d_%s", ++count, outfile);
+        sprintf(file_name, "%s%d", ++count, outfile);
         current_file = fopen(file_name, "wb");
     }
     pthread_exit(NULL);
@@ -483,7 +483,7 @@ int main(int argc, char *argv[])
 	//file handle
     if (file_seconds) {
         char *out_name = calloc(strlen(outfile)+3, sizeof(char));
-        sprintf(out_name, "0_%s", outfile);
+        sprintf(out_name, "%s0", outfile);
 	    fh = fopen(out_name, "wb");
     }
     else {
@@ -501,7 +501,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
     printf("Resetting the device...\n");
-    //wait 10 seconds for device to finish booting
+    //wait 1 second for device to finish booting
     sleep(1);
 	//sends config over to the DAQ
 	send_config(config);
