@@ -55,6 +55,20 @@
 <!-- /.row -->
 
 <script>
+    // If the user has been here for 5 minutes, prompt for survey
+    $(function() {
+      setTimeout(
+        function() {
+          var head = document.getElementsByTagName('head')[0];
+          var script = document.createElement('script');
+          script.src = 'https://widget.surveymonkey.com/collect/website/js/USRb_2BM65RwhjIvJJ6KeHRiOcV0oLp2GWYYT5ajBIZBCj0KCxf0bUmUz72O5x_2FmXM.js';
+          head.appendChild(script);
+        },
+      300000);
+    });
+</script>
+
+<script>
 
 var device_serial;
 
