@@ -1,4 +1,5 @@
    {% if form %}
+   <!--
    <span> Enter the secret key for your SEADS device.</span>
    <form id="keyForm" action="" method="post">
       {% csrf_token %}
@@ -24,8 +25,28 @@
       <button type="button" tabindex="1" id="submit" class="btn btn-primary btn-block">Submit</button>
      </div>
    </div>
+   -->
+   <span> Enter the serial for your SEADS device.</span>
+   <form id="keyForm" action="" method="post">
+      {% csrf_token %}
+      <div class="inputs" style="margin:2rem">
+         <table style="margin: auto;">
+            <tr>
+               <td>{{ form.serial }}</td>
+            </tr>
+         </table>
+      </div>
+   </form>
+   <div class="modal-footer">
+      <div class="col-md-6">
+      <button type="button" tabindex="1" id="back" class="btn btn-default btn-block">Back</button>
+     </div>
+     <div class="col-md-6">
+      <button type="button" tabindex="1" id="submit" class="btn btn-primary btn-block">Submit</button>
+     </div>
+   </div>
    {% endif %} <!-- if form -->
-   
+
 
 <script>
 $('#submit').click(function(e){
@@ -47,10 +68,11 @@ $('#back').click(function(e){
           $('.modal-content').html(data);
        });
 });
-
+/*
 $(function () {
    $.autotab({ tabOnSelect: true });
    $('.digit').autotab('filter', 'number');
    $('.char').autotab('filter', 'text');
 });
+*/
 </script>

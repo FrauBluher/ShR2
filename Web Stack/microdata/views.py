@@ -23,7 +23,7 @@ import json
 import time
 import ast
 
-
+"""
 class KeyForm(forms.Form):
    alphabetic = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetical characters are allowed.')
    attrs_digit = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 0.5rem;', 'class':'keyField single-cell digit'}
@@ -39,7 +39,10 @@ class KeyForm(forms.Form):
    char2 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
    char3 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
    char4 = forms.CharField(widget=forms.TextInput(attrs=attrs_char_last), max_length=1, validators=[alphabetic])
-   
+"""
+
+class KeyForm(forms.Form):
+   serial = forms.IntegerField()
 
 class ApplianceViewSet(viewsets.ModelViewSet):
    """
@@ -115,6 +118,7 @@ def new_device(request):
          template = 'base/new_device/result.html'
          form = KeyForm(request.POST)
          if form.is_valid():
+            """
             secret_key =  str(form.cleaned_data['digit1'])
             secret_key += str(form.cleaned_data['digit2'])
             secret_key += str(form.cleaned_data['digit3'])
@@ -123,7 +127,9 @@ def new_device(request):
             secret_key += form.cleaned_data['char2']
             secret_key += form.cleaned_data['char3']
             secret_key += form.cleaned_data['char4']
-            devices = Device.objects.filter(registered=False, secret_key=secret_key.upper())
+            """
+            serial = str(form.cleaned_data['serial'])
+            devices = Device.objects.filter(registered=False, serial=serial)
             device = devices[0] if devices else None
             if device:
                device.owner = request.user
