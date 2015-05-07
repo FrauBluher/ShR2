@@ -101,27 +101,30 @@ class Event(models.Model):
    device = models.ForeignKey(Device)
    dataPoints = models.CharField(max_length=1000,
                                  help_text='Expects a JSON encoded string of values:'+\
-                                           '['+\
-                                           '   {timestamp(int),\n'+\
-                                           '   wattage(float, optional),\n'+\
-                                           '   current(float, optional),\n'+\
-                                           '   voltage(float, optional),\n'+\
-                                           '   appliance_pk(int, optional),\n'+\
-                                           '   event_code(int, optional),\n'+\
-                                           '   channel(int, optional)}\n'+\
-                                           ',...]')
-                                 
+                                           '{timeStart(int, milliseconds),\n'+\
+                                           ' ['+\
+                                           '    {wattage(float, optional),\n'+\
+                                           '    current(float, optional),\n'+\
+                                           '    voltage(float, optional),\n'+\
+                                           '    appliance_pk(int, optional),\n'+\
+                                           '    event_code(int, optional),\n'+\
+                                           '    channel(int, optional)}\n'+\
+                                           ' ],...')
+   start = models.IntegerField()
+   frequency = models.IntegerField()
+
    def save(self, **kwargs):
       dataPoints = json.loads(self.dataPoints)
       self.dataPoints = dataPoints
+      count = 0
       for point in dataPoints:
-         timestamp   = int(point.get('timestamp'), 16)
          wattage     = point.get('wattage')
          current     = point.get('current')
          voltage     = point.get('voltage')
          appliance_pk= point.get('appliance_pk')
          event_code  = point.get('event_code')
          channel     = point.get('channel', 1)
+         timestamp = self.start + ((1/self.frequency)*count)
          timestamp = timestamp if len(str(timestamp)) == 13 else timestamp*1000
          if (timestamp and (wattage or current or voltage)):
             if appliance_pk == None:
@@ -136,6 +139,7 @@ class Event(models.Model):
             query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage', 'channel']
             data.append(query)
             db.write_points(data, time_precision="ms")
+         count += 1
 
       super(Event, self).save()
       

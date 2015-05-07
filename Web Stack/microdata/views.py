@@ -76,7 +76,9 @@ class EventViewSet(viewsets.ModelViewSet):
       #try:
       serial = query.get('device').split('/')[-2:-1][0]
       device = Device.objects.get(serial=serial)
-      event = Event.objects.create(device=device, dataPoints = json.dumps(query.get('dataPoints')))
+      start = int(query.get('time')[0], 16)
+      frequency = int(query.get('time')[1], 16)
+      event = Event.objects.create(device=device, start=start, frequency=frequency, dataPoints=json.dumps(query.get('dataPoints')))
       device.ip_address = request.META.get('REMOTE_ADDR')
       device.save()
       data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
