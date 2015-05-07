@@ -34,9 +34,9 @@ class Circuit(models.Model):
    def __unicode__(self):
       return self.name
 
-
 class Device(models.Model):
    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+   share_with = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='share_with')
    ip_address = models.GenericIPAddressField(blank=True, null=True)
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
    serial = models.IntegerField(unique=True, primary_key=True)
@@ -124,7 +124,7 @@ class Event(models.Model):
          appliance_pk= point.get('appliance_pk')
          event_code  = point.get('event_code')
          channel     = point.get('channel', 1)
-         timestamp = self.start + ((1/self.frequency)*count)
+         timestamp = self.start + ((1.0/self.frequency)*count)
          timestamp = timestamp if len(str(timestamp)) == 13 else timestamp*1000
          if (timestamp and (wattage or current or voltage)):
             if appliance_pk == None:
@@ -141,7 +141,7 @@ class Event(models.Model):
             db.write_points(data, time_precision="ms")
          count += 1
 
-      super(Event, self).save()
+      #super(Event, self).save()
       
    def __unicode__(self):
       return str(self.device.__unicode__()+':'+self.dataPoints)

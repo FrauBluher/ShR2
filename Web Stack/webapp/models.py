@@ -68,15 +68,33 @@ class UtilityCompany(models.Model):
    def __unicode__(self):
       return self.description
 
+
 class RatePlan(models.Model):
+   utility_company = models.ForeignKey(UtilityCompany)
    description = models.CharField(max_length=300)
+   data_source = models.URLField()
+   min_charge_rate = models.FloatField(help_text="$ Per meter per day")
+   california_climate_credit = models.FloatField(help_text="$ Per household, per semi-annual payment occurring in the April and October bill cycles")
    #TODO add model fields to describe actions
 
    def __unicode__(self):
-      return self.description
+      return self.utility_company.__unicode__() + ": " + self.description
+
+class Tier(models.Model):
+   rate_plan = models.ForeignKey(RatePlan)
+   tier_level = models.IntegerField(blank=True, null=True)
+   max_percentage_of_baseline = models.FloatField(help_text="blank for no maximum",blank=True, null=True)
+   rate = models.FloatField(help_text="$",blank=True, null=True)
+
+   def __unicode__(self):
+      return 'Tier ' + str(self.tier_level)
 
 class Territory(models.Model):
+   rate_plan = models.ForeignKey(RatePlan)
    description = models.CharField(max_length=300)
+   data_source = models.URLField()
+   summer_rate = models.FloatField(help_text="Baseline quantity (kWh per day)")
+   winter_rate = models.FloatField(help_text="Baseline quantity (kWh per day)")
    #TODO add model fields to describe actions
 
    class Meta:

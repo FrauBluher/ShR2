@@ -20,10 +20,12 @@ class Device():
 def appliance_gen():
    appliances = []
    names = [
+      """
       {'name':'Computer','avg':100},
       {'name':'Refrigerator','avg':400},
       {'name':'Toaster','avg':20},
       {'name':'Television','avg':60},
+      """
       {'name':'Unknown','avg':700},
    ]
    for i in range(1, 6):
@@ -38,6 +40,8 @@ def main():
                      help="define the number of packets to send")
    parser.add_option("-d", "--device", dest="serial", type="int",
                      help="serial of device to send from", metavar="hyperlink")
+   parser.add_option("-f", "--frequency", dest="frequency", type="int",
+                     help="packets per second", metavar="frequency")
    parser.add_option("-v", "--verbose", action="store_true", dest="verbose")
    (options, args) = parser.parse_args()
    verbose = options.verbose
@@ -105,8 +109,12 @@ def main():
             print 'Error: event not created'
             print payload
             print r.text
+            sys.exit(1)
          if verbose: pbar.update(i)
-         time.sleep(1)
+         if options.frequency:
+            time.sleep(1/options.frequency)
+         else:
+            time.sleep(1)
       pbar.finish()
 
 

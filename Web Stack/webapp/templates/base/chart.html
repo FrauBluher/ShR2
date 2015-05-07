@@ -31,6 +31,9 @@
               title: "Power (W)"
            }
         },
+        localization: {
+          dataRequestFailed: "No Data to Show",
+        },
         series:[
             {
               name: "Total",
@@ -79,12 +82,19 @@
         },
         events: {
           onChartUpdate: function(event){
-            console.info("Chart update");
-            realTimeData();
+            changeRealTime();
           }
         }
      });
    {% endif %}
+
+var timeoutHandler;
+
+function changeRealTime() {
+  console.info("Chart update");
+  clearTimeout(timeoutHandler);
+  realTimeData();
+}
 
 
 function realTimeData() {
@@ -135,7 +145,7 @@ function realTimeData() {
        console.info("Chart not defined yet");
     }
     console.info("timeout = "+timeout)
-    setTimeout(realTimeData, timeout);
+    timeoutHandler = setTimeout(realTimeData, timeout);
 }
 
 

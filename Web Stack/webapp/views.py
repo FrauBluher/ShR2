@@ -74,6 +74,13 @@ class SettingsForm(forms.Form):
   )
 
   # Device settings
+  share_with_choices = []
+  share_with = forms.ChoiceField(
+      widget=forms.SelectMultiple(),
+      choices=(
+          share_with_choices,
+      ),
+  )
   new_name = forms.CharField(max_length=254,
                              min_length=1,
                              required=False,
@@ -175,9 +182,22 @@ class SettingsForm(forms.Form):
       #  default = DashboardSettings.objects.get(user=user),
       #)
     if device:
+      self.share_with_choices = make_choices([User.objects.all(),])
       self.channel_0_choies = make_choices([CircuitType.objects.all(),])
       self.channel_1_choies = make_choices([CircuitType.objects.all(),])
       self.channel_2_choies = make_choices([CircuitType.objects.all(),])
+
+      self.fields['share_with'] = forms.ChoiceField(
+        widget=forms.SelectMultiple(attrs={
+          'class':'form-control',
+          'id':'share_with_select'
+          }
+        ),
+        choices=(
+          self.share_with_choices
+        ),
+        required=False
+      )
       
       self.fields['channel_0'] = forms.ChoiceField(
         widget=forms.Select(attrs={
@@ -328,7 +348,7 @@ def merge_subs(lst_of_lsts):
 
 def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
    if unit == 'y': unit = 'm'
-   if (start == ''): start = 'now() - 1d'
+   if (start == ''): start = 'now(  ) - 1d'
    else: start = '\''+datetime.fromtimestamp(int(float(start))).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
    else: stop = '\''+datetime.fromtimestamp(int(float(stop))).strftime('%Y-%m-%d %H:%M:%S')+'\''
@@ -350,7 +370,10 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
    for appliance in appliances:
       query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
       group = []
-      group = db.query(query)
+      try:
+        group = db.query(query)
+      except:
+        continue
       if (len(group)): group = group[0]['points']
       #else: return None
       # hack. Remove sequence_number and timezone offset for GMT
@@ -716,6 +739,7 @@ def settings_device(request, serial):
        context['rate_plan'] = []
        territory = request.POST.get('territories', False)
        context['territory'] = []
+       share_with = request.POST.getlist('share_with')
        if utility_company:
          # disassociate utility_company
          device.devicewebsettings.utility_companies.clear()
@@ -746,9 +770,19 @@ def settings_device(request, serial):
          device.save()
          context['success'] = True
 
+       elif share_with:
+         for u in device.share_with.all():
+            device.share_with.remove(u)
+         for u in share_with:
+            u = User.objects.get(pk=u)
+            device.share_with.add(u)
+         device.save()
+         context['success'] = True
+
        elif form.is_valid():
          user = User.objects.get(username = request.user)
          new_name = form.cleaned_data['new_name']
+         share_with = form.cleaned_data['share_with']
          utility_companies = form.cleaned_data['utility_companies']
          rate_plans = form.cleaned_data['rate_plans']
          territories = form.cleaned_data['territories']
@@ -758,6 +792,13 @@ def settings_device(request, serial):
          if device.owner == user:
            if new_name:
              device.name = new_name
+             device.save()
+           if share_with:
+             for u in device.share_with.all():
+                device.share_with.remove(u)
+             for u in share_with:
+                u = User.objects.get(pk=u)
+                device.share_with.add(u)
              device.save()
              context['new_name'] = device.name
              context['success'] = True       

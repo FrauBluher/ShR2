@@ -138,6 +138,12 @@ $('#btn-status').on('click', function(e) {
 
 $(function() {
   $('#id_new_name').val("{{ device }}");
+  var share_with_users = [
+  {% for user in device.share_with.all %}
+    {{ user.pk }},
+  {% endfor %}
+  ]
+  $('#share_with_select').val(share_with_users);
   check_device_status($('#btn-status'));
   {% for choice in utility_company_choices %}
       $('#company-dropdown').val("{{ choice }}")
@@ -171,6 +177,23 @@ $(function() {
           span.addClass("glyphicon glyphicon-remove");
         }
         $('#name-status').html(span);
+      });
+  });
+
+  $('#share_with_select').change(function() {
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#share-status').html(span);
+    $.post('/settings/device/{{ device.serial }}',
+      $('form#share-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+        }
+        $('#share-status').html(span);
       });
   });
   
@@ -365,6 +388,20 @@ $('#submit-remove-device').on("click", function(e) {
 
 </form>
 
+<form id="share-form" class="form-horizontal">
+{% csrf_token %}
+<div class="form-group">
+  <label class="col-md-4 control-label" for="name">Share Device Data With</label>  
+  <div class="col-md-4">
+  {{ form.share_with }}
+  </div>
+  <div class="col-md-2">
+  </div>
+  <div id="share-status" class="col-md-2"></div>
+</div>
+
+</form>
+
 <form id='device-status-form' class='form-horizontal'>
 {% csrf_token %}
 <!-- Status icon-->
@@ -517,7 +554,7 @@ $('#submit-remove-device').on("click", function(e) {
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="selectbasic">Export Date Range</label>
-    <div id="reportrange" class="col-md-4 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+    <div id="reportrange" class="col-md-4 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc>
         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
         <span></span> <b class="caret"></b>
     </div>
