@@ -120,7 +120,7 @@
 		<div id="aps" class="alert alert-success">Scanning...</div>
 		<br>
 		WiFi password, if applicable: <br />
-		<label for="passwd"><input type="text" id="label" name="passwd" val="%WiFiPasswd%" class="form-control"></label> 
+		<label for="passwd"><input type="password" id="label" name="passwd" val="%WiFiPasswd%" class="form-control"></label> 
 		<input type="submit" name="connect" value="Connect!" class="btn btn-lg btn-success">
 		</p>
 	</div>
