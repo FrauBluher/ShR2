@@ -4,9 +4,11 @@ from django.conf import settings
 from influxdb.influxdb08 import client as influxdb
 import boto3
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from treehash import TreeHash
+import time
+import re
 
 def safe_list_get (l, idx, default):
    try:
@@ -16,13 +18,10 @@ def safe_list_get (l, idx, default):
 
 
 class Command(BaseCommand):
-   args = 'begin end resolution'
-   help = 'Specify a range (timestamps) of data to export to the S3 volume with the given resolution'
+   args = ''
+   help = 'Backs up the data for each device relative to its retention policy.'
 
    def handle(self, *args, **options):
-      start = safe_list_get(args, 0, 0)
-      end = safe_list_get(args, 1, 0)
-      resolution = safe_list_get(args, 2, 1)
       part_size = 8388608
       
       print 'Contacting Amazon AWS...'
@@ -35,21 +34,28 @@ class Command(BaseCommand):
       
       archive_size = 0
       for device in Device.objects.all():
+         start = datetime.fromtimestamp(0)
+         end = datetime.now() - timedelta(days=31*device.data_retention_policy)
+         start = (datetime.now() - start).total_seconds()
+         start = time.time() - start
+         end = (datetime.now() - end).total_seconds()
+         end = time.time() - end
+         print 'Trying '+str(device)+'...'
+         print 'Data Retention Policy: '+str(device.data_retention_policy)+' Months'
          series = 'device.'+str(device.serial)
          try:
-            query = 'select * from '+series+' where time > '+str(start)+'ms and time < '+str(end)+'ms'
+            query = 'select * from '+series+' where time > '+str(start)+'s and time < '+str(end)+'s'
             points = db.query(query)
          except:
-            print series+' not found. Skipping.'
+            print 'No data found for '+series+'. Skipping.'
             continue
          print "Uploading "+series+"..."
-         print "Querying from "+str(datetime.fromtimestamp(int(start)/1000))+" to "+str(datetime.fromtimestamp(int(end)/1000))
+         print "Querying from "+str(datetime.fromtimestamp(int(start)))+" to "+str(datetime.fromtimestamp(int(end)))
          # store points in temporary file, break into 8MB parts
          with open('/tmp/temp_archive','wb') as f:
             f.write(json.dumps(points))
          bytes_read = 0
          bytes_sent = 0
-         # compute hash
          with open('/tmp/temp_archive','rb') as f:
             treehash_part = TreeHash()
             part = f.read(part_size)
@@ -68,13 +74,21 @@ class Command(BaseCommand):
          archive_size += 1
          print "Successfully uploaded "+str(bytes_sent)+" bytes to Glacier"
          print "Deleting points from database..."
-         #db.query('delete from '+series+' where time > '+str(start)+'s and time < '+str(end)+'s')
+         # drop from fanout series as well
+         series = db.query('list series')[0]['points']
+         rg = re.compile('device.'+str(device.serial))
+         for s in series:
+            if rg.search(s[1]):
+               db.query('delete from '+s[1]+' where time > '+str(start)+'s and time < '+str(end)+'s')
          print "[DONE]"
-      with open('/tmp/temp_archive','rb') as f:
-         treehash_archive.update(f.read())
-      response = glacier.complete_multipart_upload(vaultName=settings.GLACIER_VAULT_NAME,
-                                                   uploadId=upload_id,
-                                                   archiveSize=str(archive_size),
-                                                   checksum=treehash_archive.hexdigest())
-      os.remove('/tmp/temp_archive')
-      print "Archival Successful"
+      try:
+         with open('/tmp/temp_archive','rb') as f:
+            treehash_archive.update(f.read())
+         response = glacier.complete_multipart_upload(vaultName=settings.GLACIER_VAULT_NAME,
+                                                      uploadId=upload_id,
+                                                      archiveSize=str(archive_size),
+                                                      checksum=treehash_archive.hexdigest())
+         os.remove('/tmp/temp_archive')
+         print "Archival Successful"
+      except:
+         print "No data to archive. Exiting."
