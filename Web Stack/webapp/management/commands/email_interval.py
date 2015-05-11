@@ -36,7 +36,7 @@ def get_average_usage(user, notification):
    elif time_interval == datetime.timedelta(days=1):
       start = 'now() - 1d'
       unit = 'm'
-   elif time_interval == datetime.timedelta(years=1):
+   elif time_interval == datetime.timedelta(days=365):
       start = 'now() - 1y'
       unit = 'd'
       
@@ -84,7 +84,7 @@ def render_chart(user, notification):
       start = 'now() - 1d'
       unit = 'm'
       interval_keyword = 'daily'
-   elif time_interval == datetime.timedelta(years=1):
+   elif time_interval == datetime.timedelta(days=365):
       start = 'now() - 1y'
       unit = 'd'
       interval_keyword = 'annually'
