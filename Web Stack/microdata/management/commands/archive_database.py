@@ -37,8 +37,8 @@ class Command(BaseCommand):
          start = datetime.fromtimestamp(0)
          end = datetime.now() - timedelta(days=31*device.data_retention_policy)
          start = (datetime.now() - start).total_seconds()
-         start = time.time() - start
-         end = (datetime.now() - end).total_seconds()
+         start = 0
+         end = int((datetime.now() - end).total_seconds())
          end = time.time() - end
          print 'Trying '+str(device)+'...'
          print 'Data Retention Policy: '+str(device.data_retention_policy)+' Months'
@@ -88,6 +88,10 @@ class Command(BaseCommand):
                                                       uploadId=upload_id,
                                                       archiveSize=str(archive_size),
                                                       checksum=treehash_archive.hexdigest())
+         with open(settings.STATIC_PATH+'archive_ids.log','a') as f:
+            line = {'archiveId':response['archiveId'], 'timeEnd':str(end)}
+            f.write(json.dumps(line))
+            f.write(';')
          os.remove('/tmp/temp_archive')
          print "Archival Successful"
       except:

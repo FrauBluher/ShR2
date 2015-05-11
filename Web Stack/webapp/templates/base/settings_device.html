@@ -258,39 +258,123 @@ $(function() {
   });
   
   $('#channel_1-dropdown').on("change", function(e) {
-    var span = $("<span/>");
-    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
-    $('#channel_1-status').html(span);
-    $.post('/settings/device/{{ device.serial }}', 
-      $('form#device-status-form').serialize(),
-      function (data) {
-        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
-        if (data.success) {
-          span.addClass("glyphicon glyphicon-ok");
-        } else {
-          span.addClass("glyphicon glyphicon-remove");
-        }
-        $('#channel_1-appliance-list').html(make_ul(data.appliances.channel_1));
+    if ($('#channel_1-dropdown').val() == 6) {
+        // User wants a custom circuit
+        $.get('/api/appliance-api/',
+            function(data) {
+                $('#channel_1-appliance-list').html($("<select id='channel_1-appliance-select' multiple='multiple'/>"));
+                $('#channel_1-appliance-select').multiSelect({
+                    selectableHeader: "<div class='custom-header'>Selectable items</div>",
+                    selectionHeader: "<div class='custom-header'>Selected items</div>",
+                    afterSelect: function(values){
+                        $.post('/settings/device/{{ device.serial }}',
+                            {
+                                custom_channel: 1,
+                                add: true,
+                                appliance: values[0],
+                            },
+                            function(data) {
+                                console.log(data);
+                            }
+                        );
+                    },
+                    afterDeselect: function(values){
+                        $.post('/settings/device/{{ device.serial }}',
+                            {
+                                custom_channel: 1,
+                                add: false,
+                                appliance: values,
+                            },
+                            function(data) {
+                                console.log(data);
+                            }
+                        );
+                    }
+                });
+                var selected = []
+                for(var i in data) {
+                    $('#channel_1-appliance-select').multiSelect('addOption', { value: data[i].serial, text: data[i].name, index: 0 });
+                }
+                console.log(data);
+            }
+        );
+    } else {
+        var span = $("<span/>");
+        span.addClass('glyphicon-refresh glyphicon-refresh-animate');
         $('#channel_1-status').html(span);
-      });
+        $.post('/settings/device/{{ device.serial }}', 
+          $('form#device-status-form').serialize(),
+          function (data) {
+            span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+            if (data.success) {
+              span.addClass("glyphicon glyphicon-ok");
+            } else {
+              span.addClass("glyphicon glyphicon-remove");
+            }
+            $('#channel_1-appliance-list').html(make_ul(data.appliances.channel_0));
+            $('#channel_1-status').html(span);
+          });
+      }
   });
   
   $('#channel_2-dropdown').on("change", function(e) {
-    var span = $("<span/>");
-    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
-    $('#channel_2-status').html(span);
-    $.post('/settings/device/{{ device.serial }}', 
-      $('form#device-status-form').serialize(),
-      function (data) {
-        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
-        if (data.success) {
-          span.addClass("glyphicon glyphicon-ok");
-        } else {
-          span.addClass("glyphicon glyphicon-remove");
-        }
-        $('#channel_2-appliance-list').html(make_ul(data.appliances.channel_2));
+    if ($('#channel_2-dropdown').val() == 6) {
+        // User wants a custom circuit
+        $.get('/api/appliance-api/',
+            function(data) {
+                $('#channel_2-appliance-list').html($("<select id='channel_2-appliance-select' multiple='multiple'/>"));
+                $('#channel_2-appliance-select').multiSelect({
+                    selectableHeader: "<div class='custom-header'>Selectable items</div>",
+                    selectionHeader: "<div class='custom-header'>Selected items</div>",
+                    afterSelect: function(values){
+                        $.post('/settings/device/{{ device.serial }}',
+                            {
+                                custom_channel: 2,
+                                add: true,
+                                appliance: values[0],
+                            },
+                            function(data) {
+                                console.log(data);
+                            }
+                        );
+                    },
+                    afterDeselect: function(values){
+                        $.post('/settings/device/{{ device.serial }}',
+                            {
+                                custom_channel: 2,
+                                add: false,
+                                appliance: values,
+                            },
+                            function(data) {
+                                console.log(data);
+                            }
+                        );
+                    }
+                });
+                var selected = []
+                for(var i in data) {
+                    $('#channel_2-appliance-select').multiSelect('addOption', { value: data[i].serial, text: data[i].name, index: 0 });
+                }
+                console.log(data);
+            }
+        );
+    } else {
+        var span = $("<span/>");
+        span.addClass('glyphicon-refresh glyphicon-refresh-animate');
         $('#channel_2-status').html(span);
-      });
+        $.post('/settings/device/{{ device.serial }}', 
+          $('form#device-status-form').serialize(),
+          function (data) {
+            span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+            if (data.success) {
+              span.addClass("glyphicon glyphicon-ok");
+            } else {
+              span.addClass("glyphicon glyphicon-remove");
+            }
+            $('#channel_2-appliance-list').html(make_ul(data.appliances.channel_0));
+            $('#channel_2-status').html(span);
+          });
+      }
   });
 
   $('#company-dropdown').on("change", function(e) {
@@ -430,7 +514,7 @@ $('#submit-remove-device').on("click", function(e) {
 </div>
 
 <div class="form-group">
-  <label class="col-md-4 control-label">Channel 0</label>  
+  <label class="col-md-4 control-label">Channel 1</label>  
   <div class="col-md-4">
     {{ form.channel_0 }}
   </div>
@@ -445,7 +529,7 @@ $('#submit-remove-device').on("click", function(e) {
 </div>
 
 <div class="form-group">
-  <label class="col-md-4 control-label">Channel 1</label>  
+  <label class="col-md-4 control-label">Channel 2</label>  
   <div class="col-md-4">
     {{ form.channel_1 }}
   </div>
@@ -460,7 +544,7 @@ $('#submit-remove-device').on("click", function(e) {
 </div>
 
 <div class="form-group">
-  <label class="col-md-4 control-label">Channel 2</label>  
+  <label class="col-md-4 control-label">Channel 3</label>  
   <div class="col-md-4">
     {{ form.channel_2 }}
   </div>
@@ -558,6 +642,9 @@ $('#submit-remove-device').on("click", function(e) {
         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
         <span></span> <b class="caret"></b>
     </div>
+    <div id="export-info" class="col-md-4">
+    <span>Selecting a date range older than {{ device.data_retention_policy }} months will trigger an archive retrieval job. <a href="#">Learn More</a></span>
+    </div>
 </div>
 </fieldset>
 </form>
@@ -642,7 +729,7 @@ $(function() {
             firstDay: 1
         }
     }, function(start, end, label) {
-        window.location = '/settings/device/export/?serial= {{ device.serial }}&start='+start.unix()+'&end='+end.unix();
+        window.location = '/settings/device/export/?serial={{ device.serial }}&start='+start.unix()+'&end='+end.unix();
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     });
  
