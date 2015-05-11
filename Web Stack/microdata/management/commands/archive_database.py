@@ -20,9 +20,9 @@ class Command(BaseCommand):
    help = 'Specify a range (timestamps) of data to export to the S3 volume with the given resolution'
 
    def handle(self, *args, **options):
-      start = safe_list_get(args, 1, 0)
-      end = safe_list_get(args, 2, 0)
-      resolution = safe_list_get(args, 3, 1)
+      start = safe_list_get(args, 0, 0)
+      end = safe_list_get(args, 1, 0)
+      resolution = safe_list_get(args, 2, 1)
       part_size = 8388608
       
       print 'Contacting Amazon AWS...'
@@ -37,7 +37,8 @@ class Command(BaseCommand):
       for device in Device.objects.all():
          series = 'device.'+str(device.serial)
          try:
-            points = db.query('select * from '+series+' where time > '+str(start)+'s and time < '+str(end)+'s')
+            query = 'select * from '+series+' where time > '+str(start)+'ms and time < '+str(end)+'ms'
+            points = db.query(query)
          except:
             print series+' not found. Skipping.'
             continue
@@ -49,17 +50,12 @@ class Command(BaseCommand):
          bytes_read = 0
          bytes_sent = 0
          # compute hash
-         treehash_part = TreeHash()
          with open('/tmp/temp_archive','rb') as f:
-            part = f.read(1024)
-            while part:
-               treehash_part.update(part)
-               part = f.read(1024)
-         with open('/tmp/temp_archive','rb') as f:
+            treehash_part = TreeHash()
             part = f.read(part_size)
+            treehash_part.update(part)
             bytes_read += len(part)
             while part:
-               treehash_archive.update(part)
                response = glacier.upload_multipart_part(vaultName=settings.GLACIER_VAULT_NAME,
                                                         uploadId=upload_id,
                                                         range='bytes '+str(bytes_sent)+'-'+str(bytes_read-1)+'/*',
@@ -67,12 +63,15 @@ class Command(BaseCommand):
                                                         checksum=treehash_part.hexdigest())
                bytes_sent += len(part)
                part = f.read(part_size)
+               treehash_part.update(part)
                bytes_read += len(part)
          archive_size += 1
          print "Successfully uploaded "+str(bytes_sent)+" bytes to Glacier"
          print "Deleting points from database..."
          #db.query('delete from '+series+' where time > '+str(start)+'s and time < '+str(end)+'s')
          print "[DONE]"
+      with open('/tmp/temp_archive','rb') as f:
+         treehash_archive.update(f.read())
       response = glacier.complete_multipart_upload(vaultName=settings.GLACIER_VAULT_NAME,
                                                    uploadId=upload_id,
                                                    archiveSize=str(archive_size),
