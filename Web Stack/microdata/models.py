@@ -7,6 +7,7 @@ from influxdb.influxdb08 import client as influxdb
 from geoposition.fields import GeopositionField
 from paintstore.fields import ColorPickerField
 import json
+import time
 
 # Create your models here.
 
@@ -47,12 +48,12 @@ class Device(models.Model):
    channel_0 = models.ForeignKey(CircuitType, related_name='Channel 0', blank=True, null=True)
    channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1', blank=True, null=True)
    channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2', blank=True, null=True)
+   data_retention_policy = models.IntegerField(help_text='Number of months of data to keep in database', default=12)
     
    def save(self, **kwargs):
       if self.secret_key == None:
-         #secret_key =  ''.join(random.choice(string.digits) for i in range(3))
-         #secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
-         secret_key = '123SEAD'
+         secret_key =  ''.join(random.choice(string.digits) for i in range(3))
+         secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
          self.secret_key = secret_key
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
@@ -101,7 +102,7 @@ class Event(models.Model):
    device = models.ForeignKey(Device)
    dataPoints = models.CharField(max_length=1000,
                                  help_text='Expects a JSON encoded string of values:'+\
-                                           '{timeStart(int, milliseconds),\n'+\
+                                           '{time(int, milliseconds),frequency(int, Hz),\n'+\
                                            ' ['+\
                                            '    {wattage(float, optional),\n'+\
                                            '    current(float, optional),\n'+\
@@ -109,23 +110,24 @@ class Event(models.Model):
                                            '    appliance_pk(int, optional),\n'+\
                                            '    event_code(int, optional),\n'+\
                                            '    channel(int, optional)}\n'+\
-                                           ' ],...')
+                                           ' ,...]')
    start = models.IntegerField()
    frequency = models.IntegerField()
+   query = models.CharField(max_length=1000)
 
    def save(self, **kwargs):
       dataPoints = json.loads(self.dataPoints)
       self.dataPoints = dataPoints
       count = 0
       for point in dataPoints:
-         wattage     = point.get('wattage')
-         current     = point.get('current')
-         voltage     = point.get('voltage')
-         appliance_pk= point.get('appliance_pk')
-         event_code  = point.get('event_code')
-         channel     = point.get('channel', 1)
+         wattage      = point.get('wattage')
+         current      = point.get('current')
+         voltage      = point.get('voltage')
+         appliance_pk = point.get('appliance_pk')
+         event_code   = point.get('event_code')
+         channel      = point.get('channel', 1)
          timestamp = self.start + ((1.0/self.frequency)*count)
-         timestamp = timestamp if len(str(timestamp)) == 13 else timestamp*1000
+         
          if (timestamp and (wattage or current or voltage)):
             if appliance_pk == None:
                appliance = Appliance.objects.get(serial=0) # Unknown appliance
@@ -138,10 +140,11 @@ class Event(models.Model):
             query['name'] = 'device.'+str(self.device.serial)
             query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage', 'channel']
             data.append(query)
+            self.query = data
             db.write_points(data, time_precision="ms")
          count += 1
 
-      #super(Event, self).save()
+      super(Event, self).save()
       
    def __unicode__(self):
       return str(self.device.__unicode__()+':'+self.dataPoints)
