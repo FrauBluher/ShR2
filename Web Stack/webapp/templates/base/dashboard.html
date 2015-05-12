@@ -14,8 +14,8 @@
                <div id='chart-title' value='{{ my_devices.0.serial }}'>{{ my_devices.0.name }} at a glance</div>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Change Chart Type
+                        <button type="button" id="chart-type-lable" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Unstacked
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
@@ -142,6 +142,11 @@ function refresh_chart(stack) {
       //TODO: blocks other ajax. Move to worker thread?
       render_chart();
       $('#chart-title').html(device_name+" at a glance");
+      if (stack) {
+        $('#chart-type-lable').html('Stacked <span class="caret"></span>');
+      } else {
+        $('#chart-type-lable').html('Unstacked <span class="caret"></span>');
+      }
     }
   );
 }

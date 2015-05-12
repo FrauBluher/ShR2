@@ -4,7 +4,7 @@
 
         #div2 .arc {
             stroke-weight: 0.1;
-            fill: #f0a417;
+            fill: {{ device.devicewebsettings.current_tier.chart_color }};
         }
 
         .radial {
@@ -30,12 +30,7 @@
         .component .label {
             font-family: Myriad, "Helvetic Neue", Helvetica, Arial;
             text-anchor: middle;
-            fill: #0000FF;
-        }
-
-        .arc {
-            stroke-weight:0.1;
-            fill: #4e8fff;
+            fill: {{ device.devicewebsettings.current_tier.chart_color }};
         }
 
         .label {
@@ -47,8 +42,6 @@
             display: block;
             margin: 0 auto;
         }
-
-
     </style>
 </head>
 
@@ -96,6 +89,7 @@
         } else {
             progress = {{ device.kilowatt_hours_monthly }}/({{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}/100*{{ territory.winter_rate }}*daysInMonth)*100;
         }
+        if (progress > 100) progress = 100;
         var rp2 = radialProgress(document.getElementById('div2'))
                 .label("TIER {{ device.devicewebsettings.current_tier.tier_level }}")
                 .diameter(150)
@@ -133,6 +127,7 @@
         }
         $('#progress-tier-{{ tier.tier_level }}').html(String(parseInt(progress))+'% Consumed');
         $('#progress-bar-tier-{{ tier.tier_level }}').css("width", String(progress)+"%");
+        $('#progress-bar-tier-{{ tier.tier_level }}').css("background-color", '{{ tier.chart_color }}');
         {% endif %}
     {% endfor %}
 

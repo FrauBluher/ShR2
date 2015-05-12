@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from microdata.models import Device, Appliance
 from django.conf import settings
 from recurrence.fields import RecurrenceField
+from paintstore.fields import ColorPickerField
 
 # Create your models here.
 
@@ -83,6 +84,7 @@ class Tier(models.Model):
    tier_level = models.IntegerField(blank=True, null=True)
    max_percentage_of_baseline = models.FloatField(help_text="blank for no maximum",blank=True, null=True)
    rate = models.FloatField(help_text="$",blank=True, null=True)
+   chart_color = ColorPickerField()
 
    def __unicode__(self):
       return 'Tier ' + str(self.tier_level)
