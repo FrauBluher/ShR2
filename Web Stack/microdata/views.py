@@ -154,7 +154,7 @@ def timestamp(request):
    return HttpResponse(json.dumps(milliseconds), content_type="application/json")
 
 def initiate_job_to_glacier(request, requester, end_time):
-   glacier = boto3.client('glacier',aws_access_key_id='AKIAIVWQSPMMJVWMQAHA', aws_secret_access_key='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', region_name='us-west-2')
+   glacier = boto3.client('glacier', region_name='us-west-2')
    with open(settings.STATIC_PATH+'archive_ids.log', 'r') as f:
       archives = f.read()
       for archive in archives.split(';'):
