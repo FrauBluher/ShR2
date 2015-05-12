@@ -8,6 +8,7 @@ from django.core.validators import RegexValidator
 from django.http import HttpResponse
 from django import forms
 from django.core import serializers
+from django.conf import settings
 
 from rest_framework import permissions, authentication
 from rest_framework.response import Response
@@ -22,6 +23,7 @@ from geoposition import Geoposition
 import json
 import time
 import ast
+import boto3
 
 """
 class KeyForm(forms.Form):
@@ -151,4 +153,28 @@ def timestamp(request):
    milliseconds = time.time()*1000
    return HttpResponse(json.dumps(milliseconds), content_type="application/json")
 
-    
+def initiate_job_to_glacier(request, requester, end_time):
+   glacier = boto3.client('glacier',aws_access_key_id='AKIAIVWQSPMMJVWMQAHA', aws_secret_access_key='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', region_name='us-west-2')
+   with open(settings.STATIC_PATH+'archive_ids.log', 'r') as f:
+      archives = f.read()
+      for archive in archives.split(';'):
+         try:
+            archive = json.loads(archive)
+            # download up to the time specified
+            if archive['timeEnd'] < end_time:
+               parameters = {
+                  'Type': 'archive-retrieval',
+                  'ArchiveId': archive['archiveId'],
+                  'Description': str(requester.pk)
+               }
+               job = glacier.initiate_job(vaultName=settings.GLACIER_VAULT_NAME, jobParameters=parameters)
+               return job['HTTPStatusCode']
+         except:
+            return 400
+   return 404
+
+
+
+
+
+

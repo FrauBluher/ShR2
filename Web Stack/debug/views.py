@@ -168,12 +168,18 @@ def influxgen(request):
               'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Heater') in circuit.appliances.all()]
             },
           }
+         db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
          count = 0
          data = []
          data_dict = {}
          data_dict['name'] = "device."+str(device.serial)
          data_dict['columns'] = ['time','appliance','wattage','circuit','cost']
          data_dict['points'] = []
+
+         tier_dict = {}
+         tier_dict['name'] = "tier.device."+str(device.serial)
+         tier_dict['columns'] = ['time','tier_level']
+         tier_dict['points'] = []
 
          this_year = datetime.now().year
          summer_start = datetime(year=this_year,month=device.devicewebsettings.territories.all()[0].summer_start,day=1)
@@ -183,6 +189,8 @@ def influxgen(request):
             current_season = 'winter'
 
          prev_i = start-resolution
+         tier_dict['points'].append([start,1])
+         db.write_points([tier_dict])
          for i in numpy.arange(start, stop, resolution):
             point_list = [i]
             for appliance in appliances:
@@ -191,12 +199,13 @@ def influxgen(request):
                device.kilowatt_hours_monthly += kwh
                device.kilowatt_hours_daily += kwh
                if (device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
-                max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].summer_rate
+                max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].summer_rate*31
                 if current_season == 'winter':
-                   max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].winter_rate
+                   max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].winter_rate*31
                 if (device.kilowatt_hours_monthly > max_kwh_for_tier):
                    current_tier = device.devicewebsettings.current_tier
                    device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
+                   tier_dict['points'].append([i,current_tier.tier_level + 1])
                cost = device.devicewebsettings.current_tier.rate * kwh
                prev_i = i
                wattage_to_append = 0
@@ -215,8 +224,7 @@ def influxgen(request):
                count += 1
                data_dict['points'].append(point_list)
          data.append(data_dict)
-         db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
-         if (db.write_points(data)):
+         if (db.write_points(data) and db.write_points([tier_dict])):
             success = "Added {0} points successfully".format(count)
          device.save()
    else:
@@ -264,12 +272,22 @@ def influxdel(request):
          if refresh_queries is False:
            device.kilowatt_hours_monthly = 0
            device.kilowatt_hours_daily = 0
+           rate_plan = device.devicewebsettings.rate_plans.all()[0]
+           tiers = Tier.objects.filter(rate_plan=rate_plan)
+           for tier in tiers:
+             if tier.tier_level == 1:
+               device.devicewebsettings.current_tier = tier
            device.save()
+           tier_dict = {}
+           tier_dict['name'] = "tier.device."+str(device.serial)
+           tier_dict['columns'] = ['tier_level']
+           tier_dict['points'] = [[1]]
+           db.write_points([tier_dict])
            series = db.query('list series')[0]['points']
            rg = re.compile('device.'+serial)
            for s in series:
               if rg.search(s[1]):
-                 db.query('drop series "'+s[1]+'"')
+                   db.query('drop series "'+s[1]+'"')
            events = Event.objects.filter(device=device)
            events.delete()
          else:
@@ -277,7 +295,7 @@ def influxdel(request):
            # drop old queries
            for q in queries:
              if 'device.'+serial in q[2]:
-               db.query('drop continuous query '+str(q[1]))
+                 db.query('drop continuous query '+str(q[1]))
            # add new queries
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')

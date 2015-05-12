@@ -521,6 +521,13 @@ $('#submit-remove-device').on("click", function(e) {
 </div>
 
 <div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Current Tier</label>  
+  <div class="col-md-4">
+  <input value="{{ device.devicewebsettings.current_tier }}" type="text" class="form-control input-md" readonly>
+  </div>
+</div>
+
+<div class="form-group">
   <label class="col-md-4 control-label">Channel 1</label>  
   <div class="col-md-4">
     {{ form.channel_0 }}

@@ -314,6 +314,7 @@ def chartify(data):
 def landing(request):
    user = request.user.id
    my_devices = Device.objects.filter(owner=user)
+   my_devices = my_devices | Device.objects.filter(share_with=user)
    context = {'my_devices': my_devices}
    return render(request, 'base/landing.html', context)
 
@@ -323,6 +324,7 @@ def dashboard(request):
    user = request.user.id
    if request.user.is_authenticated():
       my_devices = Device.objects.filter(owner=user)
+      my_devices = my_devices | Device.objects.filter(share_with=user)
    else: my_devices = None
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    for device in my_devices:
@@ -405,6 +407,7 @@ def default_chart(request):
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)
+      devices = devices | Device.objects.filter(share_with=user)
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       for device in devices:
         device.circuits = []
@@ -444,7 +447,7 @@ def get_wattage_usage(request):
               this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance+' limit 1')[0]['points'][0]
               if this_wattage[0] > time.time() - 1000:
                  current_wattage += this_wattage[2]
-              cost_today = float(db.query('select sum(cost) from device.'+str(device.serial))[0]['points'][0][1])
+              cost_today = float(db.query('select sum(cost) from device.'+str(device.serial)+' where time < now() and time > now() - 1d')[0]['points'][0][1])
            except:
               pass
         context['cost_today'] = float("{0:.2f}".format(cost_today))

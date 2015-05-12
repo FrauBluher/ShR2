@@ -9,6 +9,7 @@ from paintstore.fields import ColorPickerField
 import json
 import time
 from datetime import datetime
+from calendar import monthrange
 
 # Create your models here.
 
@@ -134,6 +135,12 @@ class Event(models.Model):
          kwh = (wattage/1000.0)*(1.0/self.frequency)*(1/3600)
          self.device.kilowatt_hours_monthly += kwh
          self.device.kilowatt_hours_daily += kwh
+
+         tier_dict = {}
+         tier_dict['name'] = "tier.device."+str(device.serial)
+         tier_dict['columns'] = ['tier_level']
+         tier_dict['points'] = []
+
          # Calculate percent of baseline to get tier level
          # Start by determining current time of year
          this_year = datetime.now().year
@@ -147,9 +154,11 @@ class Event(models.Model):
             max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].summer_rate
             if current_season == 'winter':
                max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].winter_rate
-            if (self.device.kilowatt_hours_monthly > max_kwh_for_tier):
+            if (self.device.kilowatt_hours_daily > max_kwh_for_tier):
                current_tier = self.device.devicewebsettings.current_tier
                self.device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
+               tier_dict['points'].append([current_tier.tier_level + 1])
+               db.write_points([tier_dict])
          cost = self.device.devicewebsettings.current_tier.rate * kwh
          
          if (timestamp and (wattage or current or voltage)):
