@@ -56,11 +56,26 @@
 <div id='outer' style="margin: 0px auto; margin-top:20px; padding:10px">
     <div id="main" style="margin: 0px auto; ">
         <div id="div2"></div>
+        <div id="information-text">
+            Kilowatt-Hours This Month: <span id="kilowatt-hours-monthly"></span>
+            <br>
+            Kilowatt-Hours Allowed in This Tier: <span id="kilowatt-hours-allowed"></span>
+            <br>
+            Kilowatt-Hours Remaining Until Next Tier: <span id="kilowatt-hours-remaining"></span>
+        </div>
     </div>
 </div>
 
 
 <script language="JavaScript">
+
+    var now = new Date();
+    var thisMonth = now.getMonth() + 1;
+    var daysInMonth = new Date(now.getYear(), thisMonth, 0).getDate();
+
+    $('#kilowatt-hours-monthly').html(String(parseInt({{ device.kilowatt_hours_monthly }})));
+    $('#kilowatt-hours-allowed').html(String(parseInt({{ territory.summer_rate}}*daysInMonth)));
+    $('#kilowatt-hours-remaining').html(String(parseInt(({{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}/100*{{ territory.summer_rate }}*daysInMonth) - {{ device.kilowatt_hours_monthly }})));
 
     var div2=d3.select(document.getElementById('div2'));
 
@@ -75,14 +90,11 @@
     }
 
     function start() {
-        var now = new Date();
-        var thisMonth = now.getMonth() + 1;
-        var daysInMonth = new Date(now.getYear(), thisMonth, 0).getDate();
         var progress = 0;
         if (thisMonth >= {{ territory.summer_start }} && thisMonth < {{ territory.winter_start }}) {
-            progress = {{ device.kilowatt_hours_monthly }}/({{ device.devicewebsettings.current_tier.max_percentage_of_baseline}}/100*{{ territory.summer_rate}}*daysInMonth)*100;
+            progress = {{ device.kilowatt_hours_monthly }}/({{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}/100*{{ territory.summer_rate }}*daysInMonth)*100;
         } else {
-            progress = {{ device.kilowatt_hours_monthly }}/({{ device.devicewebsettings.current_tier.max_percentage_of_baseline}}/100*{{ territory.winter_rate}}*daysInMonth)*100;
+            progress = {{ device.kilowatt_hours_monthly }}/({{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}/100*{{ territory.winter_rate }}*daysInMonth)*100;
         }
         var rp2 = radialProgress(document.getElementById('div2'))
                 .label("TIER {{ device.devicewebsettings.current_tier.tier_level }}")
@@ -91,6 +103,38 @@
                 .render();
     }
 
+    var dropdownHtml =  {% for tier in tiers %}
+                            {% if tier.max_percentage_of_baseline != None %}
+                                {% if forloop.first %}{% else %}+{% endif %}'<li>'+
+                                    '<a href="javascript:void(0)">'+
+                                        '<div>'+
+                                            '<p>'+
+                                                '<strong>Tier {{ tier.tier_level }}</strong>'+
+                                                '<span id="progress-tier-{{ tier.tier_level }}" class="pull-right text-muted"></span>'+
+                                            '</p>'+
+                                            '<div class="progress progress-striped active">'+
+                                                '<div id="progress-bar-tier-{{ tier.tier_level }}" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 1%">'+
+                                                '</div>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</a>'+
+                                '</li>'+
+                                '<li class="divider"></li>'
+                            {% endif %}
+                        {% endfor %}
+                        ;
+    $('#tier-progress-dropdown').html(dropdownHtml);
+    {% for tier in tiers %}
+        {% if tier.max_percentage_of_baseline != None %}
+        if (thisMonth >= {{ territory.summer_start }} && thisMonth < {{ territory.winter_start }}) {
+            progress = {{ device.kilowatt_hours_monthly }}/({{ tier.max_percentage_of_baseline }}/100*{{ territory.summer_rate }}*daysInMonth)*100;
+        } else {
+            progress = {{ device.kilowatt_hours_monthly }}/({{ tier.max_percentage_of_baseline }}/100*{{ territory.winter_rate }}*daysInMonth)*100;
+        }
+        $('#progress-tier-{{ tier.tier_level }}').html(String(parseInt(progress))+'% Consumed');
+        $('#progress-bar-tier-{{ tier.tier_level }}').css("width", String(progress)+"%");
+        {% endif %}
+    {% endfor %}
 
 </script>
 
