@@ -51,6 +51,30 @@
         <!-- /.panel panel-default -->
     </div>
     <!-- /.col-lg-12 -->
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+            <div class="panel-heading">
+                Billing Information
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div id="ajax-billing-information"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-6 -->
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+            <div class="panel-heading">
+                Placeholder
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div>Placeholder</div>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-6 -->
 </div>
 <!-- /.row -->
 
@@ -195,6 +219,16 @@ $(function() {
       }
       map_open = !map_open;
    });
+
+   $.get('/charts/billing_information/',
+    {
+      'serial': {{ my_devices.0.serial }}
+    },
+    function(data) {
+      $('#ajax-billing-information').html(data);
+    }
+  );
+
 });
 
 var map, placeSearch, autocomplete;

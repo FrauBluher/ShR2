@@ -14,6 +14,7 @@ from geoposition import Geoposition
 from django.core.servers.basehttp import FileWrapper
 import cStringIO as StringIO
 from microdata.views import initiate_job_to_glacier
+from webapp.models import Tier
 
 from django.db import IntegrityError
 
@@ -874,7 +875,19 @@ def export_data(request):
     response.write(data)
     return response
 
-
+@login_required(login_url='/signin/')
+def billing_information(request):
+  context = {}
+  if request.method == 'GET':
+    serial = request.GET.get('serial')
+    user = User.objects.get(username=request.user)
+    device = Device.objects.get(serial=int(serial))
+    if device.owner == user:
+      context['device'] = device
+      context['territory'] = device.devicewebsettings.territories.all()[0]
+      context['tiers'] = Tier.objects.filter(rate_plan=device.devicewebsettings.rate_plans.all()[0])
+      return render(request, 'base/billing_information.html', context)
+  return render(status_code=400)
 
 
 

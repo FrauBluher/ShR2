@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^charts/device/(?P<serial>\d+)/data/$', 'webapp.views.device_data'),
     url(r'^charts/device/(?P<serial>\d+)/chart/$', 'webapp.views.device_chart'),
     url(r'^charts/default_chart/$', 'webapp.views.default_chart'),
+    url(r'^charts/billing_information/$', 'webapp.views.billing_information'),
     url(r'^new_device/', 'microdata.views.new_device'),
     url(r'^api/timestamp/$', 'microdata.views.timestamp'),
     url(r'^device/get_wattage_usage/', 'webapp.views.get_wattage_usage'),

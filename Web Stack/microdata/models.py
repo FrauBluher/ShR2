@@ -144,6 +144,8 @@ class Event(models.Model):
          # Calculate percent of baseline to get tier level
          # Start by determining current time of year
          this_year = datetime.now().year
+         this_month = datetime.now().day
+         days_this_month = monthrange(this_year,this_month)[1]
          summer_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].summer_start,day=1)
          winter_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].winter_start,day=1)
          current_season = 'summer'
@@ -151,10 +153,10 @@ class Event(models.Model):
             current_season = 'winter'
          # check if we need to upgrade a tier. If at max tier, do nothing.
          if (self.device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
-            max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].summer_rate
+            max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].summer_rate*days_this_month
             if current_season == 'winter':
-               max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].winter_rate
-            if (self.device.kilowatt_hours_daily > max_kwh_for_tier):
+               max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].winter_rate*days_this_month
+            if (self.device.kilowatt_hours_monthly > max_kwh_for_tier):
                current_tier = self.device.devicewebsettings.current_tier
                self.device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
                tier_dict['points'].append([current_tier.tier_level + 1])
