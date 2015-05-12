@@ -19,10 +19,12 @@ import json
 import numpy
 import re
 import time
+from datetime import datetime
 
 from debug.models import TestEvent
 from rest_framework import viewsets
 from debug.serializers import TestEventSerializer
+from webapp.models import Tier
 
 class TestEventViewSet(viewsets.ModelViewSet):
     queryset = TestEvent.objects.all()
@@ -170,12 +172,33 @@ def influxgen(request):
          data = []
          data_dict = {}
          data_dict['name'] = "device."+str(device.serial)
-         data_dict['columns'] = ['time','appliance','wattage','circuit']
+         data_dict['columns'] = ['time','appliance','wattage','circuit','cost']
          data_dict['points'] = []
+
+         this_year = datetime.now().year
+         summer_start = datetime(year=this_year,month=device.devicewebsettings.territories.all()[0].summer_start,day=1)
+         winter_start = datetime(year=this_year,month=device.devicewebsettings.territories.all()[0].winter_start,day=1)
+         current_season = 'summer'
+         if (summer_start <= datetime.now() < winter_start) == False:
+            current_season = 'winter'
+
+         prev_i = start-resolution
          for i in numpy.arange(start, stop, resolution):
             point_list = [i]
             for appliance in appliances:
                wattage = wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['avg']*0.1,wattages[appliance.name]['avg']*0.1)
+               kwh = (wattage/1000.0)*(i - prev_i)*(1/3600.0)
+               device.kilowatt_hours_monthly += kwh
+               device.kilowatt_hours_daily += kwh
+               if (device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
+                max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].summer_rate
+                if current_season == 'winter':
+                   max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].winter_rate
+                if (device.kilowatt_hours_monthly > max_kwh_for_tier):
+                   current_tier = device.devicewebsettings.current_tier
+                   device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
+               cost = device.devicewebsettings.current_tier.rate * kwh
+               prev_i = i
                wattage_to_append = 0
                if wattage > wattages[appliance.name]['max']:
                   wattage_to_append = wattages[appliance.name]['max']
@@ -188,13 +211,14 @@ def influxgen(request):
                   wattage_to_append = wattage
                circuit = wattages[appliance.name]['circuit'] or [Circuit.objects.get(name='Unknown')]
                circuit_pk = circuit[0].pk
-               point_list = [i, appliance.name, wattage_to_append, circuit_pk]
+               point_list = [i, appliance.name, wattage_to_append, circuit_pk, cost]
                count += 1
                data_dict['points'].append(point_list)
          data.append(data_dict)
          db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
          if (db.write_points(data)):
             success = "Added {0} points successfully".format(count)
+         device.save()
    else:
       form = DatagenForm()
    title = "Debug - Data Generation (InfluxDB)"
@@ -238,6 +262,9 @@ def influxdel(request):
          serial = str(device.serial)
          db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
          if refresh_queries is False:
+           device.kilowatt_hours_monthly = 0
+           device.kilowatt_hours_daily = 0
+           device.save()
            series = db.query('list series')[0]['points']
            rg = re.compile('device.'+serial)
            for s in series:
