@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^settings/device/export/$', 'webapp.views.export_data'),
     url(r'^data/$', 'webapp.views.landing'),
     url(r'^dashboard/$', 'webapp.views.dashboard'),
+    url(r'^dashboard/update/$', 'webapp.views.dashboard_update'),
     url(r'^charts/device/(?P<serial>\d+)/data/$', 'webapp.views.device_data'),
     url(r'^charts/device/(?P<serial>\d+)/chart/$', 'webapp.views.device_chart'),
     url(r'^charts/default_chart/$', 'webapp.views.default_chart'),

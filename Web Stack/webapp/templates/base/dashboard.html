@@ -66,7 +66,7 @@
     <div class="col-lg-6">
       <div class="panel panel-default">
             <div class="panel-heading">
-                Placeholder
+                Circuit Statistics
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -155,7 +155,7 @@ var contentArray = {}
 {% for device in my_devices %}
 contentArray['{{ device.serial }}'] = '';
 var marker{{ device.serial }};
-var infowindow{{ device.serial }};
+var infowindow{{ device.serial }} = new google.maps.InfoWindow();
 
 {% endfor %}
 
@@ -165,18 +165,18 @@ function get_wattage_usage() {
         { serial: {{ device.serial }} },
         function(data) {
            var current_wattage, average_wattage, cost_today;
-           if (data.average_wattage > data.current_wattage) {
-              current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
-           } else {
-              current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
-              
+           if (data.average_wattage !== null) {
+               if (data.average_wattage > data.current_wattage) {
+                  current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+               } else {
+                  current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+                  
+               }
+               average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
+               cost_today = data.cost_today;
            }
-           average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
-           cost_today = data.cost_today;
            contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Cost Today:</strong>$'+cost_today+'</p>'+ current_wattage +'</div></div>';
-           infowindow{{ device.serial }} = new google.maps.InfoWindow({
-            content: contentArray['{{ device.serial }}']
-           });
+           infowindow{{ device.serial }}.setContent(contentArray['{{ device.serial }}']);
            {% if forloop.first %}
            infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
            {% endif %}

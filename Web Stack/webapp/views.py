@@ -16,6 +16,7 @@ import cStringIO as StringIO
 from microdata.views import initiate_job_to_glacier
 from webapp.models import Tier
 
+
 from django.db import IntegrityError
 
 from datetime import datetime, timedelta
@@ -23,6 +24,7 @@ import json
 import time
 import re
 from influxdb.influxdb08 import client as influxdb
+from calendar import monthrange
 
 # Create your views here.
 
@@ -420,40 +422,45 @@ def default_chart(request):
                 }
       return render(request, 'base/dashboard.html', context)
 
+@login_required(login_url='/signin/')
+def generate_average_wattage_usage(request, serial):
+    context = {}
+    user = User.objects.get(username=request.user)
+    device = Device.objects.get(serial=serial)
+    if device.owner == user:
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      result = db.query('list series')[0]
+      appliances = Set()
+      for series in result['points']:
+         rg = re.compile('device.'+str(device.serial))
+         if re.match(rg, series[1]):
+            appliance = series[1].split('device.'+str(device.serial)+'.')
+            if (len(appliance) < 2): continue
+            else:
+               appliances.add(appliance[-1])
+      average_wattage = 0
+      current_wattage = 0
+      cost_today = 0.0
+      for appliance in appliances:
+         try:
+            average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
+            this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance+' limit 1')[0]['points'][0]
+            if this_wattage[0] > time.time() - 1000:
+               current_wattage += this_wattage[2]
+            cost_today = float(db.query('select sum(cost) from device.'+str(device.serial)+' where time < now() and time > now() - 1d')[0]['points'][0][1])
+         except:
+            pass
+      context['cost_today'] = float("{0:.2f}".format(cost_today))
+      context['average_wattage'] = int(average_wattage)
+      context['current_wattage'] = int(current_wattage)
+      return context
       
 @login_required(login_url='/signin/')
 def get_wattage_usage(request):
    context = {}
    if request.method == 'GET':
-      user = User.objects.get(username=request.user)
-      serial = request.GET.get('serial')
-      device = Device.objects.get(serial=serial)
-      if device.owner == user:
-        db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-        result = db.query('list series')[0]
-        appliances = Set()
-        for series in result['points']:
-           rg = re.compile('device.'+str(device.serial))
-           if re.match(rg, series[1]):
-              appliance = series[1].split('device.'+str(device.serial)+'.')
-              if (len(appliance) < 2): continue
-              else:
-                 appliances.add(appliance[-1])
-        average_wattage = 0
-        current_wattage = 0
-        cost_today = 0.0
-        for appliance in appliances:
-           try:
-              average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
-              this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance+' limit 1')[0]['points'][0]
-              if this_wattage[0] > time.time() - 1000:
-                 current_wattage += this_wattage[2]
-              cost_today = float(db.query('select sum(cost) from device.'+str(device.serial)+' where time < now() and time > now() - 1d')[0]['points'][0][1])
-           except:
-              pass
-        context['cost_today'] = float("{0:.2f}".format(cost_today))
-        context['average_wattage'] = int(average_wattage)
-        context['current_wattage'] = int(current_wattage)
+       serial = request.GET.get('serial')
+       context = generate_average_wattage_usage(request, serial)
    return HttpResponse(json.dumps(context), content_type="application/json")
 
    
@@ -881,16 +888,40 @@ def billing_information(request):
   if request.method == 'GET':
     serial = request.GET.get('serial')
     user = User.objects.get(username=request.user)
+    context['tier_progress_list'] = []
+    device_tier_progress = {}
+    this_month = datetime.now().month
+    this_year = datetime.now().year
+    days_this_month = monthrange(this_year,this_month)[1]
+    for device in Device.objects.filter(owner=user):
+        progress = 0.0
+        if device.devicewebsettings.current_tier.max_percentage_of_baseline != None:
+            territory = device.devicewebsettings.territories.all()[0]
+            if (this_month >= territory.summer_start and this_month < territory.winter_start ):
+                progress = device.kilowatt_hours_monthly/( device.devicewebsettings.current_tier.max_percentage_of_baseline/100*territory.summer_rate*days_this_month)*100;
+            else:
+                progress = device.kilowatt_hours_monthly/( device.devicewebsettings.current_tier.max_percentage_of_baseline/100*territory.winter_rate*days_this_month)*100;
+            if progress > 100: progress = 100
+        context['tier_progress_list'].append({'device':device, 'progress':progress});
+        device_tier_progress[device.serial] = progress
     device = Device.objects.get(serial=int(serial))
     if device.owner == user:
+      device.tier_progress = device_tier_progress[device.serial]
       context['device'] = device
-      context['territory'] = device.devicewebsettings.territories.all()[0]
+      context['territory'] = territory
       context['tiers'] = Tier.objects.filter(rate_plan=device.devicewebsettings.rate_plans.all()[0])
       return render(request, 'base/billing_information.html', context)
   return render(status_code=400)
 
-
-
+@login_required(login_url='/signin/')
+def dashboard_update(request):
+    context = {}
+    if request.method == 'GET':
+        serial = request.GET.get('current_device')
+        user = User.objects.get(username=request.user)
+        device = Device.objects.get(serial=serial)
+        context['average_usage'] = generate_average_wattage_usage(request, device.serial)
+    return HttpResponse(json.dumps(context), content_type="application/json")
 
 
 

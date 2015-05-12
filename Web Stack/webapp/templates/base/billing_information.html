@@ -83,52 +83,38 @@
     }
 
     function start() {
-        var progress = 0;
-        if (thisMonth >= {{ territory.summer_start }} && thisMonth < {{ territory.winter_start }}) {
-            progress = {{ device.kilowatt_hours_monthly }}/({{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}/100*{{ territory.summer_rate }}*daysInMonth)*100;
-        } else {
-            progress = {{ device.kilowatt_hours_monthly }}/({{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}/100*{{ territory.winter_rate }}*daysInMonth)*100;
-        }
-        if (progress > 100) progress = 100;
+        var progress = {{ device.tier_progress }};
         var rp2 = radialProgress(document.getElementById('div2'))
                 .label("TIER {{ device.devicewebsettings.current_tier.tier_level }}")
-                .diameter(150)
+                .diameter(200)
                 .value(progress)
                 .render();
     }
 
-    var dropdownHtml =  {% for tier in tiers %}
-                            {% if tier.max_percentage_of_baseline != None %}
-                                {% if forloop.first %}{% else %}+{% endif %}'<li>'+
-                                    '<a href="javascript:void(0)">'+
-                                        '<div>'+
-                                            '<p>'+
-                                                '<strong>Tier {{ tier.tier_level }}</strong>'+
-                                                '<span id="progress-tier-{{ tier.tier_level }}" class="pull-right text-muted"></span>'+
-                                            '</p>'+
-                                            '<div class="progress progress-striped active">'+
-                                                '<div id="progress-bar-tier-{{ tier.tier_level }}" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 1%">'+
-                                                '</div>'+
+    var dropdownHtml =  {% for tier in tier_progress_list %}
+                            {% if forloop.first %}{% else %}+{% endif %}'<li>'+
+                                '<a href="javascript:void(0)">'+
+                                    '<div>'+
+                                        '<p>'+
+                                            '<strong>{{ tier.device.name }}: {{ tier.device.devicewebsettings.current_tier }}</strong>'+
+                                            '<span id="progress-tier-{{ tier.device.serial }}" class="pull-right text-muted"></span>'+
+                                        '</p>'+
+                                        '<div class="progress progress-striped active">'+
+                                            '<div id="progress-bar-tier-{{ tier.device.serial }}" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 1%">'+
                                             '</div>'+
                                         '</div>'+
-                                    '</a>'+
-                                '</li>'+
-                                '<li class="divider"></li>'
-                            {% endif %}
+                                    '</div>'+
+                                '</a>'+
+                            '</li>'+
+                            '<li class="divider"></li>'
                         {% endfor %}
                         ;
     $('#tier-progress-dropdown').html(dropdownHtml);
-    {% for tier in tiers %}
-        {% if tier.max_percentage_of_baseline != None %}
-        if (thisMonth >= {{ territory.summer_start }} && thisMonth < {{ territory.winter_start }}) {
-            progress = {{ device.kilowatt_hours_monthly }}/({{ tier.max_percentage_of_baseline }}/100*{{ territory.summer_rate }}*daysInMonth)*100;
-        } else {
-            progress = {{ device.kilowatt_hours_monthly }}/({{ tier.max_percentage_of_baseline }}/100*{{ territory.winter_rate }}*daysInMonth)*100;
-        }
-        $('#progress-tier-{{ tier.tier_level }}').html(String(parseInt(progress))+'% Consumed');
-        $('#progress-bar-tier-{{ tier.tier_level }}').css("width", String(progress)+"%");
-        $('#progress-bar-tier-{{ tier.tier_level }}').css("background-color", '{{ tier.chart_color }}');
-        {% endif %}
+    {% for tier in tier_progress_list %}
+        var progress = {{ tier.progress }};
+        $('#progress-tier-{{ tier.device.serial }}').html(String(parseInt(progress))+'% Consumed');
+        $('#progress-bar-tier-{{ tier.device.serial }}').css("width", String(progress)+"%");
+        $('#progress-bar-tier-{{ tier.device.serial }}').css("background-color", '{{ tier.device.devicewebsettings.current_tier.chart_color }}');
     {% endfor %}
 
 </script>
