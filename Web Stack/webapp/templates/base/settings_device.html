@@ -498,7 +498,7 @@ $('#submit-remove-device').on("click", function(e) {
    </button>
   {% else %}
   	<button id="btn-status" class="btn btn-danger">
-      <span id="btn-icon" class="glyphicon glyphicon-remove"></span> Disconnected
+      <span id="btn-icon" class="glyphicon glyphicon-remove"></span> Checking Status...
    </button>
   {% endif %}
   </div>
@@ -511,6 +511,13 @@ $('#submit-remove-device').on("click", function(e) {
   <input value="{{ device.ip_address }}" type="text" class="form-control input-md" readonly>
   </div>
   {% endif %}
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Kilowatt-Hour Usage This Month</label>  
+  <div class="col-md-4">
+  <input value="{{ device.kilowatt_hours_monthly }}" type="text" class="form-control input-md" readonly>
+  </div>
 </div>
 
 <div class="form-group">

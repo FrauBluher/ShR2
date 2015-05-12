@@ -13,10 +13,11 @@ from webapp.models import EventNotification, IntervalNotification, UtilityCompan
 from geoposition import Geoposition
 from django.core.servers.basehttp import FileWrapper
 import cStringIO as StringIO
+from microdata.views import initiate_job_to_glacier
 
 from django.db import IntegrityError
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import time
 import re
@@ -436,14 +437,17 @@ def get_wattage_usage(request):
                  appliances.add(appliance[-1])
         average_wattage = 0
         current_wattage = 0
+        cost_today = 0.0
         for appliance in appliances:
            try:
               average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
-              this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance)[0]['points'][0]
+              this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance+' limit 1')[0]['points'][0]
               if this_wattage[0] > time.time() - 1000:
                  current_wattage += this_wattage[2]
+              cost_today = float(db.query('select sum(cost) from device.'+str(device.serial))[0]['points'][0][1])
            except:
               pass
+        context['cost_today'] = float("{0:.2f}".format(cost_today))
         context['average_wattage'] = int(average_wattage)
         context['current_wattage'] = int(current_wattage)
    return HttpResponse(json.dumps(context), content_type="application/json")
@@ -851,7 +855,12 @@ def export_data(request):
     device = Device.objects.get(serial=serial)
     start = request.GET.get('start', 0)
     end = request.GET.get('end', 0)
-    if device.owner == user:
+    status_code = 200
+    if datetime.fromtimestamp(int(start)) < (datetime.now() - timedelta(days=31*device.data_retention_policy)):
+      # data has been moved to glacier. Start glacier job.
+      status_code = initiate_job_to_glacier(request, user, int(end))
+      return render(request, 'base/glacier_status.html', {'glacier':True})
+    elif device.owner == user:
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       if start is not 0 and end is not 0:
         data = db.query('select * from device.'+str(device.serial)+' where time > '+start+'s and time < '+end+'s')
