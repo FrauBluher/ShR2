@@ -1,5 +1,0 @@
-build/
-mkespfsimage/*.o
-mkespfsimage/mkespfsimage
-espfstest/*.o
-espfstest/espfstest
