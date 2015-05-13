@@ -116,56 +116,55 @@ def influxgen(request):
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
          resolution = form.cleaned_data['resolution']
-         circuits = [device.channel_0, device.channel_1, device.channel_2]
          wattages = {
             'Unknown':{
-              'avg':700,
+              'avg':800,
               'cutoff':0,
-              'max':1500,
-              'min':300,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.appliances.all()]
+              'max':1000,
+              'min':600,
+              'channel': 0
             },
               'Computer':{
               'avg':200,
               'cutoff':50,
               'max':350,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Computer') in circuit.appliances.all()]
+              'channel': 1
             },
               'Toaster':{
               'avg':20,
               'cutoff':0,
               'max':60,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Toaster') in circuit.appliances.all()]
+              'channel': 2
             },
               'Refrigerator':{
               'avg':400,
-              'cutoff':0,
+              'cutoff':100,
               'max':600,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Refrigerator') in circuit.appliances.all()]
+              'channel': 2
             },
               'Television':{
               'avg':100,
               'cutoff':50,
               'max':200,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Television') in circuit.appliances.all()]
+              'channel': 3
             },
               'Oven':{
               'avg':700,
               'cutoff':600,
               'max':1000,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Oven') in circuit.appliances.all()]
+              'channel': 2
             },
               'Heater':{
               'avg':8000,
               'cutoff':600,
-              'max':1000,
+              'max':10000,
               'min':0,
-              'circuit': [circuit for circuit in circuits if Appliance.objects.get(name='Heater') in circuit.appliances.all()]
+              'channel': 1
             },
           }
          db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
@@ -173,7 +172,7 @@ def influxgen(request):
          data = []
          data_dict = {}
          data_dict['name'] = "device."+str(device.serial)
-         data_dict['columns'] = ['time','appliance','wattage','circuit','cost']
+         data_dict['columns'] = ['time','appliance','wattage','channel','cost']
          data_dict['points'] = []
 
          tier_dict = {}
@@ -187,27 +186,14 @@ def influxgen(request):
          current_season = 'summer'
          if (summer_start <= datetime.now() < winter_start) == False:
             current_season = 'winter'
-
-         prev_i = start-resolution
-         tier_dict['points'].append([start,1])
+            
+         tier_dict['points'] = [[start,1]]
          db.write_points([tier_dict])
          for i in numpy.arange(start, stop, resolution):
+            kwh = 0.0
             point_list = [i]
             for appliance in appliances:
                wattage = wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['avg']*0.1,wattages[appliance.name]['avg']*0.1)
-               kwh = (wattage/1000.0)*(i - prev_i)*(1/3600.0)
-               device.kilowatt_hours_monthly += kwh
-               device.kilowatt_hours_daily += kwh
-               if (device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
-                max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].summer_rate*31
-                if current_season == 'winter':
-                   max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].winter_rate*31
-                if (device.kilowatt_hours_monthly > max_kwh_for_tier):
-                   current_tier = device.devicewebsettings.current_tier
-                   device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
-                   tier_dict['points'].append([i,current_tier.tier_level + 1])
-               cost = device.devicewebsettings.current_tier.rate * kwh
-               prev_i = i
                wattage_to_append = 0
                if wattage > wattages[appliance.name]['max']:
                   wattage_to_append = wattages[appliance.name]['max']
@@ -218,13 +204,26 @@ def influxgen(request):
                else:
                   wattages[appliance.name]['avg'] = wattage
                   wattage_to_append = wattage
-               circuit = wattages[appliance.name]['circuit'] or [Circuit.objects.get(name='Unknown')]
-               circuit_pk = circuit[0].pk
-               point_list = [i, appliance.name, wattage_to_append, circuit_pk, cost]
+               kwh = (wattage_to_append/1000.0)*(resolution)*(1/3600.0)
+               device.kilowatt_hours_monthly += kwh
+               device.kilowatt_hours_daily += kwh
+               if (device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
+                max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].summer_rate*31.0
+                if current_season == 'winter':
+                   max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].winter_rate*31.0
+                if (device.kilowatt_hours_monthly > max_kwh_for_tier):
+                   current_tier = device.devicewebsettings.current_tier
+                   device.devicewebsettings.current_tier = device.devicewebsettings.rate_plans.all()[0].tier_set.get(tier_level=(current_tier.tier_level + 1))
+                   device.devicewebsettings.save()
+                   tier_dict['points'] = [[i,device.devicewebsettings.current_tier.tier_level]]
+                   db.write_points([tier_dict])
+               cost = device.devicewebsettings.current_tier.rate * kwh
+               channel_pk = wattages[appliance.name]['channel']
+               point_list = [i, appliance.name, wattage_to_append, channel_pk, cost]
                count += 1
                data_dict['points'].append(point_list)
          data.append(data_dict)
-         if (db.write_points(data) and db.write_points([tier_dict])):
+         if (db.write_points(data)):
             success = "Added {0} points successfully".format(count)
          device.save()
    else:
@@ -277,7 +276,7 @@ def influxdel(request):
            for tier in tiers:
              if tier.tier_level == 1:
                device.devicewebsettings.current_tier = tier
-           device.save()
+           device.devicewebsettings.save()
            tier_dict = {}
            tier_dict['name'] = "tier.device."+str(device.serial)
            tier_dict['columns'] = ['tier_level']

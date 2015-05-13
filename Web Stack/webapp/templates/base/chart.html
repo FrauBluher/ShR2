@@ -113,6 +113,17 @@ function updateInfoWindow(data) {
     infowindow{{ device.serial }}.setContent(contentArray['{{ device.serial }}']);
 }
 
+function updateBillingInformation() {
+    $.get('/charts/billing_information/',
+        {
+            'serial': {{ device.serial }}
+        },
+        function(data) {
+            $('#ajax-billing-information').html(data);
+        }
+    );
+}
+
 // Function to update realtime-reliant features of dashboard every minute
 function updateDashboard() {
     $.get('/dashboard/update/',
@@ -124,6 +135,7 @@ function updateDashboard() {
             updateInfoWindow(data.average_usage);
         }
     );
+    updateBillingInformation();
     setTimeout(updateDashboard, 60000);
 }
 {% endif %}

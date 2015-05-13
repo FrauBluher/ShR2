@@ -332,8 +332,9 @@ def dashboard(request):
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    for device in my_devices:
       device.circuits = []
-      for circuit in Circuit.objects.filter(device=device):
-         device.circuits.append(circuit)
+      device.circuits.append(device.channel_0)
+      device.circuits.append(device.channel_1)
+      device.circuits.append(device.channel_2)
    context = {'my_devices': my_devices,
               'server_time': time.time()*1000,
               }
@@ -361,20 +362,19 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    appliances = Set()
-   if circuit_pk:
-      circuit = Circuit.objects.get(pk=circuit_pk)
-      appliances = Set([appliance.name for appliance in circuit.circuittype.appliances.all()])
-   else:
-      for series in result['points']:
-         rg = re.compile('device.'+str(serial))
-         if re.match(rg, series[1]):
-            appliance = series[1].split('device.'+str(serial)+'.')
-            if (len(appliance) < 2): continue
-            else: appliances.add(appliance[-1])
+   for series in result['points']:
+      rg = re.compile('device.'+str(serial))
+      if re.match(rg, series[1]):
+         appliance = series[1].split('device.'+str(serial)+'.')
+         if (len(appliance) < 2): continue
+         else: appliances.add(appliance[-1])
    mean = {}
    to_merge = []
    for appliance in appliances:
+      # Specifying a circuit_pk filters the query based on appliances in the circuit.
       query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
+      if circuit_pk:
+        query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop+' where channel = '+str(circuit_pk)
       group = []
       try:
         group = db.query(query)
@@ -414,9 +414,9 @@ def default_chart(request):
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       for device in devices:
         device.circuits = []
-        device.circuits.append(device.channel_0)
         device.circuits.append(device.channel_1)
         device.circuits.append(device.channel_2)
+        device.circuits.append(device.channel_3)
       context = {'my_devices': devices,
                  'server_time': time.time()*1000,
                 }
@@ -466,7 +466,7 @@ def get_wattage_usage(request):
    
 @login_required(login_url='/signin/')
 def device_data(request, serial):
-   context = None
+   context = {}
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
@@ -476,8 +476,8 @@ def device_data(request, serial):
          start = request.GET.get('from','')
          stop = request.GET.get('to','')
          circuit_pk = request.GET.get('circuit_pk')
-         context = json.dumps(group_by_mean(serial,unit,start,stop,localtime,circuit_pk))
-   return HttpResponse(context, content_type="application/json")
+         context = group_by_mean(serial,unit,start,stop,localtime,circuit_pk)
+   return HttpResponse(json.dumps(context), content_type="application/json")
 
 
 @login_required(login_url='/signin/')
@@ -884,34 +884,42 @@ def export_data(request):
 
 @login_required(login_url='/signin/')
 def billing_information(request):
-  context = {}
-  if request.method == 'GET':
-    serial = request.GET.get('serial')
-    user = User.objects.get(username=request.user)
-    context['tier_progress_list'] = []
-    device_tier_progress = {}
-    this_month = datetime.now().month
-    this_year = datetime.now().year
-    days_this_month = monthrange(this_year,this_month)[1]
-    for device in Device.objects.filter(owner=user):
-        progress = 0.0
-        if device.devicewebsettings.current_tier.max_percentage_of_baseline != None:
+   context = {}
+   if request.method == 'GET':
+      serial = request.GET.get('serial')
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      user = User.objects.get(username=request.user)
+      context['tier_progress_list'] = []
+      device_tier_progress = {}
+      this_month = datetime.now().month
+      this_year = datetime.now().year
+      days_this_month = monthrange(this_year,this_month)[1]
+      for device in Device.objects.filter(owner=user):
+         current_tier_level = 1
+         try:
+            current_tier_level = db.query('select * from tier.device.'+str(device.serial)+' limit 1')[0]['points'][0][2]
+         except:
+            pass
+         device.device_tiers = Tier.objects.filter(rate_plan=device.devicewebsettings.rate_plans.all()[0])
+         progress = 0.0
+         if device.devicewebsettings.current_tier.max_percentage_of_baseline != None:
             territory = device.devicewebsettings.territories.all()[0]
             if (this_month >= territory.summer_start and this_month < territory.winter_start ):
-                progress = device.kilowatt_hours_monthly/( device.devicewebsettings.current_tier.max_percentage_of_baseline/100*territory.summer_rate*days_this_month)*100;
+                progress = device.kilowatt_hours_monthly/( device.devicewebsettings.current_tier.max_percentage_of_baseline/100*territory.summer_rate*days_this_month)*100
             else:
-                progress = device.kilowatt_hours_monthly/( device.devicewebsettings.current_tier.max_percentage_of_baseline/100*territory.winter_rate*days_this_month)*100;
+                progress = device.kilowatt_hours_monthly/( device.devicewebsettings.current_tier.max_percentage_of_baseline/100*territory.winter_rate*days_this_month)*100
             if progress > 100: progress = 100
-        context['tier_progress_list'].append({'device':device, 'progress':progress});
-        device_tier_progress[device.serial] = progress
-    device = Device.objects.get(serial=int(serial))
-    if device.owner == user:
-      device.tier_progress = device_tier_progress[device.serial]
-      context['device'] = device
-      context['territory'] = territory
-      context['tiers'] = Tier.objects.filter(rate_plan=device.devicewebsettings.rate_plans.all()[0])
-      return render(request, 'base/billing_information.html', context)
-  return render(status_code=400)
+         context['tier_progress_list'].append({'device':device, 'progress':progress});
+         if device.serial == int(serial):
+            context['current_device'] = {'device':device, 'progress':progress}
+         device_tier_progress[device.serial] = progress
+      device = Device.objects.get(serial=int(serial))
+      if device.owner == user:
+         context['territory'] = territory
+         context['tiers'] = Tier.objects.filter(rate_plan=device.devicewebsettings.rate_plans.all()[0])
+         context['device'] = device
+         return render(request, 'base/billing_information.html', context)
+   return render(status_code=400)
 
 @login_required(login_url='/signin/')
 def dashboard_update(request):

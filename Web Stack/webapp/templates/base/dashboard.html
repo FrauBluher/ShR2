@@ -96,38 +96,44 @@
 
 var device_serial;
 
-$(function() {
-    var circuits = [
-        {% for circuit in my_devices.0.circuits %}
-        {{ circuit.pk }},
-        {% endfor %}
-    ];
-    $('.circuit-pagination').bootpag({
-        total: {% for circuit in my_devices.0.circuits %}{% if forloop.last %}1{% else %}1+{% endif %}{% endfor %},
-        hrefVariable: 1
-    }).on("page", function(event, num){
-        $.get('/charts/device/'+device_serial+'/chart/',
+{% for device in my_devices %}
+    function get_circuit_chart{{ device.serial }}() {
+        var circuits = [
+            {% for circuit in device.circuits %}
+            {{ circuit.pk }},
+            {% endfor %}
+        ];
+        $('.circuit-pagination').bootpag({
+            total: {% for circuit in device.circuits %}{% if forloop.last %}1{% else %}1+{% endif %}{% endfor %},
+            hrefVariable: 1
+        }).on("page", function(event, num){
+            $.get('/charts/device/{{ device.serial }}/chart/',
+                {
+                    'stack': 'true',
+                    'localtime': +(new Date()/1000),
+                    'circuit_pk': circuits[num-1]
+                }
+            ).done(function(data) {
+                $('#ajax-container2').html(data);
+                render_circuitChart();
+            });
+        });
+      device_serial = {{ device.serial }}
+      $.get('/charts/device/{{ device.serial }}/chart/',
             {
                 'stack': 'true',
                 'localtime': +(new Date()/1000),
-                'circuit_pk': circuits[num-1]
+                'circuit_pk': circuits[0]
             }
         ).done(function(data) {
             $('#ajax-container2').html(data);
             render_circuitChart();
         });
-    });
-  device_serial = {{ my_devices.0.serial }}
-  $.get('/charts/device/'+device_serial+'/chart/',
-        {
-            'stack': 'true',
-            'localtime': +(new Date()/1000),
-            'circuit_pk': circuits[0]
-        }
-    ).done(function(data) {
-        $('#ajax-container2').html(data);
-        render_circuitChart();
-    });
+    }
+{% endfor %}
+
+$(function() {
+    get_circuit_chart{{ my_devices.0.serial}}();
 });
 
 function refresh_chart(stack) {
@@ -186,24 +192,33 @@ function get_wattage_usage() {
               infowindow{{ device2.serial }}.close();
              {% endfor %}
              infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
-             $.get('/charts/device/{{ device.serial }}/chart/',
-               {
-                'stack': true,
-                'localtime': +(new Date)/1000,
-               },
-               function(data) {
-                 $('#ajax-container1').html(data);
-                 render_chart();
-                 $('#chart-title').html("{{ device.name }} at a glance");
-                 $('#chart-title').val("{{ device.serial }}");
-                 device_serial = {{ device.serial }};
-               }
-             );
+             change_dashboard_device{{ device.serial }}();
            });
         }
      );
    {% endfor %}
 }
+
+{% for device in my_devices %}
+    // Function to update device-specific elements on the dashboard for device with serial {{ device.serial }}
+    function change_dashboard_device{{ device.serial }}() {
+        console.log("Device change");
+        get_circuit_chart{{ device.serial }}();
+        $.get('/charts/device/{{ device.serial }}/chart/',
+            {
+                'stack': true,
+                'localtime': +(new Date)/1000,
+            },
+            function(data) {
+                $('#ajax-container1').html(data);
+                render_chart();
+                $('#chart-title').html("{{ device.name }} at a glance");
+                $('#chart-title').val("{{ device.serial }}");
+                device_serial = {{ device.serial }};
+            }
+        );
+    }
+{% endfor %}
 
 var map_open = true;
 

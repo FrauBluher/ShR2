@@ -47,9 +47,9 @@ class Device(models.Model):
    position = GeopositionField(blank=True, null=True)
    registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)
-   channel_0 = models.ForeignKey(CircuitType, related_name='Channel 0', blank=True, null=True)
    channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1', blank=True, null=True)
    channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2', blank=True, null=True)
+   channel_3 = models.ForeignKey(CircuitType, related_name='Channel 3', blank=True, null=True)
    data_retention_policy = models.IntegerField(help_text='Number of months of data to keep in database', default=12)
    kilowatt_hours_monthly = models.FloatField(default=0, editable=False, help_text='Monthly killowatt consumption')
    kilowatt_hours_daily = models.FloatField(default=0, editable=False, help_text='Daily killowatt consumption')
@@ -137,14 +137,14 @@ class Event(models.Model):
          self.device.kilowatt_hours_daily += kwh
 
          tier_dict = {}
-         tier_dict['name'] = "tier.device."+str(device.serial)
+         tier_dict['name'] = "tier.device."+str(self.device.serial)
          tier_dict['columns'] = ['tier_level']
          tier_dict['points'] = []
 
          # Calculate percent of baseline to get tier level
          # Start by determining current time of year
          this_year = datetime.now().year
-         this_month = datetime.now().day
+         this_month = datetime.now().month
          days_this_month = monthrange(this_year,this_month)[1]
          summer_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].summer_start,day=1)
          winter_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].winter_start,day=1)

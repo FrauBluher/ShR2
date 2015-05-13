@@ -68,7 +68,7 @@
 
     $('#kilowatt-hours-monthly').html(String(parseInt({{ device.kilowatt_hours_monthly }})));
     $('#kilowatt-hours-allowed').html(String(parseInt({{ territory.summer_rate}}*daysInMonth)));
-    $('#kilowatt-hours-remaining').html(String(parseInt(({{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}/100*{{ territory.summer_rate }}*daysInMonth) - {{ device.kilowatt_hours_monthly }})));
+    $('#kilowatt-hours-remaining').html(String(parseInt(({% if device.devicewebsettings.current_tier.max_percentage_of_baseline == None %}0{% else %}{{ device.devicewebsettings.current_tier.max_percentage_of_baseline }}{% endif %}/100*{{ territory.summer_rate }}*daysInMonth) - {{ current_device.device.kilowatt_hours_monthly }})));
 
     var div2=d3.select(document.getElementById('div2'));
 
@@ -83,7 +83,7 @@
     }
 
     function start() {
-        var progress = {{ device.tier_progress }};
+        var progress = {{ current_device.progress }};
         var rp2 = radialProgress(document.getElementById('div2'))
                 .label("TIER {{ device.devicewebsettings.current_tier.tier_level }}")
                 .diameter(200)
