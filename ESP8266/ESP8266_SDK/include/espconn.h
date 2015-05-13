@@ -51,6 +51,7 @@ typedef struct _esp_tcp {
     espconn_connect_callback connect_callback;
     espconn_reconnect_callback reconnect_callback;
     espconn_connect_callback disconnect_callback;
+	espconn_connect_callback write_finish_fn;
 } esp_tcp;
 
 typedef struct _esp_udp {
@@ -85,6 +86,14 @@ struct espconn {
     espconn_sent_callback sent_callback;
     uint8 link_cnt;
     void *reverse;
+};
+
+enum espconn_option{
+	ESPCONN_START = 0x00,
+	ESPCONN_REUSEADDR = 0x01,
+	ESPCONN_NODELAY = 0x02,
+	ESPCONN_COPY = 0x04,
+	ESPCONN_END
 };
 
 /******************************************************************************
@@ -202,6 +211,18 @@ sint8 espconn_get_connection_info(struct espconn *pespconn, remot_info **pcon_in
 sint8 espconn_regist_sentcb(struct espconn *espconn, espconn_sent_callback sent_cb);
 
 /******************************************************************************
+ * FunctionName : espconn_regist_sentcb
+ * Description  : Used to specify the function that should be called when data
+ *                has been successfully delivered to the remote host.
+ * Parameters   : espconn -- espconn to set the sent callback
+ *                sent_cb -- sent callback function to call for this espconn
+ *                when data is successfully sent
+ * Returns      : none
+*******************************************************************************/
+
+sint8 espconn_regist_write_finish(struct espconn *espconn, espconn_connect_callback write_finish_fn);
+
+/******************************************************************************
  * FunctionName : espconn_sent
  * Description  : sent data for client or server
  * Parameters   : espconn -- espconn to set for client or server
@@ -264,6 +285,16 @@ sint8 espconn_regist_disconcb(struct espconn *espconn, espconn_connect_callback 
 *******************************************************************************/
 
 uint32 espconn_port(void);
+
+/******************************************************************************
+ * FunctionName : espconn_set_opt
+ * Description  : access port value for client so that we don't end up bouncing
+ *                all connections at the same time .
+ * Parameters   : none
+ * Returns      : access port value
+*******************************************************************************/
+
+sint8 espconn_set_opt(struct espconn *espconn, uint8 opt);
 
 /******************************************************************************
  * TypedefName : dns_found_callback
@@ -353,6 +384,22 @@ sint8 espconn_igmp_join(ip_addr_t *host_ip, ip_addr_t *multicast_ip);
  * Returns      : none
 *******************************************************************************/
 sint8 espconn_igmp_leave(ip_addr_t *host_ip, ip_addr_t *multicast_ip);
+
+/******************************************************************************
+ * FunctionName : espconn_recv_hold
+ * Description  : hold tcp receive
+ * Parameters   : espconn -- espconn to hold
+ * Returns      : none
+*******************************************************************************/
+sint8 espconn_recv_hold(struct espconn *pespconn);
+
+/******************************************************************************
+ * FunctionName : espconn_recv_unhold
+ * Description  : unhold tcp receive
+ * Parameters   : espconn -- espconn to unhold
+ * Returns      : none
+*******************************************************************************/
+sint8 espconn_recv_unhold(struct espconn *pespconn);
 
 #endif
 
