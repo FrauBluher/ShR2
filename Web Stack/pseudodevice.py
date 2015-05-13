@@ -20,16 +20,11 @@ class Device():
 def appliance_gen():
    appliances = []
    names = [
-      """
-      {'name':'Computer','avg':100},
-      {'name':'Refrigerator','avg':400},
-      {'name':'Toaster','avg':20},
-      {'name':'Television','avg':60},
-      """
       {'name':'Unknown','avg':700},
    ]
-   for i in range(1, 6):
-      appliances.append(Appliance(i, names[i-1]['name'], names[i-1]['avg']))
+   #for i in range(1, 6):
+   #   appliances.append(Appliance(i, names[i-1]['name'], names[i-1]['avg']))
+   appliances.append(Appliance(5, names[0]['name'], names[0]['avg']))
    return appliances
 
 def main():
@@ -39,7 +34,7 @@ def main():
    parser.add_option("-s", "--size", dest="size", type="int",
                      help="define the number of packets to send")
    parser.add_option("-d", "--device", dest="serial", type="int",
-                     help="serial of device to send from", metavar="hyperlink")
+                     help="serial of device to send from")
    parser.add_option("-f", "--frequency", dest="frequency", type="int",
                      help="packets per second", metavar="frequency")
    parser.add_option("-v", "--verbose", action="store_true", dest="verbose")
@@ -82,35 +77,42 @@ def main():
       size = int(end-time.time())
    
    if size is not None:
+      duration = size/options.frequency
       print "Starting data generation."
       print "Total number of packets: "+str(size)
-      print "Time until done: "+str(size)+" seconds"
+      print "Time until done: "+str(duration)+" seconds"
       print "ETA: "+datetime.datetime.fromtimestamp(
-            int(time.time()+size-28800)
+            int(time.time()+duration-28800)
          ).strftime('%Y-%m-%d %H:%M:%S')
       url = 'http://seads.brabsmit.com/api/event-api/'
       headers = {'content-type': 'application/json'}
       widgets = [device.name+': ', Percentage(), ' ', Bar(), ' ', ETA()]
-      pbar = ProgressBar(widgets=widgets, maxval=size).start()
+      pbar = ProgressBar(widgets=widgets, maxval=duration).start()
+      ts = time.time()
+      dataPoints = []
+      points_per_packet = options.frequency
+      point_count = 0
       for i in range(size):
-         ts = time.time()
-         dataPoints = []
          for appliance in appliances:
-            dataPoints.append({"timestamp":int(ts),
-                              "wattage": random.randint(int(appliance.avg/1.3), int(appliance.avg*1.3)),
-                              "appliance_pk": appliance.pk
+            dataPoints.append({
+                                "wattage": random.randint(int(appliance.avg/1.3), int(appliance.avg*1.3)),
                               })
-         payload = {
-            'device': '/api/device-api/'+str(serial)+'/',
-            'dataPoints': json.dumps(dataPoints),
-         }
-         r = requests.post(url, data=json.dumps(payload), headers=headers)
-         if r.status_code != 201:
-            print 'Error: event not created'
-            print payload
-            print r.text
-            sys.exit(1)
-         if verbose: pbar.update(i)
+         point_count += 1
+         if point_count == points_per_packet:
+            payload = {
+               'device': '/api/device-api/'+str(data_serial)+'/',
+               'time': [hex(int(ts)), str(options.frequency)],
+               'dataPoints': dataPoints
+            }
+            r = requests.post(url, data=json.dumps(payload), headers=headers)
+            point_count = 0
+            ts = time.time()
+            if r.status_code != 201:
+               print 'Error: event not created'
+               print json.dumps(payload)
+               print r.text
+               sys.exit(1)
+            if verbose: pbar.update(i)
          if options.frequency:
             time.sleep(1/options.frequency)
          else:
