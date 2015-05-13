@@ -17,6 +17,7 @@
 #include "uart.h"
 #include "send_recv_port.h"
 #include "http_request.h"
+#include "extralib.h"
 
 //server name and device ID number
 #define SERVER_NAME "seads.brabsmit.com"
@@ -54,21 +55,25 @@
 
 //format string for json data
 #define JSON_DATA	"{\"device\":\"/api/device-api/%s/\","\
+					"\"time\":[\"%s\", \"%x\"],"\
 					"\"dataPoints\":[%s]}"
 
 //one data point
-#define DATA_POINT	"{\"timestamp\":%s,\"wattage\":%d}"
+#define DATA_POINT	"{\"wattage\":%u}"
 //comma separation
 #define COMMA		","
-
-bool make_device = FALSE;
 
 //approximately in howevery many times send http request is called
 #define WIFI_CONFIG_TIMEOUT 10
 
+bool send_get_config = false;
 //connection tries
 uint8_t connect_try = 0;
 
+//time offset
+uint64_t offset = 0;
+
+uint16_t frequency = 1;
 //len 81
 //AT+CIPSEND=81
 
@@ -107,19 +112,17 @@ void print_espconn_state(espconn *serv_connection) {
 sint8 ICACHE_FLASH_ATTR
 package_send(espconn *serv_conn) {
 	//init variables
+	char timebuffer[21] = "";
 	uint16_t chars_written = 0;
 	uint16_t i = 0;
-	char *data_points = (char *)os_malloc(send_buffer_ptr->count * 40);
-	if (data_points == NULL) {
-		os_printf("memory error\r\n");
-		return 0;
-	}
+	char *data_points = (char *)os_malloc(send_buffer_ptr->count * 20);
 	//send regular data
 	os_printf("\r\nData Count: %d\r\n", send_buffer_ptr->count);
 	char *data_ptr = data_points;
+	inttohexstring(send_buffer_ptr->buffer[send_buffer_ptr->tail].
+		timestamp + offset, timebuffer);
 	//loop over all available data to send
 	chars_written = os_sprintf(data_ptr, DATA_POINT,
-		send_buffer_ptr->buffer[send_buffer_ptr->tail].timestamp,
 		send_buffer_ptr->buffer[send_buffer_ptr->tail].wattage);
 	pop_pop_buffer();
 	//ensured that there is at least one data point
@@ -127,34 +130,24 @@ package_send(espconn *serv_conn) {
 		data_ptr += chars_written;
 		chars_written = os_sprintf(data_ptr, COMMA);
 		data_ptr += chars_written;
-		chars_written = os_sprintf(data_ptr, DATA_POINT, 
-			send_buffer_ptr->buffer[send_buffer_ptr->tail].timestamp,
+		chars_written = os_sprintf(data_ptr, DATA_POINT,
 			send_buffer_ptr->buffer[send_buffer_ptr->tail].wattage);
 		pop_pop_buffer();
 	}
-	char *json_data = (char *)os_malloc(100 + i * 40);
-	if (json_data == NULL) {
-		os_printf("memory error\r\n");
-		os_free(data_points);
-		return 0;
-	}
+	char *json_data = (char *)os_malloc(100 + strlen(data_points));
 	//concatonates json data
 	chars_written = os_sprintf(json_data, JSON_DATA, DEVICE_ID,
-		data_points);
+		timebuffer, frequency, data_points);
 	os_free(data_points);
 	//allocates final data buffer
-	char *send_data = (char *)os_malloc(300 + i * 40);
-	if (send_data == NULL) {
-		os_printf("memory error\r\n");
-		os_free(json_data);
-		return 0;
-	}
+	char *send_data = (char *)os_malloc(200 + strlen(json_data));
 	//concatonates the data to send with the http header
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
 	os_free(json_data);
-	os_printf("Final Buf Len: %d\r\n", 300 + i * 40);
-	os_printf("Actual Data Len: %d\r\n", strlen(send_data));
+	os_printf("Final Buf Len: %d\r\nActual Data Len: %d\r\n",
+		300 + i * 16, strlen(send_data));
+	//os_printf("%s\r\n", send_data);
 	//send the data.
 	sint8 retvalue = espconn_sent(serv_conn, (uint8 *)send_data,
 		strlen(send_data));
@@ -187,33 +180,51 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 	os_printf("recv\r\n");
 	//print out what was received
 	espconn *serv_conn=(espconn *)arg;
-	/*for (i = 0; i < 12; i++) {
-		uart0_putChar(data[i]);
-	}
-	uart0_putChar('\r');
-	uart0_putChar('\n');*/
 	//if we received a 404, then create the device
 	if (strncmp(data, "HTTP/1.1 404", 12) == 0) {
 		char send_data[256] = "";
 		os_printf("Creating device\r\n");
 		os_sprintf(send_data, POST_DEVICE,
 			13 + strlen(DEVICE_ID), DEVICE_ID);
+		//possibly need to move somewhere else
+      
 		espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
 	//received a 200, then we successfully got settings
 	} else if(strncmp(data, "HTTP/1.1 200", 12) == 0) {
-		//what we received printed out
-		os_printf("len is %d\r\n", len);
-		for (i = 0; i < len; i++) {
+		char *temp_ptr;
+		for (temp_ptr = data;
+			strncmp(temp_ptr, "seconds", 7) != 0;
+			temp_ptr++) {
+			if (temp_ptr == NULL) {
+				return;
+			}	
+		}
+		temp_ptr += 9;
+		uint16_t rate = stringtoint(temp_ptr);
+		for (; strncmp(temp_ptr, "date_now", 8) != 0;
+			temp_ptr++) {
+			if (temp_ptr == NULL) {
+				return;
+			}
+		}
+		temp_ptr += 10;
+		offset = stringtoint(temp_ptr);
+		set_rate(rate);
+		os_printf("rate is %u\r\noffset is %llu\r\n", rate,
+			(long long unsigned int)offset);
+		done_config();
+	//received a 201, then we successfully posted data
+	} else if(strncmp(data, "HTTP/1.1 201", 12) == 0) {
+		os_printf("CREATED\r\n");
+	} else {
+		for (i = 0; i < 12; i++) {
 			uart0_putChar(data[i]);
 		}
 		uart0_putChar('\r');
 		uart0_putChar('\n');
-	//received a 201, then we successfully posted data
-	} else if(strncmp(data, "HTTP/1.1 201", 12) == 0) {
-		os_printf("CREATED\r\n");
 	}
-	
 	print_espconn_state(serv_conn);
+	return;
 }
 
 /**
@@ -224,9 +235,9 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
   */
 static void ICACHE_FLASH_ATTR
 networkConnectedCb(void *arg) {
-	os_printf("conn_start\r\n");
-	config_send((espconn *)arg);
-	os_printf("conn_end\r\n");
+	os_printf("conn\r\n");
+	//config_send((espconn *)arg);
+	//os_printf("conn_end\r\n");
 	print_espconn_state((espconn *)arg);
 }
 
@@ -300,7 +311,7 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
   */
 void ICACHE_FLASH_ATTR
 network_start(void) {
-	os_printf("Looking up server...\r\n");
+	os_printf("Looking up server\r\n");
 	espconn_gethostbyname(&serv_conn, SERVER_NAME, &serv_ip,
 						  networkServerFoundCb);
 	print_espconn_state(&serv_conn);
@@ -344,13 +355,11 @@ send_http_request(circular_send_buffer_t *temp) {
 	//1 stands for STA mode 2 is AP and 3 is both STA+AP
 	if (wifi_station_get_connect_status() == STATION_GOT_IP &&
 		wifi_get_opmode() == 1) {
-		uart0_sendStr("Station has IP address\r\n");
 		//reset the connect try variable for wifi config
 		connect_try = 0;
 		send_buffer_ptr = temp;
 		//if the server connection isn't up???? start it
-		if (serv_conn.state == ESPCONN_NONE ||
-			serv_conn.state == ESPCONN_CLOSE) {
+		if (serv_conn.state == ESPCONN_NONE) {
 			network_start();
 		} else if (serv_conn.state == ESPCONN_CONNECT &&
 				   send_buffer_ptr == NULL) {
@@ -359,6 +368,11 @@ send_http_request(circular_send_buffer_t *temp) {
 		} else if (serv_conn.state == ESPCONN_CONNECT) {
 			//send data function
 			sint8 d = package_send(&serv_conn);
+		} else if (serv_conn.state == ESPCONN_CLOSE) {
+			//not sure if this is right?
+			//espconn_disconnect(&serv_conn);
+			espconn_delete(&serv_conn);
+			network_start();
 		}
 		return_value = true;
 	} else if (wifi_get_opmode() == 1) {
@@ -366,11 +380,11 @@ send_http_request(circular_send_buffer_t *temp) {
 		//to connect to the access point
 		if (connect_try++ >= WIFI_CONFIG_TIMEOUT) {
 			connect_try = 0;
-			os_printf("System resetting for wifi config\r\n");
+			os_printf("Resetting for wifi config\r\n");
 			wifi_set_opmode(2);
 			system_restart();
 		} else {
-			os_printf("System going into AP mode after %d more attempts\r\n",
+			os_printf("Going into AP mode after %d more attempts\r\n",
 					  WIFI_CONFIG_TIMEOUT - connect_try);
 		}
 		return_value = false;
