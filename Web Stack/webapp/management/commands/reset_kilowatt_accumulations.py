@@ -23,6 +23,7 @@ class Command(BaseCommand):
             rate_plan = device.devicewebsettings.rate_plans.all()[0]
             tiers = Tier.objects.filter(rate_plan=rate_plan)
             device.devicewebsettings.current_tier = tiers.get(tier_level=1)
+            device.devicewebsettings.save()
          device.save()
          with open('/home/ubuntu/reset.log','a') as f:
             f.write('Reset '+device.name)

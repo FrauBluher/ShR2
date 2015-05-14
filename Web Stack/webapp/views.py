@@ -494,8 +494,8 @@ def device_chart(request, serial):
 
          appliance_names = Set()
          if circuit_pk:
-            circuit = Circuit.objects.get(pk=circuit_pk)
-            appliance_names = Set(circuit.circuittype.appliances.all())
+            circuit = CircuitType.objects.get(pk=circuit_pk)
+            appliance_names = Set(circuit.appliances.all())
             context['circuit_pk'] = circuit_pk
             context['circuit_name'] = circuit.name
          else:

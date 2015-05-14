@@ -110,7 +110,7 @@ class DeviceWebSettings(models.Model):
    utility_companies = models.ManyToManyField(UtilityCompany)
    rate_plans = models.ManyToManyField(RatePlan)
    territories = models.ManyToManyField(Territory)
-   current_tier = models.ForeignKey(Tier, editable=False)
+   current_tier = models.ForeignKey(Tier)
 
 class DashboardSettings(models.Model):
    user = models.OneToOneField(User)
