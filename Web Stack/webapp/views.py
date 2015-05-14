@@ -186,7 +186,7 @@ class SettingsForm(forms.Form):
       #  default = DashboardSettings.objects.get(user=user),
       #)
     if device:
-      self.share_with_choices = make_choices([User.objects.all(),])
+      self.share_with_choices = make_choices([User.objects.all().exclude(username=device.owner.username),])
       self.channel_0_choies = make_choices([CircuitType.objects.all(),])
       self.channel_1_choies = make_choices([CircuitType.objects.all(),])
       self.channel_2_choies = make_choices([CircuitType.objects.all(),])
