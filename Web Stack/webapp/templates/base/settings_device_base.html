@@ -1,4 +1,5 @@
 <!-- TODO devices dropdown needs implementing. Everything is using devices.0 right now. -->
+{% if devices %}
 <script>
 $('.device-dropdown').click(function() {
    $('.selected-device').html($(this).html()+" ");
@@ -47,3 +48,6 @@ $(function() {
 </form>
 
 <div id='forms-container'></div>
+{% else %}
+<h4>You currently have no devices.</h4>
+{% endif %}

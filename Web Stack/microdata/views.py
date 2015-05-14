@@ -8,6 +8,7 @@ from django.core.validators import RegexValidator
 from django.http import HttpResponse
 from django import forms
 from django.core import serializers
+from django.conf import settings
 
 from rest_framework import permissions, authentication
 from rest_framework.response import Response
@@ -16,14 +17,15 @@ from rest_framework import viewsets
 from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer
 from microdata.models import Device, Event, Appliance
 
-from influxdb import client as influxdb
+from influxdb.influxdb08 import client as influxdb
 
 from geoposition import Geoposition
 import json
 import time
 import ast
+import boto3
 
-
+"""
 class KeyForm(forms.Form):
    alphabetic = RegexValidator(r'^[a-zA-Z]*$', 'Only alphabetical characters are allowed.')
    attrs_digit = {'size':1, 'maxlength':1, 'style':'text-align: center; margin-right: 0.5rem;', 'class':'keyField single-cell digit'}
@@ -39,7 +41,10 @@ class KeyForm(forms.Form):
    char2 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
    char3 = forms.CharField(widget=forms.TextInput(attrs=attrs_char), max_length=1, validators=[alphabetic])
    char4 = forms.CharField(widget=forms.TextInput(attrs=attrs_char_last), max_length=1, validators=[alphabetic])
-   
+"""
+
+class KeyForm(forms.Form):
+   serial = forms.IntegerField()
 
 class ApplianceViewSet(viewsets.ModelViewSet):
    """
@@ -76,64 +81,100 @@ class EventViewSet(viewsets.ModelViewSet):
       try:
          serial = query.get('device').split('/')[-2:-1][0]
          device = Device.objects.get(serial=serial)
-         event = Event.objects.create(device=device, dataPoints = json.dumps(query.get('dataPoints')))
+         start = int(query.get('time')[0], 16)
+         frequency = int(query.get('time')[1], 16)
+         event = Event.objects.create(device=device, start=start, frequency=frequency, dataPoints=json.dumps(query.get('dataPoints')))
          device.ip_address = request.META.get('REMOTE_ADDR')
          device.save()
          data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
-         return HttpResponse(query, content_type="application/json", status=201)
+         return HttpResponse(data, content_type="application/json", status=201)
       except:
          return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
-
-@csrf_exempt
-def new_device_location(request, serial):
-   if request.method == 'POST':
-      latitude = float(request.POST.get('latitude'))
-      longitude = float(request.POST.get('longitude'))
-      context = {}
-      if latitude and longitude:
-         device = Device.objects.get(serial=serial)
-         device.position = Geoposition(latitude, longitude)
-         device.save()
-         context['latitude'] = latitude
-         context['longitude'] = longitude
-         return render(request, 'base/success.html', context)
-
-   return render(request, 'base/location.html', {'serial':serial})
     
-def new_device_key(request):
+def new_device(request):
    error = False
    created = False
-   if request.method == 'POST':
-      form = KeyForm(request.POST)
-      if form.is_valid():
-         secret_key =  str(form.cleaned_data['digit1'])
-         secret_key += str(form.cleaned_data['digit2'])
-         secret_key += str(form.cleaned_data['digit3'])
-         
-         secret_key += form.cleaned_data['char1']
-         secret_key += form.cleaned_data['char2']
-         secret_key += form.cleaned_data['char3']
-         secret_key += form.cleaned_data['char4']
-         devices = Device.objects.filter(registered=False, secret_key=secret_key.upper())
-         device = devices[0] if devices else None
-         if device:
-            device.owner = request.user
-            device.registered = True
-            device.save()
-            created = True
-            request.method = 'GET'
-            return new_device_location(request, device.serial)
-         else: error = True
+   device = None
+   template = 'base/new_device/first.html'
+   form = None
+   forward = request.GET.get('forward', None)
+   page = request.GET.get('page', False)
+   if page:
+      if forward != None:
+         if page == 'first':
+            if forward == 'true':
+               form = KeyForm()
+               template = 'base/new_device/key.html'
+            else:
+               template = 'base/new_device/help.html'
+         elif page == 'help':
+            if forward == 'true':
+               template = 'base/new_device/first.html'
+         elif page == 'key':
+            if forward == 'false':
+               template = 'base/new_device/first.html'
+      else:
+         template = 'base/new_device/first.html'
    else:
-      form = KeyForm()
-   return render(request, 'base/key.html', {
+      if request.method == 'POST':
+         template = 'base/new_device/result.html'
+         form = KeyForm(request.POST)
+         if form.is_valid():
+            """
+            secret_key =  str(form.cleaned_data['digit1'])
+            secret_key += str(form.cleaned_data['digit2'])
+            secret_key += str(form.cleaned_data['digit3'])
+            
+            secret_key += form.cleaned_data['char1']
+            secret_key += form.cleaned_data['char2']
+            secret_key += form.cleaned_data['char3']
+            secret_key += form.cleaned_data['char4']
+            """
+            serial = str(form.cleaned_data['serial'])
+            devices = Device.objects.filter(registered=False, serial=serial)
+            device = devices[0] if devices else None
+            if device:
+               device.owner = request.user
+               device.registered = True
+               device.save()
+               created = True
+               form = False
+            else: error = True
+      else:
+         form = KeyForm()
+   return render(request, template, {
              'form':form,
              'error':error,
-             'created':created
+             'created':created,
+             'device':device
              })
 
 def timestamp(request):
    milliseconds = time.time()*1000
    return HttpResponse(json.dumps(milliseconds), content_type="application/json")
 
-    
+def initiate_job_to_glacier(request, requester, end_time):
+   glacier = boto3.client('glacier', region_name='us-west-2')
+   with open(settings.STATIC_PATH+'archive_ids.log', 'r') as f:
+      archives = f.read()
+      for archive in archives.split(';'):
+         try:
+            archive = json.loads(archive)
+            # download up to the time specified
+            if archive['timeEnd'] < end_time:
+               parameters = {
+                  'Type': 'archive-retrieval',
+                  'ArchiveId': archive['archiveId'],
+                  'Description': str(requester.pk)
+               }
+               job = glacier.initiate_job(vaultName=settings.GLACIER_VAULT_NAME, jobParameters=parameters)
+               return job['HTTPStatusCode']
+         except:
+            return 400
+   return 404
+
+
+
+
+
+

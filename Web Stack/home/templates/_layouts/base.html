@@ -34,6 +34,9 @@
   <link href="{% static 'webapp/font-awesome-4.1.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'webapp/css/screen.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'webapp/css/jquery.sidr.light.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'webapp/css/daterangepicker-bs3.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'webapp/css/multi-select.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'webapp/css/loader.css' %}" rel="stylesheet" type="text/css">
 
   {# use the CDN to get bootstrap css. can not be inside compress css block #}
   {% block cdn_css %}
@@ -56,6 +59,9 @@
   <script src="{% static 'webapp/js/date.js' %}"></script>
   <script src="{% static 'webapp/js/jquery.sidr.min.js' %}"></script>
   <script src="{% static 'webapp/js/jquery.bootpag.min.js' %}"></script>
+  <script src="{% static 'webapp/js/moment.js' %}"></script>
+  <script type="text/javascript" src="{% static 'webapp/js/d3.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'webapp/js/radialProgress.js' %}"></script>
 
 </head>
 <body style="font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; margin-top:51px;" class="{% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}>
@@ -117,6 +123,8 @@
    <script src="{% static 'webapp/js/sb-admin-2.js' %}"></script>
    <script src="{% static 'webapp/js/metisMenu.min.js' %}"></script>
    <script src="{% static 'webapp/js/eventCodes.js' %}"></script>
+   <script src="{% static 'webapp/js/daterangepicker.js' %}"></script>
+   <script src="{% static 'webapp/js/jquery.multi-select.js' %}"></script>
 
   <!-- scripts concatenated and minified via django-compressor -->
   

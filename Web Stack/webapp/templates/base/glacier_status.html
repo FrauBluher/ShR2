@@ -1,0 +1,19 @@
+{% extends "_layouts/base.html" %}
+
+{% block page_title %}SEADS{% endblock %}
+{% block page_class %}sign-in{% endblock %}
+
+{% block content %}
+{% include "base/navbar.html" %}
+</nav>
+   <div class="container">
+      {% if glacier %}
+      <span>You have selected a range of data that falls outside of your device's data retention policy, so we are unable to satisfy your request right away. Don't worry! We still have your data, but it has been archived. Archive retrieval can take up to 4 hours. When this process completes, we will email you your data automatically. No further action is required on your part.</span>
+      <span>Why does it take so long? Amazon charges a hefty sum for keeping data within close reach. By archiving some of your data to the Amazon Glacier, we are able to keep your data at a low cost to us.</span>
+      {% else %}
+      <span>Something bad happened :(</span>
+      {% endif %}
+   </div>
+</div>
+{% endblock %}
+

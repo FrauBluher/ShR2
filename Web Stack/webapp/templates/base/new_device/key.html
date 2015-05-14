@@ -1,0 +1,78 @@
+   {% if form %}
+   <!--
+   <span> Enter the secret key for your SEADS device.</span>
+   <form id="keyForm" action="" method="post">
+      {% csrf_token %}
+      <div class="inputs" style="margin:2rem">
+         <table style="margin: auto;">
+            <tr>
+               <td>{{ form.digit1 }}</td>
+               <td>{{ form.digit2 }}</td>
+               <td>{{ form.digit3 }}</td>
+               <td>{{ form.char1 }}</td>
+               <td>{{ form.char2 }}</td>
+               <td>{{ form.char3 }}</td>
+               <td>{{ form.char4 }}</td>
+            </tr>
+         </table>
+      </div>
+   </form>
+   <div class="modal-footer">
+      <div class="col-md-6">
+      <button type="button" tabindex="1" id="back" class="btn btn-default btn-block">Back</button>
+     </div>
+     <div class="col-md-6">
+      <button type="button" tabindex="1" id="submit" class="btn btn-primary btn-block">Submit</button>
+     </div>
+   </div>
+   -->
+   <span> Enter the serial for your SEADS device.</span>
+   <form id="keyForm" action="" method="post">
+      {% csrf_token %}
+      <div class="inputs" style="margin:2rem">
+         <table style="margin: auto;">
+            <tr>
+               <td>{{ form.serial }}</td>
+            </tr>
+         </table>
+      </div>
+   </form>
+   <div class="modal-footer">
+      <div class="col-md-6">
+      <button type="button" tabindex="1" id="back" class="btn btn-default btn-block">Back</button>
+     </div>
+     <div class="col-md-6">
+      <button type="button" tabindex="1" id="submit" class="btn btn-primary btn-block">Submit</button>
+     </div>
+   </div>
+   {% endif %} <!-- if form -->
+
+
+<script>
+$('#submit').click(function(e){
+      e.preventDefault();
+      $.post('/new_device/key/',
+         $('#keyForm').serialize(), 
+         function(data, status, xhr){
+            $('#modalBody').html(data);
+         });
+});
+
+$('#back').click(function(e){
+      $.get('/new_device/',
+       {
+          forward: false,
+          page: 'key',
+       },
+       function(data){
+          $('.modal-content').html(data);
+       });
+});
+/*
+$(function () {
+   $.autotab({ tabOnSelect: true });
+   $('.digit').autotab('filter', 'number');
+   $('.char').autotab('filter', 'text');
+});
+*/
+</script>

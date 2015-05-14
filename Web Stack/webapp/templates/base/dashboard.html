@@ -1,5 +1,4 @@
-
-
+{% if my_devices %}
 <div class="row">
    <div style="height:400px; width:100%;" id="map-canvas"></div>
    <button id="map-slide-toggle" style="width:100%;"type="button" class="btn btn-default" aria-label="Left-Align">
@@ -10,14 +9,13 @@
 
 <div class="row">
     <div class="col-lg-12">
-        {% if my_devices %}
         <div class="panel panel-default">
             <div class="panel-heading">
                <div id='chart-title' value='{{ my_devices.0.serial }}'>{{ my_devices.0.name }} at a glance</div>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Change Chart Type
+                        <button type="button" id="chart-type-lable" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Unstacked
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
@@ -34,9 +32,6 @@
             <!-- /.panel-body -->
         </div>
         <!-- /.panel -->
-        {% else %}
-        <h4>You have no registered devices. <a href="javascrtipt:void(0)" data-toggle="modal" data-target="#deviceModal">Click Here</a> to register a new device</h4>
-        {% endif %}
     
     <div id='ajax-container1'></div>
     
@@ -56,45 +51,89 @@
         <!-- /.panel panel-default -->
     </div>
     <!-- /.col-lg-12 -->
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+            <div class="panel-heading">
+                Billing Information
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div id="ajax-billing-information"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-6 -->
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+            <div class="panel-heading">
+                Circuit Statistics
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div>Placeholder</div>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-6 -->
 </div>
 <!-- /.row -->
+
+<script>
+    // If the user has been here for 5 minutes, prompt for survey
+    $(function() {
+      setTimeout(
+        function() {
+          var head = document.getElementsByTagName('head')[0];
+          var script = document.createElement('script');
+          script.src = 'https://widget.surveymonkey.com/collect/website/js/USRb_2BM65RwhjIvJJ6KeHRiOcV0oLp2GWYYT5ajBIZBCj0KCxf0bUmUz72O5x_2FmXM.js';
+          head.appendChild(script);
+        },
+      300000);
+    });
+</script>
 
 <script>
 
 var device_serial;
 
-$(function() {
-    var circuits = [
-        {% for circuit in my_devices.0.circuits %}
-        {{ circuit.pk }},
-        {% endfor %}
-    ];
-    $('.circuit-pagination').bootpag({
-        total: {% for circuit in my_devices.0.circuits %}{% if forloop.last %}1{% else %}1+{% endif %}{% endfor %},
-        hrefVariable: 1
-    }).on("page", function(event, num){
-        $.get('/charts/device/'+device_serial+'/chart/',
+{% for device in my_devices %}
+    function get_circuit_chart{{ device.serial }}() {
+        var circuits = [
+            {% for circuit in device.circuits %}
+            {{ circuit.pk }},
+            {% endfor %}
+        ];
+        $('.circuit-pagination').bootpag({
+            total: {% for circuit in device.circuits %}{% if forloop.last %}1{% else %}1+{% endif %}{% endfor %},
+            hrefVariable: 1
+        }).on("page", function(event, num){
+            $.get('/charts/device/{{ device.serial }}/chart/',
+                {
+                    'stack': 'true',
+                    'localtime': +(new Date()/1000),
+                    'circuit_pk': circuits[num-1]
+                }
+            ).done(function(data) {
+                $('#ajax-container2').html(data);
+                render_circuitChart();
+            });
+        });
+      device_serial = {{ device.serial }}
+      $.get('/charts/device/{{ device.serial }}/chart/',
             {
                 'stack': 'true',
                 'localtime': +(new Date()/1000),
-                'circuit_pk': circuits[num-1]
+                'circuit_pk': circuits[0]
             }
         ).done(function(data) {
             $('#ajax-container2').html(data);
             render_circuitChart();
         });
-    });
-  device_serial = {{ my_devices.0.serial }}
-  $.get('/charts/device/'+device_serial+'/chart/',
-        {
-            'stack': 'true',
-            'localtime': +(new Date()/1000),
-            'circuit_pk': circuits[0]
-        }
-    ).done(function(data) {
-        $('#ajax-container2').html(data);
-        render_circuitChart();
-    });
+    }
+{% endfor %}
+
+$(function() {
+    get_circuit_chart{{ my_devices.0.serial}}();
 });
 
 function refresh_chart(stack) {
@@ -109,6 +148,11 @@ function refresh_chart(stack) {
       //TODO: blocks other ajax. Move to worker thread?
       render_chart();
       $('#chart-title').html(device_name+" at a glance");
+      if (stack) {
+        $('#chart-type-lable').html('Stacked <span class="caret"></span>');
+      } else {
+        $('#chart-type-lable').html('Unstacked <span class="caret"></span>');
+      }
     }
   );
 }
@@ -117,7 +161,7 @@ var contentArray = {}
 {% for device in my_devices %}
 contentArray['{{ device.serial }}'] = '';
 var marker{{ device.serial }};
-var infowindow{{ device.serial }};
+var infowindow{{ device.serial }} = new google.maps.InfoWindow();
 
 {% endfor %}
 
@@ -126,18 +170,19 @@ function get_wattage_usage() {
     $.get('/device/get_wattage_usage/',
         { serial: {{ device.serial }} },
         function(data) {
-           var current_wattage, average_wattage;
-           if (data.average_wattage > data.current_wattage) {
-              current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
-           } else {
-              current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
-              
+           var current_wattage, average_wattage, cost_today;
+           if (data.average_wattage !== null) {
+               if (data.average_wattage > data.current_wattage) {
+                  current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+               } else {
+                  current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+                  
+               }
+               average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
+               cost_today = data.cost_today;
            }
-           average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
-           contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Average Cost:</strong>$???</p>'+ current_wattage +'</div></div>';
-           infowindow{{ device.serial }} = new google.maps.InfoWindow({
-            content: contentArray['{{ device.serial }}']
-           });
+           contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Cost Today:</strong>$'+cost_today+'</p>'+ current_wattage +'</div></div>';
+           infowindow{{ device.serial }}.setContent(contentArray['{{ device.serial }}']);
            {% if forloop.first %}
            infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
            {% endif %}
@@ -147,24 +192,33 @@ function get_wattage_usage() {
               infowindow{{ device2.serial }}.close();
              {% endfor %}
              infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
-             $.get('/charts/device/{{ device.serial }}/chart/',
-               {
-                'stack': true,
-                'localtime': +(new Date)/1000,
-               },
-               function(data) {
-                 $('#ajax-container1').html(data);
-                 render_chart();
-                 $('#chart-title').html("{{ device.name }} at a glance");
-                 $('#chart-title').val("{{ device.serial }}");
-                 device_serial = {{ device.serial }};
-               }
-             );
+             change_dashboard_device{{ device.serial }}();
            });
         }
      );
    {% endfor %}
 }
+
+{% for device in my_devices %}
+    // Function to update device-specific elements on the dashboard for device with serial {{ device.serial }}
+    function change_dashboard_device{{ device.serial }}() {
+        console.log("Device change");
+        get_circuit_chart{{ device.serial }}();
+        $.get('/charts/device/{{ device.serial }}/chart/',
+            {
+                'stack': true,
+                'localtime': +(new Date)/1000,
+            },
+            function(data) {
+                $('#ajax-container1').html(data);
+                render_chart();
+                $('#chart-title').html("{{ device.name }} at a glance");
+                $('#chart-title').val("{{ device.serial }}");
+                device_serial = {{ device.serial }};
+            }
+        );
+    }
+{% endfor %}
 
 var map_open = true;
 
@@ -185,6 +239,16 @@ $(function() {
       }
       map_open = !map_open;
    });
+
+   $.get('/charts/billing_information/',
+    {
+      'serial': {{ my_devices.0.serial }}
+    },
+    function(data) {
+      $('#ajax-billing-information').html(data);
+    }
+  );
+
 });
 
 var map, placeSearch, autocomplete;
@@ -228,3 +292,26 @@ function initialize() {
    map.fitBounds (bounds);
 }
 </script>
+{% else %} <!-- if my_devices -->
+<h4>Welcome to the Dashboard! You have no registered devices. <a href="/settings/">Click Here</a> to register a new device</h4>
+<!-- tutorialModal -->
+<div class="modal fade" id="tutorialModal" tabindex="-1" role="dialog" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<script>
+$(function() {
+  $.get('/new_device/',
+    {
+     page: 'first'
+    },
+      function(data) {
+        $('.modal-content').html(data);
+        $('#tutorialModal').modal('show');
+  });
+});
+</script>
+{% endif %}

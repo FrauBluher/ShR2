@@ -21,6 +21,8 @@ GOOGLE_API_KEY = 'AIzaSyAZvP6Z9ia_oCJjmFORgVyVTnQMkJMbFTw'
 
 SES_EMAIL = 'seadsystems@gmail.com'
 S3_BUCKET = 'elasticbeanstalk-us-west-2-062302560606'
+GLACIER_VAULT_NAME = 'seads_archive'
+AWS_ACCOUNT_ID = '0623-0256-0606'
 
 ORG_NAME = 'SEADS'
 BASE_URL = 'seads.brabsmit.com'

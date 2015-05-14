@@ -28,13 +28,9 @@
     display: inline-block;
     float: left;
   }
-  .modal{
-    z-index: 20;
-    margin-top: 100px;
+  .modal-backdrop {
+    z-index: -1;
   }
-  .modal-backdrop{
-    z-index: 10;        
-  }​
   </style>
 </head>
 
@@ -74,6 +70,28 @@ function create_error_message(element, message) {
       });
   });
 
+  $('#submit-fullname').on("click", function(e) {
+    e.preventDefault();
+    var span = $("<span/>");
+    span.addClass('glyphicon-refresh glyphicon-refresh-animate');
+    $('#fullname-status').html(span);
+    $.post('/settings/account/',
+      $('form#fullname-form').serialize(),
+      function (data) {
+        span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
+        if (data.success) {
+          span.addClass("glyphicon glyphicon-ok");
+          $('#id_first_name').val(data.first_name);
+          $('#id_last_name').val(data.last_name);
+          $('.error').remove();
+        } else {
+          span.addClass("glyphicon glyphicon-remove");
+          create_error_message($('#id_first_name'), data.errors[0]);
+        }
+        $('#fullname-status').html(span);
+      });
+  });
+
   $('#submit-password').on("click", function(e) {
     e.preventDefault();
     var span = $("<span/>");
@@ -106,6 +124,9 @@ function create_error_message(element, message) {
 
 $(function() {
   $('#id_new_username').val("{{ user.get_username }}");
+  $('#id_first_name').val("{{ user.first_name }}");
+  $('#id_last_name').val("{{ user.last_name }}");
+  $('#id_email').val("{{ user.email }}");
   {% for choice in notification_choices %}
     $('input[value="{{ choice }}"]').prop('checked', true);
   {% endfor %}
@@ -157,10 +178,45 @@ $(function() {
   </div>
 </div>
 
-</fieldset>
-
-<fieldset>
 </form>
+
+
+<form id="fullname-form" class="form-horizontal">
+
+{% csrf_token %}
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="username">Full Name</label>  
+  <div class="col-md-2">
+  {{ form.first_name }}
+  <button style="margin-top:10px;" id="submit-fullname" name="singlebutton" class="btn btn-primary">Rename</button>
+  </div>
+  <div class="col-md-2">
+  {{ form.last_name }}
+  <!--input id="id_new_username" name="username" type="text" placeholder="{{ user.get_username }}" class="form-control input-md"-->
+  </div>
+  <div id="fullname-status" class="col-md-2"></div>
+</div>
+</form>
+
+<form id="email-form" class="form-horizontal">
+
+{% csrf_token %}
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="username">Email</label>  
+  <div class="col-md-4">
+  {{ form.email }}
+  <!--input id="id_new_username" name="username" type="text" placeholder="{{ user.get_username }}" class="form-control input-md"-->
+  <button style="margin-top:10px;" id="submit-email" name="singlebutton" class="btn btn-primary">Change</button>
+  </div>
+  <div id="email-status" class="col-md-2"></div>
+</div>
+</form>
+
+
 <form id="notification-form">
 
 {% csrf_token %}
@@ -199,31 +255,31 @@ $(function() {
 <div class="form-group">
   <label class="col-md-4 control-label" for="new-device">New Device</label>
   <div class="col-md-8">
-    <button data-toggle="modal" data-target="#deviceModal" id="new-device" name="new-device" class="btn btn-success">Click to Add Device</button>
+    <button data-toggle="modal" data-target="#tutorialModal" id="new-device" name="new-device" class="btn btn-success">Click to Add Device</button>
   </div>
 </div>
 </fieldset>
 </form>
 
-<!-- deviceModal -->
-<div class="modal fade" id="deviceModal" tabindex="-1" role="dialog" aria-labelledby="deviceModalLabel" aria-hidden="true">
+<!-- tutorialModal -->
+<div class="modal fade" id="tutorialModal" tabindex="-1" role="dialog" aria-labelledby="tutorialModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Add a new device</h4>
-      </div>
-      <div class="modal-body" id="modalBody">
-        You'll need the secret key from your SEADS device in order to continue.
-        <br><br>
-        You can find the secret key on the access point created by the device.
-        <br><br><br>
-       <button type="button" id="help" class="btn btn-default btn-block">Where to find the key</button>
-       <button type="button" id="enterKey" class="btn btn-primary btn-block">Enter key</button>
-      </div>
     </div>
   </div>
 </div>
+
+<script>
+$(function() {
+  $.get('/new_device/',
+    {
+     page: 'first'
+    },
+      function(data) {
+        $('.modal-content').html(data);
+  });
+});
+</script>
 
 <script>
    $('#help').on('click', function(e) {

@@ -53,8 +53,6 @@ uint32_t crc = 0;
 SampleBuffer *BufA;
 SampleBuffer *BufB;
 
-uint8_t testBuffer[] = "hello world!\r\n";
-
 DmaChannel uartRxChn = DMA_CHANNEL0;
 DmaChannel spiTxChn = DMA_CHANNEL1;
 DmaChannel spiRxChn = DMA_CHANNEL2;
@@ -63,6 +61,8 @@ DmaChannel crcChn = DMA_CHANNEL4;
 DmaChannel pmpChn = DMA_CHANNEL5;
 
 uint8_t dmaBuff[256] = {};
+
+void DMA_CRC_Calc(uint8_t *data, uint16_t dataSize);
 
 uint8_t BufferToUART_Init(void)
 {
@@ -135,6 +135,7 @@ void BufferToPMP_Init(void)
 	DmaChnSetEvEnableFlags(pmpChn, DMA_EV_BLOCK_DONE);
 	DmaChnSetIntPriority(pmpChn, 5, 3);
 	DmaChnIntEnable(pmpChn);
+	//BufferToPMP_TransferA(BUFFERLENGTH + END_MESSAGE);
 	DmaChnEnable(pmpChn);
 }
 
@@ -152,6 +153,14 @@ void BufferToPMP_TransferB(uint16_t transferSize)
 
 void StartSPIAcquisition(uint8_t buffer)
 {
+	/*
+	if (currentBuffer == BUFFER_A)
+		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
+	else if (currentBuffer == BUFFER_B)
+		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
+	return;
+	*/
+	// for testing
 	SPI1STAT = 0; //So we don't lose events.
 
 	if (buffer == BUFFER_A) {
@@ -166,7 +175,7 @@ void DMAStartUARTRX(void)
 {
 	DmaChnOpen(uartRxChn, DMA_CHN_PRI1, DMA_OPEN_MATCH); //High priority for control.
 
-	DmaChnSetMatchPattern(uartRxChn, '\r');
+	DmaChnSetMatchPattern(uartRxChn, '\n');
 
 	DmaChnSetEventControl(uartRxChn, DMA_EV_START_IRQ_EN | DMA_EV_MATCH_EN | DMA_EV_START_IRQ(_UART3_RX_IRQ));
 
@@ -189,12 +198,22 @@ uint8_t BufferToSpi_Transfer(uint8_t *txBuffer, uint16_t transferSize)
 
 void DMA_CRC_Calc(uint8_t *data, uint16_t dataSize)
 {
+	// tested if we needed to pad with 0's
+	/*
+	data[dataSize] = 0;
+	data[dataSize+1] = 0;
+	data[dataSize+2] = 0;
+	data[dataSize+3] = 0;
+	dataSize += 4;
+	 */
+	
 	//CRC Calculation has up until the end of the UART transfer to finish
 	//and append its CRC checksum.
 	//Standard CCITT CRC 16 polynomial: X^16+X^12+X^5+1, hex=0x00001021  11021?
 	DmaChnOpen(crcChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
 	DmaChnSetTxfer(crcChn, data, &crc, dataSize, dataSize, dataSize);
-	mCrcConfigure(0x1021, 16, 0xffff); // initial seed set to 0xffff
+	// note CRC32 has a final xor of 0xFFFFFFFF does this hardware do that?
+	mCrcConfigure(0x4C11DB7, 32, 0xFFFFFFFF); // direct FFFFFFFF nondirect 46AF6449
 	CrcAttachChannel(crcChn, 1);
 
 	DmaChnSetEvEnableFlags(crcChn, DMA_EV_BLOCK_DONE);
@@ -241,11 +260,13 @@ bool GetConfig(daq_config *config) {
 void __ISR(_DMA0_VECTOR) DmaHandler0(void)
 {
 	//StartSPIAcquisition(BUFFER_A);
+	if (!memcmp(dmaBuff, "RESET", 5)) {
+		SoftReset();
+	}
 
 	if (wait_for_config) {
 		config_ready = true;
 	}
-
 	DmaChnClrEvFlags(DMA_CHANNEL0, DMA_EV_BLOCK_DONE);
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL0));
 }
@@ -331,4 +352,10 @@ void __ISR(_DMA_5_VECTOR) DmaHandler5(void)
 {
 	DmaChnClrEvFlags(DMA_CHANNEL5, DMA_EV_BLOCK_DONE);
 	INTClearFlag(INT_SOURCE_DMA(DMA_CHANNEL5));
+	/*
+	if (currentBuffer == BUFFER_A)
+		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
+	else if (currentBuffer == BUFFER_B)
+		DMA_CRC_Calc(BufA->BufferArray, BUFFERLENGTH);
+	 */
 }

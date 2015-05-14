@@ -31,6 +31,9 @@
               title: "Power (W)"
            }
         },
+        localization: {
+          dataRequestFailed: "No Data to Show",
+        },
         series:[
             {
               name: "Total",
@@ -79,18 +82,74 @@
         },
         events: {
           onChartUpdate: function(event){
-            console.info("Chart update");
-            //realTimeData();
+            changeRealTime();
           }
         }
      });
    {% endif %}
 
-/*
-function realTimeData() {
+var timeoutHandler{{ circuit_pk }};
+
+function changeRealTime() {
+  console.info("Chart update");
+  clearTimeout(timeoutHandler{{ circuit_pk }});
+  realTimeData{{ circuit_pk }}();
+}
+
+{% if circuit_pk == None %}
+// Primary functions for updating the realtime components of the dashboard
+
+// Update the InfoWindow on the map
+function updateInfoWindow(data) {
+    var current_wattage, average_wattage, cost_today;
+    if (data.average_wattage > data.current_wattage) {
+        current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+    } else {
+        current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+    }
+    average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
+    cost_today = data.cost_today;
+    contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Cost Today:</strong>$'                                       +cost_today+'</p>'+ current_wattage +'</div></div>';
+    infowindow{{ device.serial }}.setContent(contentArray['{{ device.serial }}']);
+}
+
+function updateBillingInformation() {
+    $.get('/charts/billing_information/',
+        {
+            'serial': {{ device.serial }}
+        },
+        function(data) {
+            $('#ajax-billing-information').html(data);
+        }
+    );
+}
+
+// Function to update realtime-reliant features of dashboard every minute
+function updateDashboard() {
+    $.get('/dashboard/update/',
+        {
+            'current_device': {{ device.serial }}
+        },
+        function(data) {
+            console.log("dashboard update");
+            updateInfoWindow(data.average_usage);
+        }
+    );
+    updateBillingInformation();
+    setTimeout(updateDashboard, 60000);
+}
+{% endif %}
+
+
+function realTimeData{{ circuit_pk }}() {
    try {
-      var interval = chart.displayUnit().split(' ')[0];
-      var displayUnit = chart.displayUnit().slice(-1);
+      {% if circuit_pk %}
+      var chart_var = circuitChart;
+      {% else %}
+      var chart_var = chart;
+      {% endif %}
+      var interval = chart_var.displayUnit().split(' ')[0];
+      var displayUnit = chart_var.displayUnit().slice(-1);
       var period;
       var timeout = 250;
       if (displayUnit == 'm') {
@@ -116,20 +175,23 @@ function realTimeData() {
             'from':start,
             'to':stop,
             'localtime': +(new Date)/1000,
+            {% if circuit_pk %}
+            'circuit_pk': {{ circuit_pk }},
+            {% endif %}
          },
          function (ajax_data) {
             if (ajax_data.data[0][0] != null) {
-               chart.addData({unit: displayUnit, values: ajax_data.data});
+               chart_var.addData({unit: displayUnit, values: ajax_data.data});
             }
          }
       );
     } catch (e) {
-       console.info("Chart{{ circuit_pk }} not defined yet");
+       console.info("Chart not defined yet");
     }
     console.info("timeout = "+timeout)
-    setTimeout(realTimeData, timeout);
+    timeoutHandler{{ circuit_pk }} = setTimeout(realTimeData{{ circuit_pk }}, timeout);
 }
-*/
+
 
 function waitForChart() {
    console.info("Waiting for chart");
@@ -139,7 +201,7 @@ function waitForChart() {
    if (chart.displayUnit() != null) {
    {% endif %}
       console.info("Chart ready");
-      //realTimeData();
+      realTimeData{{ circuit_pk }}();
    } else {
       setTimeout(waitForChart, 250);
    }
@@ -149,6 +211,9 @@ $(function() {
    waitForChart();
    {% if circuit_name %}
    $('#circuit-heading').html("{{ circuit_name }}");
+   {% endif %}
+   {% if circuit_pk == None %}
+   updateDashboard();
    {% endif %}
 });
 

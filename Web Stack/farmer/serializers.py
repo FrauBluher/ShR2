@@ -6,4 +6,4 @@ class DeviceSettingsSerializer(serializers.ModelSerializer):
 
    class Meta:
       model = DeviceSettings
-      fields = ('device', 'main_channel', 'device_serial')
+      fields = ('device', 'device_serial', 'main_channel', 'transmission_rate_milliseconds','date_now')

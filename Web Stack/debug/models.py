@@ -1,6 +1,6 @@
 from django.db import models
 from microdata.models import Appliance, Device
-from influxdb import client as influxdb
+from influxdb.influxdb08 import client as influxdb
 import json
 
 # Create your models here.

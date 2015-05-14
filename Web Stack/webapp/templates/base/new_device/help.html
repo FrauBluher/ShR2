@@ -1,0 +1,19 @@
+
+   <span> Help Page.</span>
+   <div class="modal-footer">
+      <button type="button" id="continue" class="btn btn-primary btn-block">Continue</button>
+   </div>
+
+
+<script>
+$('#continue').click(function(e){
+    $.get('/new_device/',
+       {
+          forward: true,
+          page: 'help',
+       },
+       function(data){
+          $('.modal-content').html(data);
+       });
+});
+</script>
