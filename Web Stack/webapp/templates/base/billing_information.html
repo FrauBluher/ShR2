@@ -93,7 +93,7 @@
 
     var dropdownHtml =  {% for tier in tier_progress_list %}
                             {% if forloop.first %}{% else %}+{% endif %}'<li>'+
-                                '<a href="javascript:void(0)">'+
+                                '<a href="javascript:change_dashboard_device{{ tier.device.serial }}()">'+
                                     '<div>'+
                                         '<p>'+
                                             '<strong>{{ tier.device.name }}: {{ tier.device.devicewebsettings.current_tier }}</strong>'+

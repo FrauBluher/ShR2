@@ -121,7 +121,7 @@
     Devices
     <ul>
         {% for device in my_devices %}
-        <li><a href="#">{{ device }}</a></li>
+        <li><a href="javascript:change_dashboard_device{{ device.serial}}()">{{ device }}</a></li>
         {% endfor %}
     </ul>
     {% else %}

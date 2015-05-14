@@ -71,7 +71,10 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <div>Placeholder</div>
+                <div>
+                  <p>This could be a place to present aggregate queries</p>
+                  <p>For example: your bedroom consumes more power than most</p>
+                </div>
             </div>
         </div>
     </div>
@@ -189,10 +192,6 @@ function get_wattage_usage() {
            {% endif %}
 
            google.maps.event.addListener(marker{{ device.serial }}, 'click', function() {
-             {% for device2 in my_devices %}
-              infowindow{{ device2.serial }}.close();
-             {% endfor %}
-             infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
              change_dashboard_device{{ device.serial }}();
            });
         }
@@ -202,8 +201,12 @@ function get_wattage_usage() {
 
 {% for device in my_devices %}
     // Function to update device-specific elements on the dashboard for device with serial {{ device.serial }}
-    function change_dashboard_device{{ device.serial }}() {
+    function change_dashboard_device{{ device.serial }}(infowindow, marker) {
         console.log("Device change");
+        {% for device in my_devices %}
+        infowindow{{ device.serial }}.close();
+        {% endfor %}
+        infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
         {% if render_circuit_chart %}
         get_circuit_chart{{ device.serial }}();
         {% endif %}
