@@ -137,6 +137,7 @@ class Event(models.Model):
          kwh = (wattage/1000.0)*(1.0/self.frequency)*(1/3600.0)
          self.device.kilowatt_hours_monthly += kwh
          self.device.kilowatt_hours_daily += kwh
+         self.device.save()
 
          tier_dict = {}
          tier_dict['name'] = "tier.device."+str(self.device.serial)
@@ -161,7 +162,7 @@ class Event(models.Model):
             if (self.device.kilowatt_hours_monthly > max_kwh_for_tier):
                current_tier = self.device.devicewebsettings.current_tier
                self.device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
-               device.devicewebsettings.save()
+               self.device.devicewebsettings.save()
                tier_dict['points'].append([current_tier.tier_level + 1])
                db.write_points([tier_dict])
          cost = self.device.devicewebsettings.current_tier.rate * kwh

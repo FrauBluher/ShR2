@@ -103,13 +103,13 @@ function changeRealTime() {
 function updateInfoWindow(data) {
     var current_wattage, average_wattage, cost_today;
     if (data.average_wattage > data.current_wattage) {
-        current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+        current_wattage = '<p><strong>Current Usage: </strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
     } else {
-        current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+        current_wattage = '<p><strong>Current Usage: </strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
     }
     average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
-    cost_today = data.cost_today;
-    contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Cost Today:</strong>$'                                       +cost_today+'</p>'+ current_wattage +'</div></div>';
+    cost_today = '<p><strong>Cost Today: </strong><span id=cost-today-{{ device.serial }}>'+data.cost_today+'</span></p>';
+    contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p>'+cost_today+'</p>'+ current_wattage +'</div></div>';
     infowindow{{ device.serial }}.setContent(contentArray['{{ device.serial }}']);
 }
 
@@ -182,6 +182,12 @@ function realTimeData{{ circuit_pk }}() {
          function (ajax_data) {
             if (ajax_data.data[0][0] != null) {
                chart_var.addData({unit: displayUnit, values: ajax_data.data});
+               var data = {
+                  average_wattage: $('#average-wattage-{{ device.serial }}').html(),
+                  current_wattage: parseInt(ajax_data.data[ajax_data.data.length-1][1]),
+                  cost_today: $('#cost-today-{{ device.serial }}').html()
+               }
+               updateInfoWindow(data);
             }
          }
       );
