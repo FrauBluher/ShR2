@@ -105,17 +105,12 @@
 			This page has been loaded <span class="badge"><b>%counter%</b></span>  times..!
 		</div><br /><br />
 
-
-
 		<a href="/wifi" class="btn btn-primary btn-lg btn-block">WLAN Config</a>
 		<a href="led.tpl" class="btn btn-success btn-lg btn-block">LED Control</a>
 		<a href="flash.bin" class="btn btn-info btn-lg btn-block">SPI flash ROM</a><br />
 		<a href="http://iocare.in" class="btn btn-warning btn-lg btn-block">My Website</a>
 
-
 		</p>
-
-
 
         </p>
       </div>

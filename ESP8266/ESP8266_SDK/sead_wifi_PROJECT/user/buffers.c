@@ -165,7 +165,7 @@ push_send_buffer(void) {
 	//if it couldn't find fields then pushing fails
 	if (!process_message(temp_ptr->buffer,
 					&send_buffer.buffer[send_buffer.head].wattage,
-					send_buffer.buffer[send_buffer.head].timestamp)) {
+					&send_buffer.buffer[send_buffer.head].timestamp)) {
 		return false;				
 	}
 	//incriment if successfully processed message and copied values over

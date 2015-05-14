@@ -239,6 +239,7 @@ static void ICACHE_FLASH_ATTR httpdSendResp(HttpdConnData *conn) {
 			conn->cgiData=NULL;
 			conn->cgi=builtInUrls[i].cgiCb;
 			conn->cgiArg=builtInUrls[i].cgiArg;
+         //run the callback associated with the cgi connection
 			r=conn->cgi(conn);
 			if (r!=HTTPD_CGI_NOTFOUND) {
 				if (r==HTTPD_CGI_DONE) conn->cgi=NULL;  //If cgi finishes immediately: mark conn for destruction.

@@ -96,7 +96,7 @@ send_recv_store_fsm(char temp) {
 	case RECEIVE_STORE:
 		case_recv_store(temp);
 		break;
-	//default case, will never happen hopefully
+	//default case, will never happen
 	default:
 		if(temp == '\n') {
 			uart0_sendStr("ERR, RESET PLS\r\n");
@@ -268,8 +268,7 @@ send_timer_cb(void *arg) {
 	//getting intial config
 	if (config == FALSE) {
 		if (get_http_config()) {
-			config = TRUE;
-			uart0_sendStr("config\r\n");
+			uart0_sendStr("configuring\r\n");
 		}
 	//checks to see if we should send
 	} else if (sending == FALSE && size_send_buffer() > 0) {
@@ -285,6 +284,26 @@ send_timer_cb(void *arg) {
 	os_timer_disarm(&send_timer);
 	os_timer_setfn(&send_timer, send_timer_cb, NULL);
 	os_timer_arm(&send_timer, sending_timer, 0);
+}
+
+/**
+  * @brief  Sets sending timer variable for sending callback function
+  * @param  None
+  * @retval None
+  */
+void ICACHE_FLASH_ATTR
+set_rate(uint16_t rate) {
+	sending_timer = rate;
+}
+
+/**
+  * @brief  Sets config flag to true
+  * @param  None
+  * @retval None
+  */
+void ICACHE_FLASH_ATTR
+done_config(void) {
+	config = TRUE;
 }
 
 /**

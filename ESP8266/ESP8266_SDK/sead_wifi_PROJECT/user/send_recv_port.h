@@ -39,5 +39,9 @@ void store_message(os_event_t *events);
 void send_message(os_event_t *events);
 //sets the flag of sending to false
 void done_sending(void);
+//sets the config flag to true
+void done_config(void);
+//sets the sending rate
+void set_rate(uint16_t);
 
 #endif

@@ -9,13 +9,14 @@ def main(args):
 	ser = serial.Serial('/dev/ttyUSB0', 115200, timeout = 1)
 	print ser
 	#ser.open()
+	starttime = int(time.time() * 1000)
 	while 1:
-		ts = int(time.time())
+		ts = int(time.time() * 1000) - starttime
 		watt = random.randint(20,100)
 		writestring = '$SEDAT,' +str(watt)+','+str(ts)+'\r\n'
 		ser.write(writestring)
 		print (ser.read(ser.inWaiting()))
-		time.sleep(0.025)
+		time.sleep(1)
 	ser.close()
 
 if __name__ == "__main__":

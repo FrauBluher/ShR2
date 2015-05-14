@@ -15,6 +15,8 @@
 #include "nmea0183.h"
 #include "uart.h"
 
+#include "extralib.h"
+
 /**
   * @brief  Nmea string checksum function
   * @param  String input to check
@@ -123,7 +125,7 @@ get_talker(const char *string) {
   * @retval Success or failure
   */
 bool ICACHE_FLASH_ATTR
-process_message(char *string, uint16_t *wattage, char *timestamp) {
+process_message(char *string, uint16_t *wattage, uint64_t *timestamp) {
 	char *buff_ptr = NULL;
 	bool return_value = true;
 	//check preamble for talker type, and message type
@@ -144,11 +146,7 @@ process_message(char *string, uint16_t *wattage, char *timestamp) {
 			buff_ptr++;
 			//copies timestamp to send buffer timestamp
 			uint8_t i = 0;
-			while (*buff_ptr <= '9' && *buff_ptr >= '0') {
-				timestamp[i] = *buff_ptr;
-				i++;
-				buff_ptr++;
-			}
+			*timestamp = stringtoint(buff_ptr);
 			break;
 		case SENTENCE_UNKNOWN:
 			uart0_sendStr("sentence unknown\r\n");
