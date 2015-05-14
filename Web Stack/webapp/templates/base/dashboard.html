@@ -272,6 +272,11 @@ function initialize() {
        position: pos,
        title: '{{ device.name }}',
        label: '{{ device.name }}',
+       {% if device.owner != user %}
+       icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|F38630'
+       {% else %}
+       icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FF6B6B'
+       {% endif %}
      });
 
      
