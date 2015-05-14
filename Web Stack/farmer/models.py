@@ -15,6 +15,19 @@ class DeviceSettings(models.Model):
    main_channel = models.IntegerField(max_length=1,
                                    choices=CHANNEL_CHOICES,
                                    default=1)
+   SAMPLE_RATE_CHOICES = (
+      (1, 125000  ),
+      (2, 62500   ),
+      (3, 31250   ),
+      (4, 15625   ),
+      (5, 7812.5  ),
+      (6, 3906.25 ),
+      (7, 1953.125),
+      (8, 976.5625)
+   )
+   adc_sample_rate = models.IntegerField(max_length=1,
+                                         choices=SAMPLE_RATE_CHOICES,
+                                         default=4)
    transmission_rate_milliseconds = models.IntegerField(default=1000)
    date_now = models.IntegerField(null=True,blank=True)
    def save(self, **kwargs):
