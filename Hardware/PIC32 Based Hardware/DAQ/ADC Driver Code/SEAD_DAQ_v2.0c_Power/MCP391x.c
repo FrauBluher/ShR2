@@ -66,8 +66,8 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.config0Reg.DITHER = 0b11;
 	MCP.config0Reg.EN_GAINCAL = 0b0;
 	MCP.config0Reg.EN_OFFCAL = 0b1;
-        //to change the data rate
-	MCP.config0Reg.OSR = 0b101; //OSR = 1024
+	//to change the data rate
+	MCP.config0Reg.OSR = 0b010; //OSR = 128
 	MCP.config0Reg.PRE = 0b00; // 0b11 = 8, 0b10 = 4, 0b01 = 2, 
 	MCP.config0Reg.VREFCAL = 64;
 
@@ -78,13 +78,13 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 
 	//24 bit two's compliment
 	MCP.offCalCh0Reg.OFFCAL = 0x0;
-	MCP.offCalCh1Reg.OFFCAL = -5590;//-5590;
+	MCP.offCalCh1Reg.OFFCAL = -5590; //-5590;
 	MCP.offCalCh2Reg.OFFCAL = 0x0;
 	MCP.offCalCh3Reg.OFFCAL = 0x0;
 
 	MCP.phaseReg.PHASEA = 0;
 	MCP.phaseReg.PHASEB = 0;
-	
+
 	//Programmable gain amplifier config
 	MCP.gainReg.PGA_CH0 = PGA_CH0_CONF;
 	MCP.gainReg.PGA_CH1 = PGA_CH1_CONF;

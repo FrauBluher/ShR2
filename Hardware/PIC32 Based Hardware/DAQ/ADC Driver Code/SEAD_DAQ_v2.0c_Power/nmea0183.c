@@ -38,9 +38,11 @@ char *create_message(char *talker, char *message_type, uint8_t arg_num, ...)
 		sprintf(buffer + strlen(buffer), ",%u", number);
 	}
 	//end of message
-	strcat(buffer, "*");
+	// REMOVE THIS NEXT LINE:
+	strcat(buffer, "\r\n");
+	//strcat(buffer, "*");
 	//appends the checksum to the end of the message
-	sprintf(buffer + strlen(buffer), "%x\r\n", checksum(buffer));
+	//sprintf(buffer + strlen(buffer), "%x\r\n", checksum(buffer));
 	va_end(valist);
 	return strdup(buffer);
 }
