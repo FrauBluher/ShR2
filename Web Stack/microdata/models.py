@@ -209,6 +209,17 @@ class Event(models.Model):
             if new_query in existing_query[2]:
                db.query('drop continuous query '+str(existing_query[1]))
                db.query(new_query)
+      
+      # Check to see if the tier series has been initialized. This should only need to happen once ever.
+      try:
+         db.query('select * from tier.device.'+str(self.device.serial))
+      except:
+         tier_dict = {}
+         tier_dict['name'] = "tier.device."+str(self.device.serial)
+         tier_dict['columns'] = ["tier_level"]
+         tier_dict['points'] = [[str(self.device.devicewebsettings.current_tier.tier_level)]]
+         db.write_points([tier_dict])
+
             
 
       # No need to save the event in the Django database.
