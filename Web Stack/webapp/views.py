@@ -427,7 +427,7 @@ def generate_average_wattage_usage(request, serial):
     context = {}
     user = User.objects.get(username=request.user)
     device = Device.objects.get(serial=serial)
-    if device.owner == user:
+    if device.owner == user or user in device.share_with.all():
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       result = db.query('list series')[0]
       appliances = Set()
@@ -471,7 +471,7 @@ def device_data(request, serial):
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
       localtime = int(float(request.GET.get('localtime', time.time())))
-      if device.owner == user:
+      if device.owner == user or user in device.share_with.all():
          unit = request.GET.get('unit','')
          start = request.GET.get('from','')
          stop = request.GET.get('to','')
@@ -489,7 +489,7 @@ def device_chart(request, serial):
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
 
-      if device.owner == user:
+      if device.owner == user or user in device.share_with.all():
          context['device'] = device
 
          appliance_names = Set()
@@ -894,7 +894,7 @@ def billing_information(request):
       this_month = datetime.now().month
       this_year = datetime.now().year
       days_this_month = monthrange(this_year,this_month)[1]
-      for device in Device.objects.filter(owner=user):
+      for device in Device.objects.filter(owner=user) | Device.objects.filter(share_with=user):
          current_tier_level = 1
          try:
             current_tier_level = db.query('select * from tier.device.'+str(device.serial)+' limit 1')[0]['points'][0][2]
@@ -914,7 +914,7 @@ def billing_information(request):
             context['current_device'] = {'device':device, 'progress':progress}
          device_tier_progress[device.serial] = progress
       device = Device.objects.get(serial=int(serial))
-      if device.owner == user:
+      if device.owner == user or user in device.share_with.all():
          context['territory'] = territory
          context['tiers'] = Tier.objects.filter(rate_plan=device.devicewebsettings.rate_plans.all()[0])
          context['device'] = device
