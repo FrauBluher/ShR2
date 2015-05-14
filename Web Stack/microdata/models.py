@@ -11,7 +11,6 @@ import time
 from datetime import datetime
 from calendar import monthrange
 
-# Create your models here.
 
 class Appliance(models.Model):
    serial = models.IntegerField(unique=True)
@@ -79,8 +78,6 @@ class Device(models.Model):
          DeviceSettings.objects.create(device=self)
       from webapp.models import DeviceWebSettings
       websettings = DeviceWebSettings.objects.filter(device=self)
-      if not websettings:
-         DeviceWebSettings.objects.create(device=self)
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
@@ -123,6 +120,8 @@ class Event(models.Model):
       dataPoints = json.loads(self.dataPoints)
       self.dataPoints = dataPoints
       count = 0
+      now = time.time()
+      timestamp = now*1000
       for point in dataPoints:
          wattage      = point.get('wattage')
          current      = point.get('current')
@@ -130,9 +129,12 @@ class Event(models.Model):
          appliance_pk = point.get('appliance_pk')
          event_code   = point.get('event_code')
          channel      = point.get('channel', 1)
-         timestamp = self.start + ((1.0/self.frequency)*count)
+         # timestamp is millisecond resolution always
+         timestamp = self.start + ((1.0/self.frequency)*count*1000)
+         count += 1
 
-         kwh = (wattage/1000.0)*(1.0/self.frequency)*(1/3600)
+         kwh = 0.0
+         kwh = (wattage/1000.0)*(1.0/self.frequency)*(1/3600.0)
          self.device.kilowatt_hours_monthly += kwh
          self.device.kilowatt_hours_daily += kwh
 
@@ -159,6 +161,7 @@ class Event(models.Model):
             if (self.device.kilowatt_hours_monthly > max_kwh_for_tier):
                current_tier = self.device.devicewebsettings.current_tier
                self.device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
+               device.devicewebsettings.save()
                tier_dict['points'].append([current_tier.tier_level + 1])
                db.write_points([tier_dict])
          cost = self.device.devicewebsettings.current_tier.rate * kwh
@@ -175,11 +178,41 @@ class Event(models.Model):
             query['name'] = 'device.'+str(self.device.serial)
             query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage', 'channel', 'cost']
             data.append(query)
-            self.query = data
+            self.query += str(data)
             db.write_points(data, time_precision="ms")
-         count += 1
+            
+      # If data is older than the present, must backfill fanout queries by reloading the continuous query.
+      # https://github.com/influxdb/influxdb/issues/510
+      # use -28800 for daylight savings (-8 PDT)
+      # use -25200 for normal (-7 PDT)
+      now = time.time()
+      timestamp /= 1000 # convert to seconds. We don't care that much about accuracy at this point.
+      existing_queries = db.query('list continuous queries')[0]['points']
+      new_queries = []
+      if timestamp < now:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
+      if timestamp < now - 60:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
+      if timestamp < now - 3600:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1h) into 1h.:series_name')
+      if timestamp < now - 86400:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1d) into 1d.:series_name')
+      if timestamp < now - 604800:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1w) into 1w.:series_name')
+      if timestamp < now - 86400*days_this_month:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1M) into 1M.:series_name')
+      if timestamp < now - 86400*days_this_month*12:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1y) into 1y.:series_name')
+      # drop old continuous query, add new one. Essentially a refresh.
+      for new_query in new_queries:
+         for existing_query in existing_queries:
+            if new_query in existing_query[2]:
+               db.query('drop continuous query '+str(existing_query[1]))
+               db.query(new_query)
+            
 
-      super(Event, self).save()
+      # No need to save the event in the Django database.
+      #super(Event, self).save()
       
    def __unicode__(self):
       return str(self.device.__unicode__()+':'+self.dataPoints)
