@@ -518,7 +518,7 @@ def device_chart(request, serial):
             context['circuits'].append(circuit);
 
          context['server_time'] = time.time()*1000
-         context['stack'] = stack == 'true'
+         context['stack'] = True #stack == 'true'
    return render(request, 'base/chart.html', context)
    
 
@@ -919,7 +919,55 @@ def billing_information(request):
          context['device'] = device
          return render(request, 'base/billing_information.html', context)
    return render(status_code=400)
+   
+@login_required(login_url='/signin/')
+def circuits_information(request):
+   if request.method == 'GET':
+      serial = request.GET.get('serial')
+      device = Device.objects.get(serial=serial)
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      user = User.objects.get(username=request.user)
+      if device.owner == user or user in device.share_with.all():
+         kilowatt_hours_monthly = device.kilowatt_hours_monthly
+         channel_1_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_1.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         channel_2_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_2.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         channel_3_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_3.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         context = {
+            'circuits': [
+               [device.channel_1, channel_1_kwh],
+               [device.channel_2, channel_2_kwh],
+               [device.channel_3, channel_3_kwh],
+            ],
+            'kilowatt_hours_monthly': kilowatt_hours_monthly
+         }
+         return render(request, 'base/circuits_information.html', context)
+   return render(status_code=400)
 
+def generate_heatmap_data(serial):
+   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   start_date = datetime.now()
+   day_count = 365
+   for single_date in (start_date - timedelta(n) for n in range(day_count)):
+      print single_date
+   
+
+@login_required(login_url='/signin/')
+def heatmap(request):
+   context = {}
+   if request.method == 'GET':
+      serial = request.GET.get('serial')
+      device = Device.objects.get(serial=serial)
+      user = User.objects.get(username=request.user)
+      if device.owner == user or user in device.share_with.all():
+         context = generate_heatmap_data(serial)
+         #[timestamp, total, min, max]
+         now = int(time.time())
+         context['data_points'] = [[now,0,-1,1],[now+1,0,-2,2],[now+2,0,-3,3],[now+3,0,-4,4]]
+         context['dataLimitFrom'] = now
+         context['dataLimitTo'] = now+4
+         return render(request, 'base/heatmap.html', context)
+   return render(status_code=400)
+   
 @login_required(login_url='/signin/')
 def dashboard_update(request):
     context = {}

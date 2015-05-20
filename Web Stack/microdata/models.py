@@ -62,7 +62,7 @@ class Device(models.Model):
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          serial = str(self.serial)
-         db.query('select * from device.'+serial+' into device.'+serial+'.[channel_pk]')
+         db.query('select * from device.'+serial+' into device.'+serial+'.circuit.[channel_pk]')
          db.query('select sum(cost) from device.'+serial+' into cost.device'+serial+'.[channel_pk]')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
@@ -130,7 +130,7 @@ class Event(models.Model):
          voltage      = point.get('voltage')
          appliance_pk = point.get('appliance_pk')
          event_code   = point.get('event_code')
-         channel      = point.get('channel', 1)
+         channel      = point.get('channel', 7)
          circuit_pk = self.device.channel_1.pk
          if channel == 2: self.device.channel_2.pk
          elif channel == 3: self.device.channel_3.pk

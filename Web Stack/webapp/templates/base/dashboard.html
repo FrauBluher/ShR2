@@ -9,12 +9,12 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel panel-default">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                <div id='chart-title' value='{{ my_devices.0.serial }}'>{{ my_devices.0.name }} at a glance</div>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <button type="button" id="chart-type-lable" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" id="chart-type-label" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             Unstacked
                             <span class="caret"></span>
                         </button>
@@ -38,7 +38,7 @@
     
     <div id='ajax-container1'></div>
         {% if render_circuit_charts %}
-        <div class="panel panel-default">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 Charts by Circuit: <span id="circuit-heading"></span>
                 <div class="pull-right">
@@ -56,7 +56,7 @@
     </div>
     <!-- /.col-lg-12 -->
     <div class="col-lg-6">
-      <div class="panel panel-default">
+      <div class="panel panel-primary">
             <div class="panel-heading">
                 Billing Information
             </div>
@@ -68,16 +68,13 @@
     </div>
     <!-- /.col-lg-6 -->
     <div class="col-lg-6">
-      <div class="panel panel-default">
+      <div class="panel panel-primary">
             <div class="panel-heading">
                 Circuit Statistics
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <div>
-                  <p>This could be a place to present aggregate queries</p>
-                  <p>For example: your bedroom consumes more power than most</p>
-                </div>
+                <div id="ajax-circuits-information"></div>
             </div>
         </div>
     </div>
@@ -157,9 +154,9 @@ function refresh_chart(stack) {
       render_chart();
       $('#chart-title').html(device_name+" at a glance");
       if (stack) {
-        $('#chart-type-lable').html('Stacked <span class="caret"></span>');
+        $('#chart-type-label').html('Stacked <span class="caret"></span>');
       } else {
-        $('#chart-type-lable').html('Unstacked <span class="caret"></span>');
+        $('#chart-type-label').html('Unstacked <span class="caret"></span>');
       }
     }
   );
@@ -266,13 +263,22 @@ $(function() {
    });
 
    $.get('/charts/billing_information/',
-    {
-      'serial': {{ my_devices.0.serial }}
-    },
-    function(data) {
-      $('#ajax-billing-information').html(data);
-    }
-  );
+       {
+         'serial': {{ my_devices.0.serial }}
+       },
+       function(data) {
+         $('#ajax-billing-information').html(data);
+       }
+   );
+   
+   $.get('/charts/circuits_information/',
+       {
+         'serial': {{ my_devices.0.serial }}
+       },
+       function(data) {
+         $('#ajax-circuits-information').html(data);
+       }
+   );
 
 });
 

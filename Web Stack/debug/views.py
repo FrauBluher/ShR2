@@ -248,7 +248,7 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
              max_kwh_for_tier = (current_tier.max_percentage_of_baseline/100.0)*winter_rate*31.0
           if (kilowatt_hours_monthly > max_kwh_for_tier):
              current_tier = device.devicewebsettings.current_tier
-             device.devicewebsettings.current_tier = current_tier
+             device.devicewebsettings.current_tier = device.devicewebsettings.rate_plans.all()[0].get(tier_level = current_tier.tier_level +1)
              device.devicewebsettings.save()
              device.save()
              tier_dict['points'] = [[i,device.devicewebsettings.current_tier.tier_level]]
@@ -371,7 +371,7 @@ def influxdel(request):
              if 'device.'+serial in q[2]:
                  db.query('drop continuous query '+str(q[1]))
            # add new queries
-           db.query('select * from device.'+serial+' into device.'+serial+'.[appliance]')
+           db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')

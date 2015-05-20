@@ -37,6 +37,7 @@
   <link href="{% static 'webapp/css/daterangepicker-bs3.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'webapp/css/multi-select.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'webapp/css/loader.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'webapp/css/c3.min.css' %}" rel="stylesheet" type="text/css">
 
   {# use the CDN to get bootstrap css. can not be inside compress css block #}
   {% block cdn_css %}
@@ -62,6 +63,7 @@
   <script src="{% static 'webapp/js/moment.js' %}"></script>
   <script type="text/javascript" src="{% static 'webapp/js/d3.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'webapp/js/radialProgress.js' %}"></script>
+  <script type="text/javascript" src="{% static 'webapp/js/c3.min.js' %}"></script>
 
 </head>
 <body style="font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; margin-top:51px;" class="{% block body_class %}{% endblock %}" {% block body_attributes %}{% endblock %}>
