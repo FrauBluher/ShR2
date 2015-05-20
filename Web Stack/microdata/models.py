@@ -24,6 +24,7 @@ class Appliance(models.Model):
 class CircuitType(models.Model):
    name = models.CharField(max_length=50, unique=True)
    appliances = models.ManyToManyField(Appliance, blank=True)
+   chart_color = ColorPickerField()
 
    def __unicode__(self):
       return self.name
@@ -61,7 +62,8 @@ class Device(models.Model):
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          serial = str(self.serial)
-         db.query('select * from device.'+serial+' into device.'+str(self.serial)+'.[appliance]')
+         db.query('select * from device.'+serial+' into device.'+serial+'.[channel_pk]')
+         db.query('select sum(cost) from device.'+serial+' into cost.device'+serial+'.[channel_pk]')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
@@ -129,6 +131,9 @@ class Event(models.Model):
          appliance_pk = point.get('appliance_pk')
          event_code   = point.get('event_code')
          channel      = point.get('channel', 1)
+         circuit_pk = self.device.channel_1.pk
+         if channel == 2: self.device.channel_2.pk
+         elif channel == 3: self.device.channel_3.pk
          # timestamp is millisecond resolution always
          timestamp = self.start + ((1.0/self.frequency)*count*1000)
          count += 1
@@ -175,17 +180,15 @@ class Event(models.Model):
             db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
             data = []
             query = {}
-            query['points'] = [[timestamp, appliance.name, wattage, current, voltage, channel, cost]]
+            query['points'] = [[timestamp, wattage, current, voltage, circuit_pk, cost]]
             query['name'] = 'device.'+str(self.device.serial)
-            query['columns'] = ['time', 'appliance', 'wattage', 'current', 'voltage', 'channel', 'cost']
+            query['columns'] = ['time', 'wattage', 'current', 'voltage', 'circuit_pk', 'cost']
             data.append(query)
             self.query += str(data)
             db.write_points(data, time_precision="ms")
             
       # If data is older than the present, must backfill fanout queries by reloading the continuous query.
       # https://github.com/influxdb/influxdb/issues/510
-      # use -28800 for daylight savings (-8 PDT)
-      # use -25200 for normal (-7 PDT)
       now = time.time()
       timestamp /= 1000 # convert to seconds. We don't care that much about accuracy at this point.
       existing_queries = db.query('list continuous queries')[0]['points']

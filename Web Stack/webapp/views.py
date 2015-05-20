@@ -355,33 +355,33 @@ def merge_subs(lst_of_lsts):
 
 def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
    if unit == 'y': unit = 'm'
-   if (start == ''): start = 'now(  ) - 1d'
-   else: start = '\''+datetime.fromtimestamp(int(float(start))).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   if (start == ''): start = 'now() - 1d'
+   else: start = '\''+datetime.fromtimestamp(start).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
-   else: stop = '\''+datetime.fromtimestamp(int(float(stop))).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: stop = '\''+datetime.fromtimestamp(stop).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
-   appliances = Set()
+   channels = Set()
    for series in result['points']:
       rg = re.compile('device.'+str(serial))
       if re.match(rg, series[1]):
-         appliance = series[1].split('device.'+str(serial)+'.')
-         if (len(appliance) < 2): continue
-         else: appliances.add(appliance[-1])
+         channel_pk = series[1].split('device.'+str(serial)+'.')
+         if (len(channel_pk) < 2): continue
+         else: channels.add(channel_pk[-1])
    mean = {}
    to_merge = []
-   for appliance in appliances:
-      # Specifying a circuit_pk filters the query based on appliances in the circuit.
-      query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
+   for circuit in channels:
+      # Specifying a circuit_pk filters the query based on circuits on the device.
+      query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+str(circuit)+' where time > '+start+' and time < '+stop
       if circuit_pk:
-        query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop+' where channel = '+str(circuit_pk)
+        query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+str(circuit_pk)+' where time > '+start+' and time < '+stop
       group = []
       try:
         group = db.query(query)
       except:
         continue
       if (len(group)): group = group[0]['points']
-      #else: return None
+      # else: return None
       # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
@@ -402,6 +402,7 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
            'unit': unit,
            'dataLimitFrom': data[len(data)-1][0],
            'dataLimitTo': data[0][0],
+           'query': query
           }
    return data
 
@@ -430,21 +431,23 @@ def generate_average_wattage_usage(request, serial):
     if device.owner == user or user in device.share_with.all():
       db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       result = db.query('list series')[0]
-      appliances = Set()
+      channels = Set()
       for series in result['points']:
          rg = re.compile('device.'+str(device.serial))
          if re.match(rg, series[1]):
-            appliance = series[1].split('device.'+str(device.serial)+'.')
-            if (len(appliance) < 2): continue
+            channel = series[1].split('device.'+str(device.serial)+'.')
+            if (len(channel) < 2): continue
             else:
-               appliances.add(appliance[-1])
+               channels.add(channel[-1])
       average_wattage = 0
       current_wattage = 0
       cost_today = 0.0
-      for appliance in appliances:
+      for channel in channels:
+         channel = CircuitType.objects.get(pk=channel)
+      for circuit in channels:
          try:
-            average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
-            this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance+' limit 1')[0]['points'][0]
+            average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+str(circuit.pk))[0]['points'][0][1]
+            this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+str(circuit.pk)+' limit 1')[0]['points'][0]
             if this_wattage[0] > time.time() - 1000:
                current_wattage += this_wattage[2]
             cost_today = float(db.query('select sum(cost) from device.'+str(device.serial)+' where time < now() and time > now() - 1d')[0]['points'][0][1])
@@ -473,8 +476,9 @@ def device_data(request, serial):
       localtime = int(float(request.GET.get('localtime', time.time())))
       if device.owner == user or user in device.share_with.all():
          unit = request.GET.get('unit','')
-         start = request.GET.get('from','')
-         stop = request.GET.get('to','')
+         start = int(float(request.GET.get('from','')))
+         stop = int(float(request.GET.get('to','')))
+         if start < stop: start += 25200
          circuit_pk = request.GET.get('circuit_pk')
          context = group_by_mean(serial,unit,start,stop,localtime,circuit_pk)
    return HttpResponse(json.dumps(context), content_type="application/json")
@@ -492,10 +496,10 @@ def device_chart(request, serial):
       if device.owner == user or user in device.share_with.all():
          context['device'] = device
 
-         appliance_names = Set()
+         channel_names = Set()
          if circuit_pk:
             circuit = CircuitType.objects.get(pk=circuit_pk)
-            appliance_names = Set(circuit.appliances.all())
+            channel_names = [circuit.name]
             context['circuit_pk'] = circuit_pk
             context['circuit_name'] = circuit.name
          else:
@@ -504,19 +508,14 @@ def device_chart(request, serial):
              for series in result['points']:
                 rg = re.compile('device.'+str(device.serial))
                 if re.match(rg, series[1]):
-                   appliance_name = series[1].split('device.'+str(device.serial)+'.')
-                   if (len(appliance_name) < 2): continue
-                   else: appliance_names.add(appliance_name[-1])
+                   circuit_pk = series[1].split('device.'+str(device.serial)+'.')
+                   if (len(circuit_pk) < 2): continue
+                   else: channel_names.add(circuit_pk[-1])
 
-         context['appliances'] = []
-         # place Unknown appliance at front of list
-         unknown_appliance = Appliance.objects.get(serial=0)
-         if unknown_appliance.name in appliance_names:
-            context['appliances'].append(unknown_appliance)
-         for name in appliance_names:
-            appliance = Appliance.objects.get(name=name)
-            if appliance != unknown_appliance:
-               context['appliances'].append(Appliance.objects.get(name=name));
+         context['circuits'] = []
+         for circuit in channel_names:
+            circuit = CircuitType.objects.get(pk=circuit)
+            context['circuits'].append(circuit);
 
          context['server_time'] = time.time()*1000
          context['stack'] = stack == 'true'

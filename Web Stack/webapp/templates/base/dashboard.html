@@ -23,6 +23,9 @@
                             <li><a class="chart-stack" id="unstack" href='javascript:refresh_chart(false)'>Unstacked</a></li>
                         </ul>
                     </div>
+                    <button type="button" class="btn btn-default btn-sm" id="btn-realtime">
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true" id="span-realtime"></span> Realtime
+                    </button>
                 </div>
             </div>
             <!-- /.panel-heading -->
@@ -227,6 +230,9 @@ function get_wattage_usage() {
 {% endfor %}
 
 var map_open = true;
+var realtime_status = true;
+
+var chart, circuitChart;
 
 $(function() {
    get_wattage_usage();
@@ -244,6 +250,19 @@ $(function() {
          $('#map-slide-icon').addClass('glyphicon-menu-up');
       }
       map_open = !map_open;
+   });
+   
+   $('#btn-realtime').on('click', function() {
+      if (realtime_status) {
+         $('#span-realtime').removeClass('glyphicon-pause');
+         $('#span-realtime').addClass('glyphicon-play');
+         chart.settings.area.followAnchor = false;
+      } else {
+         $('#span-realtime').removeClass('glyphicon-play');
+         $('#span-realtime').addClass('glyphicon-pause');
+         chart.settings.area.followAnchor = true;
+      }
+      realtime_status = !realtime_status;
    });
 
    $.get('/charts/billing_information/',

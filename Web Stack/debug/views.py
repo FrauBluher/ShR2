@@ -1,7 +1,7 @@
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from microdata.models import Event, Device, Appliance, Circuit
+from microdata.models import Event, Device, Appliance, Circuit, CircuitType
 from django import forms
 from django.shortcuts import render, render_to_response
 from django.forms import ModelChoiceField
@@ -36,7 +36,7 @@ class DeviceModelChoiceField(ModelChoiceField):
 
 class DatagenForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
-   appliances = forms.ModelMultipleChoiceField(label='Appliances', queryset=Appliance.objects.all())
+   channels = forms.ModelMultipleChoiceField(label='Channels', queryset=CircuitType.objects.all())
    start = forms.IntegerField(label='Start (10-digit timestamp) UTC')
    stop = forms.IntegerField(label='Stop (10-digit timestamp) UTC')
    resolution = forms.IntegerField(label='Resolution (seconds)')
@@ -49,7 +49,7 @@ class DatagenForm(forms.Form):
 
 class DatadelForm(forms.Form):
    device = DeviceModelChoiceField(label='Device', queryset=Device.objects.all())
-   refresh_queries = forms.BooleanField(label='Refresh Queries', required=False);
+   refresh_queries = forms.BooleanField(label='Refresh Queries', required=False)
 
 class DevForm(forms.Form):
    method = forms.ChoiceField(choices=(('datagen','datagen'),('datadel','datadel')))
@@ -111,10 +111,35 @@ def echo(request):
 def echo_args(request, args):
    return HttpResponse(status=200)
 
-def generate_points(start, stop, resolution, energy_use, device, appliances):
+def generate_points(start, stop, resolution, energy_use, device, channels):
    multiplier = 1
-   if energy_use == 2: multiplier = 1.5
-   if energy_use == 3: multiplier = .5
+   if energy_use == 2: multiplier = 2
+   if energy_use == 3: multiplier = .3
+   wattages = {
+      'Bedroom': {
+         'avg':200,
+         'cutoff':50,
+         'max':300,
+         'min':0,
+         'pk': CircuitType.objects.get(name='Bedroom').pk
+      },
+      'Kitchen': {
+         'avg':1000,
+         'cutoff':500,
+         'max':2000,
+         'min':0,
+         'pk': CircuitType.objects.get(name='Kitchen').pk
+      },
+      'Living Room': {
+         'avg':400,
+         'cutoff':50,
+         'max':1000,
+         'min':0,
+         'pk': CircuitType.objects.get(name='Living Room').pk
+      },
+      
+   }
+   """
    wattages = {
       'Unknown':{
         'avg':800,
@@ -124,54 +149,58 @@ def generate_points(start, stop, resolution, energy_use, device, appliances):
         'channel': 0
       },
         'Computer':{
-        'avg':200,
-        'cutoff':50,
-        'max':350,
-        'min':0,
-        'channel': 1
+          'avg':200,
+          'cutoff':50,
+          'max':350,
+          'min':0,
+          'channel': 1
       },
         'Toaster':{
-        'avg':20,
-        'cutoff':0,
-        'max':60,
-        'min':0,
-        'channel': 2
+          'avg':20,
+          'cutoff':0,
+          'max':60,
+          'min':0,
+          'channel': 2
       },
         'Refrigerator':{
-        'avg':400,
-        'cutoff':100,
-        'max':600,
-        'min':0,
-        'channel': 2
+          'avg':400,
+          'cutoff':100,
+          'max':600,
+          'min':0,
+          'channel': 2
       },
         'Television':{
-        'avg':100,
-        'cutoff':50,
-        'max':200,
-        'min':0,
-        'channel': 3
+          'avg':100,
+          'cutoff':50,
+          'max':200,
+          'min':0,
+          'channel': 3
       },
         'Oven':{
-        'avg':700,
-        'cutoff':600,
-        'max':1000,
-        'min':0,
-        'channel': 2
+          'avg':700,
+          'cutoff':600,
+          'max':1000,
+          'min':0,
+          'channel': 2
       },
         'Heater':{
-        'avg':8000,
-        'cutoff':600,
-        'max':10000,
-        'min':0,
-        'channel': 1
+          'avg':8000,
+          'cutoff':600,
+          'max':10000,
+          'min':0,
+          'channel': 1
       },
     }
+    """
+   for appliance in wattages:
+      for value in appliance:
+         value *= multiplier
    db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
    count = 0
    data = []
    data_dict = {}
    data_dict['name'] = "device."+str(device.serial)
-   data_dict['columns'] = ['time','appliance','wattage','channel','cost']
+   data_dict['columns'] = ['time','wattage','circuit_pk','cost']
    data_dict['points'] = []
 
    tier_dict = {}
@@ -179,9 +208,16 @@ def generate_points(start, stop, resolution, energy_use, device, appliances):
    tier_dict['columns'] = ['time','tier_level']
    tier_dict['points'] = []
 
+   kilowatt_hours_monthly = device.kilowatt_hours_monthly
+   kilowatt_hours_daily = device.kilowatt_hours_daily
+   max_percentage_of_baseline = device.devicewebsettings.current_tier.max_percentage_of_baseline
+   current_tier = device.devicewebsettings.current_tier
+
    this_year = datetime.now().year
    summer_start = datetime(year=this_year,month=device.devicewebsettings.territories.all()[0].summer_start,day=1)
    winter_start = datetime(year=this_year,month=device.devicewebsettings.territories.all()[0].winter_start,day=1)
+   summer_rate = device.devicewebsettings.territories.all()[0].summer_rate
+   winter_rate = device.devicewebsettings.territories.all()[0].winter_rate
    current_season = 'summer'
    if (summer_start <= datetime.now() < winter_start) == False:
       current_season = 'winter'
@@ -191,44 +227,62 @@ def generate_points(start, stop, resolution, energy_use, device, appliances):
    for i in numpy.arange(start, stop, resolution):
       kwh = 0.0
       point_list = [i]
-      for appliance in appliances:
-         wattage = wattages[appliance.name]['avg'] + random.uniform(-wattages[appliance.name]['avg']*0.1*multiplier,wattages[appliance.name]['avg']*0.1*multiplier)
+      for channel in channels:
+         wattage = wattages[channel.name]['avg'] + random.uniform(-wattages[channel.name]['avg']*0.1,wattages[channel.name]['avg']*0.1)
          wattage_to_append = 0
-         if wattage > wattages[appliance.name]['max']*multiplier:
-            wattage_to_append = wattages[appliance.name]['max']*multiplier
-         elif wattage < wattages[appliance.name]['cutoff']*multiplier:
+         if wattage > wattages[channel.name]['max']:
+            wattage_to_append = wattages[channel.name]['max']
+         elif wattage < wattages[channel.name]['cutoff']:
             wattage_to_append = 0
-         elif wattage < wattages[appliance.name]['min']*multiplier:
-            wattage_to_append = wattages[appliance.name]['min']*multiplier
+         elif wattage < wattages[channel.name]['min']:
+            wattage_to_append = wattages[channel.name]['min']
          else:
-            wattages[appliance.name]['avg'] = wattage
+            wattages[channel.name]['avg'] = wattage
             wattage_to_append = wattage
          kwh = (wattage_to_append/1000.0)*(resolution)*(1/3600.0)
-         device.kilowatt_hours_monthly += kwh
-         device.kilowatt_hours_daily += kwh
-         if (device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
-          max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].summer_rate*31.0
+         kilowatt_hours_monthly += kwh
+         kilowatt_hours_daily += kwh
+         if (max_percentage_of_baseline != None):
+          max_kwh_for_tier = (max_percentage_of_baseline/100.0)*summer_rate*31.0
           if current_season == 'winter':
-             max_kwh_for_tier = (device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*device.devicewebsettings.territories.all()[0].winter_rate*31.0
-          if (device.kilowatt_hours_monthly > max_kwh_for_tier):
+             max_kwh_for_tier = (current_tier.max_percentage_of_baseline/100.0)*winter_rate*31.0
+          if (kilowatt_hours_monthly > max_kwh_for_tier):
              current_tier = device.devicewebsettings.current_tier
-             device.devicewebsettings.current_tier = device.devicewebsettings.rate_plans.all()[0].tier_set.get(tier_level=(current_tier.tier_level + 1))
+             device.devicewebsettings.current_tier = current_tier
              device.devicewebsettings.save()
+             device.save()
              tier_dict['points'] = [[i,device.devicewebsettings.current_tier.tier_level]]
              db.write_points([tier_dict])
-         cost = device.devicewebsettings.current_tier.rate * kwh
-         channel_pk = wattages[appliance.name]['channel']
-         point_list = [i, appliance.name, wattage_to_append, channel_pk, cost]
+         cost = current_tier.rate * kwh
+         channel_pk = wattages[channel.name]['pk']
+         point_list = [i, wattage_to_append, channel_pk, cost]
          count += 1
          data_dict['points'].append(point_list)
-         if count % 10000 == 0:
+         if count % 100000 == 0:
             data.append(data_dict)
             db.write_points(data)
             data = []
             data_dict['points'] = []
    data.append(data_dict)
    if (db.write_points(data)):
-      success = "Added {0} points successfully".format(count)
+       queries = db.query('list continuous queries')[0]['points']
+       # drop old queries
+       serial = str(device.serial)
+       for q in queries:
+         if 'device.'+serial in q[2]:
+             db.query('drop continuous query '+str(q[1]))
+       # add new queries
+       db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
+       success = "Added {0} points successfully".format(count)
+   device.kilowatt_hours_monthly = kilowatt_hours_monthly
+   device.kilowatt_hours_daily = kilowatt_hours_daily
    device.save()
    return success
 
@@ -239,12 +293,13 @@ def influxgen(request):
       form = DatagenForm(request.POST)
       if form.is_valid():
          device = form.cleaned_data['device']
-         appliances = form.cleaned_data['appliances']
+         channels = form.cleaned_data['channels']
          start = form.cleaned_data['start']
          stop = form.cleaned_data['stop']
          resolution = form.cleaned_data['resolution']
          energy_use = form.cleaned_data['energy_use']
-         success = generate_points(start, stop, resolution, energy_use, device, appliances)
+         success = generate_points(start, stop, resolution, energy_use, device, channels)
+
    else:
       form = DatagenForm()
    title = "Debug - Data Generation (InfluxDB)"
@@ -283,9 +338,9 @@ def influxdel(request):
       form = DatadelForm(request.POST)
       count = 0
       if form.is_valid():
-         refresh_queries = form.cleaned_data['refresh_queries']
          device = form.cleaned_data['device']
          serial = str(device.serial)
+         refresh_queries = form.cleaned_data['refresh_queries']
          db = influxdb.InfluxDBClient("localhost", 8086, "root", "root", "seads")
          if refresh_queries is False:
            device.kilowatt_hours_monthly = 0
@@ -316,6 +371,7 @@ def influxdel(request):
              if 'device.'+serial in q[2]:
                  db.query('drop continuous query '+str(q[1]))
            # add new queries
+           db.query('select * from device.'+serial+' into device.'+serial+'.[appliance]')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
@@ -323,7 +379,7 @@ def influxdel(request):
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
-           db.query('select * from device.'+serial+' into device.'+serial+'.[appliance]')
+           
    else:
       form = DatadelForm()
    title = "Debug - Data Deletion"
