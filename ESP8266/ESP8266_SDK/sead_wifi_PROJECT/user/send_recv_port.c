@@ -38,8 +38,6 @@ os_event_t    store_send_messageQueue[store_send_messageQueueLen];
 //initialize the user state to receive
 rss_state user_state = IDLE;
 
-//flag that checks to see if it should echo rx
-bool echoFlag = TRUE;
 //are we storing data?
 bool storing = FALSE;
 //are we sending data?
@@ -54,16 +52,16 @@ bool config = FALSE;
   */
 void ICACHE_FLASH_ATTR
 recv_message(os_event_t *events) {
-	//usually set temp equal to the UART character at any time
+	//usually set temp equal to the UART interrupt character at any time
 	uint8_t temp;
 	//while loop getting characters while they are in the buffer
 	while(READ_PERI_REG(UART_STATUS(UART0)) & (UART_RXFIFO_CNT << UART_RXFIFO_CNT_S)) {
 		WRITE_PERI_REG(0X60000914, 0x73); //WTD
 		temp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 		//echo back if flag is true
-		if (echoFlag) {
+		/*if (echoFlag) {
 			uart0_putChar(temp);
-		}
+		}*/
 		//just the fsm for sending, recv, and store
 		send_recv_store_fsm(temp);
 	}
@@ -99,7 +97,7 @@ send_recv_store_fsm(char temp) {
 	//default case, will never happen
 	default:
 		if(temp == '\n') {
-			uart0_sendStr("ERR, RESET PLS\r\n");
+			uart0_sendStr(("ERR, RESET PLS\r\n"));
 		}
 		break;
     }
@@ -152,7 +150,7 @@ case_recv(char temp) {
 	} else if (!put_buffer(temp)) {
 		//if the buffer overflows, then reset the buffer and go back
 		//to idle. This is the case that puts things into the buffer
-		os_printf("\r\noverflow\r\n");
+		DEBUG_PRINT(("\r\noverflow\r\n"));
 		//print_buffer();
 		reset_buffer();
 		user_state = IDLE;
@@ -220,7 +218,7 @@ case_recv_store(char temp) {
 	} else if (storing == TRUE && temp != '\n') {
 		//continue to receive shit and store, in case of overflow
 		if (!put_buffer(temp)) {
-			os_printf("\r\noverflow\r\n");
+			DEBUG_PRINT(("\r\noverflow\r\n"));
 			//print_buffer();
 			reset_buffer();
 			user_state = STORE;
@@ -229,7 +227,7 @@ case_recv_store(char temp) {
 		}
 	} else if (storing == TRUE && temp == '\n') {
 		//too fast for the buffers to handle, reset and drop message
-		os_printf("\r\nmessage dropped\r\n");
+		DEBUG_PRINT(("\r\nmessage dropped\r\n"));
 		reset_buffer();
 		user_state = STORE;
 	}
@@ -268,11 +266,11 @@ send_timer_cb(void *arg) {
 	//getting intial config
 	if (config == FALSE) {
 		if (get_http_config()) {
-			uart0_sendStr("configuring\r\n");
+			DEBUG_PRINT(("configuring\r\n"));
 		}
 	//checks to see if we should send
 	} else if (sending == FALSE && size_send_buffer() > 0) {
-		uart0_sendStr("\r\nsending\r\n");
+		DEBUG_PRINT(("\r\nsending\r\n"));
 		sending = TRUE;
 		//we can't tell when it's done sending after this, so 
 		//the sending flag will be false after the command

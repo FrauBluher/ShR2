@@ -15,8 +15,8 @@ def main(args):
 		watt = random.randint(20,100)
 		writestring = '$SEDAT,' +str(watt)+','+str(ts)+'\r\n'
 		ser.write(writestring)
-		print (ser.read(ser.inWaiting()))
-		time.sleep(1)
+		sys.stdout.write(ser.read(ser.inWaiting()))
+		time.sleep(0.01666666666)
 	ser.close()
 
 if __name__ == "__main__":

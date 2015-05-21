@@ -41,9 +41,9 @@
 					"User-Agent: ESP8266\r\n"\
 					"Host: seads.brabsmit.com\r\n"\
 					"Accept: */*\r\n"\
-					"Content-Type: application/x-www-form-urlencoded\r\n"\
+					"Content-Type: application/json\r\n"\
 					"Content-Length: %u\r\n\r\n"\
-					"{\"serial\":\"%s\"}"
+					"{\"serial\":%s}"
 
 //the preamble of the post request
 #define POST_REQUEST "POST /api/event-api/ HTTP/1.1\r\n"\
@@ -64,18 +64,24 @@
 #define COMMA		","
 
 //approximately in howevery many times send http request is called
-#define WIFI_CONFIG_TIMEOUT 10
+#define WIFI_CONFIG_TIMEOUT 20
 
-bool send_get_config = false;
+bool send_get_config = FALSE;
+bool create_device = FALSE;
 //connection tries
 uint8_t connect_try = 0;
 
 //time offset
 uint64_t offset = 0;
 
-uint16_t frequency = 1;
+uint16_t frequency = 60;
 //len 81
 //AT+CIPSEND=81
+
+//data buffers
+char data_points[max_send_buff_size * 20] = "";
+char json_data[100 + max_send_buff_size * 20] = "";
+char send_data[300 + max_send_buff_size * 20] = "";
 
 //prototypes
 static void networkSentCb(void *);
@@ -101,7 +107,7 @@ circular_send_buffer_t *send_buffer_ptr = NULL;
   * @retval None
   */
 void print_espconn_state(espconn *serv_connection) {
-	os_printf("espconn state is: %d\r\n", serv_connection->state);
+	DEBUG_PRINT(("espconn state is: %d\r\n", serv_connection->state));
 }
 
 /**
@@ -115,9 +121,8 @@ package_send(espconn *serv_conn) {
 	char timebuffer[21] = "";
 	uint16_t chars_written = 0;
 	uint16_t i = 0;
-	char *data_points = (char *)os_malloc(send_buffer_ptr->count * 20);
 	//send regular data
-	os_printf("\r\nData Count: %d\r\n", send_buffer_ptr->count);
+	DEBUG_PRINT(("\r\nData Count: %d\r\n", send_buffer_ptr->count));
 	char *data_ptr = data_points;
 	inttohexstring(send_buffer_ptr->buffer[send_buffer_ptr->tail].
 		timestamp + offset, timebuffer);
@@ -134,25 +139,18 @@ package_send(espconn *serv_conn) {
 			send_buffer_ptr->buffer[send_buffer_ptr->tail].wattage);
 		pop_pop_buffer();
 	}
-	char *json_data = (char *)os_malloc(100 + strlen(data_points));
 	//concatonates json data
 	chars_written = os_sprintf(json_data, JSON_DATA, DEVICE_ID,
 		timebuffer, frequency, data_points);
-	os_free(data_points);
-	//allocates final data buffer
-	char *send_data = (char *)os_malloc(200 + strlen(json_data));
 	//concatonates the data to send with the http header
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
-	os_free(json_data);
-	os_printf("Final Buf Len: %d\r\nActual Data Len: %d\r\n",
-		300 + i * 16, strlen(send_data));
-	//os_printf("%s\r\n", send_data);
+	DEBUG_PRINT(("Final Buf Len: %d\r\nActual Data Len: %d\r\n",
+		300 + i * 16, strlen(send_data)));
+	//DEBUG_PRINT(("%s\r\n", send_data));
 	//send the data.
 	sint8 retvalue = espconn_sent(serv_conn, (uint8 *)send_data,
 		strlen(send_data));
-	//free the data
-	os_free(send_data);
 	return retvalue;
 }
 
@@ -163,7 +161,7 @@ package_send(espconn *serv_conn) {
   */
 static void ICACHE_FLASH_ATTR
 networkSentCb(void *arg) {
-	os_printf("sent\r\n");
+	DEBUG_PRINT(("sent\r\n"));
 	print_espconn_state((espconn *)arg);
 	//incriments circular buffer tail (POP POP)
 	//old part where we would pop pop for single data points
@@ -177,18 +175,13 @@ networkSentCb(void *arg) {
 static void ICACHE_FLASH_ATTR
 networkRecvCb(void *arg, char *data, unsigned short len) {
 	uint16_t i;
-	os_printf("recv\r\n");
+	DEBUG_PRINT(("recv\r\n"));
 	//print out what was received
 	espconn *serv_conn=(espconn *)arg;
 	//if we received a 404, then create the device
 	if (strncmp(data, "HTTP/1.1 404", 12) == 0) {
-		char send_data[256] = "";
-		os_printf("Creating device\r\n");
-		os_sprintf(send_data, POST_DEVICE,
-			13 + strlen(DEVICE_ID), DEVICE_ID);
-		//possibly need to move somewhere else
-      
-		espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
+		//set the create device flag true
+		create_device = TRUE;
 	//received a 200, then we successfully got settings
 	} else if(strncmp(data, "HTTP/1.1 200", 12) == 0) {
 		char *temp_ptr;
@@ -197,10 +190,18 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 			temp_ptr++) {
 			if (temp_ptr == NULL) {
 				return;
-			}	
+			}
 		}
 		temp_ptr += 9;
 		uint16_t rate = stringtoint(temp_ptr);
+		for (; strncmp(temp_ptr, "sample_rate", 8) != 0;
+			temp_ptr++) {
+			if (temp_ptr == NULL) {
+				return;
+			}	
+		}
+		temp_ptr += 13;
+		uint16_t osr = stringtoint(temp_ptr);
 		for (; strncmp(temp_ptr, "date_now", 8) != 0;
 			temp_ptr++) {
 			if (temp_ptr == NULL) {
@@ -210,18 +211,16 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 		temp_ptr += 10;
 		offset = stringtoint(temp_ptr);
 		set_rate(rate);
-		os_printf("rate is %u\r\noffset is %llu\r\n", rate,
-			(long long unsigned int)offset);
+		os_printf("$SECNF,%d\r\n", osr);
+		DEBUG_PRINT(("rate is %u\r\noffset is %llu\r\n", rate,
+			(long long unsigned int)offset));
 		done_config();
 	//received a 201, then we successfully posted data
 	} else if(strncmp(data, "HTTP/1.1 201", 12) == 0) {
-		os_printf("CREATED\r\n");
+		DEBUG_PRINT(("CREATED\r\n"));
 	} else {
-		for (i = 0; i < 12; i++) {
-			uart0_putChar(data[i]);
-		}
-		uart0_putChar('\r');
-		uart0_putChar('\n');
+		//DEBUG_PRINT((data));
+		DEBUG_PRINT(("%s\r\n", data));
 	}
 	print_espconn_state(serv_conn);
 	return;
@@ -235,7 +234,7 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
   */
 static void ICACHE_FLASH_ATTR
 networkConnectedCb(void *arg) {
-	os_printf("conn\r\n");
+	DEBUG_PRINT(("conn\r\n"));
 	//config_send((espconn *)arg);
 	//os_printf("conn_end\r\n");
 	print_espconn_state((espconn *)arg);
@@ -248,7 +247,7 @@ networkConnectedCb(void *arg) {
   */
 static void ICACHE_FLASH_ATTR
 networkReconCb(void *arg, sint8 err) {
-	os_printf("rcon\r\n");
+	DEBUG_PRINT(("rcon\r\n"));
 	espconn_disconnect((espconn *)arg);
 	print_espconn_state((espconn *)arg);
 }
@@ -260,7 +259,7 @@ networkReconCb(void *arg, sint8 err) {
   */
 static void ICACHE_FLASH_ATTR
 networkDisconCb(void *arg) {
-	os_printf("dcon\r\n");
+	DEBUG_PRINT(("dcon\r\n"));
 	espconn_disconnect((espconn *)arg);
 	print_espconn_state((espconn *)arg);
 }
@@ -276,13 +275,13 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
 	static esp_tcp tcp;
 	espconn *serv_conn=(espconn *)arg;
 	if (serv_ip==NULL) {
-		os_printf("\r\nNS lookup failed\r\n");
+		DEBUG_PRINT(("\r\nNS lookup failed\r\n"));
 		return;
 	}
 	//the destination IP address from NS lookup
-	os_printf("\r\nDST: %d.%d.%d.%d\r\n",
+	DEBUG_PRINT(("\r\nDST: %d.%d.%d.%d\r\n",
 	*((uint8 *)&serv_ip->addr), *((uint8 *)&serv_ip->addr + 1),
-	*((uint8 *)&serv_ip->addr + 2), *((uint8 *)&serv_ip->addr + 3));
+	*((uint8 *)&serv_ip->addr + 2), *((uint8 *)&serv_ip->addr + 3)));
 	//specify the connection to be tcp
 	serv_conn->type=ESPCONN_TCP;
 	serv_conn->state=ESPCONN_NONE;
@@ -311,7 +310,7 @@ networkServerFoundCb(const char *name, ip_addr_t *serv_ip, void *arg) {
   */
 void ICACHE_FLASH_ATTR
 network_start(void) {
-	os_printf("Looking up server\r\n");
+	DEBUG_PRINT(("Looking up server\r\n"));
 	espconn_gethostbyname(&serv_conn, SERVER_NAME, &serv_ip,
 						  networkServerFoundCb);
 	print_espconn_state(&serv_conn);
@@ -333,14 +332,28 @@ get_http_config(void) {
   * @retval True if succeeded, false if failed
   */
 sint8 ICACHE_FLASH_ATTR
-config_send(espconn *serv_conn) {
-	os_printf("Sending get config\r\n");
+get_config(espconn *serv_conn) {
+	DEBUG_PRINT(("GET config\r\n"));
 	char send_data[256] = "";
 	//format config request
 	os_sprintf(send_data, GET_SETTINGS, DEVICE_ID);
 	//send config GET request
-	return espconn_sent(serv_conn, (uint8 *)send_data,
-			strlen(send_data));
+	return espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
+}
+
+/**
+  * @brief  Formatts and sends a post device request to the server
+  * @param  The server connection
+  * @retval True if succeeded, false if failed
+  */
+sint8 ICACHE_FLASH_ATTR
+post_device(espconn *serv_conn) {
+	DEBUG_PRINT(("POST device\r\n"));
+	char send_data[256] = "";
+	os_sprintf(send_data, POST_DEVICE,
+		11 + strlen(DEVICE_ID), DEVICE_ID);
+	//possibly need to move somewhere else
+	return espconn_sent(serv_conn,(uint8 *)send_data,strlen(send_data));
 }
 
 /**
@@ -353,6 +366,7 @@ send_http_request(circular_send_buffer_t *temp) {
 	bool return_value = false;
 	//check to see if we have an IP address and we are in STA mode
 	//1 stands for STA mode 2 is AP and 3 is both STA+AP
+	//DEBUG_PRINT(("wifi opmode = %d\r\n", wifi_station_get_connect_status()));
 	if (wifi_station_get_connect_status() == STATION_GOT_IP &&
 		wifi_get_opmode() == 1) {
 		//reset the connect try variable for wifi config
@@ -362,9 +376,14 @@ send_http_request(circular_send_buffer_t *temp) {
 		if (serv_conn.state == ESPCONN_NONE) {
 			network_start();
 		} else if (serv_conn.state == ESPCONN_CONNECT &&
+				   create_device == TRUE) {
+			create_device = FALSE;
+			//post the device
+			sint8 d = post_device(&serv_conn);
+		} else if (serv_conn.state == ESPCONN_CONNECT &&
 				   send_buffer_ptr == NULL) {
-			//send config function
-			sint8 d = config_send(&serv_conn);
+			//send get config request
+			sint8 d = get_config(&serv_conn);
 		} else if (serv_conn.state == ESPCONN_CONNECT) {
 			//send data function
 			sint8 d = package_send(&serv_conn);
@@ -380,16 +399,16 @@ send_http_request(circular_send_buffer_t *temp) {
 		//to connect to the access point
 		if (connect_try++ >= WIFI_CONFIG_TIMEOUT) {
 			connect_try = 0;
-			os_printf("Resetting for wifi config\r\n");
-			wifi_set_opmode(2);
+			DEBUG_PRINT(("Resetting for wifi config\r\n"));
+			wifi_set_opmode(3);
 			system_restart();
 		} else {
-			os_printf("Going into AP mode after %d more attempts\r\n",
-					  WIFI_CONFIG_TIMEOUT - connect_try);
+			DEBUG_PRINT(("Going into AP mode after %d more attempts\r\n",
+					  WIFI_CONFIG_TIMEOUT - connect_try));
 		}
 		return_value = false;
 	} else {
-		os_printf("No ip addr and not in STA mode\r\n");
+		DEBUG_PRINT(("Not in STA mode\r\n"));
 		return_value = false;
 	}
 	//finished with initiating networking requests

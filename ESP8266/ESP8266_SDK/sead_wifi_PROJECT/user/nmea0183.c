@@ -17,6 +17,7 @@
 
 #include "extralib.h"
 
+bool echo = false;
 /**
   * @brief  Nmea string checksum function
   * @param  String input to check
@@ -49,7 +50,7 @@ bool ICACHE_FLASH_ATTR
 check(const char *string, bool strict) {
 	uint8_t check = 0;
 	uint8_t sentence_len = 0;
-	
+	const char *string_ptr = string;
 	//sentence starts with "$"
 	if (*string++ != '$') {
 		return false;
@@ -87,6 +88,9 @@ check(const char *string, bool strict) {
 	if (*string && strcmp(string, "\n") && strcmp(string, "\r\n")) {
 		return false;
 	}
+   if (echo) {
+      DEBUG_PRINT((string_ptr));
+   }
 	return true;
 }
 
