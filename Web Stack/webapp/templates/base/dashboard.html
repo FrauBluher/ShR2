@@ -231,6 +231,20 @@ var realtime_status = true;
 
 var chart, circuitChart;
 
+function toggle_chart_realtime() {
+  if (realtime_status) {
+       $('#span-realtime').removeClass('glyphicon-pause');
+       $('#span-realtime').addClass('glyphicon-play');
+       chart.settings.area.followAnchor = false;
+    } else {
+       $('#span-realtime').removeClass('glyphicon-play');
+       $('#span-realtime').addClass('glyphicon-pause');
+       chart.settings.area.followAnchor = true;
+    }
+    realtime_status = !realtime_status;
+    console.log("realtime_status: "+realtime_status)
+}
+
 $(function() {
    get_wattage_usage();
    initialize();
@@ -250,16 +264,7 @@ $(function() {
    });
    
    $('#btn-realtime').on('click', function() {
-      if (realtime_status) {
-         $('#span-realtime').removeClass('glyphicon-pause');
-         $('#span-realtime').addClass('glyphicon-play');
-         chart.settings.area.followAnchor = false;
-      } else {
-         $('#span-realtime').removeClass('glyphicon-play');
-         $('#span-realtime').addClass('glyphicon-pause');
-         chart.settings.area.followAnchor = true;
-      }
-      realtime_status = !realtime_status;
+      toggle_chart_realtime();
    });
 
    $.get('/charts/billing_information/',

@@ -92,20 +92,9 @@ class SettingsForm(forms.Form):
                               'class' : 'form-control input-md'
                               })
                             )
-  channel_0_choices = []
   channel_1_choices = []
   channel_2_choices = []
-  channel_0 = forms.ChoiceField(
-    widget=forms.Select(attrs={
-          'class':'form-control',
-          'id':'channel_0-dropdown'
-          }
-        ),
-    choices=(
-      channel_0_choices
-    ),
-    required=False
-  )
+  channel_3_choices = []
   channel_1 = forms.ChoiceField(
     widget=forms.Select(attrs={
           'class':'form-control',
@@ -125,6 +114,17 @@ class SettingsForm(forms.Form):
         ),
     choices=(
       channel_2_choices
+    ),
+    required=False
+  )
+  channel_3 = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_3-dropdown'
+          }
+        ),
+    choices=(
+      channel_3_choices
     ),
     required=False
   )
@@ -187,9 +187,9 @@ class SettingsForm(forms.Form):
       #)
     if device:
       self.share_with_choices = make_choices([User.objects.all().exclude(username=device.owner.username),])
-      self.channel_0_choies = make_choices([CircuitType.objects.all(),])
       self.channel_1_choies = make_choices([CircuitType.objects.all(),])
       self.channel_2_choies = make_choices([CircuitType.objects.all(),])
+      self.channel_3_choies = make_choices([CircuitType.objects.all(),])
 
       self.fields['share_with'] = forms.ChoiceField(
         widget=forms.SelectMultiple(attrs={
@@ -203,17 +203,6 @@ class SettingsForm(forms.Form):
         required=False
       )
       
-      self.fields['channel_0'] = forms.ChoiceField(
-        widget=forms.Select(attrs={
-          'class':'form-control',
-          'id':'channel_0-dropdown'
-          }
-        ),
-        choices=(
-          self.channel_0_choies
-        ),
-        required=False
-      )
       self.fields['channel_1'] = forms.ChoiceField(
         widget=forms.Select(attrs={
           'class':'form-control',
@@ -233,6 +222,17 @@ class SettingsForm(forms.Form):
         ),
         choices=(
           self.channel_2_choies
+        ),
+        required=False
+      )
+      self.fields['channel_3'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_3-dropdown'
+          }
+        ),
+        choices=(
+          self.channel_3_choies
         ),
         required=False
       )
@@ -332,9 +332,9 @@ def dashboard(request):
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    for device in my_devices:
       device.circuits = []
-      device.circuits.append(device.channel_0)
       device.circuits.append(device.channel_1)
       device.circuits.append(device.channel_2)
+      device.circuits.append(device.channel_3)
    context = {'my_devices': my_devices,
               'server_time': time.time()*1000,
               }
@@ -354,11 +354,12 @@ def merge_subs(lst_of_lsts):
 
 
 def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
+   query = ''
    if unit == 'y': unit = 'm'
    if (start == ''): start = 'now() - 1d'
    else: start = '\''+datetime.fromtimestamp(start).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
-   else: stop = '\''+datetime.fromtimestamp(stop).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   else: stop = '\''+datetime.fromtimestamp(stop+25200).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    result = db.query('list series')[0]
    channels = Set()
@@ -442,12 +443,10 @@ def generate_average_wattage_usage(request, serial):
       average_wattage = 0
       current_wattage = 0
       cost_today = 0.0
-      for channel in channels:
-         channel = CircuitType.objects.get(pk=channel)
       for circuit in channels:
          try:
-            average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+str(circuit.pk))[0]['points'][0][1]
-            this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+str(circuit.pk)+' limit 1')[0]['points'][0]
+            average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+str(circuit)+' limit 100')[0]['points'][0][1]
+            this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+str(circuit)+' limit 1')[0]['points'][0]
             if this_wattage[0] > time.time() - 1000:
                current_wattage += this_wattage[2]
             cost_today = float(db.query('select sum(cost) from device.'+str(device.serial)+' where time < now() and time > now() - 1d')[0]['points'][0][1])
@@ -715,27 +714,30 @@ def settings_device(request, serial):
     if device.owner == user:
        form = SettingsForm(request.POST)
        
+       new_name = request.POST.get('new_name')
+       
+       if new_name:
+         device.name = new_name
+         device.save()
+         context['success'] = True
+         context['new_name'] = new_name
+       
        custom_channel = request.POST.get('custom_channel', False)
        appliance = request.POST.get('appliance', False)
        add = request.POST.get('add', None)
        if custom_channel and appliance:
-         device.channel_0 = CircuitType.objects.get(pk=6)
+         device.channel_1 = CircuitType.objects.get(pk=6)
          if add is True:
-            device.channel_0.appliances.add(Appliance.objects.get(pk=int(appliance)))
+            device.channel_1.appliances.add(Appliance.objects.get(pk=int(appliance)))
          elif add is False:
-            device.channel_0.appliances.remove(Appliance.objects.get(pk=int(appliance)))
+            device.channel_1.appliances.remove(Appliance.objects.get(pk=int(appliance)))
          device.save()
          context['success'] = True
          return HttpResponse(json.dumps(context), content_type="application/json")
-       channel_0 = request.POST.get('channel_0', False)
        channel_1 = request.POST.get('channel_1', False)
        channel_2 = request.POST.get('channel_2', False)
+       channel_3 = request.POST.get('channel_3', False)
        context['appliances'] = {}
-       if channel_0:
-         device.channel_0 = CircuitType.objects.get(pk=channel_0)
-         device.save()
-         context['appliances']['channel_0'] = [x.name for x in device.channel_0.appliances.all()]
-         context['success'] = True
        if channel_1:
          device.channel_1 = CircuitType.objects.get(pk=channel_1)
          device.save()
@@ -745,6 +747,11 @@ def settings_device(request, serial):
          device.channel_2 = CircuitType.objects.get(pk=channel_2)
          device.save()
          context['appliances']['channel_2'] = [x.name for x in device.channel_2.appliances.all()]
+         context['success'] = True
+       if channel_3:
+         device.channel_3 = CircuitType.objects.get(pk=channel_3)
+         device.save()
+         context['appliances']['channel_3'] = [x.name for x in device.channel_3.appliances.all()]
          context['success'] = True
        
        utility_company = request.POST.get('utility_company', False)

@@ -1,4 +1,5 @@
 <script>
+
    function {% if circuit_pk %}render_circuitChart(){% else %}render_chart(){% endif %} {
    {% if device %}
      
@@ -17,12 +18,12 @@
             units:["y","M","d","h","m","s"],
             timestampInSeconds: true,
             urlByUnit:{
+               "s":"/charts/device/{{ device.serial }}/data/",
                "m":"/charts/device/{{ device.serial }}/data/",
                "M":"/charts/device/{{ device.serial }}/data/",
                "d":"/charts/device/{{ device.serial }}/data/",
                "h":"/charts/device/{{ device.serial }}/data/",
                "y":"/charts/device/{{ device.serial }}/data/",
-               "s":"/charts/device/{{ device.serial }}/data/",
             },
             urlParameters: [
               {% if circuit_pk %}
@@ -83,7 +84,7 @@
            initialDisplayUnit: "5 m",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor:"now",
-           followAnchor: true,
+           followAnchor: false,
         },
         currentTime: {
            enabled: true,
@@ -95,11 +96,13 @@
         events: {
           onChartUpdate: function(event){
             changeRealTime();
-            //this.settings.area.followAnchor = false;
           },
           onError: function(message) {
             console.log(message);
-          }
+          },
+          onClick: function(message) {
+            toggle_chart_realtime()
+          },
         },
         toolbar: {
           periods: [
@@ -169,13 +172,14 @@ function updateDashboard() {
 
 
 function realTimeData{{ circuit_pk }}() {
-   if (chart.settings.area.followAnchor) {
+  if (realtime_status) {
       try {
          {% if circuit_pk %}
          var chart_var = circuitChart;
          {% else %}
          var chart_var = chart;
          {% endif %}
+         chart_var.settings.area.followAnchor = true;
          var interval = chart_var.displayUnit().split(' ')[0];
          var displayUnit = chart_var.displayUnit().slice(-1);
          var period;
@@ -186,7 +190,7 @@ function realTimeData{{ circuit_pk }}() {
          }
          else if (displayUnit == 's') {
             //var delay = (2 + parseInt(interval)).toString();
-            period = 'now - ' + interval + ' seconds'
+            period = 'now - ' + parseInt(interval)*20 + ' seconds'
             timeout = interval * 900
          }
          else {
@@ -194,8 +198,8 @@ function realTimeData{{ circuit_pk }}() {
             period = 'now - ' + interval + ' hours'
             timeout = interval * 60 * 60 * 900
          }
-         var start = +Date.parse(period)/1000;
-         var stop = +Date.parse('now')/1000;
+         var start = (+Date.parse(period)/1000)-25200;
+         var stop = (+Date.parse('now')/1000)-25200;
          var get_url = '/charts/device/{{ device.serial }}/data/'
          $.get(get_url,
             {
@@ -219,11 +223,11 @@ function realTimeData{{ circuit_pk }}() {
                }
             }
          );
-       } catch (e) {
+        } catch (e) {
           console.info("Chart not defined yet");
        }
        console.info("timeout = "+timeout)
-    }
+  }
     timeoutHandler{{ circuit_pk }} = setTimeout(realTimeData{{ circuit_pk }}, timeout);
 }
 

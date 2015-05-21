@@ -62,8 +62,8 @@ class Device(models.Model):
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          serial = str(self.serial)
-         db.query('select * from device.'+serial+' into device.'+serial+'.circuit.[channel_pk]')
-         db.query('select sum(cost) from device.'+serial+' into cost.device'+serial+'.[channel_pk]')
+         db.query('select * from device.'+serial+' into device.'+serial+'.[channel_pk]')
+         db.query('select sum(cost) from device.'+serial+' into cost.device.'+serial+'.[channel_pk]')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
@@ -78,8 +78,21 @@ class Device(models.Model):
       settings = DeviceSettings.objects.filter(device=self)
       if not settings:
          DeviceSettings.objects.create(device=self)
-      from webapp.models import DeviceWebSettings
+      from webapp.models import DeviceWebSettings, Tier, UtilityCompany, RatePlan, Territory
       websettings = DeviceWebSettings.objects.filter(device=self)
+      if len(websettings) == 0:
+         DeviceWebSettings.objects.create(device=self)
+         self.devicewebsettings.utility_companies.add(UtilityCompany.objects.get(pk=1))
+         self.devicewebsettings.rate_plans.add(RatePlan.objects.get(pk=4))
+         self.devicewebsettings.territories.add(Territory.objects.get(pk=1))
+         self.devicewebsettings.current_tier = Tier.objects.get(pk=1)
+         self.devicewebsettings.save()
+      if self.channel_1 == None:
+         self.channel_1 = CircuitType.objects.get(pk=1)
+      if self.channel_2 == None:
+         self.channel_2 = CircuitType.objects.get(pk=3)
+      if self.channel_3 == None:
+         self.channel_3 = CircuitType.objects.get(pk=4)
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
@@ -132,8 +145,8 @@ class Event(models.Model):
          event_code   = point.get('event_code')
          channel      = point.get('channel', 7)
          circuit_pk = self.device.channel_1.pk
-         if channel == 2: self.device.channel_2.pk
-         elif channel == 3: self.device.channel_3.pk
+         if channel == 2: circuit_pk = self.device.channel_2.pk
+         elif channel == 3: circuit_pk = self.device.channel_3.pk
          # timestamp is millisecond resolution always
          timestamp = self.start + ((1.0/self.frequency)*count*1000)
          count += 1
