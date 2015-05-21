@@ -579,6 +579,6 @@ typedef struct {
  * @param MCP391xInfo A pointer to a MCP391x_Info struct which will be updated.
  * @return Returns EXIT_SUCCESS if the device responds with the set configuration.
  */
-uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo);
+uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo, uint32_t *config);
 
 #endif	/* ADS85XH_H */

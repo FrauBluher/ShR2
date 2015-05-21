@@ -54,7 +54,7 @@ int j;
  * @param MCP391x_Params A pointer to a MCP391x_Info struct which will be updated.
  * @return Returns EXIT_SUCCESS if the device responds with the set configuration.
  */
-uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
+uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo, uint32_t *config)
 {
 	//Setting bits for configuration of the MCP3912;
 	// CLK = 16MHZ
@@ -67,7 +67,7 @@ uint8_t MCP391x_Init(MCP391x_Info *MCP391xInfo)
 	MCP.config0Reg.EN_GAINCAL = 0b0;
 	MCP.config0Reg.EN_OFFCAL = 0b1;
 	//to change the data rate
-	MCP.config0Reg.OSR = 0b010; //OSR = 128
+	MCP.config0Reg.OSR = config;//0b010; //OSR = 128
 	MCP.config0Reg.PRE = 0b00; // 0b11 = 8, 0b10 = 4, 0b01 = 2, 
 	MCP.config0Reg.VREFCAL = 64;
 
