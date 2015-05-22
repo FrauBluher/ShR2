@@ -86,8 +86,8 @@ class EventViewSet(viewsets.ModelViewSet):
       event = Event.objects.create(device=device, start=start, frequency=frequency, dataPoints=json.dumps(query.get('dataPoints')))
       device.ip_address = request.META.get('REMOTE_ADDR')
       device.save()
-      data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
-      return HttpResponse(data, content_type="application/json", status=201)
+      #data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
+      return HttpResponse(content_type="application/json", status=201)
       #except:
       #   return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
     
