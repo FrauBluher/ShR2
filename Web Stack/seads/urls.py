@@ -56,6 +56,4 @@ urlpatterns = [
     url(r'^datadel/$', 'debug.views.datadel'),
     url(r'^influxgen/$', 'debug.views.influxgen'),
     url(r'^influxdel/$', 'debug.views.influxdel'),
-    url(r'^gmapi/$', 'debug.views.gmapi'),
-    url(r'^debug/position/$', 'debug.views.position'),
 ]

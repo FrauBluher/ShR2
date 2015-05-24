@@ -8,9 +8,6 @@ from django.forms import ModelChoiceField
 from django.core import serializers
 
 from influxdb.influxdb08 import client as influxdb
-from gmapi import maps
-from gmapi.maps import Geocoder
-from gmapi.forms.widgets import GoogleMap
 from django.contrib.gis.geoip import GeoIP
 
 import git
@@ -53,45 +50,6 @@ class DatadelForm(forms.Form):
 
 class DevForm(forms.Form):
    method = forms.ChoiceField(choices=(('datagen','datagen'),('datadel','datadel')))
-
-class MapForm(forms.Form):
-   map = forms.Field(widget=GoogleMap(attrs={'width':510,'height':510}))
-
-@csrf_exempt
-def position(request):
-   lat = float(request.POST.get('lat', 0))
-   lon = float(request.POST.get('lon', 0))
-   gmap = maps.Map(opts = {
-        'center':maps.LatLng(lat,lon),
-        'mapTypeId':maps.MapTypeId.ROADMAP,
-        'zoom':15,
-        'mapTypeControlOptions':{
-           'style': maps.MapTypeControlStyle.DROPDOWN_MENU
-        },
-   })
-   marker = maps.Marker(opts = {
-        'map': gmap,
-        'position': maps.LatLng(lat,lon),
-        'draggable':True,
-        'title':"Drag me!"
-   })
-   context = {'form': MapForm(initial={'map':gmap})}
-   return render_to_response('gmapi_form.html',context)
-
-def gmapi(request):
-   #g = GeoIP(path='/home/ubuntu/seads-git/ShR2/Web Stack/webapp/static/webapp/dat/')
-   #ip = request.META.get('REMOTE_ADDR', None)
-   #lat = 37
-   #lon = -122
-   #if ip:
-   #   lat,lon = g.lat_lon(ip)
-   #gmap = maps.Map(opts = {
-   #     'center':maps.LatLng(lat,lon),'mapTypeId':maps.MapTypeId.ROADMAP,'zoom':9,'mapTypeControlOptions':{
-   #        'style': maps.MapTypeControlStyle.DROPDOWN_MENU
-   #     },
-   #})
-   #context = {'form': MapForm(initial={'map':gmap})}
-   return render_to_response('gmapi2.html')#,context)
 
 @csrf_exempt
 def gitupdate(request):
