@@ -12,9 +12,8 @@ class DeviceSettings(models.Model):
       (3, 'Channel 3'),
       (4, 'Channel 4'),
    )
-   main_channel = models.IntegerField(max_length=1,
-                                   choices=CHANNEL_CHOICES,
-                                   default=1)
+   main_channel = models.IntegerField(choices=CHANNEL_CHOICES,
+                                      default=1)
    SAMPLE_RATE_CHOICES = (
       (0, 125000  ),
       (1, 62500   ),
@@ -25,8 +24,7 @@ class DeviceSettings(models.Model):
       (6, 1953.125),
       (7, 976.5625)
    )
-   adc_sample_rate = models.IntegerField(max_length=1,
-                                         choices=SAMPLE_RATE_CHOICES,
+   adc_sample_rate = models.IntegerField(choices=SAMPLE_RATE_CHOICES,
                                          default=5)
    transmission_rate_milliseconds = models.IntegerField(default=1000)
    date_now = models.IntegerField(null=True,blank=True)

@@ -39,7 +39,7 @@ class Circuit(models.Model):
 
 class Device(models.Model):
    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-   share_with = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='share_with')
+   share_with = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='share_with')
    ip_address = models.GenericIPAddressField(blank=True, null=True)
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
    serial = models.IntegerField(unique=True, primary_key=True)
@@ -47,9 +47,9 @@ class Device(models.Model):
    position = GeopositionField(blank=True, null=True)
    registered = models.BooleanField(default=False, editable=False)
    fanout_query_registered = models.BooleanField(default=False, editable=False)
-   channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1', blank=True, null=True)
-   channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2', blank=True, null=True)
-   channel_3 = models.ForeignKey(CircuitType, related_name='Channel 3', blank=True, null=True)
+   channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1+', blank=True, null=True)
+   channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2+', blank=True, null=True)
+   channel_3 = models.ForeignKey(CircuitType, related_name='Channel 3+', blank=True, null=True)
    data_retention_policy = models.IntegerField(help_text='Number of months of data to keep in database', default=12)
    kilowatt_hours_monthly = models.FloatField(default=0, editable=False, help_text='Monthly killowatt consumption')
    kilowatt_hours_daily = models.FloatField(default=0, editable=False, help_text='Daily killowatt consumption')
