@@ -273,12 +273,12 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
              db.query('drop continuous query '+str(q[1]))
        # add new queries
        db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+       db.query('select mean(wattage) from /^1M.device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+       db.query('select mean(wattage) from /^1w.device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+       db.query('select mean(wattage) from /^1d.device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+       db.query('select mean(wattage) from /^1h.device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+       db.query('select mean(wattage) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+       db.query('select mean(wattage) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
        db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
        success = "Added {0} points successfully".format(count)
    device.kilowatt_hours_monthly = kilowatt_hours_monthly
@@ -372,12 +372,12 @@ def influxdel(request):
                  db.query('drop continuous query '+str(q[1]))
            # add new queries
            db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
-           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
-           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
-           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
-           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
-           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+           db.query('select mean(wattage) from /^1M.device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+           db.query('select mean(wattage) from /^1w.device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+           db.query('select mean(wattage) from /^1d.device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+           db.query('select mean(wattage) from /^1h.device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+           db.query('select mean(wattage) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+           db.query('select mean(wattage) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
            
    else:
