@@ -271,7 +271,7 @@ $(function() {
 
 <script>
 $(function() {
-  $.get('/new_device/',
+  $.get('db.seads.io/new_device/',
     {
      page: 'first'
     },
@@ -286,7 +286,7 @@ $(function() {
       $('#modalBody').html("Help page");
    });
    $('#enterKey').on('click', function(e) {
-      $.get('/new_device/key/', function(data) {
+      $.get('db.seads.io/new_device/key/', function(data) {
         $('#modalBody').html(data);
       });
    });

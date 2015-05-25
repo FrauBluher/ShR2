@@ -111,7 +111,7 @@ var device_serial;
             total: {% for circuit in device.circuits %}{% if forloop.last %}1{% else %}1+{% endif %}{% endfor %},
             hrefVariable: 1
         }).on("page", function(event, num){
-            $.get('/charts/device/{{ device.serial }}/chart/',
+            $.get('db.seads.io/charts/device/{{ device.serial }}/chart/',
                 {
                     'stack': 'true',
                     'localtime': +(new Date()/1000),
@@ -123,7 +123,7 @@ var device_serial;
             });
         });
       device_serial = {{ device.serial }}
-      $.get('/charts/device/{{ device.serial }}/chart/',
+      $.get('db.seads.io/charts/device/{{ device.serial }}/chart/',
             {
                 'stack': 'true',
                 'localtime': +(new Date()/1000),
@@ -143,7 +143,7 @@ $(function() {
 
 function refresh_chart(stack) {
   var device_name = $('#chart-title').html().split(' at a glance')[0]
-  $.get('/charts/device/'+device_serial+'/chart/',
+  $.get('db.seads.io/charts/device/'+device_serial+'/chart/',
     {
       'stack': stack,
       'localtime': +(new Date()/1000),
@@ -172,7 +172,7 @@ var infowindow{{ device.serial }} = new google.maps.InfoWindow();
 
 function get_wattage_usage() {
    {% for device in my_devices %}
-    $.get('/device/get_wattage_usage/',
+    $.get('db.seads.io/device/get_wattage_usage/',
         { serial: {{ device.serial }} },
         function(data) {
            var current_wattage, average_wattage, cost_today;
@@ -210,7 +210,7 @@ function get_wattage_usage() {
         {% if render_circuit_chart %}
         get_circuit_chart{{ device.serial }}();
         {% endif %}
-        $.get('/charts/device/{{ device.serial }}/chart/',
+        $.get('db.seads.io/charts/device/{{ device.serial }}/chart/',
             {
                 'stack': true,
                 'localtime': +(new Date)/1000,
@@ -267,7 +267,7 @@ $(function() {
       toggle_chart_realtime();
    });
 
-   $.get('/charts/billing_information/',
+   $.get('db.seads.io/charts/billing_information/',
        {
          'serial': {{ my_devices.0.serial }}
        },
@@ -276,7 +276,7 @@ $(function() {
        }
    );
    
-   $.get('/charts/circuits_information/',
+   $.get('db.seads.io/charts/circuits_information/',
        {
          'serial': {{ my_devices.0.serial }}
        },
@@ -346,7 +346,7 @@ function initialize() {
 
 <script>
 $(function() {
-  $.get('/new_device/',
+  $.get('db.seads.io/new_device/',
     {
      page: 'first'
     },

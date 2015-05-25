@@ -22,7 +22,7 @@
 
 <script>
 $('#continue').on('click', function(e) {
-  $.get('/new_device/',
+  $.get('db.seads.io/new_device/',
     {
      forward: true,
      page: 'first'
@@ -32,7 +32,7 @@ $('#continue').on('click', function(e) {
   });
 });
 $('#help').on('click', function(e) {
-  $.get('/new_device/',
+  $.get('db.seads.io/new_device/',
     {
      forward: false,
      page: 'first'

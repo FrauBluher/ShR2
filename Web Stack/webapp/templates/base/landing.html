@@ -20,18 +20,18 @@
 </div>
 
 <script type="text/javascript">
-$.get("/charts/default_chart/", function( ajax_data ) {
+$.get("db.seads.io/charts/default_chart/", function( ajax_data ) {
    $('#content').html(ajax_data);
 });
 
 $('.nav-bar.account').on('click', function() {
-   $.get("/account/", function ( ajax_data ) {
+   $.get("db.seads.io/account/", function ( ajax_data ) {
       $('#content').html(ajax_data);
    });
 });
 
 $('.side-bar.dashboard').on('click', function() {
-   $.get("/dashboard/", function ( ajax_data ) {
+   $.get("db.seads.io/dashboard/", function ( ajax_data ) {
       $('#content').html(ajax_data);
    });
 });

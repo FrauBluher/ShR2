@@ -144,7 +144,7 @@ function updateInfoWindow(data) {
 }
 
 function updateBillingInformation() {
-    $.get('/charts/billing_information/',
+    $.get('db.seads.io/charts/billing_information/',
         {
             'serial': {{ device.serial }}
         },
@@ -156,7 +156,7 @@ function updateBillingInformation() {
 
 // Function to update realtime-reliant features of dashboard every minute
 function updateDashboard() {
-    $.get('/dashboard/update/',
+    $.get('db.seads.io/dashboard/update/',
         {
             'current_device': {{ device.serial }}
         },
