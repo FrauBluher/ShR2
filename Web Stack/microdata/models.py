@@ -60,7 +60,7 @@ class Device(models.Model):
          secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
          self.secret_key = secret_key
       if self.fanout_query_registered == False:
-         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+         db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
          serial = str(self.serial)
          db.query('select * from device.'+serial+' into device.'+serial+'.[channel_pk]')
          db.query('select sum(cost) from device.'+serial+' into cost.device.'+serial+'.[channel_pk]')
@@ -96,7 +96,7 @@ class Device(models.Model):
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       serial = str(self.serial)
       series = db.query('list series')[0]['points']
       # delete series
@@ -190,7 +190,7 @@ class Event(models.Model):
                appliance = Appliance.objects.get(serial=0) # Unknown appliance
             else:
                appliance = Appliance.objects.get(pk=appliance_pk)
-            db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+            db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
             data = []
             query = {}
             query['points'] = [[timestamp, wattage, current, voltage, circuit_pk, cost]]

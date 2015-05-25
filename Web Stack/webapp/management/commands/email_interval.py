@@ -41,7 +41,7 @@ def get_average_usage(user, notification):
       unit = 'd'
       
    stop = 'now()'
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
    result = db.query('list series')[0]
    averages = {}
    for device in Device.objects.filter(owner=user):
@@ -90,7 +90,7 @@ def render_chart(user, notification):
       interval_keyword = 'annually'
       
    stop = 'now()'
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
    fig = plt.figure(figsize=(10, 5), dpi=100) # 1000px * 500px figure
    plt.ylabel('Watts')
    for device in Device.objects.filter(owner=user):

@@ -30,7 +30,7 @@ class Command(BaseCommand):
       print 'Connected to Glacier Vault "'+settings.GLACIER_VAULT_NAME+'"'
       upload_id = multipart_upload['uploadId']
       treehash_archive = TreeHash()
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       
       archive_size = 0
       for device in Device.objects.all():

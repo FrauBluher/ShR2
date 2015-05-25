@@ -329,7 +329,7 @@ def dashboard(request):
       my_devices = Device.objects.filter(owner=user)
       my_devices = my_devices | Device.objects.filter(share_with=user)
    else: my_devices = None
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
    for device in my_devices:
       device.circuits = []
       device.circuits.append(device.channel_1)
@@ -360,7 +360,7 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
    else: start = '\''+datetime.fromtimestamp(start).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
    else: stop = '\''+datetime.fromtimestamp(stop+25200).strftime('%Y-%m-%d %H:%M:%S')+'\''
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
    result = db.query('list series')[0]
    channels = Set()
    for series in result['points']:
@@ -413,7 +413,7 @@ def default_chart(request):
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)
       devices = devices | Device.objects.filter(share_with=user)
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       for device in devices:
         device.circuits = []
         device.circuits.append(device.channel_1)
@@ -430,7 +430,7 @@ def generate_average_wattage_usage(request, serial):
     user = User.objects.get(username=request.user)
     device = Device.objects.get(serial=serial)
     if device.owner == user or user in device.share_with.all():
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       result = db.query('list series')[0]
       channels = Set()
       for series in result['points']:
@@ -502,7 +502,7 @@ def device_chart(request, serial):
             context['circuit_pk'] = circuit_pk
             context['circuit_name'] = circuit.name
          else:
-             db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+             db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
              result = db.query('list series')[0]
              for series in result['points']:
                 rg = re.compile('device.'+str(device.serial))
@@ -545,7 +545,7 @@ def charts_deprecated(request, serial, unit):
 
 def device_is_online(device):
   if device:
-    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+    db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
     result = [0,]
     try:
       result = db.query('select * from device.'+str(device.serial)+' limit 1;')[0]['points'][0]
@@ -878,7 +878,7 @@ def export_data(request):
       status_code = initiate_job_to_glacier(request, user, int(end))
       return render(request, 'base/glacier_status.html', {'glacier':True})
     elif device.owner == user:
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       if start is not 0 and end is not 0:
         data = db.query('select * from device.'+str(device.serial)+' where time > '+start+'s and time < '+end+'s')
       else:
@@ -893,7 +893,7 @@ def billing_information(request):
    context = {}
    if request.method == 'GET':
       serial = request.GET.get('serial')
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       user = User.objects.get(username=request.user)
       context['tier_progress_list'] = []
       device_tier_progress = {}
@@ -932,7 +932,7 @@ def circuits_information(request):
    if request.method == 'GET':
       serial = request.GET.get('serial')
       device = Device.objects.get(serial=serial)
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       user = User.objects.get(username=request.user)
       if device.owner == user or user in device.share_with.all():
          kilowatt_hours_monthly = device.kilowatt_hours_monthly
@@ -951,7 +951,7 @@ def circuits_information(request):
    return render(status_code=400)
 
 def generate_heatmap_data(serial):
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
    start_date = datetime.now()
    day_count = 365
    for single_date in (start_date - timedelta(n) for n in range(day_count)):
