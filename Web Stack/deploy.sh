@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GITDIR=`pwd`
+GITDIR=$(pwd)
 
 sudo apt-get update -y
 
@@ -12,21 +12,25 @@ sudo pip install django uwsgi
 
 cd ~
 
-wget https://s3.amazonaws.com/influxdb/influxdb_latest_amd64.deb
+# check if influxdb is installed. If not, download and install
 
-sudo dpkg -i influxdb_latest_amd64.deb
+dpkg -s influxdb >/dev/null 2>&1 && {
+	echo "influxdb is already installed."
+} || {
+	wget https://s3.amazonaws.com/influxdb/influxdb_latest_amd64.deb
 
-rm influxdb_latest_amd64.deb
+	sudo dpkg -i influxdb_latest_amd64.deb
 
-cd $GITDIR
+	rm influxdb_latest_amd64.deb
+}
+
+cd "${GITDIR}"
 
 pip install -r requirements.txt
 
-cp uwsgi.ini uwsgi.conf nginx.conf ~
+python custom_config.py
 
 cd ~
-
-sed -i "s/\/home\/ubuntu\/seads\/Web Stack\/webapp\/static\//${GITDIR}\/Web Stack\/webapp\/static\//g" nginx.conf
 
 sudo mv /etc/nginx/sites-enabled/default ~
 
@@ -34,10 +38,27 @@ sudo ln -s nginx.conf /etc/nginx/sites-enabled
 
 sudo cp uwsgi.conf /etc/init/uwsgi.conf
 
+cd /etc/init.d/
+
+sudo echo "sudo nginx -c /home/ubuntu/nginx.conf" > /etc/init.d/nginx-passenger.sh
+
+sudo chmod +x /etc/init.d/nginx-passenger.sh
+
+sudo update-rc.d nginx-passenger.sh defaults
+
+cd ~
+
 sudo chown root uwsgi.ini
 
 sudo chown root nginx.conf
 
-sudo python $GITDIR/manage.py migrate
+sudo python "${GITDIR}"/manage.py migrate
 
-sudo python $GITDIR/manage.py createsuperuser
+read -p "Create Django superuser? [y/n] " -n 1 -r
+echo    
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    sudo python "${GITDIR}"/manage.py createsuperuser
+fi
+
+sudo chown -R www-data "${GITDIR}"
