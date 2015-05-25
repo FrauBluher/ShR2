@@ -440,16 +440,14 @@ def generate_average_wattage_usage(request, serial):
             if (len(channel) < 2): continue
             else:
                channels.add(channel[-1])
-      average_wattage = 0
+      average_wattage = db.query('select mean from 1d.device.'+str(device.serial)+' limit 1')[0]['points'][0][2]
       current_wattage = 0
-      cost_today = 0.0
+      cost_today = float(db.query('select sum from cost.device.'+str(device.serial)+' limit 1')[-0]['points'][0][2])
       for circuit in channels:
          try:
-            average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+str(circuit)+' limit 100')[0]['points'][0][1]
             this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+str(circuit)+' limit 1')[0]['points'][0]
             if this_wattage[0] > time.time() - 1000:
                current_wattage += this_wattage[2]
-            cost_today = float(db.query('select sum(cost) from device.'+str(device.serial)+' where time < now() and time > now() - 1d')[0]['points'][0][1])
          except:
             pass
       context['cost_today'] = float("{0:.2f}".format(cost_today))

@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 from rest_framework import routers, serializers, viewsets
-from microdata.views import ApplianceViewSet, DeviceViewSet, EventViewSet
+from microdata.views import ApplianceViewSet, DeviceViewSet, EventViewSet, CircuitViewSet
 from farmer.views import DeviceSettingsViewSet
 from home.views import UserViewSet
 from django.contrib import admin
@@ -12,6 +12,7 @@ router.register(r'device-api', DeviceViewSet)
 router.register(r'event-api', EventViewSet)
 router.register(r'settings-api', DeviceSettingsViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'circuit-api', CircuitViewSet)
 
 router.register(r'testevent', TestEventViewSet)
 

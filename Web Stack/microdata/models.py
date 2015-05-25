@@ -71,6 +71,7 @@ class Device(models.Model):
          db.query('select mean(mean) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
          db.query('select mean(mean) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
+			db.query('select sum(cost) from "device.'+serial+'" into cost.device.1')
          self.fanout_query_registered = True
       if self.name == '':
          self.name = "Device "+str(self.serial)

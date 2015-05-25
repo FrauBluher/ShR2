@@ -238,6 +238,7 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
        db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
        db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
        db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
+		 db.query('select sum(cost) from "device.'+serial+'" into cost.device.1')
        success = "Added {0} points successfully".format(count)
    device.kilowatt_hours_monthly = kilowatt_hours_monthly
    device.kilowatt_hours_daily = kilowatt_hours_daily
@@ -342,6 +343,7 @@ def influxdel(request):
             db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
             db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
             db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
+				db.query('select sum(cost) from "device.'+serial+'" into cost.device.1')
            
    else:
       form = DatadelForm()

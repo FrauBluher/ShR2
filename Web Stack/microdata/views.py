@@ -14,8 +14,8 @@ from rest_framework import permissions, authentication
 from rest_framework.response import Response
 from rest_framework import viewsets
 
-from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer
-from microdata.models import Device, Event, Appliance
+from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer, CircuitSerializer
+from microdata.models import Device, Event, Appliance, CircuitType
 
 from influxdb.influxdb08 import client as influxdb
 
@@ -45,6 +45,13 @@ class KeyForm(forms.Form):
 
 class KeyForm(forms.Form):
    serial = forms.IntegerField()
+
+class CircuitViewSet(viewsets.ModelViewSet):
+   """
+   API endpoint that allows circuits to be viewed or edited.
+   """
+   queryset = CircuitType.objects.all()
+   serializer_class = CircuitSerializer
 
 class ApplianceViewSet(viewsets.ModelViewSet):
    """
