@@ -60,16 +60,16 @@ class Device(models.Model):
          secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
          self.secret_key = secret_key
       if self.fanout_query_registered == False:
-         db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
+         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
          serial = str(self.serial)
          db.query('select * from device.'+serial+' into device.'+serial+'.[channel_pk]')
          db.query('select sum(cost) from device.'+serial+' into cost.device.'+serial+'.[channel_pk]')
-         db.query('select mean(wattage) from /^1M.device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
-         db.query('select mean(wattage) from /^1w.device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
-         db.query('select mean(wattage) from /^1d.device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
-         db.query('select mean(wattage) from /^1h.device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
-         db.query('select mean(wattage) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-         db.query('select mean(wattage) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+         db.query('select mean(mean) from /^1M.device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+         db.query('select mean(mean) from /^1w.device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+         db.query('select mean(mean) from /^1d.device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+         db.query('select mean(mean) from /^1h.device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+         db.query('select mean(mean) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+         db.query('select mean(mean) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
          self.fanout_query_registered = True
       if self.name == '':
@@ -96,7 +96,7 @@ class Device(models.Model):
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
-      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
       serial = str(self.serial)
       series = db.query('list series')[0]['points']
       # delete series
@@ -190,7 +190,7 @@ class Event(models.Model):
                appliance = Appliance.objects.get(serial=0) # Unknown appliance
             else:
                appliance = Appliance.objects.get(pk=appliance_pk)
-            db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
+            db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
             data = []
             query = {}
             query['points'] = [[timestamp, wattage, current, voltage, circuit_pk, cost]]
@@ -209,17 +209,17 @@ class Event(models.Model):
       if timestamp < now:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
       if timestamp < now - 60:
-         new_queries.append('select mean(wattage) from /^1s.device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
+         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
       if timestamp < now - 3600:
-         new_queries.append('select mean(wattage) from /^1m.device.'+str(self.device.serial)+'.*/ group by time(1h) into 1h.:series_name')
+         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1h) into 1h.:series_name')
       if timestamp < now - 86400:
-         new_queries.append('select mean(wattage) from /^1h.device.'+str(self.device.serial)+'.*/ group by time(1d) into 1d.:series_name')
+         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1d) into 1d.:series_name')
       if timestamp < now - 604800:
-         new_queries.append('select mean(wattage) from /^1d.device.'+str(self.device.serial)+'.*/ group by time(1w) into 1w.:series_name')
+         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1w) into 1w.:series_name')
       if timestamp < now - 86400*days_this_month:
-         new_queries.append('select mean(wattage) from /^1w.device.'+str(self.device.serial)+'.*/ group by time(1M) into 1M.:series_name')
+         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1M) into 1M.:series_name')
       if timestamp < now - 86400*days_this_month*12:
-         new_queries.append('select mean(wattage) from /^1M.device.'+str(self.device.serial)+'.*/ group by time(1y) into 1y.:series_name')
+         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1y) into 1y.:series_name')
       # drop old continuous query, add new one. Essentially a refresh.
       for new_query in new_queries:
          for existing_query in existing_queries:

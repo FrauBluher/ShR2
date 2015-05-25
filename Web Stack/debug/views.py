@@ -231,12 +231,12 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
              db.query('drop continuous query '+str(q[1]))
        # add new queries
        db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
-       db.query('select mean(wattage) from /^1M.device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
-       db.query('select mean(wattage) from /^1w.device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
-       db.query('select mean(wattage) from /^1d.device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
-       db.query('select mean(wattage) from /^1h.device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
-       db.query('select mean(wattage) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-       db.query('select mean(wattage) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
        db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
        success = "Added {0} points successfully".format(count)
    device.kilowatt_hours_monthly = kilowatt_hours_monthly
@@ -301,42 +301,47 @@ def influxdel(request):
          refresh_queries = form.cleaned_data['refresh_queries']
          db = influxdb.InfluxDBClient('db.seads.io', 8086, "root", "root", "seads")
          if refresh_queries is False:
-           device.kilowatt_hours_monthly = 0
-           device.kilowatt_hours_daily = 0
-           device.save()
-           rate_plan = device.devicewebsettings.rate_plans.all()[0]
-           tiers = Tier.objects.filter(rate_plan=rate_plan)
-           for tier in tiers:
-             if tier.tier_level == 1:
-               device.devicewebsettings.current_tier = tier
-           device.devicewebsettings.save()
-           tier_dict = {}
-           tier_dict['name'] = "tier.device."+str(device.serial)
-           tier_dict['columns'] = ['tier_level']
-           tier_dict['points'] = [[1]]
-           db.write_points([tier_dict])
-           series = db.query('list series')[0]['points']
-           rg = re.compile('device.'+serial)
-           for s in series:
-              if rg.search(s[1]):
-                   db.query('drop series "'+s[1]+'"')
-           events = Event.objects.filter(device=device)
-           events.delete()
+            device.kilowatt_hours_monthly = 0
+            device.kilowatt_hours_daily = 0
+            device.save()
+            rate_plan = device.devicewebsettings.rate_plans.all()[0]
+            tiers = Tier.objects.filter(rate_plan=rate_plan)
+            for tier in tiers:
+              if tier.tier_level == 1:
+                device.devicewebsettings.current_tier = tier
+            device.devicewebsettings.save()
+            tier_dict = {}
+            tier_dict['name'] = "tier.device."+str(device.serial)
+            tier_dict['columns'] = ['tier_level']
+            tier_dict['points'] = [[1]]
+            db.write_points([tier_dict])
+            series = db.query('list series')[0]['points']
+            rg = re.compile('device.'+serial)
+            for s in series:
+               if rg.search(s[1]):
+                    db.query('drop series "'+s[1]+'"')
+            events = Event.objects.filter(device=device)
+            events.delete()
+            queries = db.query('list continuous queries')[0]['points']
+            # drop old queries
+            for q in queries:
+               if 'device.'+serial in q[2]:
+                  db.query('drop continuous query '+str(q[1]))
          else:
-           queries = db.query('list continuous queries')[0]['points']
-           # drop old queries
-           for q in queries:
-             if 'device.'+serial in q[2]:
-                 db.query('drop continuous query '+str(q[1]))
-           # add new queries
-           db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
-           db.query('select mean(wattage) from /^1M.device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
-           db.query('select mean(wattage) from /^1w.device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
-           db.query('select mean(wattage) from /^1d.device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
-           db.query('select mean(wattage) from /^1h.device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
-           db.query('select mean(wattage) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-           db.query('select mean(wattage) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
-           db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
+            queries = db.query('list continuous queries')[0]['points']
+            # drop old queries
+            for q in queries:
+              if 'device.'+serial in q[2]:
+                  db.query('drop continuous query '+str(q[1]))
+            # add new queries
+            db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
+            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+            db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
            
    else:
       form = DatadelForm()
