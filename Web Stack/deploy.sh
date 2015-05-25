@@ -30,6 +30,8 @@ pip install -r requirements.txt
 
 python custom_config.py
 
+cp deploy/uwsgi.conf ~
+
 cd ~
 
 sudo mv /etc/nginx/sites-enabled/default ~

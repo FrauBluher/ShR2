@@ -9,14 +9,12 @@ def main():
 			for line in oldfile:
 				newline = line.replace('           alias "/home/ubuntu/seads/Web Stack/webapp/static/";','           alias "'+cwd+'/webapp/static/";')
 				newfile.write(newline)
-				print newline
 
 	with open(home+"/uwsgi.ini", "w") as newfile:
 		with open("deploy/uwsgi.ini", "r") as oldfile:
 			for line in oldfile:
 				newline = line.replace('chdir=/home/ubuntu/seads/Web Stack/','chdir='+cwd)
 				newfile.write(newline)
-				print newline
 				
 
 if __name__ == "__main__":
