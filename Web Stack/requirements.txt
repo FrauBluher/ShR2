@@ -44,3 +44,5 @@ django-geoposition
 boto3
 gitpython
 numpy
+jsonfield
+
