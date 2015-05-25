@@ -11,7 +11,7 @@ class TestEvent(models.Model):
 	dataPoints = models.CharField(max_length=1000,help_text='Expects a JSON encoded string of values: [{timestamp(int), wattage(float, optional)},...]')
 
 	def save(self, **kwargs):
-		db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
+		db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
 		data = []
 		query = {}
 		query['points'] = []

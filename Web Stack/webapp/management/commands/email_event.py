@@ -35,7 +35,7 @@ def render_chart(user, notification):
       unit = 'm'
       
    stop = 'now()'
-   db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
+   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
    fig = plt.figure(figsize=(10, 5), dpi=100) # 1000px * 500px figure
    plt.ylabel('Watts')
    for device in Device.objects.filter(owner=user):

@@ -8,7 +8,7 @@ $('.device-dropdown').click(function() {
    $('.selected-device').append(span);
    var serial = $(this).attr('id');
    $('.selected-device').attr('id',serial);
-   $.get('db.seads.io/settings/change_device/',
+   $.get('/settings/change_device/',
       {'serial': serial},
       function(data) {
          $('#forms-container').html(data);
@@ -17,7 +17,7 @@ $('.device-dropdown').click(function() {
 });
 
 $(function() {
-   $.get('db.seads.io/settings/change_device/',
+   $.get('/settings/change_device/',
       {'serial': '{{ devices.0.serial }}'},
       function(data) {
          $('#forms-container').html(data);

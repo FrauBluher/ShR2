@@ -90,7 +90,7 @@ function check_device_status(element) {
    $('#btn-icon').addClass('glyphicon-refresh');
    $('#btn-icon').addClass('glyphicon-refresh-animate');
    var btn = element;
-   $.get('db.seads.io/settings/device/status/',
+   $.get('/settings/device/status/',
       {'serial': {{ device.serial }}},
       function(status) {
          btn.removeClass('disabled');
@@ -201,7 +201,7 @@ $(function() {
   $('#channel_1-dropdown').on("change", function(e) {
     if ($('#channel_1-dropdown').val() == 6) {
         // User wants a custom circuit
-        $.get('db.seads.io/api/appliance-api/',
+        $.get('/api/appliance-api/',
             function(data) {
                 $('#channel_1-appliance-list').html($("<select id='channel_1-appliance-select' multiple='multiple'/>"));
                 $('#channel_1-appliance-select').multiSelect({
@@ -261,7 +261,7 @@ $(function() {
   $('#channel_2-dropdown').on("change", function(e) {
     if ($('#channel_2-dropdown').val() == 6) {
         // User wants a custom circuit
-        $.get('db.seads.io/api/appliance-api/',
+        $.get('/api/appliance-api/',
             function(data) {
                 $('#channel_2-appliance-list').html($("<select id='channel_2-appliance-select' multiple='multiple'/>"));
                 $('#channel_2-appliance-select').multiSelect({
@@ -320,7 +320,7 @@ $(function() {
   $('#channel_3-dropdown').on("change", function(e) {
     if ($('#channel_3-dropdown').val() == 6) {
         // User wants a custom circuit
-        $.get('db.seads.io/api/appliance-api/',
+        $.get('/api/appliance-api/',
             function(data) {
                 $('#channel_3-appliance-list').html($("<select id='channel_3-appliance-select' multiple='multiple'/>"));
                 $('#channel_3-appliance-select').multiSelect({
