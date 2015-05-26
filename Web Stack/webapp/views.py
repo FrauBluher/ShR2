@@ -440,7 +440,11 @@ def generate_average_wattage_usage(request, serial):
             if (len(channel) < 2): continue
             else:
                channels.add(channel[-1])
-      average_wattage = db.query('select mean from 1d.device.'+str(device.serial)+' limit 1')[0]['points'][0][2]
+      average_wattage = 0
+      try:
+        average_wattage = db.query('select mean from 1d.device.'+str(device.serial)+' limit 1')[0]['points'][0][2]
+      except:
+        pass
       current_wattage = 0
       cost_today = float(db.query('select sum from cost.device.'+str(device.serial)+' limit 1')[-0]['points'][0][2])
       for circuit in channels:
@@ -934,9 +938,21 @@ def circuits_information(request):
       user = User.objects.get(username=request.user)
       if device.owner == user or user in device.share_with.all():
          kilowatt_hours_monthly = device.kilowatt_hours_monthly
-         channel_1_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_1.pk)+' where time > now() - 1M')[0]['points'][0][1]
-         channel_2_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_2.pk)+' where time > now() - 1M')[0]['points'][0][1]
-         channel_3_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_3.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         channel_1_kwh = 0
+         channel_2_kwh = 0
+         channel_3_kwh = 0
+         try:
+            channel_1_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_1.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except:
+            pass
+         try:
+            channel_2_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_2.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except:
+            pass
+         try:
+            channel_3_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_3.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except:
+            pass
          context = {
             'circuits': [
                [device.channel_1, channel_1_kwh],

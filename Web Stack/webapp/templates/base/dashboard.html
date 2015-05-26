@@ -223,6 +223,23 @@ function get_wattage_usage() {
                 device_serial = {{ device.serial }};
             }
         );
+         $.get('/charts/billing_information/',
+            {
+               'serial': {{ device.serial }}
+            },
+            function(data) {
+               $('#ajax-billing-information').html(data);
+            }
+         );
+
+         $.get('/charts/circuits_information/',
+            {
+               'serial': {{ device.serial }}
+            },
+            function(data) {
+               $('#ajax-circuits-information').html(data);
+            }
+         );
     }
 {% endfor %}
 
