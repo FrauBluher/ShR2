@@ -205,6 +205,9 @@ function get_wattage_usage() {
         console.log("Device change");
         {% for device in my_devices %}
         infowindow{{ device.serial }}.close();
+        try {
+          updateDashboard{{ device.serial }}.close();
+        } catch (e) { }
         {% endfor %}
         infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
         {% if render_circuit_chart %}
@@ -246,17 +249,45 @@ function get_wattage_usage() {
 var map_open = true;
 var realtime_status = true;
 
+var last_timestamp;
+
 var chart, circuitChart;
+
+function getChartData(from, to, serial) {
+  try {
+   var displayUnit = chart.displayUnit().slice(-1);
+   var start = from;
+   var stop = to;
+   var get_url = '/charts/device/'+serial+'/data/'
+   $.get(get_url,
+      {
+         'unit':displayUnit,
+         'from':start,
+         'to':stop,
+         'localtime': +(new Date)/1000,
+      },
+      function (ajax_data) {
+         if (ajax_data.data[0][0] != null) {
+            chart.addData({unit: displayUnit, values: ajax_data.data});
+         }
+      }
+   );
+  } catch (e) {
+    console.info("Chart not defined yet");
+ }
+}
 
 function toggle_chart_realtime() {
   if (realtime_status) {
        $('#span-realtime').removeClass('glyphicon-pause');
        $('#span-realtime').addClass('glyphicon-play');
        chart.settings.area.followAnchor = false;
+       last_timestamp = +(new Date())/1000;
     } else {
        $('#span-realtime').removeClass('glyphicon-play');
        $('#span-realtime').addClass('glyphicon-pause');
        chart.settings.area.followAnchor = true;
+       getChartData(last_timestamp, +(new Date()/1000), device_serial);
     }
     realtime_status = !realtime_status;
     console.log("realtime_status: "+realtime_status)

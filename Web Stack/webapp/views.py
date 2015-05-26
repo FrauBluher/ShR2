@@ -446,7 +446,7 @@ def generate_average_wattage_usage(request, serial):
       except:
         pass
       current_wattage = 0
-      cost_today = float(db.query('select sum from cost.device.'+str(device.serial)+' limit 1')[-0]['points'][0][2])
+      cost_today = device.cost_daily
       for circuit in channels:
          try:
             this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+str(circuit)+' limit 1')[0]['points'][0]
@@ -942,17 +942,14 @@ def circuits_information(request):
          channel_2_kwh = 0
          channel_3_kwh = 0
          try:
-            channel_1_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_1.pk)+' where time > now() - 1M')[0]['points'][0][1]
-         except:
-            pass
+           channel_1_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_1.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except: pass
          try:
-            channel_2_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_2.pk)+' where time > now() - 1M')[0]['points'][0][1]
-         except:
-            pass
+           channel_2_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_2.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except: pass
          try:
-            channel_3_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_3.pk)+' where time > now() - 1M')[0]['points'][0][1]
-         except:
-            pass
+           channel_3_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_3.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except: pass
          context = {
             'circuits': [
                [device.channel_1, channel_1_kwh],

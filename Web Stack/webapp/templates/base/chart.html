@@ -81,7 +81,7 @@
            {% endfor %}
         ],
         area: {
-           initialDisplayUnit: "5 m",
+           initialDisplayUnit: "1 m",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor:"now",
            followAnchor: false,
@@ -155,7 +155,7 @@ function updateBillingInformation() {
 }
 
 // Function to update realtime-reliant features of dashboard every minute
-function updateDashboard() {
+function updateDashboard{{ device.serial }}() {
     $.get('/dashboard/update/',
         {
             'current_device': {{ device.serial }}
@@ -166,10 +166,9 @@ function updateDashboard() {
         }
     );
     updateBillingInformation();
-    setTimeout(updateDashboard, 60000);
+    setTimeout(updateDashboard{{ device.serial }}, 60000);
 }
 {% endif %}
-
 
 function realTimeData{{ circuit_pk }}() {
   if (realtime_status) {
@@ -198,8 +197,10 @@ function realTimeData{{ circuit_pk }}() {
             period = 'now - ' + interval + ' hours'
             timeout = interval * 60 * 60 * 900
          }
-         var start = (+Date.parse(period)/1000)-25200;
-         var stop = (+Date.parse('now')/1000)-25200;
+         if (timeout < 6*900) timeout = 6 * 900;
+         //var start = (+Date.parse(period)/1000-25200);
+         var start = (+Date.parse('now')/1000-25200) - 100;
+         var stop = (+Date.parse('now')/1000-25200);
          var get_url = '/charts/device/{{ device.serial }}/data/'
          $.get(get_url,
             {
@@ -252,7 +253,7 @@ $(function() {
    $('#circuit-heading').html("{{ circuit_name }}");
    {% endif %}
    {% if circuit_pk == None %}
-   updateDashboard();
+   updateDashboard{{ device.serial }}();
    {% endif %}
 });
 

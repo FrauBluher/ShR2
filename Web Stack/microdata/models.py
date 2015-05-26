@@ -53,6 +53,7 @@ class Device(models.Model):
    data_retention_policy = models.IntegerField(help_text='Number of months of data to keep in database', default=12)
    kilowatt_hours_monthly = models.FloatField(default=0, editable=False, help_text='Monthly killowatt consumption')
    kilowatt_hours_daily = models.FloatField(default=0, editable=False, help_text='Daily killowatt consumption')
+   cost_daily = models.FloatField(default=0, editable=False, help_text='Daily cost')
    
    def save(self, **kwargs):
       if self.secret_key == None:
@@ -71,7 +72,7 @@ class Device(models.Model):
          db.query('select mean(mean) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
          db.query('select mean(mean) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
-			db.query('select sum(cost) from "device.'+serial+'" into cost.device.1')
+         db.query('select sum(cost) from "device.'+serial+'" into cost.device.'+serial)
          self.fanout_query_registered = True
       if self.name == '':
          self.name = "Device "+str(self.serial)
@@ -134,6 +135,7 @@ class Event(models.Model):
 
    def save(self, **kwargs):
       dataPoints = json.loads(self.dataPoints)
+      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
       self.dataPoints = dataPoints
       count = 0
       now = time.time()
@@ -149,7 +151,7 @@ class Event(models.Model):
          if channel == 2: circuit_pk = self.device.channel_2.pk
          elif channel == 3: circuit_pk = self.device.channel_3.pk
          # timestamp is millisecond resolution always
-         timestamp = self.start + ((1.0/self.frequency)*count*1000)
+         timestamp = self.start + ((1.0/1.2)*count*1000)#((1.0/self.frequency)*count*1000)
          count += 1
 
          kwh = 0.0
@@ -185,13 +187,13 @@ class Event(models.Model):
                tier_dict['points'].append([current_tier.tier_level + 1])
                db.write_points([tier_dict])
          cost = self.device.devicewebsettings.current_tier.rate * kwh
+         self.device.cost_daily += cost
          
          if (timestamp and (wattage or current or voltage)):
             if appliance_pk == None:
                appliance = Appliance.objects.get(serial=0) # Unknown appliance
             else:
                appliance = Appliance.objects.get(pk=appliance_pk)
-            db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
             data = []
             query = {}
             query['points'] = [[timestamp, wattage, current, voltage, circuit_pk, cost]]
