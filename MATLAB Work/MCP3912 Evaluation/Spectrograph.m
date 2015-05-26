@@ -1,6 +1,9 @@
-close all;
+%close all;
 %[b a] = butter(3, 500/31250);
 %y = filter(b, a, VarName2);
+
+VarName2 = Voltage;
+
 y = VarName2/max(abs(VarName2));
 
 sig = y;

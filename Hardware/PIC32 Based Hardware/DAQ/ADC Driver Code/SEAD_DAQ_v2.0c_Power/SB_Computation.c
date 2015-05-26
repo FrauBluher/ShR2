@@ -13,7 +13,7 @@
 
 //10 cycles at sample speed 3906.25/sec
 //should not exceed 2^15 32768 to prevent overflow
-#define WINDOW_SIZE 832//2
+#define WINDOW_SIZE 976//2
 
 //the channel to do the calculations
 #define CHANNEL 0
