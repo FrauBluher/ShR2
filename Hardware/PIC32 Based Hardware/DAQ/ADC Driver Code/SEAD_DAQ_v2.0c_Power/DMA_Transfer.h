@@ -38,7 +38,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 //changed buffer length to satisfy 1hz because it's configured for 3.90625Ksamples/sec
-#define BUFFERLENGTH 13*832
+#define WINDOW_SIZE 976
+#define BUFFERLENGTH 13*WINDOW_SIZE
 #define END_MESSAGE 8
 
 enum {
