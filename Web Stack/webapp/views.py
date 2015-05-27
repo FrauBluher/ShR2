@@ -475,10 +475,12 @@ def device_data(request, serial):
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
       localtime = int(float(request.GET.get('localtime', time.time())))
+      chart_load = request.GET.get('chart_load', False)
       if device.owner == user or user in device.share_with.all():
          unit = request.GET.get('unit','')
          start = int(float(request.GET.get('from','')))
          stop = int(float(request.GET.get('to','')))
+         if chart_load: stop = time.time()
          if start < stop: start += 25200
          circuit_pk = request.GET.get('circuit_pk')
          context = group_by_mean(serial,unit,start,stop,localtime,circuit_pk)

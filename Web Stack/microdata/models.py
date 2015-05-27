@@ -202,6 +202,8 @@ class Event(models.Model):
             data.append(query)
             self.query += str(data)
             db.write_points(data, time_precision="ms")
+            with open('/home/ubuntu/ShR2/Web Stack/webapp/static/events.log', 'w') as f:
+               f.write(str(data)+'\n')
             
       # If data is older than the present, must backfill fanout queries by reloading the continuous query.
       # https://github.com/influxdb/influxdb/issues/510

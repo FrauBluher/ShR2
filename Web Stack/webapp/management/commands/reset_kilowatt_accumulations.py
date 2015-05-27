@@ -13,6 +13,7 @@ class Command(BaseCommand):
       for device in Device.objects.all():
          if (args[0] == 'daily'):
             device.kilowatt_hours_daily = 0
+            device.cost_daily = 0
          else:
             db = influxdb.InfluxDBClient('db.seads.io', 8086, "root", "root", "seads")
             tier_dict = {}

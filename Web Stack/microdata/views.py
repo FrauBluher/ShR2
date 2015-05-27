@@ -61,6 +61,7 @@ class ApplianceViewSet(viewsets.ModelViewSet):
    serializer_class = ApplianceSerializer
 
 
+
 class DeviceViewSet(viewsets.ModelViewSet):
    """
    API endpoint that allows devices to be viewed or edited.
@@ -71,9 +72,12 @@ class DeviceViewSet(viewsets.ModelViewSet):
    def create(self, request):
       ip_address = request.META.get('REMOTE_ADDR')
       serial = request.DATA.get('serial')
-      device = Device.objects.create(ip_address=ip_address, serial=serial)
-      data = serializers.serialize('json', [device,], fields=('owner', 'ip_address', 'secret_key', 'serial', 'name', 'registered','fanout_query_registered'))
-      return HttpResponse(data, content_type="application/json", status=201)
+      if serial:
+         device = Device.objects.create(ip_address=ip_address, serial=serial)
+         data = serializers.serialize('json', [device,], fields=('owner', 'ip_address', 'secret_key', 'serial', 'name', 'registered','fanout_query_registered'))
+         return HttpResponse(data, content_type="application/json", status=201)
+      return HttpResponse("No serial provided", status=400)
+
 
 class EventViewSet(viewsets.ModelViewSet):
    """
