@@ -14,11 +14,11 @@ pip install -r requirements.txt
 
 python custom_config.py
 
-cp deploy/uwsgi.conf ~
+cp deploy/uwsgi.conf /srv/
 
-cd ~
+cd /srv/
 
-sudo mv /etc/nginx/sites-enabled/default ~
+sudo mv /etc/nginx/sites-enabled/default /srv/
 
 sudo ln -s nginx.conf /etc/nginx/sites-enabled
 
@@ -26,13 +26,13 @@ sudo cp uwsgi.conf /etc/init/uwsgi.conf
 
 cd /etc/init.d/
 
-sudo echo "sudo nginx -c /home/ubuntu/nginx.conf" > /etc/init.d/nginx-passenger.sh
+sudo echo "sudo nginx -c /srv/nginx.conf" > /etc/init.d/nginx-passenger.sh
 
 sudo chmod +x /etc/init.d/nginx-passenger.sh
 
 sudo update-rc.d nginx-passenger.sh defaults
 
-cd ~
+cd /srv/
 
 sudo chown root uwsgi.ini
 
@@ -51,11 +51,11 @@ sudo chown -R www-data "${GITDIR}"
 
 
 sudo crontab -l > sudocron
-echo "@weekly         python /home/ubuntu/seads-git/ShR2/Web\ Stack/manage.py dbbackup >>${GITDIR}/webapp/dbbackup.log 2>&1" >> sudocron
-echo "@daily          python /home/ubuntu/seads-git/ShR2/Web\ Stack/manage.py email_interval >>${GITDIR}/webapp/email.log 2>&1" >> sudocron
-echo "@daily          python /home/ubuntu/seads-git/ShR2/Web\ Stack/manage.py check_glacier_jobs >>${GITDIR}/webapp/glacier.log 2>&1" >> sudocron
-echo "@monthly        python /home/ubuntu/seads-git/ShR2/Web\ Stack/manage.py reset_kilowatt_accumulations monthly" >> sudocron
-echo "@daily          python /home/ubuntu/seads-git/ShR2/Web\ Stack/manage.py reset_kilowatt_accumulations daily" >> sudocron
+echo "@weekly         python ${GITDIR}/manage.py dbbackup >>${GITDIR}/webapp/dbbackup.log 2>&1" >> sudocron
+echo "@daily          python ${GITDIR}/manage.py email_interval >>${GITDIR}/webapp/email.log 2>&1" >> sudocron
+echo "@daily          python ${GITDIR}/manage.py check_glacier_jobs >>${GITDIR}/webapp/glacier.log 2>&1" >> sudocron
+echo "@monthly        python ${GITDIR}/manage.py reset_kilowatt_accumulations monthly" >> sudocron
+echo "@daily          python ${GITDIR}/manage.py reset_kilowatt_accumulations daily" >> sudocron
 echo "@weekly         service uwsgi restart" >> sudocron
 sudo crontab sudocron
 rm sudocron
