@@ -15,9 +15,10 @@
         {% endif %}
         data:
         {
-            units:["y","M","d","h","m","s"],
+            units:["y","M","d","h","m","s","ms"],
             timestampInSeconds: true,
             urlByUnit:{
+               "ms":"/charts/device/{{ device.serial }}/data/",
                "s":"/charts/device/{{ device.serial }}/data/",
                "m":"/charts/device/{{ device.serial }}/data/",
                "M":"/charts/device/{{ device.serial }}/data/",
@@ -35,6 +36,10 @@
               {
                 name: 'localtime',
                 value: +(new Date())/1000
+              },
+              {
+                name: 'chart_load',
+                value: true
               }
             ]
         },
@@ -84,7 +89,7 @@
            initialDisplayUnit: "1 m",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor:"now",
-           followAnchor: false,
+           followAnchor: true,
         },
         currentTime: {
            enabled: true,
@@ -95,6 +100,7 @@
         },
         events: {
           onChartUpdate: function(event){
+            fillGaps(event);
             changeRealTime();
           },
           onError: function(message) {
@@ -108,17 +114,60 @@
           periods: [
             {"name":"Last second","displayAnchor":"now","displayPeriod":"1 s","displayUnit":"25 ms"},
             {"name":"Last minute","displayAnchor":"now","displayPeriod":"1 m","displayUnit":"1 s"},
-            {"name":"Last hour","displayAnchor":"now","displayPeriod":"1 h","displayUnit":"1 m"},
-            {"name":"Last day","displayAnchor":"now","displayPeriod":"1 d","displayUnit":"1 h"},
-            {"name":"Last week","displayAnchor":"now","displayPeriod":"1 w","displayUnit":"6 h"},
-            {"name":"Last month","displayAnchor":"now","displayPeriod":"1 M","displayUnit":"1 d"},
-            {"name":"Last year","displayAnchor":"now","displayPeriod":"1 y","displayUnit":"1 M"},
+            {"name":"Last hour","displayAnchor":"now","displayPeriod":"1 h","displayUnit":"1 s"},
+            {"name":"Last day","displayAnchor":"now","displayPeriod":"1 d","displayUnit":"1 m"},
+            {"name":"Last week","displayAnchor":"now","displayPeriod":"1 w","displayUnit":"1 h"},
+            {"name":"Last month","displayAnchor":"now","displayPeriod":"1 M","displayUnit":"6 d"},
+            {"name":"Last year","displayAnchor":"now","displayPeriod":"1 y","displayUnit":"1 w"},
           ]
         },
      });
    {% endif %}
 
 var timeoutHandler{{ circuit_pk }};
+
+function fillGaps(event) {
+   try {
+      // check front of data.
+      var displayUnit = chart.displayUnit().slice(-1);
+      var interval = chart.displayUnit().split(' ')[0];
+      if (displayUnit == 'y') {
+         var values = chart._scene.mainData.chart.data.default.cache.y.values;
+         var threshold = interval * 60 * 60 * 24 * 365 *1000;
+      } else if (displayUnit == 'M') {
+         var values = chart._scene.mainData.chart.data.default.cache.M.values;
+         var threshold = interval * 60 * 60 * 24 * 31 *1000;
+      } else if (displayUnit == 'd') {
+         var values = chart._scene.mainData.chart.data.default.cache.d.values;
+         var threshold = interval * 60 * 60 * 24 *1000;
+      } else if (displayUnit == 'h') {
+         var values = chart._scene.mainData.chart.data.default.cache.h.values;
+         var threshold = interval * 60 * 60 *1000;
+      } else if (displayUnit == 'm') {
+         var values = chart._scene.mainData.chart.data.default.cache.m.values;
+         var threshold = interval * 60 *1000;
+      } else if (displayUnit == 's') {
+         var values = chart._scene.mainData.chart.data.default.cache.s.values;
+         var threshold = (interval *1000) + 30*1000;
+      } else if (displayUnit == 'ms') {
+         var values = chart._scene.mainData.chart.data.default.cache.ms.values;
+         var threshold = (interval) + 30*1000;
+      } else return;
+      start = values[values.length-1][0];
+      stop = event.timeEnd;
+      if (stop - start > threshold) {
+         console.log(">>>Backfilling from "+start/1000+" to "+stop/1000);
+         getChartData(start/1000, stop/1000, {{ device.serial }});
+      }
+      // check back of data.
+      stop = values[0][0];
+      start = event.timeStart;
+      if (stop - start > threshold) {
+         console.log("<<<Backfilling from "+start/1000+" to "+stop/1000);
+         getChartData(start/1000, stop/1000, {{ device.serial }});
+      }
+   } catch (e) {}
+}
 
 function changeRealTime() {
   console.info("Chart update");
@@ -166,7 +215,7 @@ function updateDashboard{{ device.serial }}() {
         }
     );
     updateBillingInformation();
-    setTimeout(updateDashboard{{ device.serial }}, 60000);
+    updateDashboardTimeout{{ device.serial }} = setTimeout(updateDashboard{{ device.serial }}, 60000);
 }
 {% endif %}
 

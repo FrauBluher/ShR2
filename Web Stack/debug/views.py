@@ -334,6 +334,7 @@ def influxdel(request):
             for q in queries:
               if 'device.'+serial in q[2]:
                   db.query('drop continuous query '+str(q[1]))
+               
             # add new queries
             db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
             db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')

@@ -167,7 +167,7 @@ var contentArray = {}
 contentArray['{{ device.serial }}'] = '';
 var marker{{ device.serial }};
 var infowindow{{ device.serial }} = new google.maps.InfoWindow();
-
+var now = +(new Date())/1000;
 {% endfor %}
 
 function get_wattage_usage() {
@@ -200,14 +200,15 @@ function get_wattage_usage() {
 }
 
 {% for device in my_devices %}
+    var updateDashboardTimeout{{ device.serial }};
     // Function to update device-specific elements on the dashboard for device with serial {{ device.serial }}
     function change_dashboard_device{{ device.serial }}(infowindow, marker) {
         console.log("Device change");
         {% for device in my_devices %}
         infowindow{{ device.serial }}.close();
         try {
-          updateDashboard{{ device.serial }}.close();
-        } catch (e) { }
+          clearTimeout(updateDashboardTimeout{{ device.serial }});
+        } catch (e) { console.log(e); }
         {% endfor %}
         infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
         {% if render_circuit_chart %}
@@ -329,7 +330,8 @@ $(function() {
          'serial': {{ my_devices.0.serial }}
        },
        function(data) {
-         $('#ajax-circuits-information').html(data);
+         if (device_serial == {{ my_devices.0.serial }})
+            $('#ajax-circuits-information').html(data);
        }
    );
 
