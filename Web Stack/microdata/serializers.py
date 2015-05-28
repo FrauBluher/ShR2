@@ -5,7 +5,7 @@ from home.serializers import UserSerializer
 class CircuitSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = CircuitType
-		fields = ('name','appliances','chart_color')
+		fields = ('name','appliances','chart_color','pk')
 
 class ApplianceSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:

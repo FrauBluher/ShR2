@@ -125,7 +125,6 @@ class Event(models.Model):
                                            '    {wattage(float, optional),\n'+\
                                            '    current(float, optional),\n'+\
                                            '    voltage(float, optional),\n'+\
-                                           '    appliance_pk(int, optional),\n'+\
                                            '    event_code(int, optional),\n'+\
                                            '    channel(int, optional)}\n'+\
                                            ' ,...]')
@@ -190,10 +189,6 @@ class Event(models.Model):
          self.device.cost_daily += cost
          
          if (timestamp and (wattage or current or voltage)):
-            if appliance_pk == None:
-               appliance = Appliance.objects.get(serial=0) # Unknown appliance
-            else:
-               appliance = Appliance.objects.get(pk=appliance_pk)
             data = []
             query = {}
             query['points'] = [[timestamp, wattage, current, voltage, circuit_pk, cost]]
@@ -202,8 +197,6 @@ class Event(models.Model):
             data.append(query)
             self.query += str(data)
             db.write_points(data, time_precision="ms")
-            with open('/home/ubuntu/ShR2/Web Stack/webapp/static/events.log', 'w') as f:
-               f.write(str(data)+'\n')
             
       # If data is older than the present, must backfill fanout queries by reloading the continuous query.
       # https://github.com/influxdb/influxdb/issues/510

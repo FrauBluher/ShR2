@@ -151,7 +151,7 @@ function refresh_chart(stack) {
     function(data) {
       $('#ajax-container1').html(data);
       //TODO: blocks other ajax. Move to worker thread?
-      render_chart();
+      //render_chart();
       $('#chart-title').html(device_name+" at a glance");
       if (stack) {
         $('#chart-type-label').html('Stacked <span class="caret"></span>');
@@ -167,7 +167,7 @@ var contentArray = {}
 contentArray['{{ device.serial }}'] = '';
 var marker{{ device.serial }};
 var infowindow{{ device.serial }} = new google.maps.InfoWindow();
-var now = +(new Date())/1000;
+var dataDimensions{{ device.serial }} = [0,0]
 {% endfor %}
 
 function get_wattage_usage() {
@@ -221,7 +221,7 @@ function get_wattage_usage() {
             },
             function(data) {
                 $('#ajax-container1').html(data);
-                render_chart();
+                //render_chart();
                 $('#chart-title').html("{{ device.name }} at a glance");
                 $('#chart-title').val("{{ device.serial }}");
                 device_serial = {{ device.serial }};
@@ -241,7 +241,8 @@ function get_wattage_usage() {
                'serial': {{ device.serial }}
             },
             function(data) {
-               $('#ajax-circuits-information').html(data);
+               if (device_serial == {{ device.serial }})
+                 $('#ajax-circuits-information').html(data);
             }
          );
     }
@@ -330,8 +331,7 @@ $(function() {
          'serial': {{ my_devices.0.serial }}
        },
        function(data) {
-         if (device_serial == {{ my_devices.0.serial }})
-            $('#ajax-circuits-information').html(data);
+         $('#ajax-circuits-information').html(data);
        }
    );
 

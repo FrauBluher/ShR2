@@ -380,7 +380,7 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
       try:
         group = db.query(query)
       except:
-        continue
+        pass
       if (len(group)): group = group[0]['points']
       # else: return None
       # hack. Remove sequence_number and timezone offset for GMT
