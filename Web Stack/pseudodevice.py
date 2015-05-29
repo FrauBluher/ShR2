@@ -13,8 +13,8 @@ class Device():
 def main():
    channel_map = {
       1:400,
-      #2:200,
-      #3:1000,
+      2:200,
+      3:1000,
    }
    parser = OptionParser()
    parser.add_option("-e", "--end", dest="end", type="int",
@@ -70,7 +70,7 @@ def main():
       headers = {'content-type': 'application/json'}
       dataPoints = []
       for i in range(size):
-         for channel in {1, }:#2, 3}:
+         for channel in {1, 2, 3}:
             channel_map[channel] += random.uniform(-20,20)
             if channel_map[channel] < 0: channel_map[channel] = 0
             if channel_map[channel] > 2000: channel_map[channel] = 2000
