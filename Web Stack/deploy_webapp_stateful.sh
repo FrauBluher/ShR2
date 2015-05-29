@@ -5,9 +5,6 @@ GITDIR=$(pwd)
 # Install libraries for mysql server and the python interface
 sudo apt-get install mysql-server python-mysqldb -y
 
-# Change mysql settings to configure a remote database
-sudo python custom_mysql.py
-
 # Install django to interface with the database
 sudo pip install django
 
@@ -21,6 +18,11 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     sudo python "${GITDIR}"/manage.py createsuperuser
 fi
+
+sudo python "${GITDIR}"/manage.py migrate
+
+# Change mysql settings to configure a remote database
+sudo python custom_mysql.py
 
 # Register cron jobs
 sudo crontab -l > sudocron
