@@ -8,6 +8,19 @@ sudo apt-get install nginx python2.7-dev python-flup python-pip git -y
 
 sudo apt-get install binutils libproj-dev gdal-bin -y
 
+sudo apt-get install mysql-server python-mysqldb -y
+
+
+echo "Creating new Django Database User."
+echo -n "Django Database Username: "
+read username
+echo -n "Django Database Password: "
+read -s password
+
+echo -n "Django Root Database Password: "
+
+mysql -u root -e "CREATE USER '${username}'@'%' IDENTIFIED BY '${password}'; GRANT ALL PRIVILEGES ON *.* TO '${username}'@'%' WITH GRANT OPTION;" -p
+
 sudo pip install django uwsgi
 
 cd ~
@@ -50,9 +63,12 @@ sudo update-rc.d nginx-passenger.sh defaults
 
 cd ~
 
-sudo chown root uwsgi.ini
+sudo chown root /srv/uwsgi.ini
 
-sudo chown root nginx.conf
+sudo chown root /srv/nginx.conf
+
+# Change mysql settings to configure a remote database
+sudo python custom_mysql.py
 
 sudo python "${GITDIR}"/manage.py migrate
 

@@ -24,6 +24,7 @@ def main():
       'port    = '+str(db_port),
       '#bind-address    = 127.0.0.1',
    ]
+   find_replace = dict(zip(findlines, replacelines))
 
    with open('/etc/mysql/my.cnf') as data:
        with open('my.cnf', 'w') as new_data:
