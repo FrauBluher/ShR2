@@ -15,54 +15,54 @@ def main():
    if influxdb == '': influxdb = 'db.seads.io'
    base_url = raw_input('Base address (seads.io): ')
    if base_url == '': base_url = 'seads.io'
-   
-   with open("my.cnf", "w") as newfile:
-      with open("/etc/mysql/my.cnf", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('port		= 3306','port		= '+str(db_port))
-            newfile.write(newline)
-   with open("my.cnf", "a") as newfile:
-      with open("/etc/mysql/my.cnf", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('bind-address		= 127.0.0.1','#bind-address		= 127.0.0.1')
-            newfile.write(newline)
+
+   findlines = [
+      'port    = 3306',
+      'bind-address     = 127.0.0.1',
+   ]
+   replacelines = [
+      'port    = '+str(db_port),
+      '#bind-address    = 127.0.0.1',
+   ]
+
+   with open('/etc/mysql/my.cnf') as data:
+       with open('my.cnf', 'w') as new_data:
+           for line in data:
+               for key in find_replace:
+                   if key in line:
+                       line = line.replace(key, find_replace[key])
+               new_data.write(line)
    shutil.move("my.cnf","/etc/mysql/my.cnf")
-   
-   with open("settings.py", "w") as newfile:
-      with open("seads/settings.py", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('INFLUXDB_URI = \'db.seads.io\'','INFLUXDB_URI = \''+influxdb+'\'')
-            newfile.write(newline)
-   with open("settings.py", "a") as newfile:
-      with open("seads/settings.py", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('BASE_URL = \'seads.io\'','BASE_URL = \''+base_url+'\'')
-            newfile.write(newline)
-   with open("settings.py", "a") as newfile:
-      with open("seads/settings.py", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('        \'NAME\': \'django_db\',','        \'NAME\': \''+db_name+'\',')
-            newfile.write(newline)
-   with open("settings.py", "a") as newfile:
-      with open("seads/settings.py", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('        \'USER\': \'django\'','        \'USER\': \''+db_user+'\'')
-            newfile.write(newline)
-   with open("settings.py", "a") as newfile:
-      with open("seads/settings.py", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('        \'PASSWORD\': \'teammantey\'','        \'PASSWORD\': \''+db_pswd+'\'')
-            newfile.write(newline)
-   with open("settings.py", "a") as newfile:
-      with open("seads/settings.py", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('        \'HOST\': \'django.seads.io\'','        \'HOST\': \''+db_host+'\'')
-            newfile.write(newline)
-   with open("settings.py", "a") as newfile:
-      with open("seads/settings.py", "r") as oldfile:
-         for line in oldfile:
-            newline = line.replace('        \'PORT\': \'3306\'','        \'PORT\': \''+str(db_port)+'\'')
-            newfile.write(newline)
+
+
+   # create a dict of find keys and replace values
+   findlines = [
+      'INFLUXDB_URI = \'db.seads.io\'',
+      'BASE_URL = \'seads.io\'',
+      '        \'NAME\': \'django_db\',',
+      '        \'USER\': \'django\',',
+      '        \'PASSWORD\': \'teammantey\',',
+      '        \'HOST\': \'django.seads.io\',',
+      '        \'PORT\': \'3306\',',
+   ]
+   replacelines = [
+      'INFLUXDB_URI = \''+influxdb+'\'',
+      'BASE_URL = \''+base_url+'\'',
+      '        \'NAME\': \''+db_name+'\',',
+      '        \'USER\': \''+db_user+'\',',
+      '        \'PASSWORD\': \''+db_pswd+'\',',
+      '        \'HOST\': \''+db_host+'\',',
+      '        \'PORT\': \''+str(db_port)+'\',',
+   ]
+   find_replace = dict(zip(findlines, replacelines))
+
+   with open('seads/settings.py') as data:
+       with open('settings.py', 'w') as new_data:
+           for line in data:
+               for key in find_replace:
+                   if key in line:
+                       line = line.replace(key, find_replace[key])
+               new_data.write(line)
    shutil.move("settings.py","seads/settings.py")
 
 if __name__ == "__main__":
