@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # check if influxdb is installed. If not, download and install
 
 dpkg -s influxdb >/dev/null 2>&1 && {
@@ -14,3 +16,4 @@ dpkg -s influxdb >/dev/null 2>&1 && {
 
 curl -X POST 'http://localhost:8086/db?u=root&p=root' \
   -d '{"name": "seads"}'
+
