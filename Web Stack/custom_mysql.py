@@ -10,7 +10,8 @@ def main():
    if db_host == '': db_host = 'django.seads.io'
    db_port = raw_input('Django database port (3306): ')
    if db_port == '': db_port = '3306'
-   db_pswd = getpass.getpass("Django database password: ")
+   db_pswd = getpass.getpass(db_user + " password: ")
+   db_root_pswd = getpass.getpass("Django database root password: ")
    influxdb = raw_input('Influxdb address (db.seads.io): ')
    if influxdb == '': influxdb = 'db.seads.io'
    base_url = raw_input('Base address (seads.io): ')
@@ -65,6 +66,13 @@ def main():
                        line = line.replace(key, find_replace[key])
                new_data.write(line)
    shutil.move("settings.py","seads/settings.py")
+
+   choice = raw_input("Configure database as server? [y/n]: ").lower()
+   if 'y' in choice:
+      import mysql.connector
+      cnx = mysql.connector.connect(user='root', password=db_root_pswd, host='localhost', database=db_name)
+      cursor = cnx.cursor()
+      cursor.execute("GRANT ALL ON "+db_name+".* TO "+db_user+"@'%' IDENTIFIED BY '"+db_pswd+"';")
 
 if __name__ == "__main__":
    main()

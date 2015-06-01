@@ -4,6 +4,7 @@ GITDIR=$(pwd)
 
 # Install libraries for mysql server and the python interface
 
+sudo apt-get update --fix-missing
 sudo apt-get install python2.7-dev python-flup python-pip -y
 sudo apt-get install mysql-server python-mysqldb -y
 
@@ -12,6 +13,9 @@ sudo pip install django
 
 # Install the dependencies that accompany this project
 pip install -r requirements.txt
+
+sudo python custom_mysql.py
+
 
 # Prompt for superuser creation. Optional.
 read -p "Create Django superuser? [y/n] " -n 1 -r
@@ -23,9 +27,6 @@ fi
 
 sudo python "${GITDIR}"/manage.py syncdb
 sudo python "${GITDIR}"/manage.py migrate
-
-# Change mysql settings to configure a remote database
-sudo python custom_mysql.py
 
 # Register cron jobs
 sudo crontab -l > sudocron

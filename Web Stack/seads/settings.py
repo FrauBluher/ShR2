@@ -27,7 +27,7 @@ GLACIER_VAULT_NAME = 'seads_archive'
 AWS_ACCOUNT_ID = '0623-0256-0606'
 
 ORG_NAME = 'SEADS'
-BASE_URL = 'seads.brabsmit.com'
+BASE_URL = 'seads.io'
 
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',
@@ -141,7 +141,7 @@ DATABASES = {
         'NAME': 'django_db',
         'USER': 'django',
         'PASSWORD': 'teammantey',
-        'HOST': 'db.seads.io',
+        'HOST': 'django.seads.io',
         'PORT': '3306',
     }
 }
