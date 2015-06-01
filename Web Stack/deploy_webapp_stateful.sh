@@ -3,6 +3,8 @@
 GITDIR=$(pwd)
 
 # Install libraries for mysql server and the python interface
+
+sudo apt-get install python2.7-dev python-flup python-pip -y
 sudo apt-get install mysql-server python-mysqldb -y
 
 # Install django to interface with the database
@@ -19,6 +21,7 @@ then
     sudo python "${GITDIR}"/manage.py createsuperuser
 fi
 
+sudo python "${GITDIR}"/manage.py syncdb
 sudo python "${GITDIR}"/manage.py migrate
 
 # Change mysql settings to configure a remote database

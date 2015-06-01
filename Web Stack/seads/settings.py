@@ -101,7 +101,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'django.contrib.gis',
+    #'django.contrib.gis',
     'restless',
     'recurrence',
     'rest_framework.authtoken',
@@ -141,7 +141,7 @@ DATABASES = {
         'NAME': 'django_db',
         'USER': 'django',
         'PASSWORD': 'teammantey',
-        'HOST': 'django.seads.io',
+        'HOST': 'db.seads.io',
         'PORT': '3306',
     }
 }

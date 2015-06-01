@@ -6,8 +6,8 @@ def main():
    if db_name == '': db_name = 'django_db'
    db_user = raw_input('Django database username (django): ')
    if db_user == '': db_user = 'django'
-   db_host = raw_input('Django database host address (db.seads.io): ')
-   if db_host == '': db_host = 'db.seads.io'
+   db_host = raw_input('Django database host address (django.seads.io): ')
+   if db_host == '': db_host = 'django.seads.io'
    db_port = raw_input('Django database port (3306): ')
    if db_port == '': db_port = '3306'
    db_pswd = getpass.getpass("Django database password: ")
