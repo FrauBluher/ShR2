@@ -27,7 +27,7 @@ GLACIER_VAULT_NAME = 'seads_archive'
 AWS_ACCOUNT_ID = '0623-0256-0606'
 
 ORG_NAME = 'SEADS'
-BASE_URL = 'seads.brabsmit.com'
+BASE_URL = 'seads.io'
 
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',

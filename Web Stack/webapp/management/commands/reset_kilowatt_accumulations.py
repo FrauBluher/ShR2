@@ -28,5 +28,5 @@ class Command(BaseCommand):
             device.devicewebsettings.save()
          device.save()
          with open('/home/ubuntu/reset.log','a') as f:
-            f.write('Reset '+device.name)
+            f.write('Reset '+device.__unicode__())
             f.write('\n')
