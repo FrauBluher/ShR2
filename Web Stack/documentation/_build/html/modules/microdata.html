@@ -94,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting-started.html">2. Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#api-documentation">2.1. API Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">3. Applications</a><ul class="current">
@@ -103,7 +104,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">3.1.2. Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-microdata.admin">3.1.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#microdata-admin-module">3.1.3. microdata.admin module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#microdata-models-module">3.1.4. microdata.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-microdata.serializers">3.1.5. microdata.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-microdata.tests">3.1.6. microdata.tests module</a></li>
@@ -111,7 +112,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-microdata">3.1.8. Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.2. webapp package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.2. Webapp Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="webapp.html#subpackages">3.2.1. Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="webapp.management.html">3.2.1.1. webapp.management package</a></li>
 </ul>
@@ -134,6 +135,19 @@
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="home.html">3.4. home package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="home.html#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home">3.4.8. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -180,6 +194,11 @@
   <div class="section" id="microdata-application">
 <h1>3.1. Microdata Application<a class="headerlink" href="#microdata-application" title="Permalink to this headline">¶</a></h1>
 <p>This application is the direct interface between devices and the InfluxDB database. It is responsible for exposing the REST API endpoints.</p>
+<p>A <a class="reference internal" href="#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> is what links to a SEAD Light out in the world. When a new SEAD connects to the system, it will check to see
+if it has been registered on the system by querying <cite>/api/device-api/{serial}/</cite>. If the response is 404, the device will then register
+on the system as new with no owner. It is then the user&#8217;s responsibility to pair the device via the web application in order to access
+the data.</p>
+<p>Refer to the <a class="reference internal" href="../getting-started.html#getting-started"><span>Getting Started</span></a> guide for more information on interfacing the devices with the server.</p>
 <div class="section" id="subpackages">
 <h2>3.1.1. Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -204,12 +223,17 @@
 <div class="section" id="submodules">
 <h2>3.1.2. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-microdata.admin">
-<span id="microdata-admin-module"></span><h2>3.1.3. microdata.admin module<a class="headerlink" href="#module-microdata.admin" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<div class="section" id="microdata-admin-module">
+<h2>3.1.3. microdata.admin module<a class="headerlink" href="#microdata-admin-module" title="Permalink to this headline">¶</a></h2>
+<p>Models registered to the administrative interface are listed below. These are the interfaces provided to an administrator that may have control over the system for a group of users.</p>
+<span class="target" id="module-microdata.admin"></span><dl class="class">
 <dt id="microdata.admin.ApplianceAdmin">
 <em class="property">class </em><code class="descclassname">microdata.admin.</code><code class="descname">ApplianceAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.admin.ApplianceAdmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<p>Class that allows administrator access to the Appliance models.</p>
+<p>This class was included to give the administartor the ability to add new appliances
+as the algorithms detect them. This is exposed so that an administrator can extend
+the functionality of the Appliances without having to touch the source code.</p>
 <dl class="attribute">
 <dt id="microdata.admin.ApplianceAdmin.list_display">
 <code class="descname">list_display</code><em class="property"> = ('name', 'pk', 'serial', 'chart_color')</em><a class="headerlink" href="#microdata.admin.ApplianceAdmin.list_display" title="Permalink to this definition">¶</a></dt>
@@ -258,6 +282,9 @@
 <dt id="microdata.admin.DeviceAdmin">
 <em class="property">class </em><code class="descclassname">microdata.admin.</code><code class="descname">DeviceAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.admin.DeviceAdmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<p>This class gives an administrator direct access to the device model.</p>
+<p>Most of the fields of the device model can be modified through the custom settings interface
+on the web application, but this interface gives the administrator direct control.</p>
 <dl class="attribute">
 <dt id="microdata.admin.DeviceAdmin.inlines">
 <code class="descname">inlines</code><em class="property"> = (&lt;class 'microdata.admin.DeviceWebSettingsInline'&gt;, &lt;class 'farmer.admin.DeviceSettingsInline'&gt;)</em><a class="headerlink" href="#microdata.admin.DeviceAdmin.inlines" title="Permalink to this definition">¶</a></dt>
@@ -333,6 +360,12 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="microdata.models.Appliance.chart_color">
+<code class="descclassname">Appliance.</code><code class="descname">chart_color</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Appliance.chart_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>This field defines what color the chart will assign the appliance when it is being displayed. Modifiable via the admin interface.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="microdata.models.Appliance.circuittype_set">
 <code class="descclassname">Appliance.</code><code class="descname">circuittype_set</code><a class="headerlink" href="#microdata.models.Appliance.circuittype_set" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -382,7 +415,7 @@
 <dt id="microdata.models.CircuitType">
 <em class="property">class </em><code class="descclassname">microdata.models.</code><code class="descname">CircuitType</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.CircuitType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
-<p>Describes a Circuit Type. A Circuit Type is related to a list of <a href="#id1"><span class="problematic" id="id2">:model:`microdata.models.Appliance`</span></a> and acts as a set of objects to discover within a circuit.</p>
+<p>Describes a Circuit Type. A Circuit Type is related to a list of <a class="reference internal" href="#microdata.models.Appliance" title="microdata.models.Appliance"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Appliance</span></code></a> and acts as a set of objects to discover within a circuit.</p>
 <dl class="exception">
 <dt id="microdata.models.CircuitType.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#microdata.models.CircuitType.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -399,6 +432,12 @@
 <dt id="microdata.models.CircuitType.appliances">
 <code class="descclassname">CircuitType.</code><code class="descname">appliances</code><a class="headerlink" href="#microdata.models.CircuitType.appliances" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.CircuitType.chart_color">
+<code class="descclassname">CircuitType.</code><code class="descname">chart_color</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.CircuitType.chart_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>This field defines what color the chart will assign the circuit when it is being displayed. Modifiable via the admin interface.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="microdata.models.CircuitType.circuit_set">
@@ -432,17 +471,32 @@
 <dl class="attribute">
 <dt id="microdata.models.Device.channel_1">
 <code class="descclassname">Device.</code><code class="descname">channel_1</code><a class="headerlink" href="#microdata.models.Device.channel_1" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The first of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="microdata.models.Device.channel_2">
 <code class="descclassname">Device.</code><code class="descname">channel_2</code><a class="headerlink" href="#microdata.models.Device.channel_2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The second of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="microdata.models.Device.channel_3">
 <code class="descclassname">Device.</code><code class="descname">channel_3</code><a class="headerlink" href="#microdata.models.Device.channel_3" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The third of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.cost_daily">
+<code class="descclassname">Device.</code><code class="descname">cost_daily</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.cost_daily" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total cost calculated by the server today. Much cheaper to keep this in the django database than the InfluxDB.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.data_retention_policy">
+<code class="descclassname">Device.</code><code class="descname">data_retention_policy</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.data_retention_policy" title="Permalink to this definition">¶</a></dt>
+<dd><p>The amount of time the data from this device can live in the database. Anything older will be archived to Amazon Glacier.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="microdata.models.Device.delete">
@@ -467,6 +521,36 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="microdata.models.Device.fanout_query_registered">
+<code class="descclassname">Device.</code><code class="descname">fanout_query_registered</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.fanout_query_registered" title="Permalink to this definition">¶</a></dt>
+<dd><p>A true/false that is set when a device is created indicating the continuous queries in the database have been registered.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.ip_address">
+<code class="descclassname">Device.</code><code class="descname">ip_address</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.ip_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>This field is no longer actively used. This was a proof of concept for early device communication. Deprecated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.kilowatt_hours_daily">
+<code class="descclassname">Device.</code><code class="descname">kilowatt_hours_daily</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.kilowatt_hours_daily" title="Permalink to this definition">¶</a></dt>
+<dd><p>A counter that is reset by a cron job once a day that keeps an accumulation of the total kwh this device has measured over the course of a day.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.kilowatt_hours_monthly">
+<code class="descclassname">Device.</code><code class="descname">kilowatt_hours_monthly</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.kilowatt_hours_monthly" title="Permalink to this definition">¶</a></dt>
+<dd><p>A counter that is reset by a cron job once a month that keeps an accumulation of the total kwh this device has measured over the course of a month.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.name">
+<code class="descclassname">Device.</code><code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A non-unique name field for a device. This field is solely for user experience, it has no functional purpose.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="microdata.models.Device.objects">
 <code class="descclassname">Device.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#microdata.models.Device.objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -474,7 +558,14 @@
 <dl class="attribute">
 <dt id="microdata.models.Device.owner">
 <code class="descclassname">Device.</code><code class="descname">owner</code><a class="headerlink" href="#microdata.models.Device.owner" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A Foreign key relation. We use this relation to pair a device to a user on the web application.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.registered">
+<code class="descclassname">Device.</code><code class="descname">registered</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.registered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synonym for paired. This protects againts users trying to pair an already paired device.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="microdata.models.Device.save">
@@ -492,9 +583,22 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="microdata.models.Device.secret_key">
+<code class="descclassname">Device.</code><code class="descname">secret_key</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.secret_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>This field is not currently in use, but the functionality exists. This field was intended to be used to pair a device to a user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.serial">
+<code class="descclassname">Device.</code><code class="descname">serial</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Device.serial" title="Permalink to this definition">¶</a></dt>
+<dd><p>The primary key of the model. This is what the device uses to interface to the API and how users currently pair a device.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="microdata.models.Device.share_with">
 <code class="descclassname">Device.</code><code class="descname">share_with</code><a class="headerlink" href="#microdata.models.Device.share_with" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This field acts much like an owner, however share_with users cannot alter device settings.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -517,14 +621,33 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="microdata.models.Event.dataPoints">
+<code class="descclassname">Event.</code><code class="descname">dataPoints</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Event.dataPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>An array of undefined size containing measured values for the server. The data points are numbered <cite>0 ... n ... j</cite> where nth data point has a timestamp of <cite>start_time + n * period</cite> and <cite>j</cite> is undefined.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="microdata.models.Event.device">
 <code class="descclassname">Event.</code><code class="descname">device</code><a class="headerlink" href="#microdata.models.Event.device" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This is the relation between the device and its data. This is established when the device specifies its hyperlinked model via the REST call.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Event.frequency">
+<code class="descclassname">Event.</code><code class="descname">frequency</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Event.frequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>The frequency, in Hertz, of the packet&#8217;s data points. Used to calculate the offset of all points.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="microdata.models.Event.objects">
 <code class="descclassname">Event.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#microdata.models.Event.objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Event.query">
+<code class="descclassname">Event.</code><code class="descname">query</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Event.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated. This field is useful for debugging the REST requests, but since the model is not saved, this is a volatile field.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="microdata.models.Event.save">
@@ -546,6 +669,12 @@ to trigger a backfill of the data.</p>
    <span class="n">db</span><span class="o">.</span><span class="n">write_points</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">wattage</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Event.start">
+<code class="descclassname">Event.</code><code class="descname">start</code><em class="property"> = None</em><a class="headerlink" href="#microdata.models.Event.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>The start time, in milliseconds, of the first data point in the packet. Used to calculate offset of all proceeding points.</p>
 </dd></dl>
 
 </dd></dl>
@@ -739,7 +868,7 @@ the Django REST Framework has no native way of handling these, so we do it ourse
 <p>Form class used to generate a simple key form. Currently used when a user intends to add a new device via the webapp interface.</p>
 <dl class="attribute">
 <dt id="microdata.views.KeyForm.base_fields">
-<code class="descname">base_fields</code><em class="property"> = {'serial': &lt;django.forms.fields.IntegerField object at 0x2aad49684e50&gt;}</em><a class="headerlink" href="#microdata.views.KeyForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">base_fields</code><em class="property"> = {'serial': &lt;django.forms.fields.IntegerField object at 0x2b3738f03a50&gt;}</em><a class="headerlink" href="#microdata.views.KeyForm.base_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -772,10 +901,10 @@ true/false if device is created</p>
 serialized <a class="reference internal" href="#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> object if <a class="reference internal" href="#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> is created</p>
 </div></blockquote>
 <p><strong>Templates:</strong></p>
-<p><a href="#id3"><span class="problematic" id="id4">:template:`base/new_device/key.html`</span></a></p>
-<p><a href="#id5"><span class="problematic" id="id6">:template:`base/new_device/help.html`</span></a></p>
-<p><a href="#id7"><span class="problematic" id="id8">:template:`base/new_device/first.html`</span></a></p>
-<p><a href="#id9"><span class="problematic" id="id10">:template:`base/new_device/result.html`</span></a></p>
+<p><cite>base/new_device/key.html</cite></p>
+<p><cite>base/new_device/help.html</cite></p>
+<p><cite>base/new_device/first.html</cite></p>
+<p><cite>base/new_device/result.html</cite></p>
 </dd></dl>
 
 <dl class="function">

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>3.2. webapp package &mdash; SEADS 1.0 documentation</title>
+  <title>3.2. Webapp Application &mdash; SEADS 1.0 documentation</title>
   
 
   
@@ -94,6 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting-started.html">2. Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#api-documentation">2.1. API Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">3. Applications</a><ul class="current">
@@ -103,7 +104,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#submodules">3.1.2. Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.admin">3.1.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-admin-module">3.1.3. microdata.admin module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-models-module">3.1.4. microdata.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.serializers">3.1.5. microdata.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.tests">3.1.6. microdata.tests module</a></li>
@@ -111,7 +112,7 @@
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata">3.1.8. Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">3.2. webapp package</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.2. Webapp Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#subpackages">3.2.1. Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="webapp.management.html">3.2.1.1. webapp.management package</a></li>
 </ul>
@@ -134,6 +135,19 @@
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="home.html">3.4. home package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="home.html#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home">3.4.8. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -164,7 +178,7 @@
       
           <li><a href="../applications.html">3. Applications</a> &raquo;</li>
       
-    <li>3.2. webapp package</li>
+    <li>3.2. Webapp Application</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -177,8 +191,11 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="webapp-package">
-<h1>3.2. webapp package<a class="headerlink" href="#webapp-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="webapp-application">
+<h1>3.2. Webapp Application<a class="headerlink" href="#webapp-application" title="Permalink to this headline">¶</a></h1>
+<p>This application is what interfaces with the data that is retrieved by the Microdata application. Developed as a sort of proof-of-concept, this application has the minimal functionality required to visualize the data coming from the devices in a somewhat meaningful way.</p>
+<p>This application is responsible for serving requests from clients on the web by interfacing with the database to display the data. Many of the facets of this application were designed to be interacted with via AJAX, giving the dashboard the responsiveness necessary to provide a useful user experience. Some of the calls to the database can be rather costly in terms of time, so they are lazy loaded, as in only when needed.</p>
+<p>In addition, the webapp module houses the HTML and Javascript needed to run the web interface on the client side.</p>
 <div class="section" id="subpackages">
 <h2>3.2.1. Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -237,6 +254,7 @@
 <dt id="webapp.admin.RatePlanAdmin">
 <em class="property">class </em><code class="descclassname">webapp.admin.</code><code class="descname">RatePlanAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.admin.RatePlanAdmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<p>Class used to expose the <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a> model to the administrator. This was designed to be flexible to allow an administrator to add/modify Rate Plans based on electric company data.</p>
 <dl class="attribute">
 <dt id="webapp.admin.RatePlanAdmin.inlines">
 <code class="descname">inlines</code><em class="property"> = (&lt;class 'webapp.admin.TierInline'&gt;,)</em><a class="headerlink" href="#webapp.admin.RatePlanAdmin.inlines" title="Permalink to this definition">¶</a></dt>
@@ -258,6 +276,7 @@
 <dt id="webapp.admin.TerritoryAdmin">
 <em class="property">class </em><code class="descclassname">webapp.admin.</code><code class="descname">TerritoryAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.admin.TerritoryAdmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<p>Class used to expose the <code class="xref py py-class docutils literal"><span class="pre">webapp.models.Territory`</span></code> model to the administrator. This was designed to be flexible to allow an administrator to add/modify Territories based on electric company data.</p>
 <dl class="attribute">
 <dt id="webapp.admin.TerritoryAdmin.list_display">
 <code class="descname">list_display</code><em class="property"> = ('description', 'rate_plan', 'pk')</em><a class="headerlink" href="#webapp.admin.TerritoryAdmin.list_display" title="Permalink to this definition">¶</a></dt>
@@ -274,6 +293,7 @@
 <dt id="webapp.admin.TierInline">
 <em class="property">class </em><code class="descclassname">webapp.admin.</code><code class="descname">TierInline</code><span class="sig-paren">(</span><em>parent_model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.admin.TierInline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.StackedInline</span></code></p>
+<p>Class used to expose the <a class="reference internal" href="#webapp.models.Tier" title="webapp.models.Tier"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.Tier</span></code></a> model to the administrator. This was designed to be flexible to allow an administrator to add/modify tiers based on electric company data.</p>
 <dl class="attribute">
 <dt id="webapp.admin.TierInline.media">
 <code class="descname">media</code><a class="headerlink" href="#webapp.admin.TierInline.media" title="Permalink to this definition">¶</a></dt>
@@ -382,8 +402,10 @@
 
 <dl class="class">
 <dt id="webapp.models.DeviceWebSettings">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">DeviceWebSettings</code><span class="sig-paren">(</span><em>id</em>, <em>device_id</em>, <em>current_tier_id</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.DeviceWebSettings" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">DeviceWebSettings</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.DeviceWebSettings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>An encapsulating module that links a device&#8217;s settings together.</p>
+<p>This model can be extended to include new settings that may come to be in the future.</p>
 <dl class="exception">
 <dt id="webapp.models.DeviceWebSettings.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.DeviceWebSettings.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -430,8 +452,14 @@
 
 <dl class="class">
 <dt id="webapp.models.EventNotification">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">EventNotification</code><span class="sig-paren">(</span><em>id</em>, <em>description</em>, <em>keyword</em>, <em>watts_above_average</em>, <em>period_of_time</em>, <em>email_subject</em>, <em>email_body</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.EventNotification" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">EventNotification</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.EventNotification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Notification sent to users via email whenever a notable event is detected.</p>
+<p>This class is not currently in use since the system is not set up in such
+a way as to detect any events. However, the notification framework is in
+place such that when the functionality is added, this class should be called
+in response to an event.</p>
+<p>These notifications can be added/modified via the admin interface.</p>
 <dl class="exception">
 <dt id="webapp.models.EventNotification.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.EventNotification.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -447,7 +475,26 @@
 <dl class="attribute">
 <dt id="webapp.models.EventNotification.appliances_to_watch">
 <code class="descclassname">EventNotification.</code><code class="descname">appliances_to_watch</code><a class="headerlink" href="#webapp.models.EventNotification.appliances_to_watch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Assemble a group of appliances to watch. Could be one or many.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.EventNotification.description">
+<code class="descclassname">EventNotification.</code><code class="descname">description</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.EventNotification.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>The description of the event notification as a user would see it when selecting/deselecting the notification in the settings interface</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.EventNotification.email_subject">
+<code class="descclassname">EventNotification.</code><code class="descname">email_subject</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.EventNotification.email_subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>An email-friendly subject for the event notification.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.EventNotification.keyword">
+<code class="descclassname">EventNotification.</code><code class="descname">keyword</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.EventNotification.keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to trigger the event notification in the django manager.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="webapp.models.EventNotification.objects">
@@ -455,16 +502,32 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="webapp.models.EventNotification.period_of_time">
+<code class="descclassname">EventNotification.</code><code class="descname">period_of_time</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.EventNotification.period_of_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proof of concept field to provide a threshold. If a group of appliances surpasses the threshold for a period of time, then send the email.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="webapp.models.EventNotification.usersettings_set">
 <code class="descclassname">EventNotification.</code><code class="descname">usersettings_set</code><a class="headerlink" href="#webapp.models.EventNotification.usersettings_set" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.EventNotification.watts_above_average">
+<code class="descclassname">EventNotification.</code><code class="descname">watts_above_average</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.EventNotification.watts_above_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Proof of concept field to provide a threshold. If a group of appliances surpasses the threshold for a period of time, then send the email.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="webapp.models.IntervalNotification">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">IntervalNotification</code><span class="sig-paren">(</span><em>id</em>, <em>description</em>, <em>recurrences</em>, <em>email_subject</em>, <em>email_body</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.IntervalNotification" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">IntervalNotification</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.IntervalNotification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Notifications sent to users when a specified period has elapsed.</p>
+<p>This class is also proof-of-concept, and it relies upon the <a class="reference external" href="http://aws.amazon.com/ses/">Amazon Simple Email Service</a>.
+An email will be sent to users who opt in to the notification summarizing their devices&#8217; energy usage over the specified
+period.</p>
 <dl class="exception">
 <dt id="webapp.models.IntervalNotification.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.IntervalNotification.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -475,6 +538,18 @@
 <dt id="webapp.models.IntervalNotification.MultipleObjectsReturned">
 <em class="property">exception </em><code class="descclassname">IntervalNotification.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#webapp.models.IntervalNotification.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.IntervalNotification.description">
+<code class="descclassname">IntervalNotification.</code><code class="descname">description</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.IntervalNotification.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>The description of the event notification as a user would see it when selecting/deselecting the notification in the settings interface</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.IntervalNotification.email_subject">
+<code class="descclassname">IntervalNotification.</code><code class="descname">email_subject</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.IntervalNotification.email_subject" title="Permalink to this definition">¶</a></dt>
+<dd><p>An email-friendly subject for the event notification.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -530,8 +605,12 @@
 
 <dl class="class">
 <dt id="webapp.models.RatePlan">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">RatePlan</code><span class="sig-paren">(</span><em>id</em>, <em>utility_company_id</em>, <em>description</em>, <em>data_source</em>, <em>min_charge_rate</em>, <em>california_climate_credit</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.RatePlan" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">RatePlan</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.RatePlan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>The base class that describes how a user is charged in the Utility Company.</p>
+<p>This class is linked to <a class="reference internal" href="#webapp.models.UtilityCompany" title="webapp.models.UtilityCompany"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.UtilityCompany</span></code></a> via a ForeignKey.
+In addition, the class contains a list of <a class="reference internal" href="#webapp.models.Tier" title="webapp.models.Tier"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.Tier</span></code></a> objects
+that describe how the charges change based on usage.</p>
 <dl class="exception">
 <dt id="webapp.models.RatePlan.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.RatePlan.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -545,9 +624,33 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="webapp.models.RatePlan.california_climate_credit">
+<code class="descclassname">RatePlan.</code><code class="descname">california_climate_credit</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.RatePlan.california_climate_credit" title="Permalink to this definition">¶</a></dt>
+<dd><p>A credit applied to a user&#8217;s account twice yearly. Not currently in use.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.RatePlan.data_source">
+<code class="descclassname">RatePlan.</code><code class="descname">data_source</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.RatePlan.data_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple URL field that links to the source of the data for this <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.RatePlan.description">
+<code class="descclassname">RatePlan.</code><code class="descname">description</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.RatePlan.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short description for the user when selecting their <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="webapp.models.RatePlan.devicewebsettings_set">
 <code class="descclassname">RatePlan.</code><code class="descname">devicewebsettings_set</code><a class="headerlink" href="#webapp.models.RatePlan.devicewebsettings_set" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.RatePlan.min_charge_rate">
+<code class="descclassname">RatePlan.</code><code class="descname">min_charge_rate</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.RatePlan.min_charge_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum amount charged to a user&#8217;s account. Not currently in use.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="webapp.models.RatePlan.objects">
@@ -567,14 +670,18 @@
 <dl class="attribute">
 <dt id="webapp.models.RatePlan.utility_company">
 <code class="descclassname">RatePlan.</code><code class="descname">utility_company</code><a class="headerlink" href="#webapp.models.RatePlan.utility_company" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Utility company relation. Describe who owns the <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a></p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="webapp.models.Territory">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">Territory</code><span class="sig-paren">(</span><em>id</em>, <em>rate_plan_id</em>, <em>description</em>, <em>data_source</em>, <em>summer_start</em>, <em>winter_start</em>, <em>summer_rate</em>, <em>winter_rate</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.Territory" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">Territory</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.Territory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>A <a class="reference internal" href="#webapp.models.Territory" title="webapp.models.Territory"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.Territory</span></code></a> defines specifically key fields associated with a <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
+<p>This class specifies the base rates of a given <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a> as well as defining
+the winter and summer seasons for seasonal pricing.</p>
 <dl class="exception">
 <dt id="webapp.models.Territory.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.Territory.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -585,6 +692,18 @@
 <dt id="webapp.models.Territory.MultipleObjectsReturned">
 <em class="property">exception </em><code class="descclassname">Territory.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#webapp.models.Territory.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Territory.data_source">
+<code class="descclassname">Territory.</code><code class="descname">data_source</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Territory.data_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple URL field that links to the source of the data for this <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Territory.description">
+<code class="descclassname">Territory.</code><code class="descname">description</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Territory.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short description for the user when selecting their <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -600,14 +719,43 @@
 <dl class="attribute">
 <dt id="webapp.models.Territory.rate_plan">
 <code class="descclassname">Territory.</code><code class="descname">rate_plan</code><a class="headerlink" href="#webapp.models.Territory.rate_plan" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This object is related to a <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Territory.summer_rate">
+<code class="descclassname">Territory.</code><code class="descname">summer_rate</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Territory.summer_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base rate for the summer season.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Territory.summer_start">
+<code class="descclassname">Territory.</code><code class="descname">summer_start</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Territory.summer_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>A month of the year that specifies the start of summer. 1-12.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Territory.winter_rate">
+<code class="descclassname">Territory.</code><code class="descname">winter_rate</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Territory.winter_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base rate for the winter season.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Territory.winter_start">
+<code class="descclassname">Territory.</code><code class="descname">winter_start</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Territory.winter_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>A month of the year that specifies the start of winter. 1-12.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="webapp.models.Tier">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">Tier</code><span class="sig-paren">(</span><em>id</em>, <em>rate_plan_id</em>, <em>tier_level</em>, <em>max_percentage_of_baseline</em>, <em>rate</em>, <em>chart_color</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.Tier" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">Tier</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.Tier" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>A class that defines the cost and threshold of a <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
+<p>A <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a> typically has 4-5 <a class="reference internal" href="#webapp.models.Tier" title="webapp.models.Tier"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.Tier</span></code></a> objects
+as a relation. These objects keep track of the cost modifier as well as the KWh threshold
+for a given device.</p>
 <dl class="exception">
 <dt id="webapp.models.Tier.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.Tier.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -621,9 +769,21 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="webapp.models.Tier.chart_color">
+<code class="descclassname">Tier.</code><code class="descname">chart_color</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Tier.chart_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Color used by charts when graphing a <a class="reference internal" href="#webapp.models.Tier" title="webapp.models.Tier"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.Tier</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="webapp.models.Tier.devicewebsettings_set">
 <code class="descclassname">Tier.</code><code class="descname">devicewebsettings_set</code><a class="headerlink" href="#webapp.models.Tier.devicewebsettings_set" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Tier.max_percentage_of_baseline">
+<code class="descclassname">Tier.</code><code class="descname">max_percentage_of_baseline</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Tier.max_percentage_of_baseline" title="Permalink to this definition">¶</a></dt>
+<dd><p>This defines the threshold for a given <a class="reference internal" href="#webapp.models.Tier" title="webapp.models.Tier"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.Tier</span></code></a>. I.e. 100% - 130%</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="webapp.models.Tier.objects">
@@ -631,16 +791,31 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="webapp.models.Tier.rate">
+<code class="descclassname">Tier.</code><code class="descname">rate</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Tier.rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The actual cost of a KWh at this level.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="webapp.models.Tier.rate_plan">
 <code class="descclassname">Tier.</code><code class="descname">rate_plan</code><a class="headerlink" href="#webapp.models.Tier.rate_plan" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>This object is related to a <a class="reference internal" href="#webapp.models.RatePlan" title="webapp.models.RatePlan"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.RatePlan</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.Tier.tier_level">
+<code class="descclassname">Tier.</code><code class="descname">tier_level</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.Tier.tier_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>An Integer, starting at 1, indicating the current level of the device.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="webapp.models.UserSettings">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">UserSettings</code><span class="sig-paren">(</span><em>id</em>, <em>user_id</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.UserSettings" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">UserSettings</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.UserSettings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>An encapsulating module that links a user&#8217;s settings together.</p>
+<p>This model can be extended to include new settings that may come to be in the future.</p>
 <dl class="exception">
 <dt id="webapp.models.UserSettings.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.UserSettings.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -656,12 +831,14 @@
 <dl class="attribute">
 <dt id="webapp.models.UserSettings.event_notification">
 <code class="descclassname">UserSettings.</code><code class="descname">event_notification</code><a class="headerlink" href="#webapp.models.UserSettings.event_notification" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A list of event notifications that the user has opted in to. Default to none.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="webapp.models.UserSettings.interval_notification">
 <code class="descclassname">UserSettings.</code><code class="descname">interval_notification</code><a class="headerlink" href="#webapp.models.UserSettings.interval_notification" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>A list of interval notifications that the user has opted in to. Default to none.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="webapp.models.UserSettings.objects">
@@ -671,14 +848,20 @@
 <dl class="attribute">
 <dt id="webapp.models.UserSettings.user">
 <code class="descclassname">UserSettings.</code><code class="descname">user</code><a class="headerlink" href="#webapp.models.UserSettings.user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The related model for a settings model.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="webapp.models.UtilityCompany">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">UtilityCompany</code><span class="sig-paren">(</span><em>id</em>, <em>description</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.UtilityCompany" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">UtilityCompany</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.UtilityCompany" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>A placeholder class to describe a Utility Company.</p>
+<p>Since PG&amp;E is the only company that was developed on during the proof-of-concept phase,
+it is the company that was used to model the pricing structures. In the future, in order
+to integrate new types of companies, a Utility Company model should reflect how the Utility
+Company calculates cost.</p>
 <dl class="exception">
 <dt id="webapp.models.UtilityCompany.DoesNotExist">
 <em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#webapp.models.UtilityCompany.DoesNotExist" title="Permalink to this definition">¶</a></dt>
@@ -689,6 +872,12 @@
 <dt id="webapp.models.UtilityCompany.MultipleObjectsReturned">
 <em class="property">exception </em><code class="descclassname">UtilityCompany.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#webapp.models.UtilityCompany.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.UtilityCompany.description">
+<code class="descclassname">UtilityCompany.</code><code class="descname">description</code><em class="property"> = None</em><a class="headerlink" href="#webapp.models.UtilityCompany.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A label that describes what company this is. Used for selection.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -759,7 +948,7 @@ NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
 <dl class="attribute">
 <dt id="webapp.views.SettingsForm.base_fields">
-<code class="descname">base_fields</code><em class="property"> = {'new_username': &lt;django.forms.fields.CharField object at 0x2aad49a35b50&gt;, 'password1': &lt;django.forms.fields.CharField object at 0x2aad49a35c50&gt;, 'password2': &lt;django.forms.fields.CharField object at 0x2aad49a35cd0&gt;, 'first_name': &lt;django.forms.fields.CharField object at 0x2aad49a35d50&gt;, 'last_name': &lt;django.forms.fields.CharField object at 0x2aad49a35e50&gt;, 'email': &lt;django.forms.fields.EmailField object at 0x2aad49a35f10&gt;, 'notifications': &lt;django.forms.fields.ChoiceField object at 0x2aad49a35f90&gt;, 'share_with': &lt;django.forms.fields.ChoiceField object at 0x2aad49a3f050&gt;, 'new_name': &lt;django.forms.fields.CharField object at 0x2aad49a3f0d0&gt;, 'channel_1': &lt;django.forms.fields.ChoiceField object at 0x2aad49a3f1d0&gt;, 'channel_2': &lt;django.forms.fields.ChoiceField object at 0x2aad4993cd10&gt;, 'channel_3': &lt;django.forms.fields.ChoiceField object at 0x2aad49a3f210&gt;, 'utility_companies': &lt;django.forms.fields.ChoiceField object at 0x2aad49a3f290&gt;, 'rate_plans': &lt;django.forms.fields.ChoiceField object at 0x2aad49a3f2d0&gt;, 'territories': &lt;django.forms.fields.ChoiceField object at 0x2aad49a3f350&gt;, 'stack': &lt;django.forms.fields.BooleanField object at 0x2aad49a3f390&gt;}</em><a class="headerlink" href="#webapp.views.SettingsForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">base_fields</code><em class="property"> = {'new_username': &lt;django.forms.fields.CharField object at 0x2b373c36c410&gt;, 'password1': &lt;django.forms.fields.CharField object at 0x2b373c36c610&gt;, 'password2': &lt;django.forms.fields.CharField object at 0x2b373c36c490&gt;, 'first_name': &lt;django.forms.fields.CharField object at 0x2b373c36c550&gt;, 'last_name': &lt;django.forms.fields.CharField object at 0x2b373c351c90&gt;, 'email': &lt;django.forms.fields.EmailField object at 0x2b373c3518d0&gt;, 'notifications': &lt;django.forms.fields.ChoiceField object at 0x2b373c351890&gt;, 'share_with': &lt;django.forms.fields.ChoiceField object at 0x2b373c351810&gt;, 'new_name': &lt;django.forms.fields.CharField object at 0x2b373c351d50&gt;, 'channel_1': &lt;django.forms.fields.ChoiceField object at 0x2b373c318490&gt;, 'channel_2': &lt;django.forms.fields.ChoiceField object at 0x2b373c3184d0&gt;, 'channel_3': &lt;django.forms.fields.ChoiceField object at 0x2b373c318ad0&gt;, 'utility_companies': &lt;django.forms.fields.ChoiceField object at 0x2b373c318dd0&gt;, 'rate_plans': &lt;django.forms.fields.ChoiceField object at 0x2b373c318d10&gt;, 'territories': &lt;django.forms.fields.ChoiceField object at 0x2b373c318950&gt;, 'stack': &lt;django.forms.fields.BooleanField object at 0x2b373c318d90&gt;}</em><a class="headerlink" href="#webapp.views.SettingsForm.base_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -862,7 +1051,18 @@ NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1
 <dl class="function">
 <dt id="webapp.views.dashboard">
 <code class="descclassname">webapp.views.</code><code class="descname">dashboard</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.views.dashboard" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The first function called when a user has logged in and accesses the Dashboard.</p>
+<p><strong>Context</strong></p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">my_devices</span></code></p>
+<p>A list of <a class="reference internal" href="microdata.html#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> that either belong to the user or are shared with the user.
+This list is used to generate markers on the graph.</p>
+<p><code class="docutils literal"><span class="pre">server_time</span></code></p>
+<p>The current time as reported by the server. This is used as a time offset for the graph.</p>
+</div></blockquote>
+<p><strong>Templates:</strong></p>
+<p><cite>base/dashboard.html</cite></p>
+</dd></dl>
 
 <dl class="function">
 <dt id="webapp.views.dashboard_update">
@@ -932,7 +1132,16 @@ NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1
 <dl class="function">
 <dt id="webapp.views.landing">
 <code class="descclassname">webapp.views.</code><code class="descname">landing</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.views.landing" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The first function called when a user has logged in and accesses the Dashboard.</p>
+<p><strong>Context</strong></p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">my_devices</span></code></p>
+<p>A list of <a class="reference internal" href="microdata.html#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> objects that either belong to the user or are shared with the user.
+This list is used to populate the sidebar with <a class="reference internal" href="microdata.html#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> links.</p>
+</div></blockquote>
+<p><strong>Templates:</strong></p>
+<p><cite>base/dashboard.html</cite></p>
+</dd></dl>
 
 <dl class="function">
 <dt id="webapp.views.make_choices">

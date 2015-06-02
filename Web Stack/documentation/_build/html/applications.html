@@ -93,6 +93,7 @@
 <li class="toctree-l1"><a class="reference internal" href="getting-started.html">2. Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#api-documentation">2.1. API Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">3. Applications</a><ul>
@@ -102,7 +103,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#submodules">3.1.2. Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.admin">3.1.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#microdata-admin-module">3.1.3. microdata.admin module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#microdata-models-module">3.1.4. microdata.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.serializers">3.1.5. microdata.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.tests">3.1.6. microdata.tests module</a></li>
@@ -110,7 +111,7 @@
 <li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata">3.1.8. Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html">3.2. webapp package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html">3.2. Webapp Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="modules/webapp.html#subpackages">3.2.1. Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="modules/webapp.management.html">3.2.1.1. webapp.management package</a></li>
 </ul>
@@ -133,6 +134,19 @@
 <li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html">3.4. home package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home">3.4.8. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -176,14 +190,15 @@
             
   <div class="section" id="applications">
 <span id="id1"></span><h1>3. Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h1>
-<p>Three distinct applications were created that encompass the SEAD web framework:</p>
+<p>Four distinct applications were created that encompass the SEAD web framework:</p>
 <ol class="arabic simple">
 <li>Microdata - Interfaces with the devices</li>
 <li>Webapp - Interfaces with the clients</li>
 <li>Farmer - Manages the devices</li>
+<li>Home - Landing zone for new users</li>
 </ol>
-<p>And (optionally) a fourth:</p>
-<ol class="arabic simple" start="4">
+<p>And (optionally) a fifth:</p>
+<ol class="arabic simple" start="5">
 <li>Debug - Models that assist in debugging the project</li>
 </ol>
 <p>The applications were designed such that the Webapp application is hot-swappable. Since it is a proof of concept, it can either be added to or replaced altogether. Microdata and Farmer are able to run without Webapp, however their data cannot be interfaced with in a meaningful way without a web application.</p>
@@ -195,7 +210,7 @@
 <li class="toctree-l1"><a class="reference internal" href="modules/microdata.html">3.1. Microdata Application</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#subpackages">3.1.1. Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#submodules">3.1.2. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata.admin">3.1.3. microdata.admin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#microdata-admin-module">3.1.3. microdata.admin module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#microdata-models-module">3.1.4. microdata.models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata.serializers">3.1.5. microdata.serializers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata.tests">3.1.6. microdata.tests module</a></li>
@@ -203,7 +218,7 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata">3.1.8. Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules/webapp.html">3.2. webapp package</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="modules/webapp.html">3.2. Webapp Application</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#subpackages">3.2.1. Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#submodules">3.2.2. Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#module-webapp.admin">3.2.3. webapp.admin module</a></li>
@@ -223,6 +238,17 @@
 <li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/home.html">3.4. home package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#subpackages">3.4.1. Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home">3.4.8. Module contents</a></li>
 </ul>
 </li>
 </ul>

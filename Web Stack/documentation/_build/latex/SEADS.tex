@@ -617,6 +617,10 @@ When the server reboots, verify it works by visiting the server from a webpage. 
 
 \chapter{Getting Started}
 \label{getting-started:getting-started}\label{getting-started::doc}\label{getting-started:id1}
+\begin{notice}{note}{Note:}
+The SEAD Light will henceforth be referred to as a ``Device'' for sake of generalizing. This framework was built with the SEAD Light in mind, however any type of ``device'' is compatible if they follow the \href{http://seads.io/docs}{API Guidelines}.
+\end{notice}
+
 At this point, the project is now ready to begin accepting clients and devices.
 
 To get devices connected to your project, simply point their database address at the server that faces the internet (for the scalable framework, this is the stateless server or load balancer). This will cause the devices to attempt to find themselves in the server, fail, then register themselves in the system.
@@ -642,9 +646,85 @@ In addition, an administrator can also interface with the facets of the web appl
 There is the ability to add/modify rate plans, territories, and utility companies to the web application, giving more realistic cost predictions for a user's device.
 
 
+\section{Connecting Devices to the Framework}
+\label{getting-started:connecting-devices-to-the-framework}
+With the new framework in place, we are now ready to begin connecting devices to the database. The general outline on how this is done is as follows:
+\begin{enumerate}
+\item {} 
+Point device at the API Endpoint for your framework.
+
+\end{enumerate}
+
+The endpoint of your system depends on whether or not the scalable framework is in place. If it is, then the endpoint is the address of the Load Balancer. If this is an atomic installation, then the endpoint is the address of the machine running the applications.
+
+For the API already in place, this would be:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+http://seads.io/api/
+\end{Verbatim}
+\begin{enumerate}
+\setcounter{enumi}{1}
+\item {} 
+Query the devices database to check if the serial of the device is registered:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+GET http://seads.io/api/device\PYGZhy{}api/\PYGZob{}serial\PYGZcb{}/
+\end{Verbatim}
+
+\end{enumerate}
+
+If the response is 404 (not found), continue to the next step. If the response is 302 (found), then the device is already connected and ready to transmit.
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item {} 
+Register the device with the framework:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+POST http://seads.io/api/device\PYGZhy{}api/?serial=\PYGZob{}serial\PYGZcb{}
+\end{Verbatim}
+
+\end{enumerate}
+
+This POST request will register the device within the server, allocating database series and instantiating web application models that will relate to this device.
+
+At this point, the device is ready to start transmitting packets. The device can transmit packets to the server without an owner. It is assumed that the owner is interested in seeing all data even before the device is paired, so the data is stored regardless of if the device is an orphan or not.
+\begin{enumerate}
+\setcounter{enumi}{3}
+\item {} 
+Begin data transmission:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+POST http://seads.io/api/device\PYGZhy{}api/
+        \PYGZob{}
+                \PYGZdq{}device\PYGZdq{}: \PYGZdq{}/api/device\PYGZhy{}api/\PYGZob{}serial\PYGZcb{}/\PYGZdq{},
+                \PYGZdq{}time\PYGZdq{}  : [\PYGZdq{}0x14d95894815\PYGZdq{}, \PYGZdq{}0x1\PYGZdq{}],
+                \PYGZdq{}dataPoints\PYGZdq{}:[
+                                        \PYGZob{}\PYGZdq{}wattage\PYGZdq{}: 170\PYGZcb{},
+                                        \PYGZob{}\PYGZdq{}wattage\PYGZdq{}: 169\PYGZcb{},
+                                        ...
+                ]
+        \PYGZcb{}
+\end{Verbatim}
+
+\end{enumerate}
+
+This is a typical packet that could be sent to the server from the device. Here is a breakdown of the fields:
+\begin{itemize}
+\item {} 
+Device: The hyperlinked device sending the data.
+
+\item {} 
+Time: A tuple of the format \emph{{[}start\_time, period{]}} in hexadecimal describing the packet's timing in milliseconds.
+
+\item {} 
+dataPoints: An array of undefined size containing measured values for the server. The data points are numbered \emph{0 ... n ... j} where nth data point has a timestamp of \emph{start\_time + n * period} and \emph{j} is undefined.
+
+\end{itemize}
+
+
 \chapter{Applications}
 \label{applications:applications}\label{applications::doc}\label{applications:id1}
-Three distinct applications were created that encompass the SEAD web framework:
+Four distinct applications were created that encompass the SEAD web framework:
 \begin{enumerate}
 \item {} 
 Microdata - Interfaces with the devices
@@ -655,11 +735,14 @@ Webapp - Interfaces with the clients
 \item {} 
 Farmer - Manages the devices
 
+\item {} 
+Home - Landing zone for new users
+
 \end{enumerate}
 
-And (optionally) a fourth:
+And (optionally) a fifth:
 \begin{enumerate}
-\setcounter{enumi}{3}
+\setcounter{enumi}{4}
 \item {} 
 Debug - Models that assist in debugging the project
 
@@ -675,6 +758,13 @@ What follows is the breakdown of each application and how they work.
 \section{Microdata Application}
 \label{modules/microdata:microdata-application}\label{modules/microdata::doc}
 This application is the direct interface between devices and the InfluxDB database. It is responsible for exposing the REST API endpoints.
+
+A {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} is what links to a SEAD Light out in the world. When a new SEAD connects to the system, it will check to see
+if it has been registered on the system by querying \emph{/api/device-api/\{serial\}/}. If the response is 404, the device will then register
+on the system as new with no owner. It is then the user's responsibility to pair the device via the web application in order to access
+the data.
+
+Refer to the {\hyperref[getting-started:getting-started]{\emph{\DUspan{}{Getting Started}}}} guide for more information on interfacing the devices with the server.
 
 
 \subsection{Subpackages}
@@ -754,11 +844,19 @@ Bases: \code{django.core.management.base.BaseCommand}
 \label{modules/microdata:submodules}
 
 \subsection{microdata.admin module}
-\label{modules/microdata:microdata-admin-module}\label{modules/microdata:module-microdata.admin}\index{microdata.admin (module)}\index{ApplianceAdmin (class in microdata.admin)}
+\label{modules/microdata:microdata-admin-module}
+Models registered to the administrative interface are listed below. These are the interfaces provided to an administrator that may have control over the system for a group of users.
+\phantomsection\label{modules/microdata:module-microdata.admin}\index{microdata.admin (module)}\index{ApplianceAdmin (class in microdata.admin)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.admin.ApplianceAdmin}\pysiglinewithargsret{\strong{class }\code{microdata.admin.}\bfcode{ApplianceAdmin}}{\emph{model}, \emph{admin\_site}}{}
 Bases: \code{django.contrib.admin.options.ModelAdmin}
+
+Class that allows administrator access to the Appliance models.
+
+This class was included to give the administartor the ability to add new appliances
+as the algorithms detect them. This is exposed so that an administrator can extend
+the functionality of the Appliances without having to touch the source code.
 \index{list\_display (microdata.admin.ApplianceAdmin attribute)}
 
 \begin{fulllineitems}
@@ -819,6 +917,11 @@ Bases: \code{django.contrib.admin.options.ModelAdmin}
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.admin.DeviceAdmin}\pysiglinewithargsret{\strong{class }\code{microdata.admin.}\bfcode{DeviceAdmin}}{\emph{model}, \emph{admin\_site}}{}
 Bases: \code{django.contrib.admin.options.ModelAdmin}
+
+This class gives an administrator direct access to the device model.
+
+Most of the fields of the device model can be modified through the custom settings interface
+on the web application, but this interface gives the administrator direct control.
 \index{inlines (microdata.admin.DeviceAdmin attribute)}
 
 \begin{fulllineitems}
@@ -894,6 +997,8 @@ alias of \code{DeviceWebSettings}
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Appliance}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{Appliance}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+Describes a single Appliance. In the future, this model will have describing attributes that give the user helpful information when visualizing.
 \index{Appliance.DoesNotExist}
 
 \begin{fulllineitems}
@@ -907,6 +1012,14 @@ Bases: \code{django.core.exceptions.ObjectDoesNotExist}
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Appliance.MultipleObjectsReturned}\pysigline{\strong{exception }\code{Appliance.}\bfcode{MultipleObjectsReturned}}
 Bases: \code{django.core.exceptions.MultipleObjectsReturned}
+
+\end{fulllineitems}
+
+\index{chart\_color (microdata.models.Appliance attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Appliance.chart_color}\pysigline{\code{Appliance.}\bfcode{chart\_color}\strong{ = None}}
+This field defines what color the chart will assign the appliance when it is being displayed. Modifiable via the admin interface.
 
 \end{fulllineitems}
 
@@ -934,8 +1047,10 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{Circuit (class in microdata.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/microdata:microdata.models.Circuit}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{Circuit}}{\emph{id}, \emph{circuittype\_id}, \emph{name}}{}
+\phantomsection\label{modules/microdata:microdata.models.Circuit}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{Circuit}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+Most likely deprecated.
 \index{Circuit.DoesNotExist}
 
 \begin{fulllineitems}
@@ -970,8 +1085,10 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{CircuitType (class in microdata.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/microdata:microdata.models.CircuitType}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{CircuitType}}{\emph{id}, \emph{name}, \emph{chart\_color}}{}
+\phantomsection\label{modules/microdata:microdata.models.CircuitType}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{CircuitType}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+Describes a Circuit Type. A Circuit Type is related to a list of {\hyperref[modules/microdata:microdata.models.Appliance]{\emph{\code{microdata.models.Appliance}}}} and acts as a set of objects to discover within a circuit.
 \index{CircuitType.DoesNotExist}
 
 \begin{fulllineitems}
@@ -994,6 +1111,14 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \phantomsection\label{modules/microdata:microdata.models.CircuitType.appliances}\pysigline{\code{CircuitType.}\bfcode{appliances}}
 \end{fulllineitems}
 
+\index{chart\_color (microdata.models.CircuitType attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.CircuitType.chart_color}\pysigline{\code{CircuitType.}\bfcode{chart\_color}\strong{ = None}}
+This field defines what color the chart will assign the circuit when it is being displayed. Modifiable via the admin interface.
+
+\end{fulllineitems}
+
 \index{circuit\_set (microdata.models.CircuitType attribute)}
 
 \begin{fulllineitems}
@@ -1012,8 +1137,10 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{Device (class in microdata.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/microdata:microdata.models.Device}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{Device}}{\emph{owner\_id}, \emph{ip\_address}, \emph{secret\_key}, \emph{serial}, \emph{name}, \emph{position}, \emph{registered}, \emph{fanout\_query\_registered}, \emph{channel\_1\_id}, \emph{channel\_2\_id}, \emph{channel\_3\_id}, \emph{data\_retention\_policy}, \emph{kilowatt\_hours\_monthly}, \emph{kilowatt\_hours\_daily}, \emph{cost\_daily}}{}
+\phantomsection\label{modules/microdata:microdata.models.Device}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{Device}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+Describes a single Device owned by \code{settings.AUTH\_USER\_MODEL}.
 \index{Device.DoesNotExist}
 
 \begin{fulllineitems}
@@ -1034,24 +1161,50 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Device.channel_1}\pysigline{\code{Device.}\bfcode{channel\_1}}
+The first of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField.
+
 \end{fulllineitems}
 
 \index{channel\_2 (microdata.models.Device attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Device.channel_2}\pysigline{\code{Device.}\bfcode{channel\_2}}
+The second of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField.
+
 \end{fulllineitems}
 
 \index{channel\_3 (microdata.models.Device attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Device.channel_3}\pysigline{\code{Device.}\bfcode{channel\_3}}
+The third of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField.
+
+\end{fulllineitems}
+
+\index{cost\_daily (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.cost_daily}\pysigline{\code{Device.}\bfcode{cost\_daily}\strong{ = None}}
+The total cost calculated by the server today. Much cheaper to keep this in the django database than the InfluxDB.
+
+\end{fulllineitems}
+
+\index{data\_retention\_policy (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.data_retention_policy}\pysigline{\code{Device.}\bfcode{data\_retention\_policy}\strong{ = None}}
+The amount of time the data from this device can live in the database. Anything older will be archived to Amazon Glacier.
+
 \end{fulllineitems}
 
 \index{delete() (microdata.models.Device method)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Device.delete}\pysiglinewithargsret{\code{Device.}\bfcode{delete}}{\emph{*args}, \emph{**kwargs}}{}
+Custom delete method.
+
+Drop the series from the influxdb database.
+
 \end{fulllineitems}
 
 \index{devicesettings (microdata.models.Device attribute)}
@@ -1072,6 +1225,46 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \phantomsection\label{modules/microdata:microdata.models.Device.event_set}\pysigline{\code{Device.}\bfcode{event\_set}}
 \end{fulllineitems}
 
+\index{fanout\_query\_registered (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.fanout_query_registered}\pysigline{\code{Device.}\bfcode{fanout\_query\_registered}\strong{ = None}}
+A true/false that is set when a device is created indicating the continuous queries in the database have been registered.
+
+\end{fulllineitems}
+
+\index{ip\_address (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.ip_address}\pysigline{\code{Device.}\bfcode{ip\_address}\strong{ = None}}
+This field is no longer actively used. This was a proof of concept for early device communication. Deprecated.
+
+\end{fulllineitems}
+
+\index{kilowatt\_hours\_daily (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.kilowatt_hours_daily}\pysigline{\code{Device.}\bfcode{kilowatt\_hours\_daily}\strong{ = None}}
+A counter that is reset by a cron job once a day that keeps an accumulation of the total kwh this device has measured over the course of a day.
+
+\end{fulllineitems}
+
+\index{kilowatt\_hours\_monthly (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.kilowatt_hours_monthly}\pysigline{\code{Device.}\bfcode{kilowatt\_hours\_monthly}\strong{ = None}}
+A counter that is reset by a cron job once a month that keeps an accumulation of the total kwh this device has measured over the course of a month.
+
+\end{fulllineitems}
+
+\index{name (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.name}\pysigline{\code{Device.}\bfcode{name}\strong{ = None}}
+A non-unique name field for a device. This field is solely for user experience, it has no functional purpose.
+
+\end{fulllineitems}
+
 \index{objects (microdata.models.Device attribute)}
 
 \begin{fulllineitems}
@@ -1082,18 +1275,70 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Device.owner}\pysigline{\code{Device.}\bfcode{owner}}
+A Foreign key relation. We use this relation to pair a device to a user on the web application.
+
+\end{fulllineitems}
+
+\index{registered (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.registered}\pysigline{\code{Device.}\bfcode{registered}\strong{ = None}}
+Synonym for paired. This protects againts users trying to pair an already paired device.
+
 \end{fulllineitems}
 
 \index{save() (microdata.models.Device method)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Device.save}\pysiglinewithargsret{\code{Device.}\bfcode{save}}{\emph{**kwargs}}{}
+Custom save method.
+
+This function will do several things if it has not done so already:
+\begin{itemize}
+\item {} 
+Create a secret key. 3 digits followed by 4 letters. Not currently in use (could be used for pairing devices)
+
+\item {} 
+Register fanout queries in database.
+
+\item {} 
+Device name cannot be None, default is ``Device \textless{}serial\textgreater{}''.
+
+\item {} 
+Create a {\hyperref[modules/farmer:farmer.models.DeviceSettings]{\emph{\code{farmer.models.DeviceSettings}}}} object.
+
+\item {} 
+Create a {\hyperref[modules/webapp:webapp.models.DeviceWebSettings]{\emph{\code{webapp.models.DeviceWebSettings}}}} object.
+
+\item {} 
+Give default values to the channels.
+
+\end{itemize}
+
+\end{fulllineitems}
+
+\index{secret\_key (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.secret_key}\pysigline{\code{Device.}\bfcode{secret\_key}\strong{ = None}}
+This field is not currently in use, but the functionality exists. This field was intended to be used to pair a device to a user.
+
+\end{fulllineitems}
+
+\index{serial (microdata.models.Device attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Device.serial}\pysigline{\code{Device.}\bfcode{serial}\strong{ = None}}
+The primary key of the model. This is what the device uses to interface to the API and how users currently pair a device.
+
 \end{fulllineitems}
 
 \index{share\_with (microdata.models.Device attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Device.share_with}\pysigline{\code{Device.}\bfcode{share\_with}}
+This field acts much like an owner, however share\_with users cannot alter device settings.
+
 \end{fulllineitems}
 
 
@@ -1102,8 +1347,12 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{Event (class in microdata.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/microdata:microdata.models.Event}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{Event}}{\emph{id}, \emph{device\_id}, \emph{dataPoints}, \emph{start}, \emph{frequency}, \emph{query}}{}
+\phantomsection\label{modules/microdata:microdata.models.Event}\pysiglinewithargsret{\strong{class }\code{microdata.models.}\bfcode{Event}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+Generic class to catch the Event REST Packets from devices. Relates to a {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}}.
+
+These models are not stored on the Django database since they are converted to InfluxDB.
 \index{Event.DoesNotExist}
 
 \begin{fulllineitems}
@@ -1120,10 +1369,28 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \end{fulllineitems}
 
+\index{dataPoints (microdata.models.Event attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Event.dataPoints}\pysigline{\code{Event.}\bfcode{dataPoints}\strong{ = None}}
+An array of undefined size containing measured values for the server. The data points are numbered \emph{0 ... n ... j} where nth data point has a timestamp of \emph{start\_time + n * period} and \emph{j} is undefined.
+
+\end{fulllineitems}
+
 \index{device (microdata.models.Event attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Event.device}\pysigline{\code{Event.}\bfcode{device}}
+This is the relation between the device and its data. This is established when the device specifies its hyperlinked model via the REST call.
+
+\end{fulllineitems}
+
+\index{frequency (microdata.models.Event attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Event.frequency}\pysigline{\code{Event.}\bfcode{frequency}\strong{ = None}}
+The frequency, in Hertz, of the packet's data points. Used to calculate the offset of all points.
+
 \end{fulllineitems}
 
 \index{objects (microdata.models.Event attribute)}
@@ -1132,10 +1399,50 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \phantomsection\label{modules/microdata:microdata.models.Event.objects}\pysigline{\code{Event.}\bfcode{objects}\strong{ = \textless{}django.db.models.manager.Manager object\textgreater{}}}
 \end{fulllineitems}
 
+\index{query (microdata.models.Event attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Event.query}\pysigline{\code{Event.}\bfcode{query}\strong{ = None}}
+Deprecated. This field is useful for debugging the REST requests, but since the model is not saved, this is a volatile field.
+
+\end{fulllineitems}
+
 \index{save() (microdata.models.Event method)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.models.Event.save}\pysiglinewithargsret{\code{Event.}\bfcode{save}}{\emph{**kwargs}}{}
+Custom save method.
+
+This method is the powerhouse of the API. It can take an array of data points from a device and convert them into database entries in InfluxDB.
+
+The method will also keep a running count of how many kwh have been consumed this day and this month. If it exceeds the allotted kwh for
+the device's tier, advance the tier a level.
+
+If the data coming in is sufficiently in the past such that the database will not calculate its mean value, refresh the query
+to trigger a backfill of the data.
+
+When a model is being saved, it has already been created by {\hyperref[modules/microdata:microdata.views.EventViewSet]{\emph{\code{microdata.views.EventViewSet}}}}.
+
+The Event is parsed as follows:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{start} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{start}
+\PYG{n}{frequency} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{frequency}
+\PYG{n}{count} \PYG{o}{=} \PYG{l+m+mi}{0}
+
+\PYG{k}{for} \PYG{n}{point} \PYG{o+ow}{in} \PYG{n}{dataPoints}\PYG{p}{:}
+   \PYG{n}{time} \PYG{o}{=} \PYG{n}{start} \PYG{o}{+} \PYG{n}{count} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{/}\PYG{n}{frequency}\PYG{p}{)}
+   \PYG{n}{db}\PYG{o}{.}\PYG{n}{write\PYGZus{}points}\PYG{p}{(}\PYG{n}{time}\PYG{p}{,} \PYG{n}{wattage}\PYG{p}{)}
+\end{Verbatim}
+
+\end{fulllineitems}
+
+\index{start (microdata.models.Event attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/microdata:microdata.models.Event.start}\pysigline{\code{Event.}\bfcode{start}\strong{ = None}}
+The start time, in milliseconds, of the first data point in the packet. Used to calculate offset of all proceeding points.
+
 \end{fulllineitems}
 
 
@@ -1351,6 +1658,11 @@ API endpoint that allows events to be viewed or edited.
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.views.EventViewSet.create}\pysiglinewithargsret{\bfcode{create}}{\emph{request}}{}
+Custom create method.
+
+Used to parse the packets sent via the REST API. Since the packets are in a JSON array,
+the Django REST Framework has no native way of handling these, so we do it ourselves.
+
 \end{fulllineitems}
 
 \index{queryset (microdata.views.EventViewSet attribute)}
@@ -1380,7 +1692,7 @@ Form class used to generate a simple key form. Currently used when a user intend
 \index{base\_fields (microdata.views.KeyForm attribute)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/microdata:microdata.views.KeyForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`serial': \textless{}django.forms.fields.IntegerField object at 0x2b6d59e1a390\textgreater{}\}}}
+\phantomsection\label{modules/microdata:microdata.views.KeyForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`serial': \textless{}django.forms.fields.IntegerField object at 0x2ba7e1df4bd0\textgreater{}\}}}
 \end{fulllineitems}
 
 \index{media (microdata.views.KeyForm attribute)}
@@ -1406,22 +1718,33 @@ Requires an Amazon AWS key to be set in the environment variables.
 
 \begin{fulllineitems}
 \phantomsection\label{modules/microdata:microdata.views.new_device}\pysiglinewithargsret{\code{microdata.views.}\bfcode{new\_device}}{\emph{request}}{}
-Function used to service a user's request to add a new device.
-\begin{description}
-\item[{Args:}] \leavevmode
-request (HttpRequest): Request object from the user
+Function used to service a user's request to add a new {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}}.
 
-\item[{Returns:}] \leavevmode
-render with context:
+\textbf{Context}
+\begin{quote}
 
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYGZsq{}form\PYGZsq{}   : form object if user requests the form
-\PYGZsq{}error\PYGZsq{}  : string \PYGZhy{} error description if present
-\PYGZsq{}created\PYGZsq{}: true/false if device is created
-\PYGZsq{}device\PYGZsq{} : serialized device object if device is created
-\end{Verbatim}
+\code{form}
+{\hyperref[modules/microdata:microdata.views.KeyForm]{\emph{\code{microdata.views.KeyForm}}}} object if user requests the form
 
-\end{description}
+\code{error}
+string - error description if present
+
+\code{created}
+true/false if device is created
+
+\code{Device}
+serialized {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} object if {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} is created
+\end{quote}
+
+\textbf{Templates:}
+
+\emph{base/new\_device/key.html}
+
+\emph{base/new\_device/help.html}
+
+\emph{base/new\_device/first.html}
+
+\emph{base/new\_device/result.html}
 
 \end{fulllineitems}
 
@@ -1441,8 +1764,14 @@ from \code{farmer.DeviceSettingsViewSet}.
 \subsection{Module contents}
 \label{modules/microdata:module-contents}\label{modules/microdata:module-microdata}\index{microdata (module)}
 
-\section{webapp package}
-\label{modules/webapp::doc}\label{modules/webapp:webapp-package}
+\section{Webapp Application}
+\label{modules/webapp:webapp-application}\label{modules/webapp::doc}
+This application is what interfaces with the data that is retrieved by the Microdata application. Developed as a sort of proof-of-concept, this application has the minimal functionality required to visualize the data coming from the devices in a somewhat meaningful way.
+
+This application is responsible for serving requests from clients on the web by interfacing with the database to display the data. Many of the facets of this application were designed to be interacted with via AJAX, giving the dashboard the responsiveness necessary to provide a useful user experience. Some of the calls to the database can be rather costly in terms of time, so they are lazy loaded, as in only when needed.
+
+In addition, the webapp module houses the HTML and Javascript needed to run the web interface on the client side.
+
 
 \subsection{Subpackages}
 \label{modules/webapp:subpackages}
@@ -1543,6 +1872,8 @@ alias of \code{DashboardSettings}
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.admin.RatePlanAdmin}\pysiglinewithargsret{\strong{class }\code{webapp.admin.}\bfcode{RatePlanAdmin}}{\emph{model}, \emph{admin\_site}}{}
 Bases: \code{django.contrib.admin.options.ModelAdmin}
+
+Class used to expose the {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}} model to the administrator. This was designed to be flexible to allow an administrator to add/modify Rate Plans based on electric company data.
 \index{inlines (webapp.admin.RatePlanAdmin attribute)}
 
 \begin{fulllineitems}
@@ -1569,6 +1900,8 @@ Bases: \code{django.contrib.admin.options.ModelAdmin}
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.admin.TerritoryAdmin}\pysiglinewithargsret{\strong{class }\code{webapp.admin.}\bfcode{TerritoryAdmin}}{\emph{model}, \emph{admin\_site}}{}
 Bases: \code{django.contrib.admin.options.ModelAdmin}
+
+Class used to expose the \code{webapp.models.Territory{}`} model to the administrator. This was designed to be flexible to allow an administrator to add/modify Territories based on electric company data.
 \index{list\_display (webapp.admin.TerritoryAdmin attribute)}
 
 \begin{fulllineitems}
@@ -1589,6 +1922,8 @@ Bases: \code{django.contrib.admin.options.ModelAdmin}
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.admin.TierInline}\pysiglinewithargsret{\strong{class }\code{webapp.admin.}\bfcode{TierInline}}{\emph{parent\_model}, \emph{admin\_site}}{}
 Bases: \code{django.contrib.admin.options.StackedInline}
+
+Class used to expose the {\hyperref[modules/webapp:webapp.models.Tier]{\emph{\code{webapp.models.Tier}}}} model to the administrator. This was designed to be flexible to allow an administrator to add/modify tiers based on electric company data.
 \index{media (webapp.admin.TierInline attribute)}
 
 \begin{fulllineitems}
@@ -1785,8 +2120,17 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{EventNotification (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.EventNotification}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{EventNotification}}{\emph{id}, \emph{description}, \emph{keyword}, \emph{watts\_above\_average}, \emph{period\_of\_time}, \emph{email\_subject}, \emph{email\_body}}{}
+\phantomsection\label{modules/webapp:webapp.models.EventNotification}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{EventNotification}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+Notification sent to users via email whenever a notable event is detected.
+
+This class is not currently in use since the system is not set up in such
+a way as to detect any events. However, the notification framework is in
+place such that when the functionality is added, this class should be called
+in response to an event.
+
+These notifications can be added/modified via the admin interface.
 \index{EventNotification.DoesNotExist}
 
 \begin{fulllineitems}
@@ -1807,6 +2151,32 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.EventNotification.appliances_to_watch}\pysigline{\code{EventNotification.}\bfcode{appliances\_to\_watch}}
+Assemble a group of appliances to watch. Could be one or many.
+
+\end{fulllineitems}
+
+\index{description (webapp.models.EventNotification attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.EventNotification.description}\pysigline{\code{EventNotification.}\bfcode{description}\strong{ = None}}
+The description of the event notification as a user would see it when selecting/deselecting the notification in the settings interface
+
+\end{fulllineitems}
+
+\index{email\_subject (webapp.models.EventNotification attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.EventNotification.email_subject}\pysigline{\code{EventNotification.}\bfcode{email\_subject}\strong{ = None}}
+An email-friendly subject for the event notification.
+
+\end{fulllineitems}
+
+\index{keyword (webapp.models.EventNotification attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.EventNotification.keyword}\pysigline{\code{EventNotification.}\bfcode{keyword}\strong{ = None}}
+Used to trigger the event notification in the django manager.
+
 \end{fulllineitems}
 
 \index{objects (webapp.models.EventNotification attribute)}
@@ -1815,10 +2185,26 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \phantomsection\label{modules/webapp:webapp.models.EventNotification.objects}\pysigline{\code{EventNotification.}\bfcode{objects}\strong{ = \textless{}django.db.models.manager.Manager object\textgreater{}}}
 \end{fulllineitems}
 
+\index{period\_of\_time (webapp.models.EventNotification attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.EventNotification.period_of_time}\pysigline{\code{EventNotification.}\bfcode{period\_of\_time}\strong{ = None}}
+Proof of concept field to provide a threshold. If a group of appliances surpasses the threshold for a period of time, then send the email.
+
+\end{fulllineitems}
+
 \index{usersettings\_set (webapp.models.EventNotification attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.EventNotification.usersettings_set}\pysigline{\code{EventNotification.}\bfcode{usersettings\_set}}
+\end{fulllineitems}
+
+\index{watts\_above\_average (webapp.models.EventNotification attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.EventNotification.watts_above_average}\pysigline{\code{EventNotification.}\bfcode{watts\_above\_average}\strong{ = None}}
+Proof of concept field to provide a threshold. If a group of appliances surpasses the threshold for a period of time, then send the email.
+
 \end{fulllineitems}
 
 
@@ -1827,7 +2213,7 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{IntervalNotification (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.IntervalNotification}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{IntervalNotification}}{\emph{id}, \emph{description}, \emph{recurrences}, \emph{email\_subject}, \emph{email\_body}}{}
+\phantomsection\label{modules/webapp:webapp.models.IntervalNotification}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{IntervalNotification}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
 \index{IntervalNotification.DoesNotExist}
 
@@ -2204,7 +2590,7 @@ Bases: \code{django.forms.forms.Form}
 \index{base\_fields (webapp.views.SettingsForm attribute)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.views.SettingsForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`new\_username': \textless{}django.forms.fields.CharField object at 0x2b6d5a1987d0\textgreater{}, `password1': \textless{}django.forms.fields.CharField object at 0x2b6d5a1a5650\textgreater{}, `password2': \textless{}django.forms.fields.CharField object at 0x2b6d5a1a56d0\textgreater{}, `first\_name': \textless{}django.forms.fields.CharField object at 0x2b6d5a1a5750\textgreater{}, `last\_name': \textless{}django.forms.fields.CharField object at 0x2b6d5a1a5850\textgreater{}, `email': \textless{}django.forms.fields.EmailField object at 0x2b6d5a1a5950\textgreater{}, `notifications': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a59d0\textgreater{}, `share\_with': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a5a90\textgreater{}, `new\_name': \textless{}django.forms.fields.CharField object at 0x2b6d5a1a5b10\textgreater{}, `channel\_1': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a5c10\textgreater{}, `channel\_2': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a5c90\textgreater{}, `channel\_3': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a5d10\textgreater{}, `utility\_companies': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a5d90\textgreater{}, `rate\_plans': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a5e10\textgreater{}, `territories': \textless{}django.forms.fields.ChoiceField object at 0x2b6d5a1a5e90\textgreater{}, `stack': \textless{}django.forms.fields.BooleanField object at 0x2b6d5a1a5ed0\textgreater{}\}}}
+\phantomsection\label{modules/webapp:webapp.views.SettingsForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`new\_username': \textless{}django.forms.fields.CharField object at 0x2ba7e26077d0\textgreater{}, `password1': \textless{}django.forms.fields.CharField object at 0x2ba7e26176d0\textgreater{}, `password2': \textless{}django.forms.fields.CharField object at 0x2ba7e2617750\textgreater{}, `first\_name': \textless{}django.forms.fields.CharField object at 0x2ba7e26177d0\textgreater{}, `last\_name': \textless{}django.forms.fields.CharField object at 0x2ba7e26178d0\textgreater{}, `email': \textless{}django.forms.fields.EmailField object at 0x2ba7e26179d0\textgreater{}, `notifications': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617a50\textgreater{}, `share\_with': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617b10\textgreater{}, `new\_name': \textless{}django.forms.fields.CharField object at 0x2ba7e2617b90\textgreater{}, `channel\_1': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617c50\textgreater{}, `channel\_2': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617cd0\textgreater{}, `channel\_3': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617d50\textgreater{}, `utility\_companies': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617dd0\textgreater{}, `rate\_plans': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617e50\textgreater{}, `territories': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617ed0\textgreater{}, `stack': \textless{}django.forms.fields.BooleanField object at 0x2ba7e2617f10\textgreater{}\}}}
 \end{fulllineitems}
 
 \index{channel\_1\_choices (webapp.views.SettingsForm attribute)}
@@ -2669,6 +3055,113 @@ alias of \code{DeviceSettingsSerializer}
 \subsection{Module contents}
 \label{modules/farmer:module-contents}\label{modules/farmer:module-farmer}\index{farmer (module)}
 
+\section{home package}
+\label{modules/home::doc}\label{modules/home:home-package}
+
+\subsection{Subpackages}
+\label{modules/home:subpackages}
+
+\subsection{Submodules}
+\label{modules/home:submodules}
+
+\subsection{home.admin module}
+\label{modules/home:home-admin-module}\label{modules/home:module-home.admin}\index{home.admin (module)}
+
+\subsection{home.models module}
+\label{modules/home:module-home.models}\label{modules/home:home-models-module}\index{home.models (module)}
+
+\subsection{home.serializers module}
+\label{modules/home:home-serializers-module}\label{modules/home:module-home.serializers}\index{home.serializers (module)}\index{UserSerializer (class in home.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer}\pysiglinewithargsret{\strong{class }\code{home.serializers.}\bfcode{UserSerializer}}{\emph{instance=None}, \emph{data=\textless{}class rest\_framework.fields.empty\textgreater{}}, \emph{**kwargs}}{}
+Bases: \code{rest\_framework.serializers.HyperlinkedModelSerializer}
+\index{UserSerializer.Meta (class in home.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta}\pysigline{\strong{class }\bfcode{Meta}}~\index{fields (home.serializers.UserSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta.fields}\pysigline{\bfcode{fields}\strong{ = (`url', `username', `email', `is\_staff')}}
+\end{fulllineitems}
+
+\index{model (home.serializers.UserSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta.model}\pysigline{\bfcode{model}}
+alias of \code{User}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{home.tests module}
+\label{modules/home:module-home.tests}\label{modules/home:home-tests-module}\index{home.tests (module)}
+
+\subsection{home.views module}
+\label{modules/home:home-views-module}\label{modules/home:module-home.views}\index{home.views (module)}\index{UserViewSet (class in home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.UserViewSet}\pysiglinewithargsret{\strong{class }\code{home.views.}\bfcode{UserViewSet}}{\emph{**kwargs}}{}
+Bases: \code{rest\_framework.viewsets.ModelViewSet}
+\index{queryset (home.views.UserViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.UserViewSet.queryset}\pysigline{\bfcode{queryset}}
+\end{fulllineitems}
+
+\index{serializer\_class (home.views.UserViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.UserViewSet.serializer_class}\pysigline{\bfcode{serializer\_class}}
+alias of \code{UserSerializer}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{account() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.account}\pysiglinewithargsret{\code{home.views.}\bfcode{account}}{\emph{request}}{}
+\end{fulllineitems}
+
+\index{index() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.index}\pysiglinewithargsret{\code{home.views.}\bfcode{index}}{\emph{request}}{}
+\end{fulllineitems}
+
+\index{register() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.register}\pysiglinewithargsret{\code{home.views.}\bfcode{register}}{\emph{request}}{}
+\end{fulllineitems}
+
+\index{signin() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.signin}\pysiglinewithargsret{\code{home.views.}\bfcode{signin}}{\emph{request}}{}
+\end{fulllineitems}
+
+\index{signout() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.signout}\pysiglinewithargsret{\code{home.views.}\bfcode{signout}}{\emph{request}}{}
+\end{fulllineitems}
+
+
+
+\subsection{Module contents}
+\label{modules/home:module-contents}\label{modules/home:module-home}\index{home (module)}
+
 \chapter{Indices and tables}
 \label{index:indices-and-tables}\begin{itemize}
 \item {} 
@@ -2693,6 +3186,14 @@ alias of \code{DeviceSettingsSerializer}
 \item {\texttt{farmer.serializers}}, \pageref{modules/farmer:module-farmer.serializers}
 \item {\texttt{farmer.tests}}, \pageref{modules/farmer:module-farmer.tests}
 \item {\texttt{farmer.views}}, \pageref{modules/farmer:module-farmer.views}
+\indexspace
+\bigletter{h}
+\item {\texttt{home}}, \pageref{modules/home:module-home}
+\item {\texttt{home.admin}}, \pageref{modules/home:module-home.admin}
+\item {\texttt{home.models}}, \pageref{modules/home:module-home.models}
+\item {\texttt{home.serializers}}, \pageref{modules/home:module-home.serializers}
+\item {\texttt{home.tests}}, \pageref{modules/home:module-home.tests}
+\item {\texttt{home.views}}, \pageref{modules/home:module-home.views}
 \indexspace
 \bigletter{m}
 \item {\texttt{microdata}}, \pageref{modules/microdata:module-microdata}

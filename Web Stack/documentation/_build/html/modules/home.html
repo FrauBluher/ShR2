@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>home package &mdash; SEADS 1.0 documentation</title>
+  <title>3.4. home package &mdash; SEADS 1.0 documentation</title>
   
 
   
@@ -32,7 +32,9 @@
   
 
   
-    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/> 
+    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="3. Applications" href="../applications.html"/>
+        <link rel="prev" title="3.3. farmer package" href="farmer.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +73,7 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#introduction">1.1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
@@ -91,16 +93,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting-started.html">2. Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#api-documentation">2.1. API Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../applications.html">3. Applications</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="../applications.html">3. Applications</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="microdata.html">3.1. Microdata Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#subpackages">3.1.1. Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="microdata.management.html">3.1.1.1. microdata.management package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#submodules">3.1.2. Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.admin">3.1.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-admin-module">3.1.3. microdata.admin module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-models-module">3.1.4. microdata.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.serializers">3.1.5. microdata.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.tests">3.1.6. microdata.tests module</a></li>
@@ -108,7 +111,7 @@
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata">3.1.8. Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.2. webapp package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.2. Webapp Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="webapp.html#subpackages">3.2.1. Subpackages</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="webapp.management.html">3.2.1.1. webapp.management package</a></li>
 </ul>
@@ -131,6 +134,19 @@
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.4. home package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home">3.4.8. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -159,7 +175,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>home package</li>
+          <li><a href="../applications.html">3. Applications</a> &raquo;</li>
+      
+    <li>3.4. home package</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -173,25 +191,25 @@
           <div role="main" class="document">
             
   <div class="section" id="home-package">
-<h1>home package<a class="headerlink" href="#home-package" title="Permalink to this headline">¶</a></h1>
+<h1>3.4. home package<a class="headerlink" href="#home-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<h2>3.4.1. Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul class="simple">
 </ul>
 </div>
 </div>
 <div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>3.4.2. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-home.admin">
-<span id="home-admin-module"></span><h2>home.admin module<a class="headerlink" href="#module-home.admin" title="Permalink to this headline">¶</a></h2>
+<span id="home-admin-module"></span><h2>3.4.3. home.admin module<a class="headerlink" href="#module-home.admin" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-home.models">
-<span id="home-models-module"></span><h2>home.models module<a class="headerlink" href="#module-home.models" title="Permalink to this headline">¶</a></h2>
+<span id="home-models-module"></span><h2>3.4.4. home.models module<a class="headerlink" href="#module-home.models" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-home.serializers">
-<span id="home-serializers-module"></span><h2>home.serializers module<a class="headerlink" href="#module-home.serializers" title="Permalink to this headline">¶</a></h2>
+<span id="home-serializers-module"></span><h2>3.4.5. home.serializers module<a class="headerlink" href="#module-home.serializers" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="home.serializers.UserSerializer">
 <em class="property">class </em><code class="descclassname">home.serializers.</code><code class="descname">UserSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#home.serializers.UserSerializer" title="Permalink to this definition">¶</a></dt>
@@ -216,10 +234,10 @@
 
 </div>
 <div class="section" id="module-home.tests">
-<span id="home-tests-module"></span><h2>home.tests module<a class="headerlink" href="#module-home.tests" title="Permalink to this headline">¶</a></h2>
+<span id="home-tests-module"></span><h2>3.4.6. home.tests module<a class="headerlink" href="#module-home.tests" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-home.views">
-<span id="home-views-module"></span><h2>home.views module<a class="headerlink" href="#module-home.views" title="Permalink to this headline">¶</a></h2>
+<span id="home-views-module"></span><h2>3.4.7. home.views module<a class="headerlink" href="#module-home.views" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="home.views.UserViewSet">
 <em class="property">class </em><code class="descclassname">home.views.</code><code class="descname">UserViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#home.views.UserViewSet" title="Permalink to this definition">¶</a></dt>
@@ -264,13 +282,20 @@
 
 </div>
 <div class="section" id="module-home">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-home" title="Permalink to this headline">¶</a></h2>
+<span id="module-contents"></span><h2>3.4.8. Module contents<a class="headerlink" href="#module-home" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
 
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="farmer.html" class="btn btn-neutral" title="3.3. farmer package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

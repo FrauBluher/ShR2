@@ -1,0 +1,407 @@
+\begin{theindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item account() (in module home.views), \hyperpage{28}
+  \item Appliance (class in microdata.models), \hyperpage{13}
+  \item Appliance.DoesNotExist, \hyperpage{13}
+  \item Appliance.MultipleObjectsReturned, \hyperpage{13}
+  \item ApplianceAdmin (class in microdata.admin), \hyperpage{12}
+  \item appliances (microdata.models.CircuitType attribute), \hyperpage{14}
+  \item appliances\_to\_watch (webapp.models.EventNotification attribute), \hyperpage{22}
+  \item ApplianceSerializer (class in microdata.serializers), \hyperpage{16}
+  \item ApplianceSerializer.Meta (class in microdata.serializers), \hyperpage{16}
+  \item ApplianceViewSet (class in microdata.views), \hyperpage{17}
+  \item args (microdata.management.commands.archive\_database.Command attribute), \hyperpage{12}
+  \item args (webapp.management.commands.reset\_kilowatt\_accumulations.Command attribute), 
+		\hyperpage{19}
+
+  \indexspace
+  \bigletter B
+  \item base\_fields (microdata.views.KeyForm attribute), \hyperpage{18}
+  \item base\_fields (webapp.views.SettingsForm attribute), \hyperpage{24}
+  \item billing\_information() (in module webapp.views), \hyperpage{25}
+
+  \indexspace
+  \bigletter C
+  \item can\_delete (farmer.admin.DeviceSettingsInline attribute), \hyperpage{26}
+  \item can\_delete (microdata.admin.DeviceWebSettingsInline attribute), \hyperpage{13}
+  \item can\_delete (webapp.admin.DashboardSettingsInline attribute), \hyperpage{20}
+  \item can\_delete (webapp.admin.UserSettingsInline attribute), \hyperpage{20}
+  \item channel\_1 (microdata.models.Device attribute), \hyperpage{14}
+  \item channel\_1\_choices (webapp.views.SettingsForm attribute), \hyperpage{24}
+  \item channel\_2 (microdata.models.Device attribute), \hyperpage{14}
+  \item channel\_2\_choices (webapp.views.SettingsForm attribute), \hyperpage{24}
+  \item channel\_3 (microdata.models.Device attribute), \hyperpage{14}
+  \item channel\_3\_choices (webapp.views.SettingsForm attribute), \hyperpage{24}
+  \item CHANNEL\_CHOICES (farmer.models.DeviceSettings attribute), \hyperpage{26}
+  \item chart\_color (microdata.models.Appliance attribute), \hyperpage{13}
+  \item chart\_color (microdata.models.CircuitType attribute), \hyperpage{14}
+  \item chartify() (in module webapp.views), \hyperpage{25}
+  \item charts\_deprecated() (in module webapp.views), \hyperpage{25}
+  \item Circuit (class in microdata.models), \hyperpage{13}
+  \item Circuit.DoesNotExist, \hyperpage{13}
+  \item Circuit.MultipleObjectsReturned, \hyperpage{13}
+  \item circuit\_set (microdata.models.CircuitType attribute), \hyperpage{14}
+  \item CircuitAdmin (class in microdata.admin), \hyperpage{12}
+  \item circuits\_information() (in module webapp.views), \hyperpage{25}
+  \item CircuitSerializer (class in microdata.serializers), \hyperpage{16}
+  \item CircuitSerializer.Meta (class in microdata.serializers), \hyperpage{17}
+  \item CircuitType (class in microdata.models), \hyperpage{13}
+  \item circuittype (microdata.models.Circuit attribute), \hyperpage{13}
+  \item CircuitType.DoesNotExist, \hyperpage{14}
+  \item CircuitType.MultipleObjectsReturned, \hyperpage{14}
+  \item circuittype\_set (microdata.models.Appliance attribute), \hyperpage{13}
+  \item CircuitTypeAdmin (class in microdata.admin), \hyperpage{12}
+  \item CircuitViewSet (class in microdata.views), \hyperpage{17}
+  \item clean\_password2() (webapp.views.SettingsForm method), \hyperpage{24}
+  \item Command (class in microdata.management.commands.archive\_database), \hyperpage{12}
+  \item Command (class in microdata.management.commands.check\_glacier\_jobs), \hyperpage{12}
+  \item Command (class in webapp.management.commands.reset\_kilowatt\_accumulations), 
+		\hyperpage{19}
+  \item cost\_daily (microdata.models.Device attribute), \hyperpage{14}
+  \item create() (microdata.views.DeviceViewSet method), \hyperpage{18}
+  \item create() (microdata.views.EventViewSet method), \hyperpage{18}
+  \item current\_tier (webapp.models.DeviceWebSettings attribute), \hyperpage{21}
+
+  \indexspace
+  \bigletter D
+  \item dashboard() (in module webapp.views), \hyperpage{25}
+  \item dashboard\_update() (in module webapp.views), \hyperpage{25}
+  \item DashboardSettings (class in webapp.models), \hyperpage{21}
+  \item DashboardSettings.DoesNotExist, \hyperpage{21}
+  \item DashboardSettings.MultipleObjectsReturned, \hyperpage{21}
+  \item DashboardSettingsInline (class in webapp.admin), \hyperpage{20}
+  \item data\_retention\_policy (microdata.models.Device attribute), \hyperpage{14}
+  \item dataPoints (microdata.models.Event attribute), \hyperpage{16}
+  \item default\_chart() (in module webapp.views), \hyperpage{25}
+  \item delete() (microdata.models.Device method), \hyperpage{14}
+  \item description (webapp.models.EventNotification attribute), \hyperpage{22}
+  \item Device (class in microdata.models), \hyperpage{14}
+  \item device (farmer.models.DeviceSettings attribute), \hyperpage{26}
+  \item device (microdata.models.Event attribute), \hyperpage{16}
+  \item device (webapp.models.DeviceWebSettings attribute), \hyperpage{21}
+  \item Device.DoesNotExist, \hyperpage{14}
+  \item Device.MultipleObjectsReturned, \hyperpage{14}
+  \item device\_chart() (in module webapp.views), \hyperpage{25}
+  \item device\_data() (in module webapp.views), \hyperpage{25}
+  \item device\_is\_online() (in module webapp.views), \hyperpage{25}
+  \item device\_location() (in module webapp.views), \hyperpage{25}
+  \item device\_status() (in module webapp.views), \hyperpage{25}
+  \item DeviceAdmin (class in microdata.admin), \hyperpage{12}
+  \item DeviceSerializer (class in microdata.serializers), \hyperpage{17}
+  \item DeviceSerializer.Meta (class in microdata.serializers), \hyperpage{17}
+  \item DeviceSettings (class in farmer.models), \hyperpage{26}
+  \item devicesettings (microdata.models.Device attribute), \hyperpage{14}
+  \item DeviceSettings.DoesNotExist, \hyperpage{26}
+  \item DeviceSettings.MultipleObjectsReturned, \hyperpage{26}
+  \item DeviceSettingsAdmin (class in farmer.admin), \hyperpage{26}
+  \item DeviceSettingsInline (class in farmer.admin), \hyperpage{26}
+  \item DeviceSettingsSerializer (class in farmer.serializers), \hyperpage{26}
+  \item DeviceSettingsSerializer.Meta (class in farmer.serializers), \hyperpage{26}
+  \item DeviceSettingsViewSet (class in farmer.views), \hyperpage{27}
+  \item DeviceViewSet (class in microdata.views), \hyperpage{17}
+  \item DeviceWebSettings (class in webapp.models), \hyperpage{21}
+  \item devicewebsettings (microdata.models.Device attribute), \hyperpage{14}
+  \item DeviceWebSettings.DoesNotExist, \hyperpage{21}
+  \item DeviceWebSettings.MultipleObjectsReturned, \hyperpage{21}
+  \item devicewebsettings\_set (webapp.models.RatePlan attribute), \hyperpage{23}
+  \item devicewebsettings\_set (webapp.models.Territory attribute), \hyperpage{23}
+  \item devicewebsettings\_set (webapp.models.Tier attribute), \hyperpage{23}
+  \item devicewebsettings\_set (webapp.models.UtilityCompany attribute), \hyperpage{24}
+  \item DeviceWebSettingsInline (class in microdata.admin), \hyperpage{13}
+
+  \indexspace
+  \bigletter E
+  \item email\_subject (webapp.models.EventNotification attribute), \hyperpage{22}
+  \item error\_messages (webapp.views.SettingsForm attribute), \hyperpage{24}
+  \item Event (class in microdata.models), \hyperpage{15}
+  \item Event.DoesNotExist, \hyperpage{15}
+  \item Event.MultipleObjectsReturned, \hyperpage{15}
+  \item event\_notification (webapp.models.UserSettings attribute), \hyperpage{23}
+  \item event\_set (microdata.models.Device attribute), \hyperpage{14}
+  \item EventNotification (class in webapp.models), \hyperpage{21}
+  \item EventNotification.DoesNotExist, \hyperpage{21}
+  \item EventNotification.MultipleObjectsReturned, \hyperpage{21}
+  \item eventnotification\_set (microdata.models.Appliance attribute), \hyperpage{13}
+  \item EventSerializer (class in microdata.serializers), \hyperpage{17}
+  \item EventSerializer.Meta (class in microdata.serializers), \hyperpage{17}
+  \item EventViewSet (class in microdata.views), \hyperpage{18}
+  \item export\_data() (in module webapp.views), \hyperpage{25}
+
+  \indexspace
+  \bigletter F
+  \item fanout\_query\_registered (microdata.models.Device attribute), \hyperpage{14}
+  \item farmer (module), \hyperpage{27}
+  \item farmer.admin (module), \hyperpage{26}
+  \item farmer.models (module), \hyperpage{26}
+  \item farmer.serializers (module), \hyperpage{26}
+  \item farmer.tests (module), \hyperpage{27}
+  \item farmer.views (module), \hyperpage{27}
+  \item fields (farmer.serializers.DeviceSettingsSerializer.Meta attribute), \hyperpage{27}
+  \item fields (home.serializers.UserSerializer.Meta attribute), \hyperpage{27}
+  \item fields (microdata.serializers.ApplianceSerializer.Meta attribute), \hyperpage{16}
+  \item fields (microdata.serializers.CircuitSerializer.Meta attribute), \hyperpage{17}
+  \item fields (microdata.serializers.DeviceSerializer.Meta attribute), \hyperpage{17}
+  \item fields (microdata.serializers.EventSerializer.Meta attribute), \hyperpage{17}
+  \item frequency (microdata.models.Event attribute), \hyperpage{16}
+
+  \indexspace
+  \bigletter G
+  \item generate\_average\_wattage\_usage() (in module webapp.views), \hyperpage{25}
+  \item generate\_heatmap\_data() (in module webapp.views), \hyperpage{25}
+  \item get\_adc\_sample\_rate\_display() (farmer.models.DeviceSettings method), \hyperpage{26}
+  \item get\_main\_channel\_display() (farmer.models.DeviceSettings method), \hyperpage{26}
+  \item get\_notifications() (webapp.views.SettingsForm method), \hyperpage{24}
+  \item get\_rate\_plans() (webapp.views.SettingsForm method), \hyperpage{24}
+  \item get\_territories() (webapp.views.SettingsForm method), \hyperpage{24}
+  \item get\_utility\_companies() (webapp.views.SettingsForm method), \hyperpage{25}
+  \item get\_wattage\_usage() (in module webapp.views), \hyperpage{25}
+  \item group\_by\_mean() (in module webapp.views), \hyperpage{25}
+
+  \indexspace
+  \bigletter H
+  \item handle() (microdata.management.commands.archive\_database.Command method), \hyperpage{12}
+  \item handle() (microdata.management.commands.check\_glacier\_jobs.Command method), 
+		\hyperpage{12}
+  \item handle() (webapp.management.commands.reset\_kilowatt\_accumulations.Command method), 
+		\hyperpage{19}
+  \item heatmap() (in module webapp.views), \hyperpage{25}
+  \item help (microdata.management.commands.archive\_database.Command attribute), \hyperpage{12}
+  \item help (webapp.management.commands.reset\_kilowatt\_accumulations.Command attribute), 
+		\hyperpage{19}
+  \item home (module), \hyperpage{28}
+  \item home.admin (module), \hyperpage{27}
+  \item home.models (module), \hyperpage{27}
+  \item home.serializers (module), \hyperpage{27}
+  \item home.tests (module), \hyperpage{28}
+  \item home.views (module), \hyperpage{28}
+
+  \indexspace
+  \bigletter I
+  \item index() (in module home.views), \hyperpage{28}
+  \item initiate\_job\_to\_glacier() (in module microdata.views), \hyperpage{18}
+  \item inlines (microdata.admin.DeviceAdmin attribute), \hyperpage{13}
+  \item inlines (webapp.admin.RatePlanAdmin attribute), \hyperpage{20}
+  \item inlines (webapp.admin.UserAdmin attribute), \hyperpage{20}
+  \item interval\_notification (webapp.models.Notification attribute), \hyperpage{22}
+  \item interval\_notification (webapp.models.UserSettings attribute), \hyperpage{23}
+  \item IntervalNotification (class in webapp.models), \hyperpage{22}
+  \item IntervalNotification.DoesNotExist, \hyperpage{22}
+  \item IntervalNotification.MultipleObjectsReturned, \hyperpage{22}
+  \item ip\_address (microdata.models.Device attribute), \hyperpage{15}
+
+  \indexspace
+  \bigletter K
+  \item KeyForm (class in microdata.views), \hyperpage{18}
+  \item keyword (webapp.models.EventNotification attribute), \hyperpage{22}
+  \item kilowatt\_hours\_daily (microdata.models.Device attribute), \hyperpage{15}
+  \item kilowatt\_hours\_monthly (microdata.models.Device attribute), \hyperpage{15}
+
+  \indexspace
+  \bigletter L
+  \item landing() (in module webapp.views), \hyperpage{25}
+  \item list() (farmer.views.DeviceSettingsViewSet method), \hyperpage{27}
+  \item list\_display (microdata.admin.ApplianceAdmin attribute), \hyperpage{12}
+  \item list\_display (microdata.admin.CircuitAdmin attribute), \hyperpage{12}
+  \item list\_display (microdata.admin.CircuitTypeAdmin attribute), \hyperpage{12}
+  \item list\_display (microdata.admin.DeviceAdmin attribute), \hyperpage{13}
+  \item list\_display (webapp.admin.RatePlanAdmin attribute), \hyperpage{20}
+  \item list\_display (webapp.admin.TerritoryAdmin attribute), \hyperpage{20}
+  \item list\_display (webapp.admin.UtilityCompanyAdmin attribute), \hyperpage{21}
+
+  \indexspace
+  \bigletter M
+  \item make\_choices() (in module webapp.views), \hyperpage{25}
+  \item media (farmer.admin.DeviceSettingsAdmin attribute), \hyperpage{26}
+  \item media (farmer.admin.DeviceSettingsInline attribute), \hyperpage{26}
+  \item media (microdata.admin.ApplianceAdmin attribute), \hyperpage{12}
+  \item media (microdata.admin.CircuitAdmin attribute), \hyperpage{12}
+  \item media (microdata.admin.CircuitTypeAdmin attribute), \hyperpage{12}
+  \item media (microdata.admin.DeviceAdmin attribute), \hyperpage{13}
+  \item media (microdata.admin.DeviceWebSettingsInline attribute), \hyperpage{13}
+  \item media (microdata.views.KeyForm attribute), \hyperpage{18}
+  \item media (webapp.admin.DashboardSettingsInline attribute), \hyperpage{20}
+  \item media (webapp.admin.RatePlanAdmin attribute), \hyperpage{20}
+  \item media (webapp.admin.TerritoryAdmin attribute), \hyperpage{20}
+  \item media (webapp.admin.TierInline attribute), \hyperpage{20}
+  \item media (webapp.admin.UserAdmin attribute), \hyperpage{20}
+  \item media (webapp.admin.UserSettingsInline attribute), \hyperpage{20}
+  \item media (webapp.admin.UtilityCompanyAdmin attribute), \hyperpage{21}
+  \item media (webapp.views.SettingsForm attribute), \hyperpage{25}
+  \item merge\_subs() (in module webapp.views), \hyperpage{25}
+  \item microdata (module), \hyperpage{19}
+  \item microdata.admin (module), \hyperpage{12}
+  \item microdata.management (module), \hyperpage{12}
+  \item microdata.management.commands (module), \hyperpage{12}
+  \item microdata.management.commands.archive\_database (module), \hyperpage{12}
+  \item microdata.management.commands.check\_glacier\_jobs (module), \hyperpage{12}
+  \item microdata.models (module), \hyperpage{13}
+  \item microdata.serializers (module), \hyperpage{16}
+  \item microdata.tests (module), \hyperpage{17}
+  \item microdata.views (module), \hyperpage{17}
+  \item model (farmer.admin.DeviceSettingsInline attribute), \hyperpage{26}
+  \item model (farmer.serializers.DeviceSettingsSerializer.Meta attribute), \hyperpage{27}
+  \item model (home.serializers.UserSerializer.Meta attribute), \hyperpage{27}
+  \item model (microdata.admin.DeviceWebSettingsInline attribute), \hyperpage{13}
+  \item model (microdata.serializers.ApplianceSerializer.Meta attribute), \hyperpage{16}
+  \item model (microdata.serializers.CircuitSerializer.Meta attribute), \hyperpage{17}
+  \item model (microdata.serializers.DeviceSerializer.Meta attribute), \hyperpage{17}
+  \item model (microdata.serializers.EventSerializer.Meta attribute), \hyperpage{17}
+  \item model (webapp.admin.DashboardSettingsInline attribute), \hyperpage{20}
+  \item model (webapp.admin.TierInline attribute), \hyperpage{20}
+  \item model (webapp.admin.UserSettingsInline attribute), \hyperpage{20}
+
+  \indexspace
+  \bigletter N
+  \item name (microdata.models.Device attribute), \hyperpage{15}
+  \item new\_device() (in module microdata.views), \hyperpage{18}
+  \item Notification (class in webapp.models), \hyperpage{22}
+  \item Notification.DoesNotExist, \hyperpage{22}
+  \item Notification.MultipleObjectsReturned, \hyperpage{22}
+  \item notification\_choices (webapp.views.SettingsForm attribute), \hyperpage{25}
+  \item notification\_set (webapp.models.IntervalNotification attribute), \hyperpage{22}
+
+  \indexspace
+  \bigletter O
+  \item Object (class in webapp.views), \hyperpage{24}
+  \item objects (farmer.models.DeviceSettings attribute), \hyperpage{26}
+  \item objects (microdata.models.Appliance attribute), \hyperpage{13}
+  \item objects (microdata.models.Circuit attribute), \hyperpage{13}
+  \item objects (microdata.models.CircuitType attribute), \hyperpage{14}
+  \item objects (microdata.models.Device attribute), \hyperpage{15}
+  \item objects (microdata.models.Event attribute), \hyperpage{16}
+  \item objects (webapp.models.DashboardSettings attribute), \hyperpage{21}
+  \item objects (webapp.models.DeviceWebSettings attribute), \hyperpage{21}
+  \item objects (webapp.models.EventNotification attribute), \hyperpage{22}
+  \item objects (webapp.models.IntervalNotification attribute), \hyperpage{22}
+  \item objects (webapp.models.Notification attribute), \hyperpage{22}
+  \item objects (webapp.models.RatePlan attribute), \hyperpage{23}
+  \item objects (webapp.models.Territory attribute), \hyperpage{23}
+  \item objects (webapp.models.Tier attribute), \hyperpage{23}
+  \item objects (webapp.models.UserSettings attribute), \hyperpage{23}
+  \item objects (webapp.models.UtilityCompany attribute), \hyperpage{24}
+  \item owner (microdata.models.Device attribute), \hyperpage{15}
+
+  \indexspace
+  \bigletter P
+  \item period\_of\_time (webapp.models.EventNotification attribute), \hyperpage{22}
+
+  \indexspace
+  \bigletter Q
+  \item query (microdata.models.Event attribute), \hyperpage{16}
+  \item queryset (farmer.views.DeviceSettingsViewSet attribute), \hyperpage{27}
+  \item queryset (home.views.UserViewSet attribute), \hyperpage{28}
+  \item queryset (microdata.views.ApplianceViewSet attribute), \hyperpage{17}
+  \item queryset (microdata.views.CircuitViewSet attribute), \hyperpage{17}
+  \item queryset (microdata.views.DeviceViewSet attribute), \hyperpage{18}
+  \item queryset (microdata.views.EventViewSet attribute), \hyperpage{18}
+
+  \indexspace
+  \bigletter R
+  \item rate\_plan (webapp.models.Territory attribute), \hyperpage{23}
+  \item rate\_plan (webapp.models.Tier attribute), \hyperpage{23}
+  \item rate\_plan\_choices (webapp.views.SettingsForm attribute), \hyperpage{25}
+  \item rate\_plans (webapp.models.DeviceWebSettings attribute), \hyperpage{21}
+  \item RatePlan (class in webapp.models), \hyperpage{22}
+  \item RatePlan.DoesNotExist, \hyperpage{22}
+  \item RatePlan.MultipleObjectsReturned, \hyperpage{23}
+  \item rateplan\_set (webapp.models.UtilityCompany attribute), \hyperpage{24}
+  \item RatePlanAdmin (class in webapp.admin), \hyperpage{20}
+  \item readonly\_fields (microdata.admin.DeviceAdmin attribute), \hyperpage{13}
+  \item register() (in module home.views), \hyperpage{28}
+  \item registered (microdata.models.Device attribute), \hyperpage{15}
+  \item remove\_device() (in module webapp.views), \hyperpage{25}
+  \item retrieve() (farmer.views.DeviceSettingsViewSet method), \hyperpage{27}
+
+  \indexspace
+  \bigletter S
+  \item safe\_list\_get() (in module microdata.management.commands.archive\_database), 
+		\hyperpage{12}
+  \item SAMPLE\_RATE\_CHOICES (farmer.models.DeviceSettings attribute), \hyperpage{26}
+  \item save() (farmer.models.DeviceSettings method), \hyperpage{26}
+  \item save() (microdata.models.Device method), \hyperpage{15}
+  \item save() (microdata.models.Event method), \hyperpage{16}
+  \item search\_fields (microdata.admin.DeviceAdmin attribute), \hyperpage{13}
+  \item secret\_key (microdata.models.Device attribute), \hyperpage{15}
+  \item serial (microdata.models.Device attribute), \hyperpage{15}
+  \item serializer\_class (farmer.views.DeviceSettingsViewSet attribute), \hyperpage{27}
+  \item serializer\_class (home.views.UserViewSet attribute), \hyperpage{28}
+  \item serializer\_class (microdata.views.ApplianceViewSet attribute), \hyperpage{17}
+  \item serializer\_class (microdata.views.CircuitViewSet attribute), \hyperpage{17}
+  \item serializer\_class (microdata.views.DeviceViewSet attribute), \hyperpage{18}
+  \item serializer\_class (microdata.views.EventViewSet attribute), \hyperpage{18}
+  \item settings() (in module webapp.views), \hyperpage{25}
+  \item settings\_account() (in module webapp.views), \hyperpage{25}
+  \item settings\_change\_device() (in module webapp.views), \hyperpage{25}
+  \item settings\_dashboard() (in module webapp.views), \hyperpage{25}
+  \item settings\_device() (in module webapp.views), \hyperpage{25}
+  \item SettingsForm (class in webapp.views), \hyperpage{24}
+  \item share\_with (microdata.models.Device attribute), \hyperpage{15}
+  \item share\_with\_choices (webapp.views.SettingsForm attribute), \hyperpage{25}
+  \item signin() (in module home.views), \hyperpage{28}
+  \item signout() (in module home.views), \hyperpage{28}
+  \item smooth() (in module webapp.timeseries), \hyperpage{24}
+  \item start (microdata.models.Event attribute), \hyperpage{16}
+
+  \indexspace
+  \bigletter T
+  \item territories (webapp.models.DeviceWebSettings attribute), \hyperpage{21}
+  \item Territory (class in webapp.models), \hyperpage{23}
+  \item Territory.DoesNotExist, \hyperpage{23}
+  \item Territory.MultipleObjectsReturned, \hyperpage{23}
+  \item territory\_choices (webapp.views.SettingsForm attribute), \hyperpage{25}
+  \item territory\_set (webapp.models.RatePlan attribute), \hyperpage{23}
+  \item TerritoryAdmin (class in webapp.admin), \hyperpage{20}
+  \item Tier (class in webapp.models), \hyperpage{23}
+  \item Tier.DoesNotExist, \hyperpage{23}
+  \item Tier.MultipleObjectsReturned, \hyperpage{23}
+  \item tier\_set (webapp.models.RatePlan attribute), \hyperpage{23}
+  \item TierInline (class in webapp.admin), \hyperpage{20}
+  \item timestamp() (in module microdata.views), \hyperpage{18}
+
+  \indexspace
+  \bigletter U
+  \item user (webapp.models.DashboardSettings attribute), \hyperpage{21}
+  \item user (webapp.models.Notification attribute), \hyperpage{22}
+  \item user (webapp.models.UserSettings attribute), \hyperpage{23}
+  \item UserAdmin (class in webapp.admin), \hyperpage{20}
+  \item UserSerializer (class in home.serializers), \hyperpage{27}
+  \item UserSerializer.Meta (class in home.serializers), \hyperpage{27}
+  \item UserSettings (class in webapp.models), \hyperpage{23}
+  \item UserSettings.DoesNotExist, \hyperpage{23}
+  \item UserSettings.MultipleObjectsReturned, \hyperpage{23}
+  \item usersettings\_set (webapp.models.EventNotification attribute), \hyperpage{22}
+  \item usersettings\_set (webapp.models.IntervalNotification attribute), \hyperpage{22}
+  \item UserSettingsInline (class in webapp.admin), \hyperpage{20}
+  \item UserViewSet (class in home.views), \hyperpage{28}
+  \item utility\_companies (webapp.models.DeviceWebSettings attribute), \hyperpage{21}
+  \item utility\_company (webapp.models.RatePlan attribute), \hyperpage{23}
+  \item utility\_company\_choices (webapp.views.SettingsForm attribute), \hyperpage{25}
+  \item UtilityCompany (class in webapp.models), \hyperpage{23}
+  \item UtilityCompany.DoesNotExist, \hyperpage{23}
+  \item UtilityCompany.MultipleObjectsReturned, \hyperpage{23}
+  \item UtilityCompanyAdmin (class in webapp.admin), \hyperpage{21}
+
+  \indexspace
+  \bigletter V
+  \item verbose\_name\_plural (farmer.admin.DeviceSettingsAdmin attribute), \hyperpage{26}
+  \item verbose\_name\_plural (microdata.admin.DeviceWebSettingsInline attribute), \hyperpage{13}
+  \item verbose\_name\_plural (webapp.admin.DashboardSettingsInline attribute), \hyperpage{20}
+  \item verbose\_name\_plural (webapp.admin.UserSettingsInline attribute), \hyperpage{21}
+
+  \indexspace
+  \bigletter W
+  \item watts\_above\_average (webapp.models.EventNotification attribute), \hyperpage{22}
+  \item webapp (module), \hyperpage{26}
+  \item webapp.admin (module), \hyperpage{20}
+  \item webapp.device\_dictionary (module), \hyperpage{21}
+  \item webapp.management (module), \hyperpage{20}
+  \item webapp.management.commands (module), \hyperpage{19}
+  \item webapp.management.commands.reset\_kilowatt\_accumulations (module), \hyperpage{19}
+  \item webapp.models (module), \hyperpage{21}
+  \item webapp.tests (module), \hyperpage{24}
+  \item webapp.timeseries (module), \hyperpage{24}
+  \item webapp.views (module), \hyperpage{24}
+
+\end{theindex}
