@@ -39,3 +39,7 @@ cd /srv/
 sudo chown root uwsgi.ini
 
 sudo chown root nginx.conf
+
+sudo python custom_mysql.py
+
+
