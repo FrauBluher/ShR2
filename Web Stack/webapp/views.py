@@ -315,6 +315,21 @@ def chartify(data):
 
 @login_required(login_url='/signin/')
 def landing(request):
+   """
+      The first function called when a user has logged in and accesses the Dashboard.
+
+      **Context**
+
+         ``my_devices``
+
+         A list of :class:`microdata.models.Device` objects that either belong to the user or are shared with the user.
+         This list is used to populate the sidebar with :class:`microdata.models.Device` links.
+
+      **Templates:**
+
+      `base/dashboard.html`
+
+   """
    user = request.user.id
    my_devices = Device.objects.filter(owner=user)
    my_devices = my_devices | Device.objects.filter(share_with=user)
@@ -324,6 +339,27 @@ def landing(request):
 
 @login_required(login_url='/signin/')
 def dashboard(request):
+   """
+      The first function called when a user has logged in and accesses the Dashboard.
+
+      **Context**
+
+         ``my_devices``
+
+         A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
+         This list is used to generate markers on the graph.
+
+
+         ``server_time``
+
+         The current time as reported by the server. This is used as a time offset for the graph.
+
+
+      **Templates:**
+
+      `base/dashboard.html`
+
+   """
    user = request.user.id
    if request.user.is_authenticated():
       my_devices = Device.objects.filter(owner=user)
@@ -409,6 +445,27 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
 
 @login_required(login_url='/signin/')
 def default_chart(request):
+   """
+      The first function called when a user has logged in and accesses the Dashboard.
+
+      **Context**
+
+         ``my_devices``
+
+         A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
+         This list is used to generate markers on the graph.
+
+
+         ``server_time``
+
+         The current time as reported by the server. This is used as a time offset for the graph.
+
+
+      **Templates:**
+
+      `base/dashboard.html`
+
+   """
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)

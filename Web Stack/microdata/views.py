@@ -135,13 +135,13 @@ def new_device(request):
 
       **Templates:**
 
-      :template:`base/new_device/key.html`
+      `base/new_device/key.html`
 
-      :template:`base/new_device/help.html`
+      `base/new_device/help.html`
 
-      :template:`base/new_device/first.html`
+      `base/new_device/first.html`
       
-      :template:`base/new_device/result.html`
+      `base/new_device/result.html`
 
 
    """

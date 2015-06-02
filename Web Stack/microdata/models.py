@@ -19,6 +19,7 @@ class Appliance(models.Model):
    serial = models.IntegerField(unique=True)
    name = models.CharField(max_length=50, unique=True)
    chart_color = ColorPickerField()
+   """ This field defines what color the chart will assign the appliance when it is being displayed. Modifiable via the admin interface. """
 
    def __unicode__(self):
       return self.name
@@ -26,11 +27,12 @@ class Appliance(models.Model):
 # This model should not be registered to REST (admin only)
 class CircuitType(models.Model):
    """
-   Describes a Circuit Type. A Circuit Type is related to a list of :model:`microdata.models.Appliance` and acts as a set of objects to discover within a circuit.
+   Describes a Circuit Type. A Circuit Type is related to a list of :class:`microdata.models.Appliance` and acts as a set of objects to discover within a circuit.
    """
    name = models.CharField(max_length=50, unique=True)
    appliances = models.ManyToManyField(Appliance, blank=True)
    chart_color = ColorPickerField()
+   """ This field defines what color the chart will assign the circuit when it is being displayed. Modifiable via the admin interface. """
 
    def __unicode__(self):
       return self.name
@@ -50,22 +52,54 @@ class Device(models.Model):
    """
    Describes a single Device owned by :class:`settings.AUTH_USER_MODEL`.
    """
+
    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+   """A Foreign key relation. We use this relation to pair a device to a user on the web application."""
+
    share_with = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='share_with')
+   """ This field acts much like an owner, however share_with users cannot alter device settings."""
+
    ip_address = models.GenericIPAddressField(blank=True, null=True)
+   """ This field is no longer actively used. This was a proof of concept for early device communication. Deprecated."""
+
    secret_key = models.CharField(max_length=7, blank=True, null=True, editable=False)
+   """ This field is not currently in use, but the functionality exists. This field was intended to be used to pair a device to a user."""
+
    serial = models.IntegerField(unique=True, primary_key=True)
+   """ The primary key of the model. This is what the device uses to interface to the API and how users currently pair a device."""
+
    name = models.CharField(max_length=30, blank=True, null=True)
+   """ A non-unique name field for a device. This field is solely for user experience, it has no functional purpose."""
+
    position = GeopositionField(blank=True, null=True)
+   """ A position field that essentially translates to coordinates on a map. Automatically generates a map on the admin interface."""
+
    registered = models.BooleanField(default=False, editable=False)
+   """ Synonym for paired. This protects againts users trying to pair an already paired device."""
+
    fanout_query_registered = models.BooleanField(default=False, editable=False)
+   """ A true/false that is set when a device is created indicating the continuous queries in the database have been registered."""
+
    channel_1 = models.ForeignKey(CircuitType, related_name='Channel 1+', blank=True, null=True)
+   """ The first of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField."""
+
    channel_2 = models.ForeignKey(CircuitType, related_name='Channel 2+', blank=True, null=True)
+   """ The second of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField."""
+
    channel_3 = models.ForeignKey(CircuitType, related_name='Channel 3+', blank=True, null=True)
+   """ The third of three channels of the SEAD Light. This is a design flaw and should be instead a ManyToManyField."""
+
    data_retention_policy = models.IntegerField(help_text='Number of months of data to keep in database', default=12)
+   """ The amount of time the data from this device can live in the database. Anything older will be archived to Amazon Glacier."""
+
    kilowatt_hours_monthly = models.FloatField(default=0, editable=False, help_text='Monthly killowatt consumption')
+   """ A counter that is reset by a cron job once a month that keeps an accumulation of the total kwh this device has measured over the course of a month."""
+
    kilowatt_hours_daily = models.FloatField(default=0, editable=False, help_text='Daily killowatt consumption')
+   """ A counter that is reset by a cron job once a day that keeps an accumulation of the total kwh this device has measured over the course of a day."""
+
    cost_daily = models.FloatField(default=0, editable=False, help_text='Daily cost')
+   """ The total cost calculated by the server today. Much cheaper to keep this in the django database than the InfluxDB."""
    
    def save(self, **kwargs):
       """
@@ -152,6 +186,8 @@ class Event(models.Model):
    These models are not stored on the Django database since they are converted to InfluxDB.
    """
    device = models.ForeignKey(Device)
+   """ This is the relation between the device and its data. This is established when the device specifies its hyperlinked model via the REST call."""
+
    dataPoints = models.CharField(max_length=1000,
                                  help_text='Expects a JSON encoded string of values:'+\
                                            '{time(int, milliseconds),frequency(int, Hz),\n'+\
@@ -162,9 +198,16 @@ class Event(models.Model):
                                            '    event_code(int, optional),\n'+\
                                            '    channel(int, optional)}\n'+\
                                            ' ,...]')
+   """ An array of undefined size containing measured values for the server. The data points are numbered `0 ... n ... j` where nth data point has a timestamp of `start_time + n * period` and `j` is undefined."""
+
    start = models.IntegerField()
+   """ The start time, in milliseconds, of the first data point in the packet. Used to calculate offset of all proceeding points."""
+
    frequency = models.IntegerField()
+   """ The frequency, in Hertz, of the packet's data points. Used to calculate the offset of all points."""
+
    query = models.CharField(max_length=1000)
+   """ Deprecated. This field is useful for debugging the REST requests, but since the model is not saved, this is a volatile field."""
 
    def save(self, **kwargs):
       """

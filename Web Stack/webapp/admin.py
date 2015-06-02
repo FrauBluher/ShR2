@@ -26,13 +26,22 @@ class UtilityCompanyAdmin(admin.ModelAdmin):
    list_display = ('description','pk',)
 
 class TierInline(admin.StackedInline):
+   """
+   Class used to expose the :class:`webapp.models.Tier` model to the administrator. This was designed to be flexible to allow an administrator to add/modify tiers based on electric company data.
+   """
    model = Tier
    
 class RatePlanAdmin(admin.ModelAdmin):
+   """
+   Class used to expose the :class:`webapp.models.RatePlan` model to the administrator. This was designed to be flexible to allow an administrator to add/modify Rate Plans based on electric company data.
+   """
    list_display = ('description','utility_company','pk',)
    inlines = (TierInline,)
    
 class TerritoryAdmin(admin.ModelAdmin):
+   """
+   Class used to expose the :class:`webapp.models.Territory`` model to the administrator. This was designed to be flexible to allow an administrator to add/modify Territories based on electric company data.
+   """
    list_display = ('description','rate_plan','pk',)
 
 # Re-register UserAdmin
