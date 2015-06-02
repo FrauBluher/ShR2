@@ -15,7 +15,7 @@ class Command(BaseCommand):
             device.kilowatt_hours_daily = 0
             device.cost_daily = 0
          else:
-            db = influxdb.InfluxDBClient('db.seads.io', 8086, "root", "root", "seads")
+            db = influxdb.InfluxDBClient(settings.INFLUXDB_URI, 8086, "root", "root", "seads")
             tier_dict = {}
             tier_dict['name'] = "tier.device."+str(device.serial)
             tier_dict['columns'] = ['tier_level']
