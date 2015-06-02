@@ -153,7 +153,7 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
    for appliance in wattages:
       for value in appliance:
          value *= multiplier
-   db = influxdb.InfluxDBClient('db.seads.io', 8086, "root", "root", "seads")
+   db = influxdb.InfluxDBClient(settings.INFLUXDB_URI, 8086, "root", "root", "seads")
    count = 0
    data = []
    data_dict = {}
@@ -300,7 +300,7 @@ def influxdel(request):
          device = form.cleaned_data['device']
          serial = str(device.serial)
          refresh_queries = form.cleaned_data['refresh_queries']
-         db = influxdb.InfluxDBClient('db.seads.io', 8086, "root", "root", "seads")
+         db = influxdb.InfluxDBClient(settings.INFLUXDB_URI, 8086, "root", "root", "seads")
          if refresh_queries is False:
             device.kilowatt_hours_monthly = 0
             device.kilowatt_hours_daily = 0
