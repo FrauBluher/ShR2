@@ -45,4 +45,6 @@ boto3
 gitpython
 numpy
 jsonfield
+matplotlib
+treehash
 

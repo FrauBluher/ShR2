@@ -1,0 +1,861 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.1. Microdata Application &mdash; SEADS 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="3. Applications" href="../applications.html"/>
+        <link rel="next" title="3.1.1.1. microdata.management package" href="microdata.management.html"/>
+        <link rel="prev" title="3. Applications" href="../applications.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> SEADS
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#basic-server-outline">1.2.1. Basic Server Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#influxdb-server-setup">1.2.2. InfluxDB Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateful-server-setup">1.2.3. Django Web Application Stateful Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateless-server-setup">1.2.4. Django Web Application Stateless Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#finishing-up">1.2.5. Finishing Up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-atomic-server">1.3. Installing Atomic Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#id2">1.3.1. Basic Server Outline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">2. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#api-documentation">2.1. API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../applications.html">3. Applications</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.1. Microdata Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">3.1.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.html">3.1.1.1. microdata.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">3.1.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-microdata.admin">3.1.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#microdata-models-module">3.1.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-microdata.serializers">3.1.5. microdata.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-microdata.tests">3.1.6. microdata.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-microdata.views">3.1.7. microdata.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-microdata">3.1.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.2. webapp package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#subpackages">3.2.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="webapp.management.html">3.2.1.1. webapp.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#submodules">3.2.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.admin">3.2.3. webapp.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.device_dictionary">3.2.4. webapp.device_dictionary module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#webapp-models-module">3.2.5. webapp.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.tests">3.2.6. webapp.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.timeseries">3.2.7. webapp.timeseries module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.views">3.2.8. webapp.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp">3.2.9. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="farmer.html">3.3. farmer package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#submodules">3.3.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.admin">3.3.2. farmer.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.models">3.3.3. farmer.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.serializers">3.3.4. farmer.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">SEADS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../applications.html">3. Applications</a> &raquo;</li>
+      
+    <li>3.1. Microdata Application</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/microdata.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="microdata-application">
+<h1>3.1. Microdata Application<a class="headerlink" href="#microdata-application" title="Permalink to this headline">¶</a></h1>
+<p>This application is the direct interface between devices and the InfluxDB database. It is responsible for exposing the REST API endpoints.</p>
+<div class="section" id="subpackages">
+<h2>3.1.1. Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="microdata.management.html">3.1.1.1. microdata.management package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="microdata.management.html#subpackages">3.1.1.1.1. Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="microdata.management.commands.html">3.1.1.1.1.1. microdata.management.commands package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.commands.html#submodules">3.1.1.1.1.1.1. Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.commands.html#module-microdata.management.commands.archive_database">3.1.1.1.1.1.2. microdata.management.commands.archive_database module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.commands.html#module-microdata.management.commands.check_glacier_jobs">3.1.1.1.1.1.3. microdata.management.commands.check_glacier_jobs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.commands.html#module-microdata.management.commands">3.1.1.1.1.1.4. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="microdata.management.html#module-microdata.management">3.1.1.1.2. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>3.1.2. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-microdata.admin">
+<span id="microdata-admin-module"></span><h2>3.1.3. microdata.admin module<a class="headerlink" href="#module-microdata.admin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="microdata.admin.ApplianceAdmin">
+<em class="property">class </em><code class="descclassname">microdata.admin.</code><code class="descname">ApplianceAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.admin.ApplianceAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="microdata.admin.ApplianceAdmin.list_display">
+<code class="descname">list_display</code><em class="property"> = ('name', 'pk', 'serial', 'chart_color')</em><a class="headerlink" href="#microdata.admin.ApplianceAdmin.list_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.ApplianceAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#microdata.admin.ApplianceAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.admin.CircuitAdmin">
+<em class="property">class </em><code class="descclassname">microdata.admin.</code><code class="descname">CircuitAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.admin.CircuitAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="microdata.admin.CircuitAdmin.list_display">
+<code class="descname">list_display</code><em class="property"> = ('name', 'circuittype', 'pk')</em><a class="headerlink" href="#microdata.admin.CircuitAdmin.list_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.CircuitAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#microdata.admin.CircuitAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.admin.CircuitTypeAdmin">
+<em class="property">class </em><code class="descclassname">microdata.admin.</code><code class="descname">CircuitTypeAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.admin.CircuitTypeAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="microdata.admin.CircuitTypeAdmin.list_display">
+<code class="descname">list_display</code><em class="property"> = ('name', 'pk')</em><a class="headerlink" href="#microdata.admin.CircuitTypeAdmin.list_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.CircuitTypeAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#microdata.admin.CircuitTypeAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.admin.DeviceAdmin">
+<em class="property">class </em><code class="descclassname">microdata.admin.</code><code class="descname">DeviceAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.admin.DeviceAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="microdata.admin.DeviceAdmin.inlines">
+<code class="descname">inlines</code><em class="property"> = (&lt;class 'microdata.admin.DeviceWebSettingsInline'&gt;, &lt;class 'farmer.admin.DeviceSettingsInline'&gt;)</em><a class="headerlink" href="#microdata.admin.DeviceAdmin.inlines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.DeviceAdmin.list_display">
+<code class="descname">list_display</code><em class="property"> = ('name', 'owner', 'serial', 'position', 'secret_key', 'registered', 'fanout_query_registered')</em><a class="headerlink" href="#microdata.admin.DeviceAdmin.list_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.DeviceAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#microdata.admin.DeviceAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.DeviceAdmin.readonly_fields">
+<code class="descname">readonly_fields</code><em class="property"> = ('secret_key',)</em><a class="headerlink" href="#microdata.admin.DeviceAdmin.readonly_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.DeviceAdmin.search_fields">
+<code class="descname">search_fields</code><em class="property"> = ('name', 'serial')</em><a class="headerlink" href="#microdata.admin.DeviceAdmin.search_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.admin.DeviceWebSettingsInline">
+<em class="property">class </em><code class="descclassname">microdata.admin.</code><code class="descname">DeviceWebSettingsInline</code><span class="sig-paren">(</span><em>parent_model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.admin.DeviceWebSettingsInline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.StackedInline</span></code></p>
+<dl class="attribute">
+<dt id="microdata.admin.DeviceWebSettingsInline.can_delete">
+<code class="descname">can_delete</code><em class="property"> = False</em><a class="headerlink" href="#microdata.admin.DeviceWebSettingsInline.can_delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.DeviceWebSettingsInline.media">
+<code class="descname">media</code><a class="headerlink" href="#microdata.admin.DeviceWebSettingsInline.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.DeviceWebSettingsInline.model">
+<code class="descname">model</code><a class="headerlink" href="#microdata.admin.DeviceWebSettingsInline.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">DeviceWebSettings</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.admin.DeviceWebSettingsInline.verbose_name_plural">
+<code class="descname">verbose_name_plural</code><em class="property"> = 'devicesettings'</em><a class="headerlink" href="#microdata.admin.DeviceWebSettingsInline.verbose_name_plural" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="microdata-models-module">
+<h2>3.1.4. microdata.models module<a class="headerlink" href="#microdata-models-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-microdata.models"></span><dl class="class">
+<dt id="microdata.models.Appliance">
+<em class="property">class </em><code class="descclassname">microdata.models.</code><code class="descname">Appliance</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Appliance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Describes a single Appliance. In the future, this model will have describing attributes that give the user helpful information when visualizing.</p>
+<dl class="exception">
+<dt id="microdata.models.Appliance.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#microdata.models.Appliance.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="microdata.models.Appliance.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">Appliance.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#microdata.models.Appliance.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Appliance.circuittype_set">
+<code class="descclassname">Appliance.</code><code class="descname">circuittype_set</code><a class="headerlink" href="#microdata.models.Appliance.circuittype_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Appliance.eventnotification_set">
+<code class="descclassname">Appliance.</code><code class="descname">eventnotification_set</code><a class="headerlink" href="#microdata.models.Appliance.eventnotification_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Appliance.objects">
+<code class="descclassname">Appliance.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#microdata.models.Appliance.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.models.Circuit">
+<em class="property">class </em><code class="descclassname">microdata.models.</code><code class="descname">Circuit</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Circuit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Most likely deprecated.</p>
+<dl class="exception">
+<dt id="microdata.models.Circuit.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#microdata.models.Circuit.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="microdata.models.Circuit.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">Circuit.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#microdata.models.Circuit.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Circuit.circuittype">
+<code class="descclassname">Circuit.</code><code class="descname">circuittype</code><a class="headerlink" href="#microdata.models.Circuit.circuittype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Circuit.objects">
+<code class="descclassname">Circuit.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#microdata.models.Circuit.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.models.CircuitType">
+<em class="property">class </em><code class="descclassname">microdata.models.</code><code class="descname">CircuitType</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.CircuitType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Describes a Circuit Type. A Circuit Type is related to a list of <a href="#id1"><span class="problematic" id="id2">:model:`microdata.models.Appliance`</span></a> and acts as a set of objects to discover within a circuit.</p>
+<dl class="exception">
+<dt id="microdata.models.CircuitType.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#microdata.models.CircuitType.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="microdata.models.CircuitType.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">CircuitType.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#microdata.models.CircuitType.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.CircuitType.appliances">
+<code class="descclassname">CircuitType.</code><code class="descname">appliances</code><a class="headerlink" href="#microdata.models.CircuitType.appliances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.CircuitType.circuit_set">
+<code class="descclassname">CircuitType.</code><code class="descname">circuit_set</code><a class="headerlink" href="#microdata.models.CircuitType.circuit_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.CircuitType.objects">
+<code class="descclassname">CircuitType.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#microdata.models.CircuitType.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.models.Device">
+<em class="property">class </em><code class="descclassname">microdata.models.</code><code class="descname">Device</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Describes a single Device owned by <code class="xref py py-class docutils literal"><span class="pre">settings.AUTH_USER_MODEL</span></code>.</p>
+<dl class="exception">
+<dt id="microdata.models.Device.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#microdata.models.Device.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="microdata.models.Device.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">Device.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#microdata.models.Device.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.channel_1">
+<code class="descclassname">Device.</code><code class="descname">channel_1</code><a class="headerlink" href="#microdata.models.Device.channel_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.channel_2">
+<code class="descclassname">Device.</code><code class="descname">channel_2</code><a class="headerlink" href="#microdata.models.Device.channel_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.channel_3">
+<code class="descclassname">Device.</code><code class="descname">channel_3</code><a class="headerlink" href="#microdata.models.Device.channel_3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="microdata.models.Device.delete">
+<code class="descclassname">Device.</code><code class="descname">delete</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Device.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom delete method.</p>
+<p>Drop the series from the influxdb database.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.devicesettings">
+<code class="descclassname">Device.</code><code class="descname">devicesettings</code><a class="headerlink" href="#microdata.models.Device.devicesettings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.devicewebsettings">
+<code class="descclassname">Device.</code><code class="descname">devicewebsettings</code><a class="headerlink" href="#microdata.models.Device.devicewebsettings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.event_set">
+<code class="descclassname">Device.</code><code class="descname">event_set</code><a class="headerlink" href="#microdata.models.Device.event_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.objects">
+<code class="descclassname">Device.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#microdata.models.Device.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.owner">
+<code class="descclassname">Device.</code><code class="descname">owner</code><a class="headerlink" href="#microdata.models.Device.owner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="microdata.models.Device.save">
+<code class="descclassname">Device.</code><code class="descname">save</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Device.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom save method.</p>
+<p>This function will do several things if it has not done so already:</p>
+<ul class="simple">
+<li>Create a secret key. 3 digits followed by 4 letters. Not currently in use (could be used for pairing devices)</li>
+<li>Register fanout queries in database.</li>
+<li>Device name cannot be None, default is &#8220;Device &lt;serial&gt;&#8221;.</li>
+<li>Create a <a class="reference internal" href="farmer.html#farmer.models.DeviceSettings" title="farmer.models.DeviceSettings"><code class="xref py py-class docutils literal"><span class="pre">farmer.models.DeviceSettings</span></code></a> object.</li>
+<li>Create a <a class="reference internal" href="webapp.html#webapp.models.DeviceWebSettings" title="webapp.models.DeviceWebSettings"><code class="xref py py-class docutils literal"><span class="pre">webapp.models.DeviceWebSettings</span></code></a> object.</li>
+<li>Give default values to the channels.</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.share_with">
+<code class="descclassname">Device.</code><code class="descname">share_with</code><a class="headerlink" href="#microdata.models.Device.share_with" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.models.Event">
+<em class="property">class </em><code class="descclassname">microdata.models.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Generic class to catch the Event REST Packets from devices. Relates to a <a class="reference internal" href="#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a>.</p>
+<p>These models are not stored on the Django database since they are converted to InfluxDB.</p>
+<dl class="exception">
+<dt id="microdata.models.Event.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#microdata.models.Event.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="microdata.models.Event.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">Event.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#microdata.models.Event.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Event.device">
+<code class="descclassname">Event.</code><code class="descname">device</code><a class="headerlink" href="#microdata.models.Event.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Event.objects">
+<code class="descclassname">Event.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#microdata.models.Event.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="microdata.models.Event.save">
+<code class="descclassname">Event.</code><code class="descname">save</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Event.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom save method.</p>
+<p>This method is the powerhouse of the API. It can take an array of data points from a device and convert them into database entries in InfluxDB.</p>
+<p>The method will also keep a running count of how many kwh have been consumed this day and this month. If it exceeds the allotted kwh for
+the device&#8217;s tier, advance the tier a level.</p>
+<p>If the data coming in is sufficiently in the past such that the database will not calculate its mean value, refresh the query
+to trigger a backfill of the data.</p>
+<p>When a model is being saved, it has already been created by <a class="reference internal" href="#microdata.views.EventViewSet" title="microdata.views.EventViewSet"><code class="xref py py-class docutils literal"><span class="pre">microdata.views.EventViewSet</span></code></a>.</p>
+<p>The Event is parsed as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
+<span class="n">frequency</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span>
+<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">dataPoints</span><span class="p">:</span>
+   <span class="n">time</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">count</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">frequency</span><span class="p">)</span>
+   <span class="n">db</span><span class="o">.</span><span class="n">write_points</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">wattage</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-microdata.serializers">
+<span id="microdata-serializers-module"></span><h2>3.1.5. microdata.serializers module<a class="headerlink" href="#module-microdata.serializers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="microdata.serializers.ApplianceSerializer">
+<em class="property">class </em><code class="descclassname">microdata.serializers.</code><code class="descname">ApplianceSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.serializers.ApplianceSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.HyperlinkedModelSerializer</span></code></p>
+<dl class="class">
+<dt id="microdata.serializers.ApplianceSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#microdata.serializers.ApplianceSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="microdata.serializers.ApplianceSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('name', 'serial', 'chart_color')</em><a class="headerlink" href="#microdata.serializers.ApplianceSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.serializers.ApplianceSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#microdata.serializers.ApplianceSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Appliance</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.serializers.CircuitSerializer">
+<em class="property">class </em><code class="descclassname">microdata.serializers.</code><code class="descname">CircuitSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.serializers.CircuitSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.HyperlinkedModelSerializer</span></code></p>
+<dl class="class">
+<dt id="microdata.serializers.CircuitSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#microdata.serializers.CircuitSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="microdata.serializers.CircuitSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('name', 'appliances', 'chart_color', 'pk')</em><a class="headerlink" href="#microdata.serializers.CircuitSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.serializers.CircuitSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#microdata.serializers.CircuitSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CircuitType</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.serializers.DeviceSerializer">
+<em class="property">class </em><code class="descclassname">microdata.serializers.</code><code class="descname">DeviceSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.serializers.DeviceSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.HyperlinkedModelSerializer</span></code></p>
+<dl class="class">
+<dt id="microdata.serializers.DeviceSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#microdata.serializers.DeviceSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="microdata.serializers.DeviceSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('owner', 'ip_address', 'secret_key', 'serial', 'name', 'registered', 'fanout_query_registered', 'channel_1', 'channel_2', 'channel_3', 'data_retention_policy', 'kilowatt_hours_monthly', 'kilowatt_hours_daily')</em><a class="headerlink" href="#microdata.serializers.DeviceSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.serializers.DeviceSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#microdata.serializers.DeviceSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Device</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.serializers.EventSerializer">
+<em class="property">class </em><code class="descclassname">microdata.serializers.</code><code class="descname">EventSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.serializers.EventSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.HyperlinkedModelSerializer</span></code></p>
+<dl class="class">
+<dt id="microdata.serializers.EventSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#microdata.serializers.EventSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="microdata.serializers.EventSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('device', 'dataPoints')</em><a class="headerlink" href="#microdata.serializers.EventSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.serializers.EventSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#microdata.serializers.EventSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Event</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-microdata.tests">
+<span id="microdata-tests-module"></span><h2>3.1.6. microdata.tests module<a class="headerlink" href="#module-microdata.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-microdata.views">
+<span id="microdata-views-module"></span><h2>3.1.7. microdata.views module<a class="headerlink" href="#module-microdata.views" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="microdata.views.ApplianceViewSet">
+<em class="property">class </em><code class="descclassname">microdata.views.</code><code class="descname">ApplianceViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.ApplianceViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>API endpoint that allows appliances to be viewed or edited.</p>
+<dl class="attribute">
+<dt id="microdata.views.ApplianceViewSet.queryset">
+<code class="descname">queryset</code><a class="headerlink" href="#microdata.views.ApplianceViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.ApplianceViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#microdata.views.ApplianceViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">ApplianceSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.views.CircuitViewSet">
+<em class="property">class </em><code class="descclassname">microdata.views.</code><code class="descname">CircuitViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.CircuitViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>API endpoint that allows circuits to be viewed or edited.</p>
+<dl class="attribute">
+<dt id="microdata.views.CircuitViewSet.queryset">
+<code class="descname">queryset</code><a class="headerlink" href="#microdata.views.CircuitViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.CircuitViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#microdata.views.CircuitViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">CircuitSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.views.DeviceViewSet">
+<em class="property">class </em><code class="descclassname">microdata.views.</code><code class="descname">DeviceViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.DeviceViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>API endpoint that allows devices to be viewed or edited.</p>
+<dl class="method">
+<dt id="microdata.views.DeviceViewSet.create">
+<code class="descname">create</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.DeviceViewSet.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.DeviceViewSet.queryset">
+<code class="descname">queryset</code><a class="headerlink" href="#microdata.views.DeviceViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.DeviceViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#microdata.views.DeviceViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">DeviceSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.views.EventViewSet">
+<em class="property">class </em><code class="descclassname">microdata.views.</code><code class="descname">EventViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.EventViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>API endpoint that allows events to be viewed or edited.</p>
+<dl class="method">
+<dt id="microdata.views.EventViewSet.create">
+<code class="descname">create</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.EventViewSet.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom create method.</p>
+<p>Used to parse the packets sent via the REST API. Since the packets are in a JSON array,
+the Django REST Framework has no native way of handling these, so we do it ourselves.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.EventViewSet.queryset">
+<code class="descname">queryset</code><a class="headerlink" href="#microdata.views.EventViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.EventViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#microdata.views.EventViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">EventSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="microdata.views.KeyForm">
+<em class="property">class </em><code class="descclassname">microdata.views.</code><code class="descname">KeyForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.KeyForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Form class used to generate a simple key form. Currently used when a user intends to add a new device via the webapp interface.</p>
+<dl class="attribute">
+<dt id="microdata.views.KeyForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = {'serial': &lt;django.forms.fields.IntegerField object at 0x2aad49684e50&gt;}</em><a class="headerlink" href="#microdata.views.KeyForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.KeyForm.media">
+<code class="descname">media</code><a class="headerlink" href="#microdata.views.KeyForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="microdata.views.initiate_job_to_glacier">
+<code class="descclassname">microdata.views.</code><code class="descname">initiate_job_to_glacier</code><span class="sig-paren">(</span><em>request</em>, <em>requester</em>, <em>end_time</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.initiate_job_to_glacier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Experimental class to demonstrate the possibility to archive old data to Amazon Glacier.</p>
+<p>Requires an Amazon AWS key to be set in the environment variables.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="microdata.views.new_device">
+<code class="descclassname">microdata.views.</code><code class="descname">new_device</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.new_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function used to service a user&#8217;s request to add a new <a class="reference internal" href="#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a>.</p>
+<p><strong>Context</strong></p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">form</span></code>
+<a class="reference internal" href="#microdata.views.KeyForm" title="microdata.views.KeyForm"><code class="xref py py-class docutils literal"><span class="pre">microdata.views.KeyForm</span></code></a> object if user requests the form</p>
+<p><code class="docutils literal"><span class="pre">error</span></code>
+string - error description if present</p>
+<p><code class="docutils literal"><span class="pre">created</span></code>
+true/false if device is created</p>
+<p><code class="docutils literal"><span class="pre">Device</span></code>
+serialized <a class="reference internal" href="#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> object if <a class="reference internal" href="#microdata.models.Device" title="microdata.models.Device"><code class="xref py py-class docutils literal"><span class="pre">microdata.models.Device</span></code></a> is created</p>
+</div></blockquote>
+<p><strong>Templates:</strong></p>
+<p><a href="#id3"><span class="problematic" id="id4">:template:`base/new_device/key.html`</span></a></p>
+<p><a href="#id5"><span class="problematic" id="id6">:template:`base/new_device/help.html`</span></a></p>
+<p><a href="#id7"><span class="problematic" id="id8">:template:`base/new_device/first.html`</span></a></p>
+<p><a href="#id9"><span class="problematic" id="id10">:template:`base/new_device/result.html`</span></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="microdata.views.timestamp">
+<code class="descclassname">microdata.views.</code><code class="descname">timestamp</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to return the server&#8217;s time in milliseconds.</p>
+<p>This function is possibly deprecated. Devices should now get the server time
+from <code class="xref py py-class docutils literal"><span class="pre">farmer.DeviceSettingsViewSet</span></code>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-microdata">
+<span id="module-contents"></span><h2>3.1.8. Module contents<a class="headerlink" href="#module-microdata" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="microdata.management.html" class="btn btn-neutral float-right" title="3.1.1.1. microdata.management package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../applications.html" class="btn btn-neutral" title="3. Applications" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Bryan Smith.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

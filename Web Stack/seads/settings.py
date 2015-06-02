@@ -101,7 +101,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'django.contrib.gis',
+    #'django.contrib.gis',
     'restless',
     'recurrence',
     'rest_framework.authtoken',
@@ -121,7 +121,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -139,9 +138,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django_db',
-        'USER': 'root',
+        'USER': 'django',
         'PASSWORD': 'teammantey',
-        'HOST': 'localhost',
+        'HOST': 'django.seads.io',
         'PORT': '3306',
     }
 }

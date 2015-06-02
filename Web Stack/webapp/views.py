@@ -2,7 +2,7 @@ from django.shortcuts import render, render_to_response
 from django.contrib.auth.decorators import login_required
 from microdata.models import Device, Event, Appliance, Circuit, CircuitType
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django import forms
 from django.http import HttpResponse
 from django.conf import settings as django_settings
@@ -640,6 +640,10 @@ def settings_account(request):
   errors = Set()
   user = User.objects.get(username = request.user)
   if request.method == 'POST':
+    sandbox_group = Group.objects.get(name='Sandbox')
+    if sandbox_group in user.groups.all():
+      context['errors'] = 'Sandbox user unable to change settings'
+      return HttpResponse(json.dumps(context), content_type="application/json")
     context['success'] = False
     form = SettingsForm(request.POST)
     notifications = request.POST.getlist('notifications', False)

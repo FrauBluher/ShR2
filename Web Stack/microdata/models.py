@@ -13,6 +13,9 @@ from calendar import monthrange
 
 
 class Appliance(models.Model):
+   """
+   Describes a single Appliance. In the future, this model will have describing attributes that give the user helpful information when visualizing.
+   """
    serial = models.IntegerField(unique=True)
    name = models.CharField(max_length=50, unique=True)
    chart_color = ColorPickerField()
@@ -22,6 +25,9 @@ class Appliance(models.Model):
       
 # This model should not be registered to REST (admin only)
 class CircuitType(models.Model):
+   """
+   Describes a Circuit Type. A Circuit Type is related to a list of :model:`microdata.models.Appliance` and acts as a set of objects to discover within a circuit.
+   """
    name = models.CharField(max_length=50, unique=True)
    appliances = models.ManyToManyField(Appliance, blank=True)
    chart_color = ColorPickerField()
@@ -31,6 +37,9 @@ class CircuitType(models.Model):
 
 # This model should not be registered to REST (admin and webapp UI only)
 class Circuit(models.Model):
+   """
+   Most likely deprecated.
+   """
    circuittype = models.ForeignKey(CircuitType, null=True)
    name = models.CharField(max_length=50, null=True)
 
@@ -38,6 +47,9 @@ class Circuit(models.Model):
       return self.name
 
 class Device(models.Model):
+   """
+   Describes a single Device owned by :class:`settings.AUTH_USER_MODEL`.
+   """
    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
    share_with = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='share_with')
    ip_address = models.GenericIPAddressField(blank=True, null=True)
@@ -56,21 +68,33 @@ class Device(models.Model):
    cost_daily = models.FloatField(default=0, editable=False, help_text='Daily cost')
    
    def save(self, **kwargs):
+      """
+      Custom save method.
+
+      This function will do several things if it has not done so already:
+
+      * Create a secret key. 3 digits followed by 4 letters. Not currently in use (could be used for pairing devices)
+      * Register fanout queries in database.
+      * Device name cannot be None, default is "Device <serial>".
+      * Create a :class:`farmer.models.DeviceSettings` object.
+      * Create a :class:`webapp.models.DeviceWebSettings` object.
+      * Give default values to the channels.
+      """
       if self.secret_key == None:
          secret_key =  ''.join(random.choice(string.digits) for i in range(3))
          secret_key += ''.join(random.choice(string.ascii_uppercase) for i in range(4))
          self.secret_key = secret_key
       if self.fanout_query_registered == False:
-         db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+         db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
          serial = str(self.serial)
          db.query('select * from device.'+serial+' into device.'+serial+'.[channel_pk]')
          db.query('select sum(cost) from device.'+serial+' into cost.device.'+serial+'.[channel_pk]')
-         db.query('select mean(mean) from /^1M.device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
-         db.query('select mean(mean) from /^1w.device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
-         db.query('select mean(mean) from /^1d.device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
-         db.query('select mean(mean) from /^1h.device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
-         db.query('select mean(mean) from /^1m.device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-         db.query('select mean(mean) from /^1s.device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+         db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
          db.query('select sum(cost) from "device.'+serial+'" into cost.device.'+serial)
          self.fanout_query_registered = True
@@ -98,7 +122,12 @@ class Device(models.Model):
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      """
+      Custom delete method.
+
+      Drop the series from the influxdb database.
+      """
+      db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
       serial = str(self.serial)
       series = db.query('list series')[0]['points']
       # delete series
@@ -117,6 +146,11 @@ class Device(models.Model):
 
 
 class Event(models.Model):
+   """
+   Generic class to catch the Event REST Packets from devices. Relates to a :class:`microdata.models.Device`.
+
+   These models are not stored on the Django database since they are converted to InfluxDB.
+   """
    device = models.ForeignKey(Device)
    dataPoints = models.CharField(max_length=1000,
                                  help_text='Expects a JSON encoded string of values:'+\
@@ -133,8 +167,32 @@ class Event(models.Model):
    query = models.CharField(max_length=1000)
 
    def save(self, **kwargs):
+      """
+      Custom save method.
+
+      This method is the powerhouse of the API. It can take an array of data points from a device and convert them into database entries in InfluxDB.
+
+      The method will also keep a running count of how many kwh have been consumed this day and this month. If it exceeds the allotted kwh for
+      the device's tier, advance the tier a level.
+
+      If the data coming in is sufficiently in the past such that the database will not calculate its mean value, refresh the query
+      to trigger a backfill of the data.
+
+      When a model is being saved, it has already been created by :class:`microdata.views.EventViewSet`.
+
+      The Event is parsed as follows::
+
+         start = self.start
+         frequency = self.frequency
+         count = 0
+
+         for point in dataPoints:
+            time = start + count * (1/frequency)
+            db.write_points(time, wattage)
+
+      """
       dataPoints = json.loads(self.dataPoints)
-      db = influxdb.InfluxDBClient('db.seads.io',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
       self.dataPoints = dataPoints
       count = 0
       now = time.time()

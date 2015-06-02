@@ -23,7 +23,8 @@ class EventNotification(models.Model):
    appliances_to_watch = models.ManyToManyField(Appliance)
    email_subject = models.CharField(max_length=300)
    email_body = models.FileField(
-      help_text="Template file for email body. {{ x }} denotes template variable"
+      help_text="Template file for email body. {{ x }} denotes template variable",
+      upload_to="event"
    )
    
    def __unicode__(self):
@@ -37,7 +38,8 @@ class IntervalNotification(models.Model):
    recurrences = RecurrenceField(blank=True, null=True)
    email_subject = models.CharField(max_length=300)
    email_body = models.FileField(
-      help_text="Template file for email body. {{ x }} denotes template variable"
+      help_text="Template file for email body. {{ x }} denotes template variable",
+      upload_to="interval"
    )
 
    def __unicode__(self):

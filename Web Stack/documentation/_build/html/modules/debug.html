@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>debug package &mdash; SEADS 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> SEADS
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#basic-server-setup">1.2.1. Basic Server Setup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">SEADS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>debug package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/debug.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="debug-package">
+<h1>debug package<a class="headerlink" href="#debug-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-debug.admin">
+<span id="debug-admin-module"></span><h2>debug.admin module<a class="headerlink" href="#module-debug.admin" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-debug.forms">
+<span id="debug-forms-module"></span><h2>debug.forms module<a class="headerlink" href="#module-debug.forms" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-debug.models">
+<span id="debug-models-module"></span><h2>debug.models module<a class="headerlink" href="#module-debug.models" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="debug.models.TestEvent">
+<em class="property">class </em><code class="descclassname">debug.models.</code><code class="descname">TestEvent</code><span class="sig-paren">(</span><em>id</em>, <em>device_id</em>, <em>dataPoints</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.models.TestEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="exception">
+<dt id="debug.models.TestEvent.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#debug.models.TestEvent.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="debug.models.TestEvent.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">TestEvent.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#debug.models.TestEvent.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="debug.models.TestEvent.device">
+<code class="descclassname">TestEvent.</code><code class="descname">device</code><a class="headerlink" href="#debug.models.TestEvent.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.models.TestEvent.objects">
+<code class="descclassname">TestEvent.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#debug.models.TestEvent.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="debug.models.TestEvent.save">
+<code class="descclassname">TestEvent.</code><code class="descname">save</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.models.TestEvent.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-debug.serializers">
+<span id="debug-serializers-module"></span><h2>debug.serializers module<a class="headerlink" href="#module-debug.serializers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="debug.serializers.TestEventSerializer">
+<em class="property">class </em><code class="descclassname">debug.serializers.</code><code class="descname">TestEventSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.serializers.TestEventSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.HyperlinkedModelSerializer</span></code></p>
+<dl class="class">
+<dt id="debug.serializers.TestEventSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#debug.serializers.TestEventSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="debug.serializers.TestEventSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('device', 'dataPoints')</em><a class="headerlink" href="#debug.serializers.TestEventSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.serializers.TestEventSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#debug.serializers.TestEventSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">TestEvent</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-debug.urls">
+<span id="debug-urls-module"></span><h2>debug.urls module<a class="headerlink" href="#module-debug.urls" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-debug.views">
+<span id="debug-views-module"></span><h2>debug.views module<a class="headerlink" href="#module-debug.views" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="debug.views.DatadelForm">
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DatadelForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DatadelForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<dl class="attribute">
+<dt id="debug.views.DatadelForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = {'device': &lt;debug.views.DeviceModelChoiceField object at 0x2af321ba8390&gt;, 'refresh_queries': &lt;django.forms.fields.BooleanField object at 0x2af321ba8450&gt;}</em><a class="headerlink" href="#debug.views.DatadelForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.DatadelForm.media">
+<code class="descname">media</code><a class="headerlink" href="#debug.views.DatadelForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="debug.views.DatagenForm">
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DatagenForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DatagenForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<dl class="attribute">
+<dt id="debug.views.DatagenForm.ENERGY_CHOICES">
+<code class="descname">ENERGY_CHOICES</code><em class="property"> = ((1, 'Normal'), (2, 'Greedy'), (3, 'Conserve'))</em><a class="headerlink" href="#debug.views.DatagenForm.ENERGY_CHOICES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.DatagenForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = {'device': &lt;debug.views.DeviceModelChoiceField object at 0x2af321b9bd50&gt;, 'channels': &lt;django.forms.models.ModelMultipleChoiceField object at 0x2af321b9bf10&gt;, 'start': &lt;django.forms.fields.IntegerField object at 0x2af321ba8090&gt;, 'stop': &lt;django.forms.fields.IntegerField object at 0x2af321ba8110&gt;, 'resolution': &lt;django.forms.fields.IntegerField object at 0x2af321ba8190&gt;, 'energy_use': &lt;django.forms.fields.ChoiceField object at 0x2af321ba8210&gt;}</em><a class="headerlink" href="#debug.views.DatagenForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.DatagenForm.media">
+<code class="descname">media</code><a class="headerlink" href="#debug.views.DatagenForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="debug.views.DevForm">
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DevForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DevForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
+<dl class="attribute">
+<dt id="debug.views.DevForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = {'method': &lt;django.forms.fields.ChoiceField object at 0x2af321ba84d0&gt;}</em><a class="headerlink" href="#debug.views.DevForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.DevForm.media">
+<code class="descname">media</code><a class="headerlink" href="#debug.views.DevForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="debug.views.DeviceModelChoiceField">
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DeviceModelChoiceField</code><span class="sig-paren">(</span><em>queryset</em>, <em>empty_label=u'---------'</em>, <em>cache_choices=False</em>, <em>required=True</em>, <em>widget=None</em>, <em>label=None</em>, <em>initial=None</em>, <em>help_text=u''</em>, <em>to_field_name=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DeviceModelChoiceField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.models.ModelChoiceField</span></code></p>
+<dl class="method">
+<dt id="debug.views.DeviceModelChoiceField.label_from_instance">
+<code class="descname">label_from_instance</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DeviceModelChoiceField.label_from_instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="debug.views.TestEventViewSet">
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">TestEventViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.TestEventViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<dl class="attribute">
+<dt id="debug.views.TestEventViewSet.queryset">
+<code class="descname">queryset</code><a class="headerlink" href="#debug.views.TestEventViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.TestEventViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#debug.views.TestEventViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">TestEventSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="debug.views.datadel">
+<code class="descclassname">debug.views.</code><code class="descname">datadel</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.datadel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="debug.views.datagen">
+<code class="descclassname">debug.views.</code><code class="descname">datagen</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.datagen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="debug.views.echo">
+<code class="descclassname">debug.views.</code><code class="descname">echo</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.echo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="debug.views.echo_args">
+<code class="descclassname">debug.views.</code><code class="descname">echo_args</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.echo_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="debug.views.generate_points">
+<code class="descclassname">debug.views.</code><code class="descname">generate_points</code><span class="sig-paren">(</span><em>start</em>, <em>stop</em>, <em>resolution</em>, <em>energy_use</em>, <em>device</em>, <em>channels</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.generate_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="debug.views.gitupdate">
+<code class="descclassname">debug.views.</code><code class="descname">gitupdate</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.gitupdate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="debug.views.influxdel">
+<code class="descclassname">debug.views.</code><code class="descname">influxdel</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.influxdel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="debug.views.influxgen">
+<code class="descclassname">debug.views.</code><code class="descname">influxgen</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.influxgen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-debug">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-debug" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Bryan Smith.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

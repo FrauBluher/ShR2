@@ -137,6 +137,15 @@ var device_serial;
 {% endfor %}
 
 $(function() {
+    $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
+        {
+            'stack': 'true',
+            'localtime': +(new Date()/1000),
+        },
+        function(data) {
+            $('#ajax-container1').html(data);
+        }
+    );
     get_circuit_chart{{ my_devices.0.serial}}();
 });
 {% endif %}

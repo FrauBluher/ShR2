@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.3. farmer package &mdash; SEADS 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="3. Applications" href="../applications.html"/>
+        <link rel="prev" title="3.2.1.1.1.1. webapp.management.commands package" href="webapp.management.commands.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> SEADS
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#basic-server-outline">1.2.1. Basic Server Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#influxdb-server-setup">1.2.2. InfluxDB Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateful-server-setup">1.2.3. Django Web Application Stateful Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateless-server-setup">1.2.4. Django Web Application Stateless Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#finishing-up">1.2.5. Finishing Up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-atomic-server">1.3. Installing Atomic Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#id2">1.3.1. Basic Server Outline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">2. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#api-documentation">2.1. API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../applications.html">3. Applications</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="microdata.html">3.1. microdata package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#subpackages">3.1.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.html">3.1.1.1. microdata.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#submodules">3.1.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.admin">3.1.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-models-module">3.1.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.serializers">3.1.5. microdata.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.tests">3.1.6. microdata.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.views">3.1.7. microdata.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata">3.1.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.2. webapp package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#subpackages">3.2.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="webapp.management.html">3.2.1.1. webapp.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#submodules">3.2.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.admin">3.2.3. webapp.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.device_dictionary">3.2.4. webapp.device_dictionary module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#webapp-models-module">3.2.5. webapp.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.tests">3.2.6. webapp.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.timeseries">3.2.7. webapp.timeseries module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.views">3.2.8. webapp.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp">3.2.9. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.3. farmer package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">3.3.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-farmer.admin">3.3.2. farmer.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-farmer.models">3.3.3. farmer.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-farmer.serializers">3.3.4. farmer.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-farmer.tests">3.3.5. farmer.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-farmer.views">3.3.6. farmer.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">SEADS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../applications.html">3. Applications</a> &raquo;</li>
+      
+    <li>3.3. farmer package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/farmer.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="farmer-package">
+<h1>3.3. farmer package<a class="headerlink" href="#farmer-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>3.3.1. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-farmer.admin">
+<span id="farmer-admin-module"></span><h2>3.3.2. farmer.admin module<a class="headerlink" href="#module-farmer.admin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="farmer.admin.DeviceSettingsAdmin">
+<em class="property">class </em><code class="descclassname">farmer.admin.</code><code class="descname">DeviceSettingsAdmin</code><span class="sig-paren">(</span><em>model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.admin.DeviceSettingsAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<dl class="attribute">
+<dt id="farmer.admin.DeviceSettingsAdmin.media">
+<code class="descname">media</code><a class="headerlink" href="#farmer.admin.DeviceSettingsAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.admin.DeviceSettingsAdmin.verbose_name_plural">
+<code class="descname">verbose_name_plural</code><em class="property"> = 'devicesettings'</em><a class="headerlink" href="#farmer.admin.DeviceSettingsAdmin.verbose_name_plural" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="farmer.admin.DeviceSettingsInline">
+<em class="property">class </em><code class="descclassname">farmer.admin.</code><code class="descname">DeviceSettingsInline</code><span class="sig-paren">(</span><em>parent_model</em>, <em>admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.admin.DeviceSettingsInline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.admin.options.StackedInline</span></code></p>
+<dl class="attribute">
+<dt id="farmer.admin.DeviceSettingsInline.can_delete">
+<code class="descname">can_delete</code><em class="property"> = False</em><a class="headerlink" href="#farmer.admin.DeviceSettingsInline.can_delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.admin.DeviceSettingsInline.media">
+<code class="descname">media</code><a class="headerlink" href="#farmer.admin.DeviceSettingsInline.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.admin.DeviceSettingsInline.model">
+<code class="descname">model</code><a class="headerlink" href="#farmer.admin.DeviceSettingsInline.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">DeviceSettings</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-farmer.models">
+<span id="farmer-models-module"></span><h2>3.3.3. farmer.models module<a class="headerlink" href="#module-farmer.models" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="farmer.models.DeviceSettings">
+<em class="property">class </em><code class="descclassname">farmer.models.</code><code class="descname">DeviceSettings</code><span class="sig-paren">(</span><em>device_id</em>, <em>device_serial</em>, <em>main_channel</em>, <em>adc_sample_rate</em>, <em>transmission_rate_milliseconds</em>, <em>date_now</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.models.DeviceSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="attribute">
+<dt id="farmer.models.DeviceSettings.CHANNEL_CHOICES">
+<code class="descname">CHANNEL_CHOICES</code><em class="property"> = ((1, 'Channel 1'), (2, 'Channel 2'), (3, 'Channel 3'), (4, 'Channel 4'))</em><a class="headerlink" href="#farmer.models.DeviceSettings.CHANNEL_CHOICES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="farmer.models.DeviceSettings.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#farmer.models.DeviceSettings.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="farmer.models.DeviceSettings.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descclassname">DeviceSettings.</code><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#farmer.models.DeviceSettings.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.models.DeviceSettings.SAMPLE_RATE_CHOICES">
+<code class="descclassname">DeviceSettings.</code><code class="descname">SAMPLE_RATE_CHOICES</code><em class="property"> = ((0, 125000), (1, 62500), (2, 31250), (3, 15625), (4, 7812.5), (5, 3906.25), (6, 1953.125), (7, 976.5625))</em><a class="headerlink" href="#farmer.models.DeviceSettings.SAMPLE_RATE_CHOICES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.models.DeviceSettings.device">
+<code class="descclassname">DeviceSettings.</code><code class="descname">device</code><a class="headerlink" href="#farmer.models.DeviceSettings.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="farmer.models.DeviceSettings.get_adc_sample_rate_display">
+<code class="descclassname">DeviceSettings.</code><code class="descname">get_adc_sample_rate_display</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.models.DeviceSettings.get_adc_sample_rate_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="farmer.models.DeviceSettings.get_main_channel_display">
+<code class="descclassname">DeviceSettings.</code><code class="descname">get_main_channel_display</code><span class="sig-paren">(</span><em>*moreargs</em>, <em>**morekwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.models.DeviceSettings.get_main_channel_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.models.DeviceSettings.objects">
+<code class="descclassname">DeviceSettings.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#farmer.models.DeviceSettings.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="farmer.models.DeviceSettings.save">
+<code class="descclassname">DeviceSettings.</code><code class="descname">save</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.models.DeviceSettings.save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-farmer.serializers">
+<span id="farmer-serializers-module"></span><h2>3.3.4. farmer.serializers module<a class="headerlink" href="#module-farmer.serializers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="farmer.serializers.DeviceSettingsSerializer">
+<em class="property">class </em><code class="descclassname">farmer.serializers.</code><code class="descname">DeviceSettingsSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.serializers.DeviceSettingsSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<dl class="class">
+<dt id="farmer.serializers.DeviceSettingsSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#farmer.serializers.DeviceSettingsSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="farmer.serializers.DeviceSettingsSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('device', 'device_serial', 'main_channel', 'transmission_rate_milliseconds', 'adc_sample_rate', 'date_now')</em><a class="headerlink" href="#farmer.serializers.DeviceSettingsSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.serializers.DeviceSettingsSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#farmer.serializers.DeviceSettingsSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">DeviceSettings</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-farmer.tests">
+<span id="farmer-tests-module"></span><h2>3.3.5. farmer.tests module<a class="headerlink" href="#module-farmer.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-farmer.views">
+<span id="farmer-views-module"></span><h2>3.3.6. farmer.views module<a class="headerlink" href="#module-farmer.views" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="farmer.views.DeviceSettingsViewSet">
+<em class="property">class </em><code class="descclassname">farmer.views.</code><code class="descname">DeviceSettingsViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.views.DeviceSettingsViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>API endpoint that allows devicesettings to be viewed or edited.</p>
+<dl class="method">
+<dt id="farmer.views.DeviceSettingsViewSet.list">
+<code class="descname">list</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.views.DeviceSettingsViewSet.list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.views.DeviceSettingsViewSet.queryset">
+<code class="descname">queryset</code><a class="headerlink" href="#farmer.views.DeviceSettingsViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="farmer.views.DeviceSettingsViewSet.retrieve">
+<code class="descname">retrieve</code><span class="sig-paren">(</span><em>request</em>, <em>pk=None</em><span class="sig-paren">)</span><a class="headerlink" href="#farmer.views.DeviceSettingsViewSet.retrieve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="farmer.views.DeviceSettingsViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#farmer.views.DeviceSettingsViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">DeviceSettingsSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-farmer">
+<span id="module-contents"></span><h2>3.3.7. Module contents<a class="headerlink" href="#module-farmer" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="webapp.management.commands.html" class="btn btn-neutral" title="3.2.1.1.1.1. webapp.management.commands package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Bryan Smith.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
