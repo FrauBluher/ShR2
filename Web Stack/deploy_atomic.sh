@@ -55,7 +55,7 @@ sudo cp uwsgi.conf /etc/init/uwsgi.conf
 
 cd /etc/init.d/
 
-sudo echo "sudo nginx -c /home/ubuntu/nginx.conf" > /etc/init.d/nginx-passenger.sh
+sudo echo "sudo nginx -c /srv/nginx.conf" > /etc/init.d/nginx-passenger.sh
 
 sudo chmod +x /etc/init.d/nginx-passenger.sh
 
