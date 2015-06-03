@@ -322,12 +322,12 @@ def landing(request):
 
          ``my_devices``
 
-         A list of :class:`microdata.models.Device` objects that either belong to the user or are shared with the user.
-         This list is used to populate the sidebar with :class:`microdata.models.Device` links.
+            A list of :class:`microdata.models.Device` objects that either belong to the user or are shared with the user.
+            This list is used to populate the sidebar with :class:`microdata.models.Device` links.
 
       **Templates:**
 
-      `base/dashboard.html`
+         `base/dashboard.html`
 
    """
    user = request.user.id
@@ -346,18 +346,18 @@ def dashboard(request):
 
          ``my_devices``
 
-         A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
-         This list is used to generate markers on the graph.
+            A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
+            This list is used to generate markers on the graph.
 
 
          ``server_time``
 
-         The current time as reported by the server. This is used as a time offset for the graph.
+            The current time as reported by the server. This is used as a time offset for the graph.
 
 
       **Templates:**
 
-      `base/dashboard.html`
+         `base/dashboard.html`
 
    """
    user = request.user.id
@@ -452,18 +452,18 @@ def default_chart(request):
 
          ``my_devices``
 
-         A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
-         This list is used to generate markers on the graph.
+            A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
+            This list is used to generate markers on the graph.
 
 
          ``server_time``
 
-         The current time as reported by the server. This is used as a time offset for the graph.
+            The current time as reported by the server. This is used as a time offset for the graph.
 
 
       **Templates:**
 
-      `base/dashboard.html`
+      `   base/dashboard.html`
 
    """
    if request.method == 'GET':
@@ -483,6 +483,30 @@ def default_chart(request):
 
 @login_required(login_url='/signin/')
 def generate_average_wattage_usage(request, serial):
+    """
+        Get the cost today, average wattage, and current wattage associated with the specified device.
+        Should be called through AJAX and is expected to take a couple seconds to complete.
+
+        **Context**
+
+            ``cost_today``
+
+                A simple lookup from the device itself. This could be transformed to a template
+                variable instead in the future.
+
+
+            ``average_wattage``
+
+                This is done by simply selecting the newest mean value from the 1 day series. This
+                is probably cheating but it's really fast compared to computing a new average
+                at every lookup.
+
+
+            ``current_wattage``
+
+                This is simply the sum of the newest wattages from each channel of the device.
+    """
+    
     context = {}
     user = User.objects.get(username=request.user)
     device = Device.objects.get(serial=serial)
@@ -518,6 +542,10 @@ def generate_average_wattage_usage(request, serial):
       
 @login_required(login_url='/signin/')
 def get_wattage_usage(request):
+   """
+   Wrapper function that calls `webapp.views.generate_average_wattage_usage`.
+   """
+   
    context = {}
    if request.method == 'GET':
        serial = request.GET.get('serial')
@@ -527,6 +555,30 @@ def get_wattage_usage(request):
    
 @login_required(login_url='/signin/')
 def device_data(request, serial):
+   """
+       Get the cost today, average wattage, and current wattage associated with the specified device.
+       Should be called through AJAX and is expected to take a couple seconds to complete.
+
+       **Context**
+
+           ``cost_today``
+
+               A simple lookup from the device itself. This could be transformed to a template
+               variable instead in the future.
+
+
+           ``average_wattage``
+
+               This is done by simply selecting the newest mean value from the 1 day series. This
+               is probably cheating but it's really fast compared to computing a new average
+               at every lookup.
+
+
+           ``current_wattage``
+
+               This is simply the sum of the newest wattages from each channel of the device.
+   """
+   
    context = {}
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
@@ -546,6 +598,47 @@ def device_data(request, serial):
 
 @login_required(login_url='/signin/')
 def device_chart(request, serial):
+   """
+       Return an HTML/Javascript chart ready to be rendered to the client.
+       No data is preloaded. However, a chart will have a unique endpoint
+       to retrieve data based on device serial.
+
+       **Context**
+
+           ``device``
+
+               A :class:`microdata.models.Device` object for the serial provided.
+
+
+           ``circuit_pk``
+
+               If a ``circuit_pk`` is specified, then this function will return a chart
+               with just the circuit specified by the primary key. This returns the pk.
+               
+            ``circuit_name``
+            
+                If a ``circuit_pk`` is specified, then this function will return a chart
+                with just the circuit specified by the primary key. This returns the name.
+
+
+           ``circuits``
+
+               A list of circuits that relate to the channels of the device.
+               
+           ``server_time``
+
+              The time as seen by the server right now. Used to synchronize the chart.
+
+           ``stack``
+
+               This is used to specify whether the chart is stacked or unstacked. This
+               was intended to be a setting that a user could toggle via the settings page.
+
+      **Template**
+ 
+         `base/chart.html`
+
+   """
    context = {}
    if request.method == 'GET':
       circuit_pk = request.GET.get('circuit_pk')
@@ -584,6 +677,9 @@ def device_chart(request, serial):
 
 @login_required(login_url='/signin/')
 def charts_deprecated(request, serial, unit):
+   """
+   DEPRECATED
+   """
    warnings.warn("Generating chart data from sqlite deprecated. See new charts() using InfluxDB.", DeprecationWarning)
    if request.method == 'GET':
       user = request.user.id
@@ -621,6 +717,20 @@ class Object:
     
 @login_required(login_url='/signin/')
 def device_status(request):
+   """
+       Check to see if a device is connected to the system or not.
+       
+       This is done by checking to see how recent the newest data point in
+       the database is. If it's not older than 40 seconds, assume the device
+       is currently connected.
+
+       **Context**
+
+           ``connected``
+
+               Boolean. True if device has data not older than 40 seconds.
+
+   """
    connected = False
    if request.method == 'GET':
       serial = request.GET.get('serial', None)
@@ -635,6 +745,60 @@ def device_status(request):
 @csrf_exempt
 @login_required(login_url='/signin/')
 def settings(request):
+  """
+      The main function to handle settings requests. This module interprets
+      where on the settings page the user is and provides correct context
+      corresponding to their state.
+      
+      There are three possible states:
+      
+      1. Device
+
+      **Context**
+      
+        ``devices``
+        
+            A list of devices the user owns. These are the devices
+            this user is allowed to modify in a restricted way.
+      
+      **Template**
+      
+            `base/settings_device_base.html`
+      
+      2. Account
+      
+      **Context**
+      
+        ``form``
+        
+            A :class:`webapp.views.SettingsForm` object that provides the
+            fields to a user necessary to make custom modifications to their
+            account.
+            
+        ``notification_choices``
+        
+            A confirmation of the notification choices the user is
+            subscribed to. Used for client side verification.
+            
+      **Template**
+      
+        `base/settings_account.html`
+      
+      3. Dashboard
+      
+      **Context**
+      
+        ``form``
+        
+            A :class:`webapp.views.SettingsForm` object that provides the
+            fields to a user necessary to make custom modifications to their
+            dashboard.
+      
+      **Template**
+      
+        `base/settings_dashboard.html`
+
+  """
   context = {}
   user = request.user.id
   template = 'base/settings.html'
@@ -668,6 +832,37 @@ def settings(request):
 
 @login_required(login_url='/signin/')
 def settings_change_device(request):
+   """
+       This class is called when a user is ready to modify a device.
+       Since there are custom fields being displayed, some extra context
+       must be returned to properly serve the form.
+
+       **Context**
+
+           ``device``
+           
+              The :class:`microdata.models.Device` being modified
+              
+           ``form``
+           
+              A :class:`webapp.views.SettingsForm` with values populated
+              by specifying a device.
+              
+           ``utility_company_choices`` ``rate_plan_choices`` ``territory_choices``
+           
+              The various checkbox/dropdown choices for a user to customize
+              the device's settings.
+
+           ``farmer_installed``
+           
+              A proof-of-concept variable that will enable certain
+              functionality on the HTML page if this application is installed.
+              
+        **Template**
+        
+           `base/settings_device.html`
+
+   """
    context = {}
    if request.method == 'GET':
       serial = request.GET.get('serial')
@@ -693,6 +888,51 @@ def settings_change_device(request):
 
 @login_required(login_url='/signin/')
 def settings_account(request):
+  """
+      This class deals with the actual modification of an account
+      via the account settings. 
+
+      **Context**
+
+          ``errors``
+
+             A list of errors that were encountered while processing the
+             request. This is used to present to the user if one of their
+             actions did not validate.
+
+          ``success``
+
+             Boolean specifying whether or not the action was successful.
+             This would be false if a user's action did not verify.
+
+          ``notifications``
+
+             A list of notifications that a user is subscribed to
+             after updating the list.
+
+          ``username``
+
+             If the user opted to change their username, then the new
+             username verified by the system is returned to update the
+             HTML.
+
+          ``first_name``
+
+             If the user opted to change their first name, then the new
+             first name verified by the system is returned to update the
+             HTML.
+
+          ``last_name``
+
+             If the user opted to change their last name, then the new
+             last name verified by the system is returned to update the
+             HTML.
+
+       **Template**
+
+          `base/settings_account.html`
+
+  """
   context = {}
   errors = Set()
   user = User.objects.get(username = request.user)
@@ -771,6 +1011,33 @@ def settings_account(request):
 @login_required(login_url='/signin/')
 @csrf_exempt
 def settings_device(request, serial):
+  """
+      This class deals with the actual modification of a device
+      via the device settings. 
+
+      **Context**
+
+          ``success``
+
+             Boolean specifying whether or not the action was successful.
+             This would be false if a user's action did not verify.
+
+          ``appliances``
+
+             This is a list of appliance that the user requests to be
+             associated with their custom circuit.
+
+          ``utility_companies`` ``rate_plan`` ``territory``
+
+             If the user opted to alter any of these fields,
+             we make the alterations if they are verified
+             and return the response for client side verification.
+
+       **Template**
+
+          `base/settings_device.html`
+
+  """
   context = {}
   if request.method == 'POST':
     context['success'] = False
@@ -955,6 +1222,42 @@ def export_data(request):
 
 @login_required(login_url='/signin/')
 def billing_information(request):
+   """
+       Dashboard function called via AJAX.
+
+       This gives the user live information about their bill status
+       as it stands from within the server's calculations. The current
+       tier is returned as well as the total KWh consumed for this month.
+
+       **Context**
+
+           ``device``
+
+              The :class:`microdata.models.Device` object that the
+              request was completed for.
+
+           ``tier_progress_list``
+
+              A tuple containing a :class:`microdata.models.Device`
+              object as well as a percentage of the progess the
+              :class:`microdata.models.Device` is to reaching the next
+              :class:`webapp.models.Tier` level.
+
+           ``territory``
+
+               This returns the current :class:`webapp.models.Territory`
+               which assists in client-side calculations.
+               
+            ``tiers``
+
+               A list of all the :class:`webapp.models.Tier` objects
+               associated with the chosen :class:`webapp.models.RatePlan`.
+
+        **Template**
+
+           `base/billing_information.html.html`
+
+   """
    context = {}
    if request.method == 'GET':
       serial = request.GET.get('serial')
@@ -994,6 +1297,29 @@ def billing_information(request):
    
 @login_required(login_url='/signin/')
 def circuits_information(request):
+   """
+       Dashboard function called via AJAX.
+
+       This function provides the data necessary to render a simple
+       donut chart showing the breakdown of a circuit by the amount
+       of energy it has consumed relative to other circuits.
+
+       **Context**
+
+           ``circuits``
+
+              A list of tuples of the form::
+              
+                  [
+                      microdata.models.Device.channel_1,
+                      channel_1_kwh
+                  ]
+
+        **Template**
+
+           `base/base/circuits_information.html`
+
+   """
    if request.method == 'GET':
       serial = request.GET.get('serial')
       device = Device.objects.get(serial=serial)

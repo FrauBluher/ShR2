@@ -6,11 +6,17 @@
 \BOOKMARK [1][-]{section.2.1}{API Documentation}{chapter.2}% 6
 \BOOKMARK [1][-]{section.2.2}{Administrative Interface}{chapter.2}% 7
 \BOOKMARK [1][-]{section.2.3}{Connecting Devices to the Framework}{chapter.2}% 8
-\BOOKMARK [0][-]{chapter.3}{Applications}{}% 9
-\BOOKMARK [1][-]{section.3.1}{Microdata Application}{chapter.3}% 10
-\BOOKMARK [1][-]{section.3.2}{Webapp Application}{chapter.3}% 11
-\BOOKMARK [1][-]{section.3.3}{farmer package}{chapter.3}% 12
-\BOOKMARK [1][-]{section.3.4}{home package}{chapter.3}% 13
-\BOOKMARK [0][-]{chapter.4}{Indices and tables}{}% 14
-\BOOKMARK [0][-]{section*.323}{Python Module Index}{}% 15
-\BOOKMARK [0][-]{section*.324}{Index}{}% 16
+\BOOKMARK [0][-]{chapter.3}{Web Stack}{}% 9
+\BOOKMARK [1][-]{section.3.1}{custom\137config module}{chapter.3}% 10
+\BOOKMARK [1][-]{section.3.2}{Debug Application}{chapter.3}% 11
+\BOOKMARK [1][-]{section.3.3}{Farmer Application}{chapter.3}% 12
+\BOOKMARK [1][-]{section.3.4}{Home Application}{chapter.3}% 13
+\BOOKMARK [1][-]{section.3.5}{manage module}{chapter.3}% 14
+\BOOKMARK [1][-]{section.3.6}{Microdata Application}{chapter.3}% 15
+\BOOKMARK [1][-]{section.3.7}{pseudodata module}{chapter.3}% 16
+\BOOKMARK [1][-]{section.3.8}{pseudodevice module}{chapter.3}% 17
+\BOOKMARK [1][-]{section.3.9}{SEADS Project}{chapter.3}% 18
+\BOOKMARK [1][-]{section.3.10}{Webapp Application}{chapter.3}% 19
+\BOOKMARK [0][-]{chapter.4}{Indices and tables}{}% 20
+\BOOKMARK [0][-]{section*.385}{Python Module Index}{}% 21
+\BOOKMARK [0][-]{section*.386}{Index}{}% 22

@@ -1,5 +1,9 @@
-home package
-============
+Home Application
+================
+
+This simple application handles logins and logouts as well as new
+user registration. This application should probably be rolled in with
+`webapp <webapp.html>`_ for the sake of portability.
 
 Subpackages
 -----------

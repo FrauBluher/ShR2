@@ -16,7 +16,7 @@ Smart Energy Analysis and Disaggregation - Web Components
 
    installation
    getting-started
-   applications
+   modules/modules
 
 
 Indices and tables

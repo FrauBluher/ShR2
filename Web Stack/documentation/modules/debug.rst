@@ -1,5 +1,12 @@
-debug package
-=============
+Debug Application
+=================
+
+This application exists solely to debug other applications in this
+project.
+
+Most of the functions revolve around supplying random data to the
+database to test the functionality of the chart as well as the
+accuracy of the calculations for billing.
 
 Submodules
 ----------

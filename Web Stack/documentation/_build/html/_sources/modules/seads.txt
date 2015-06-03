@@ -1,5 +1,8 @@
-seads package
+SEADS Project
 =============
+
+The project files for the Web Stack. Contains settings and urls
+necessary to run the project.
 
 Submodules
 ----------

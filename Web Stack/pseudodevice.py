@@ -11,6 +11,26 @@ class Device():
 
 
 def main():
+   """
+   The purpose of this function is to mimic the behavior of a device
+   by interacting with the API. This is to test the functionality
+   of the REST Framework.
+   
+   **Options**
+   
+       ``-e`` ``--end``
+       
+           int - define end time (in UTC seconds) of script
+           
+       ``-s`` ``--size``
+       
+           define the number of packets to send
+           
+       ``-d`` ``--device``
+       
+           serial of device to send from
+   """
+   
    channel_map = {
       1:400,
       2:200,

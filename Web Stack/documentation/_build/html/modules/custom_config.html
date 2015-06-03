@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>custom_config module &mdash; SEADS 1.0 documentation</title>
+  <title>3.1. custom_config module &mdash; SEADS 1.0 documentation</title>
   
 
   
@@ -32,7 +32,10 @@
   
 
   
-    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/> 
+    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="3. Web Stack" href="modules.html"/>
+        <link rel="next" title="3.2. Debug Application" href="debug.html"/>
+        <link rel="prev" title="3. Web Stack" href="modules.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,11 +74,88 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#introduction">1.1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../installation.html#basic-server-setup">1.2.1. Basic Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#basic-server-outline">1.2.1. Basic Server Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#influxdb-server-setup">1.2.2. InfluxDB Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateful-server-setup">1.2.3. Django Web Application Stateful Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateless-server-setup">1.2.4. Django Web Application Stateless Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#finishing-up">1.2.5. Finishing Up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-atomic-server">1.3. Installing Atomic Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#id2">1.3.1. Basic Server Outline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">2. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#api-documentation">2.1. API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">3. Web Stack</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.1. custom_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">3.2. Debug Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#submodules">3.2.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.admin">3.2.2. debug.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.forms">3.2.3. debug.forms module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.models">3.2.4. debug.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.serializers">3.2.5. debug.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.urls">3.2.6. debug.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.views">3.2.7. debug.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug">3.2.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="farmer.html">3.3. Farmer Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#submodules">3.3.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.admin">3.3.2. farmer.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.models">3.3.3. farmer.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.serializers">3.3.4. farmer.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="home.html">3.4. Home Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="home.html#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="home.html#module-home">3.4.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="manage.html">3.5. manage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microdata.html">3.6. Microdata Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#subpackages">3.6.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.html">3.6.1.1. microdata.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#submodules">3.6.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-admin-module">3.6.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-models-module">3.6.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.serializers">3.6.5. microdata.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.tests">3.6.6. microdata.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.views">3.6.7. microdata.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata">3.6.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pseudodata.html">3.7. pseudodata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pseudodevice.html">3.8. pseudodevice module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seads.html">3.9. SEADS Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#submodules">3.9.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.settings">3.9.2. seads.settings module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.urls">3.9.3. seads.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.wsgi">3.9.4. seads.wsgi module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads">3.9.5. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -104,7 +184,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>custom_config module</li>
+          <li><a href="modules.html">3. Web Stack</a> &raquo;</li>
+      
+    <li>3.1. custom_config module</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -118,7 +200,7 @@
           <div role="main" class="document">
             
   <div class="section" id="module-custom_config">
-<span id="custom-config-module"></span><h1>custom_config module<a class="headerlink" href="#module-custom_config" title="Permalink to this headline">¶</a></h1>
+<span id="custom-config-module"></span><h1>3.1. custom_config module<a class="headerlink" href="#module-custom_config" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="custom_config.main">
 <code class="descclassname">custom_config.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#custom_config.main" title="Permalink to this definition">¶</a></dt>
@@ -129,6 +211,15 @@
 
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="debug.html" class="btn btn-neutral float-right" title="3.2. Debug Application" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="3. Web Stack" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

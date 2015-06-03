@@ -19,7 +19,7 @@
 
 
 \title{SEADS Documentation}
-\date{June 02, 2015}
+\date{June 03, 2015}
 \release{1.0}
 \author{Bryan Smith}
 \newcommand{\sphinxlogo}{}
@@ -722,38 +722,746 @@ dataPoints: An array of undefined size containing measured values for the server
 \end{itemize}
 
 
-\chapter{Applications}
-\label{applications:applications}\label{applications::doc}\label{applications:id1}
-Four distinct applications were created that encompass the SEAD web framework:
-\begin{enumerate}
+\chapter{Web Stack}
+\label{modules/modules:web-stack}\label{modules/modules::doc}
+
+\section{custom\_config module}
+\label{modules/custom_config:custom-config-module}\label{modules/custom_config::doc}\label{modules/custom_config:module-custom_config}\index{custom\_config (module)}\index{main() (in module custom\_config)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/custom_config:custom_config.main}\pysiglinewithargsret{\code{custom\_config.}\bfcode{main}}{}{}
+\end{fulllineitems}
+
+
+
+\section{Debug Application}
+\label{modules/debug::doc}\label{modules/debug:debug-application}
+This application exists solely to debug other applications in this
+project.
+
+Most of the functions revolve around supplying random data to the
+database to test the functionality of the chart as well as the
+accuracy of the calculations for billing.
+
+
+\subsection{Submodules}
+\label{modules/debug:submodules}
+
+\subsection{debug.admin module}
+\label{modules/debug:debug-admin-module}\label{modules/debug:module-debug.admin}\index{debug.admin (module)}
+
+\subsection{debug.forms module}
+\label{modules/debug:debug-forms-module}\label{modules/debug:module-debug.forms}\index{debug.forms (module)}
+
+\subsection{debug.models module}
+\label{modules/debug:debug-models-module}\label{modules/debug:module-debug.models}\index{debug.models (module)}\index{TestEvent (class in debug.models)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.models.TestEvent}\pysiglinewithargsret{\strong{class }\code{debug.models.}\bfcode{TestEvent}}{\emph{id}, \emph{device\_id}, \emph{dataPoints}}{}
+Bases: \code{django.db.models.base.Model}
+\index{TestEvent.DoesNotExist}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.models.TestEvent.DoesNotExist}\pysigline{\strong{exception }\bfcode{DoesNotExist}}
+Bases: \code{django.core.exceptions.ObjectDoesNotExist}
+
+\end{fulllineitems}
+
+\index{TestEvent.MultipleObjectsReturned}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.models.TestEvent.MultipleObjectsReturned}\pysigline{\strong{exception }\code{TestEvent.}\bfcode{MultipleObjectsReturned}}
+Bases: \code{django.core.exceptions.MultipleObjectsReturned}
+
+\end{fulllineitems}
+
+\index{device (debug.models.TestEvent attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.models.TestEvent.device}\pysigline{\code{TestEvent.}\bfcode{device}}
+\end{fulllineitems}
+
+\index{objects (debug.models.TestEvent attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.models.TestEvent.objects}\pysigline{\code{TestEvent.}\bfcode{objects}\strong{ = \textless{}django.db.models.manager.Manager object\textgreater{}}}
+\end{fulllineitems}
+
+\index{save() (debug.models.TestEvent method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.models.TestEvent.save}\pysiglinewithargsret{\code{TestEvent.}\bfcode{save}}{\emph{**kwargs}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{debug.serializers module}
+\label{modules/debug:debug-serializers-module}\label{modules/debug:module-debug.serializers}\index{debug.serializers (module)}\index{TestEventSerializer (class in debug.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.serializers.TestEventSerializer}\pysiglinewithargsret{\strong{class }\code{debug.serializers.}\bfcode{TestEventSerializer}}{\emph{instance=None}, \emph{data=\textless{}class rest\_framework.fields.empty\textgreater{}}, \emph{**kwargs}}{}
+Bases: \code{rest\_framework.serializers.HyperlinkedModelSerializer}
+\index{TestEventSerializer.Meta (class in debug.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.serializers.TestEventSerializer.Meta}\pysigline{\strong{class }\bfcode{Meta}}~\index{fields (debug.serializers.TestEventSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.serializers.TestEventSerializer.Meta.fields}\pysigline{\bfcode{fields}\strong{ = (`device', `dataPoints')}}
+\end{fulllineitems}
+
+\index{model (debug.serializers.TestEventSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.serializers.TestEventSerializer.Meta.model}\pysigline{\bfcode{model}}
+alias of \code{TestEvent}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{debug.urls module}
+\label{modules/debug:module-debug.urls}\label{modules/debug:debug-urls-module}\index{debug.urls (module)}
+
+\subsection{debug.views module}
+\label{modules/debug:module-debug.views}\label{modules/debug:debug-views-module}\index{debug.views (module)}\index{DatadelForm (class in debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DatadelForm}\pysiglinewithargsret{\strong{class }\code{debug.views.}\bfcode{DatadelForm}}{\emph{data=None}, \emph{files=None}, \emph{auto\_id=u'id\_\%s'}, \emph{prefix=None}, \emph{initial=None}, \emph{error\_class=\textless{}class `django.forms.util.ErrorList'\textgreater{}}, \emph{label\_suffix=None}, \emph{empty\_permitted=False}}{}
+Bases: \code{django.forms.forms.Form}
+\index{base\_fields (debug.views.DatadelForm attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DatadelForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`device': \textless{}debug.views.DeviceModelChoiceField object at 0x2b2768d73a90\textgreater{}, `refresh\_queries': \textless{}django.forms.fields.BooleanField object at 0x2b2768d73b50\textgreater{}\}}}
+\end{fulllineitems}
+
+\index{media (debug.views.DatadelForm attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DatadelForm.media}\pysigline{\bfcode{media}}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{DatagenForm (class in debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DatagenForm}\pysiglinewithargsret{\strong{class }\code{debug.views.}\bfcode{DatagenForm}}{\emph{data=None}, \emph{files=None}, \emph{auto\_id=u'id\_\%s'}, \emph{prefix=None}, \emph{initial=None}, \emph{error\_class=\textless{}class `django.forms.util.ErrorList'\textgreater{}}, \emph{label\_suffix=None}, \emph{empty\_permitted=False}}{}
+Bases: \code{django.forms.forms.Form}
+\index{ENERGY\_CHOICES (debug.views.DatagenForm attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DatagenForm.ENERGY_CHOICES}\pysigline{\bfcode{ENERGY\_CHOICES}\strong{ = ((1, `Normal'), (2, `Greedy'), (3, `Conserve'))}}
+\end{fulllineitems}
+
+\index{base\_fields (debug.views.DatagenForm attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DatagenForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`device': \textless{}debug.views.DeviceModelChoiceField object at 0x2b2768d73490\textgreater{}, `channels': \textless{}django.forms.models.ModelMultipleChoiceField object at 0x2b2768d73650\textgreater{}, `start': \textless{}django.forms.fields.IntegerField object at 0x2b2768d73790\textgreater{}, `stop': \textless{}django.forms.fields.IntegerField object at 0x2b2768d73810\textgreater{}, `resolution': \textless{}django.forms.fields.IntegerField object at 0x2b2768d73890\textgreater{}, `energy\_use': \textless{}django.forms.fields.ChoiceField object at 0x2b2768d73910\textgreater{}\}}}
+\end{fulllineitems}
+
+\index{media (debug.views.DatagenForm attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DatagenForm.media}\pysigline{\bfcode{media}}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{DevForm (class in debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DevForm}\pysiglinewithargsret{\strong{class }\code{debug.views.}\bfcode{DevForm}}{\emph{data=None}, \emph{files=None}, \emph{auto\_id=u'id\_\%s'}, \emph{prefix=None}, \emph{initial=None}, \emph{error\_class=\textless{}class `django.forms.util.ErrorList'\textgreater{}}, \emph{label\_suffix=None}, \emph{empty\_permitted=False}}{}
+Bases: \code{django.forms.forms.Form}
+\index{base\_fields (debug.views.DevForm attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DevForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`method': \textless{}django.forms.fields.ChoiceField object at 0x2b2768d73bd0\textgreater{}\}}}
+\end{fulllineitems}
+
+\index{media (debug.views.DevForm attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DevForm.media}\pysigline{\bfcode{media}}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{DeviceModelChoiceField (class in debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DeviceModelChoiceField}\pysiglinewithargsret{\strong{class }\code{debug.views.}\bfcode{DeviceModelChoiceField}}{\emph{queryset}, \emph{empty\_label=u'---------`}, \emph{cache\_choices=False}, \emph{required=True}, \emph{widget=None}, \emph{label=None}, \emph{initial=None}, \emph{help\_text=u'`}, \emph{to\_field\_name=None}, \emph{*args}, \emph{**kwargs}}{}
+Bases: \code{django.forms.models.ModelChoiceField}
+\index{label\_from\_instance() (debug.views.DeviceModelChoiceField method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.DeviceModelChoiceField.label_from_instance}\pysiglinewithargsret{\bfcode{label\_from\_instance}}{\emph{obj}}{}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{TestEventViewSet (class in debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.TestEventViewSet}\pysiglinewithargsret{\strong{class }\code{debug.views.}\bfcode{TestEventViewSet}}{\emph{**kwargs}}{}
+Bases: \code{rest\_framework.viewsets.ModelViewSet}
+\index{queryset (debug.views.TestEventViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.TestEventViewSet.queryset}\pysigline{\bfcode{queryset}}
+\end{fulllineitems}
+
+\index{serializer\_class (debug.views.TestEventViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.TestEventViewSet.serializer_class}\pysigline{\bfcode{serializer\_class}}
+alias of \code{TestEventSerializer}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{datadel() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.datadel}\pysiglinewithargsret{\code{debug.views.}\bfcode{datadel}}{\emph{request}}{}
+DEPRECATED
+
+See influxdel.
+
+\end{fulllineitems}
+
+\index{datagen() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.datagen}\pysiglinewithargsret{\code{debug.views.}\bfcode{datagen}}{\emph{request}}{}
+DEPRECATED
+
+See influxgen.
+
+\end{fulllineitems}
+
+\index{echo() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.echo}\pysiglinewithargsret{\code{debug.views.}\bfcode{echo}}{\emph{*args}, \emph{**kwargs}}{}
+\end{fulllineitems}
+
+\index{echo\_args() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.echo_args}\pysiglinewithargsret{\code{debug.views.}\bfcode{echo\_args}}{\emph{*args}, \emph{**kwargs}}{}
+\end{fulllineitems}
+
+\index{generate\_points() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.generate_points}\pysiglinewithargsret{\code{debug.views.}\bfcode{generate\_points}}{\emph{start}, \emph{stop}, \emph{resolution}, \emph{energy\_use}, \emph{device}, \emph{channels}}{}
+Function to generate random points of data.
+
+The goal of this function was to generate data that could maybe pass
+as being semi-realistic. To do this, each circuit type has its own
+profile with an average, minumum, maximum, and cutoff wattage.
+
+These values are added/subtracted by a random number in a range
+proportional to the maximum wattage for the circuit. This gives
+a series that appears to be changing slowly over time.
+
+This function works in much the same way as the save() function
+for an {\hyperref[modules/microdata:microdata.models.Event]{\emph{\code{microdata.models.Event}}}}. It keeps track of the
+cumulative KWh consumed and will advance the tier level if
+the threshold is passed.
+
+\end{fulllineitems}
+
+\index{gitupdate() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.gitupdate}\pysiglinewithargsret{\code{debug.views.}\bfcode{gitupdate}}{\emph{*args}, \emph{**kwargs}}{}
+DEPRECATED
+
+This could be reinstated by changing the Git directory seen below.
+
+\end{fulllineitems}
+
+\index{influxdel() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.influxdel}\pysiglinewithargsret{\code{debug.views.}\bfcode{influxdel}}{\emph{*args}, \emph{**kwargs}}{}
+\end{fulllineitems}
+
+\index{influxgen() (in module debug.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/debug:debug.views.influxgen}\pysiglinewithargsret{\code{debug.views.}\bfcode{influxgen}}{\emph{*args}, \emph{**kwargs}}{}
+\end{fulllineitems}
+
+
+
+\subsection{Module contents}
+\label{modules/debug:module-contents}\label{modules/debug:module-debug}\index{debug (module)}
+
+\section{Farmer Application}
+\label{modules/farmer:farmer-application}\label{modules/farmer::doc}
+This barebones application was put in place to manage devices via the
+REST API.
+
+As it stands now, this application is responsible for maintaining the
+settings of each device and serving the configurations via API calls.
+
+A typical API call to get the settings of a device is as follows:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+GET /api/settings\PYGZhy{}api/\PYGZob{}serial\PYGZcb{}/
+
+RESPONSE
+
+    \PYGZob{}
+        \PYGZdq{}device\PYGZdq{}: 3,
+        \PYGZdq{}device\PYGZus{}serial\PYGZdq{}: 3,
+        \PYGZdq{}main\PYGZus{}channel\PYGZdq{}: 1,
+        \PYGZdq{}transmission\PYGZus{}rate\PYGZus{}milliseconds\PYGZdq{}: 5000,
+        \PYGZdq{}adc\PYGZus{}sample\PYGZus{}rate\PYGZdq{}: 7,
+        \PYGZdq{}date\PYGZus{}now\PYGZdq{}: 1433354266811
+    \PYGZcb{}
+\end{Verbatim}
+
+The SEAD Light takes advantage of some, but not all, of these fields:
+\begin{itemize}
 \item {} 
-Microdata - Interfaces with the devices
+transmission\_rate\_milliseconds: The time between each packet transmit
 
 \item {} 
-Webapp - Interfaces with the clients
+adc\_sample\_rate: A binary-mapped value of choices.
 
 \item {} 
-Farmer - Manages the devices
+date\_now: This is used by the SEAD Light to synchronize its RTC (Real Time Clock)
 
-\item {} 
-Home - Landing zone for new users
+\end{itemize}
 
-\end{enumerate}
 
-And (optionally) a fifth:
-\begin{enumerate}
-\setcounter{enumi}{4}
-\item {} 
-Debug - Models that assist in debugging the project
+\subsection{Submodules}
+\label{modules/farmer:submodules}
 
-\end{enumerate}
+\subsection{farmer.admin module}
+\label{modules/farmer:module-farmer.admin}\label{modules/farmer:farmer-admin-module}\index{farmer.admin (module)}\index{DeviceSettingsAdmin (class in farmer.admin)}
 
-The applications were designed such that the Webapp application is hot-swappable. Since it is a proof of concept, it can either be added to or replaced altogether. Microdata and Farmer are able to run without Webapp, however their data cannot be interfaced with in a meaningful way without a web application.
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsAdmin}\pysiglinewithargsret{\strong{class }\code{farmer.admin.}\bfcode{DeviceSettingsAdmin}}{\emph{model}, \emph{admin\_site}}{}
+Bases: \code{django.contrib.admin.options.ModelAdmin}
+\index{media (farmer.admin.DeviceSettingsAdmin attribute)}
 
-\href{http://i.imgur.com/uw3BtWt.png}{Full Size}
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsAdmin.media}\pysigline{\bfcode{media}}
+\end{fulllineitems}
 
-What follows is the breakdown of each application and how they work.
+\index{verbose\_name\_plural (farmer.admin.DeviceSettingsAdmin attribute)}
 
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsAdmin.verbose_name_plural}\pysigline{\bfcode{verbose\_name\_plural}\strong{ = `devicesettings'}}
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{DeviceSettingsInline (class in farmer.admin)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline}\pysiglinewithargsret{\strong{class }\code{farmer.admin.}\bfcode{DeviceSettingsInline}}{\emph{parent\_model}, \emph{admin\_site}}{}
+Bases: \code{django.contrib.admin.options.StackedInline}
+\index{can\_delete (farmer.admin.DeviceSettingsInline attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline.can_delete}\pysigline{\bfcode{can\_delete}\strong{ = False}}
+\end{fulllineitems}
+
+\index{media (farmer.admin.DeviceSettingsInline attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline.media}\pysigline{\bfcode{media}}
+\end{fulllineitems}
+
+\index{model (farmer.admin.DeviceSettingsInline attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline.model}\pysigline{\bfcode{model}}
+alias of \code{DeviceSettings}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{farmer.models module}
+\label{modules/farmer:module-farmer.models}\label{modules/farmer:farmer-models-module}\index{farmer.models (module)}\index{DeviceSettings (class in farmer.models)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings}\pysiglinewithargsret{\strong{class }\code{farmer.models.}\bfcode{DeviceSettings}}{\emph{*args}, \emph{**kwargs}}{}
+Bases: \code{django.db.models.base.Model}
+
+Describes the settings associated with a device.
+
+This is what is returned by a REST call to /api/settings-api/\{serial\}/.
+\index{CHANNEL\_CHOICES (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.CHANNEL_CHOICES}\pysigline{\bfcode{CHANNEL\_CHOICES}\strong{ = ((1, `Channel 1'), (2, `Channel 2'), (3, `Channel 3'), (4, `Channel 4'))}}
+\end{fulllineitems}
+
+\index{DeviceSettings.DoesNotExist}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.DoesNotExist}\pysigline{\strong{exception }\bfcode{DoesNotExist}}
+Bases: \code{django.core.exceptions.ObjectDoesNotExist}
+
+\end{fulllineitems}
+
+\index{DeviceSettings.MultipleObjectsReturned}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.MultipleObjectsReturned}\pysigline{\strong{exception }\code{DeviceSettings.}\bfcode{MultipleObjectsReturned}}
+Bases: \code{django.core.exceptions.MultipleObjectsReturned}
+
+\end{fulllineitems}
+
+\index{SAMPLE\_RATE\_CHOICES (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.SAMPLE_RATE_CHOICES}\pysigline{\code{DeviceSettings.}\bfcode{SAMPLE\_RATE\_CHOICES}\strong{ = ((0, 125000), (1, 62500), (2, 31250), (3, 15625), (4, 7812.5), (5, 3906.25), (6, 1953.125), (7, 976.5625))}}
+\end{fulllineitems}
+
+\index{adc\_sample\_rate (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.adc_sample_rate}\pysigline{\code{DeviceSettings.}\bfcode{adc\_sample\_rate}\strong{ = None}}
+The sample rates that can be chosen from the admin interface
+
+\end{fulllineitems}
+
+\index{date\_now (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.date_now}\pysigline{\code{DeviceSettings.}\bfcode{date\_now}\strong{ = None}}
+Used by the SEAD Light to synchronize its RTC.
+
+\end{fulllineitems}
+
+\index{device (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.device}\pysigline{\code{DeviceSettings.}\bfcode{device}}
+Relational field to connect the settings to a device.
+
+\end{fulllineitems}
+
+\index{device\_serial (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.device_serial}\pysigline{\code{DeviceSettings.}\bfcode{device\_serial}\strong{ = None}}
+The serial of the device this model is linked to.
+
+\end{fulllineitems}
+
+\index{get\_adc\_sample\_rate\_display() (farmer.models.DeviceSettings method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.get_adc_sample_rate_display}\pysiglinewithargsret{\code{DeviceSettings.}\bfcode{get\_adc\_sample\_rate\_display}}{\emph{*moreargs}, \emph{**morekwargs}}{}
+\end{fulllineitems}
+
+\index{get\_main\_channel\_display() (farmer.models.DeviceSettings method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.get_main_channel_display}\pysiglinewithargsret{\code{DeviceSettings.}\bfcode{get\_main\_channel\_display}}{\emph{*moreargs}, \emph{**morekwargs}}{}
+\end{fulllineitems}
+
+\index{main\_channel (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.main_channel}\pysigline{\code{DeviceSettings.}\bfcode{main\_channel}\strong{ = None}}
+Not currently in use. The idea here was to have the device multiplex
+its channels if it were only able to transmit one at a time. The SEAD
+Light is capable of transmitting on all channels.
+
+\end{fulllineitems}
+
+\index{objects (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.objects}\pysigline{\code{DeviceSettings.}\bfcode{objects}\strong{ = \textless{}django.db.models.manager.Manager object\textgreater{}}}
+\end{fulllineitems}
+
+\index{save() (farmer.models.DeviceSettings method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.save}\pysiglinewithargsret{\code{DeviceSettings.}\bfcode{save}}{\emph{**kwargs}}{}
+\end{fulllineitems}
+
+\index{transmission\_rate\_milliseconds (farmer.models.DeviceSettings attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.transmission_rate_milliseconds}\pysigline{\code{DeviceSettings.}\bfcode{transmission\_rate\_milliseconds}\strong{ = None}}
+The period of time in milliseconds before packet transmission
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{farmer.serializers module}
+\label{modules/farmer:module-farmer.serializers}\label{modules/farmer:farmer-serializers-module}\index{farmer.serializers (module)}\index{DeviceSettingsSerializer (class in farmer.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer}\pysiglinewithargsret{\strong{class }\code{farmer.serializers.}\bfcode{DeviceSettingsSerializer}}{\emph{instance=None}, \emph{data=\textless{}class rest\_framework.fields.empty\textgreater{}}, \emph{**kwargs}}{}
+Bases: \code{rest\_framework.serializers.ModelSerializer}
+\index{DeviceSettingsSerializer.Meta (class in farmer.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer.Meta}\pysigline{\strong{class }\bfcode{Meta}}~\index{fields (farmer.serializers.DeviceSettingsSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer.Meta.fields}\pysigline{\bfcode{fields}\strong{ = (`device', `device\_serial', `main\_channel', `transmission\_rate\_milliseconds', `adc\_sample\_rate', `date\_now')}}
+\end{fulllineitems}
+
+\index{model (farmer.serializers.DeviceSettingsSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer.Meta.model}\pysigline{\bfcode{model}}
+alias of \code{DeviceSettings}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{farmer.tests module}
+\label{modules/farmer:farmer-tests-module}\label{modules/farmer:module-farmer.tests}\index{farmer.tests (module)}
+
+\subsection{farmer.views module}
+\label{modules/farmer:farmer-views-module}\label{modules/farmer:module-farmer.views}\index{farmer.views (module)}\index{DeviceSettingsViewSet (class in farmer.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet}\pysiglinewithargsret{\strong{class }\code{farmer.views.}\bfcode{DeviceSettingsViewSet}}{\emph{**kwargs}}{}
+Bases: \code{rest\_framework.viewsets.ModelViewSet}
+
+API endpoint that allows devicesettings to be viewed or edited.
+\index{list() (farmer.views.DeviceSettingsViewSet method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.list}\pysiglinewithargsret{\bfcode{list}}{\emph{request}}{}
+\end{fulllineitems}
+
+\index{queryset (farmer.views.DeviceSettingsViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.queryset}\pysigline{\bfcode{queryset}}
+\end{fulllineitems}
+
+\index{retrieve() (farmer.views.DeviceSettingsViewSet method)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.retrieve}\pysiglinewithargsret{\bfcode{retrieve}}{\emph{request}, \emph{pk=None}}{}
+\end{fulllineitems}
+
+\index{serializer\_class (farmer.views.DeviceSettingsViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.serializer_class}\pysigline{\bfcode{serializer\_class}}
+alias of \code{DeviceSettingsSerializer}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{Module contents}
+\label{modules/farmer:module-contents}\label{modules/farmer:module-farmer}\index{farmer (module)}
+
+\section{Home Application}
+\label{modules/home:home-application}\label{modules/home::doc}
+This simple application handles logins and logouts as well as new
+user registration. This application should probably be rolled in with
+webapp for the sake of portability.
+
+
+\subsection{Subpackages}
+\label{modules/home:subpackages}
+
+\subsection{Submodules}
+\label{modules/home:submodules}
+
+\subsection{home.admin module}
+\label{modules/home:home-admin-module}\label{modules/home:module-home.admin}\index{home.admin (module)}
+
+\subsection{home.models module}
+\label{modules/home:module-home.models}\label{modules/home:home-models-module}\index{home.models (module)}
+
+\subsection{home.serializers module}
+\label{modules/home:home-serializers-module}\label{modules/home:module-home.serializers}\index{home.serializers (module)}\index{UserSerializer (class in home.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer}\pysiglinewithargsret{\strong{class }\code{home.serializers.}\bfcode{UserSerializer}}{\emph{instance=None}, \emph{data=\textless{}class rest\_framework.fields.empty\textgreater{}}, \emph{**kwargs}}{}
+Bases: \code{rest\_framework.serializers.HyperlinkedModelSerializer}
+\index{UserSerializer.Meta (class in home.serializers)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta}\pysigline{\strong{class }\bfcode{Meta}}~\index{fields (home.serializers.UserSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta.fields}\pysigline{\bfcode{fields}\strong{ = (`url', `username', `email', `is\_staff')}}
+\end{fulllineitems}
+
+\index{model (home.serializers.UserSerializer.Meta attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta.model}\pysigline{\bfcode{model}}
+alias of \code{User}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+
+
+\subsection{home.tests module}
+\label{modules/home:module-home.tests}\label{modules/home:home-tests-module}\index{home.tests (module)}
+
+\subsection{home.views module}
+\label{modules/home:home-views-module}\label{modules/home:module-home.views}\index{home.views (module)}\index{UserViewSet (class in home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.UserViewSet}\pysiglinewithargsret{\strong{class }\code{home.views.}\bfcode{UserViewSet}}{\emph{**kwargs}}{}
+Bases: \code{rest\_framework.viewsets.ModelViewSet}
+\index{queryset (home.views.UserViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.UserViewSet.queryset}\pysigline{\bfcode{queryset}}
+\end{fulllineitems}
+
+\index{serializer\_class (home.views.UserViewSet attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.UserViewSet.serializer_class}\pysigline{\bfcode{serializer\_class}}
+alias of \code{UserSerializer}
+
+\end{fulllineitems}
+
+
+\end{fulllineitems}
+
+\index{account() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.account}\pysiglinewithargsret{\code{home.views.}\bfcode{account}}{\emph{request}}{}
+A view that returns the account page of the requesting user. This
+is barebones, but could be expanded to provide the user with
+information on their own account. This is not the settings page.
+
+\textbf{Templates:}
+\begin{quote}
+
+\emph{base/account.html}
+\end{quote}
+
+\end{fulllineitems}
+
+\index{index() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.index}\pysiglinewithargsret{\code{home.views.}\bfcode{index}}{\emph{request}}{}
+\end{fulllineitems}
+
+\index{register() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.register}\pysiglinewithargsret{\code{home.views.}\bfcode{register}}{\emph{request}}{}
+A view that renders the register page for new users. This can only
+be access by users that are not currently signed in.
+
+\textbf{Context}
+\begin{quote}
+
+\code{form}
+\begin{quote}
+
+Registration form for new users
+\end{quote}
+\end{quote}
+
+\textbf{Templates:}
+\begin{quote}
+
+\emph{base/register.html}
+\end{quote}
+
+\end{fulllineitems}
+
+\index{signin() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.signin}\pysiglinewithargsret{\code{home.views.}\bfcode{signin}}{\emph{request}}{}
+A view that renders the sign-in page for existing users. All
+verification is done on the server side.
+
+\textbf{Context}
+\begin{quote}
+
+\code{form}
+\begin{quote}
+
+Sign-in form for existing users
+\end{quote}
+\end{quote}
+
+\textbf{Templates:}
+\begin{quote}
+
+\emph{base/signin.html}
+\end{quote}
+
+\end{fulllineitems}
+
+\index{signout() (in module home.views)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/home:home.views.signout}\pysiglinewithargsret{\code{home.views.}\bfcode{signout}}{\emph{request}}{}
+\end{fulllineitems}
+
+
+
+\subsection{Module contents}
+\label{modules/home:module-contents}\label{modules/home:module-home}\index{home (module)}
+
+\section{manage module}
+\label{modules/manage:manage-module}\label{modules/manage::doc}\label{modules/manage:module-manage}\index{manage (module)}
 
 \section{Microdata Application}
 \label{modules/microdata:microdata-application}\label{modules/microdata::doc}
@@ -1692,7 +2400,7 @@ Form class used to generate a simple key form. Currently used when a user intend
 \index{base\_fields (microdata.views.KeyForm attribute)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/microdata:microdata.views.KeyForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`serial': \textless{}django.forms.fields.IntegerField object at 0x2ba7e1df4bd0\textgreater{}\}}}
+\phantomsection\label{modules/microdata:microdata.views.KeyForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`serial': \textless{}django.forms.fields.IntegerField object at 0x2b744a773850\textgreater{}\}}}
 \end{fulllineitems}
 
 \index{media (microdata.views.KeyForm attribute)}
@@ -1763,6 +2471,110 @@ from \code{farmer.DeviceSettingsViewSet}.
 
 \subsection{Module contents}
 \label{modules/microdata:module-contents}\label{modules/microdata:module-microdata}\index{microdata (module)}
+
+\section{pseudodata module}
+\label{modules/pseudodata:module-pseudodata}\label{modules/pseudodata::doc}\label{modules/pseudodata:pseudodata-module}\index{pseudodata (module)}\index{Appliance (class in pseudodata)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/pseudodata:pseudodata.Appliance}\pysiglinewithargsret{\strong{class }\code{pseudodata.}\bfcode{Appliance}}{\emph{name}, \emph{averagepower}}{}
+\end{fulllineitems}
+
+\index{C (class in pseudodata)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/pseudodata:pseudodata.C}\pysiglinewithargsret{\strong{class }\code{pseudodata.}\bfcode{C}}{\emph{header}, \emph{device}, \emph{time\_start}, \emph{time\_stop}, \emph{appliance}, \emph{power}, \emph{conn}}{}
+\end{fulllineitems}
+
+\index{compute() (in module pseudodata)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/pseudodata:pseudodata.compute}\pysiglinewithargsret{\code{pseudodata.}\bfcode{compute}}{\emph{obj}}{}
+\end{fulllineitems}
+
+\index{get\_appliances() (in module pseudodata)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/pseudodata:pseudodata.get_appliances}\pysiglinewithargsret{\code{pseudodata.}\bfcode{get\_appliances}}{}{}
+\end{fulllineitems}
+
+
+
+\section{pseudodevice module}
+\label{modules/pseudodevice:pseudodevice-module}\label{modules/pseudodevice::doc}\label{modules/pseudodevice:module-pseudodevice}\index{pseudodevice (module)}\index{Device (class in pseudodevice)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/pseudodevice:pseudodevice.Device}\pysigline{\strong{class }\code{pseudodevice.}\bfcode{Device}}
+\end{fulllineitems}
+
+\index{main() (in module pseudodevice)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/pseudodevice:pseudodevice.main}\pysiglinewithargsret{\code{pseudodevice.}\bfcode{main}}{}{}
+The purpose of this function is to mimic the behavior of a device
+by interacting with the API. This is to test the functionality
+of the REST Framework.
+
+\textbf{Options}
+\begin{quote}
+
+\code{-e} \code{-{-}end}
+\begin{quote}
+
+int - define end time (in UTC seconds) of script
+\end{quote}
+
+\code{-s} \code{-{-}size}
+\begin{quote}
+
+define the number of packets to send
+\end{quote}
+
+\code{-d} \code{-{-}device}
+\begin{quote}
+
+serial of device to send from
+\end{quote}
+\end{quote}
+
+\end{fulllineitems}
+
+
+
+\section{SEADS Project}
+\label{modules/seads:seads-project}\label{modules/seads::doc}
+The project files for the Web Stack. Contains settings and urls
+necessary to run the project.
+
+
+\subsection{Submodules}
+\label{modules/seads:submodules}
+
+\subsection{seads.settings module}
+\label{modules/seads:seads-settings-module}\label{modules/seads:module-seads.settings}\index{seads.settings (module)}
+Django settings for seads project.
+
+For more information on this file, see
+\href{https://docs.djangoproject.com/en/1.7/topics/settings/}{https://docs.djangoproject.com/en/1.7/topics/settings/}
+
+For the full list of settings and their values, see
+\href{https://docs.djangoproject.com/en/1.7/ref/settings/}{https://docs.djangoproject.com/en/1.7/ref/settings/}
+
+
+\subsection{seads.urls module}
+\label{modules/seads:seads-urls-module}\label{modules/seads:module-seads.urls}\index{seads.urls (module)}
+
+\subsection{seads.wsgi module}
+\label{modules/seads:module-seads.wsgi}\label{modules/seads:seads-wsgi-module}\index{seads.wsgi (module)}
+WSGI config for seads project.
+
+It exposes the WSGI callable as a module-level variable named \code{application}.
+
+For more information on this file, see
+\href{https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/}{https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/}
+
+
+\subsection{Module contents}
+\label{modules/seads:module-seads}\label{modules/seads:module-contents}\index{seads (module)}
 
 \section{Webapp Application}
 \label{modules/webapp:webapp-application}\label{modules/webapp::doc}
@@ -2060,8 +2872,12 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{DeviceWebSettings (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.DeviceWebSettings}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{DeviceWebSettings}}{\emph{id}, \emph{device\_id}, \emph{current\_tier\_id}}{}
+\phantomsection\label{modules/webapp:webapp.models.DeviceWebSettings}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{DeviceWebSettings}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+An encapsulating module that links a device's settings together.
+
+This model can be extended to include new settings that may come to be in the future.
 \index{DeviceWebSettings.DoesNotExist}
 
 \begin{fulllineitems}
@@ -2215,6 +3031,12 @@ Proof of concept field to provide a threshold. If a group of appliances surpasse
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.IntervalNotification}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{IntervalNotification}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+Notifications sent to users when a specified period has elapsed.
+
+This class is also proof-of-concept, and it relies upon the \href{http://aws.amazon.com/ses/}{Amazon Simple Email Service}.
+An email will be sent to users who opt in to the notification summarizing their devices' energy usage over the specified
+period.
 \index{IntervalNotification.DoesNotExist}
 
 \begin{fulllineitems}
@@ -2228,6 +3050,22 @@ Bases: \code{django.core.exceptions.ObjectDoesNotExist}
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.IntervalNotification.MultipleObjectsReturned}\pysigline{\strong{exception }\code{IntervalNotification.}\bfcode{MultipleObjectsReturned}}
 Bases: \code{django.core.exceptions.MultipleObjectsReturned}
+
+\end{fulllineitems}
+
+\index{description (webapp.models.IntervalNotification attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.IntervalNotification.description}\pysigline{\code{IntervalNotification.}\bfcode{description}\strong{ = None}}
+The description of the event notification as a user would see it when selecting/deselecting the notification in the settings interface
+
+\end{fulllineitems}
+
+\index{email\_subject (webapp.models.IntervalNotification attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.IntervalNotification.email_subject}\pysigline{\code{IntervalNotification.}\bfcode{email\_subject}\strong{ = None}}
+An email-friendly subject for the event notification.
 
 \end{fulllineitems}
 
@@ -2299,8 +3137,14 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{RatePlan (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.RatePlan}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{RatePlan}}{\emph{id}, \emph{utility\_company\_id}, \emph{description}, \emph{data\_source}, \emph{min\_charge\_rate}, \emph{california\_climate\_credit}}{}
+\phantomsection\label{modules/webapp:webapp.models.RatePlan}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{RatePlan}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+The base class that describes how a user is charged in the Utility Company.
+
+This class is linked to {\hyperref[modules/webapp:webapp.models.UtilityCompany]{\emph{\code{webapp.models.UtilityCompany}}}} via a ForeignKey.
+In addition, the class contains a list of {\hyperref[modules/webapp:webapp.models.Tier]{\emph{\code{webapp.models.Tier}}}} objects
+that describe how the charges change based on usage.
 \index{RatePlan.DoesNotExist}
 
 \begin{fulllineitems}
@@ -2317,10 +3161,42 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \end{fulllineitems}
 
+\index{california\_climate\_credit (webapp.models.RatePlan attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.RatePlan.california_climate_credit}\pysigline{\code{RatePlan.}\bfcode{california\_climate\_credit}\strong{ = None}}
+A credit applied to a user's account twice yearly. Not currently in use.
+
+\end{fulllineitems}
+
+\index{data\_source (webapp.models.RatePlan attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.RatePlan.data_source}\pysigline{\code{RatePlan.}\bfcode{data\_source}\strong{ = None}}
+A simple URL field that links to the source of the data for this {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+
+\end{fulllineitems}
+
+\index{description (webapp.models.RatePlan attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.RatePlan.description}\pysigline{\code{RatePlan.}\bfcode{description}\strong{ = None}}
+A short description for the user when selecting their {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+
+\end{fulllineitems}
+
 \index{devicewebsettings\_set (webapp.models.RatePlan attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.RatePlan.devicewebsettings_set}\pysigline{\code{RatePlan.}\bfcode{devicewebsettings\_set}}
+\end{fulllineitems}
+
+\index{min\_charge\_rate (webapp.models.RatePlan attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.RatePlan.min_charge_rate}\pysigline{\code{RatePlan.}\bfcode{min\_charge\_rate}\strong{ = None}}
+The minimum amount charged to a user's account. Not currently in use.
+
 \end{fulllineitems}
 
 \index{objects (webapp.models.RatePlan attribute)}
@@ -2345,6 +3221,8 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.RatePlan.utility_company}\pysigline{\code{RatePlan.}\bfcode{utility\_company}}
+Utility company relation. Describe who owns the {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}
+
 \end{fulllineitems}
 
 
@@ -2353,8 +3231,13 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{Territory (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.Territory}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{Territory}}{\emph{id}, \emph{rate\_plan\_id}, \emph{description}, \emph{data\_source}, \emph{summer\_start}, \emph{winter\_start}, \emph{summer\_rate}, \emph{winter\_rate}}{}
+\phantomsection\label{modules/webapp:webapp.models.Territory}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{Territory}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+A {\hyperref[modules/webapp:webapp.models.Territory]{\emph{\code{webapp.models.Territory}}}} defines specifically key fields associated with a {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+
+This class specifies the base rates of a given {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}} as well as defining
+the winter and summer seasons for seasonal pricing.
 \index{Territory.DoesNotExist}
 
 \begin{fulllineitems}
@@ -2368,6 +3251,22 @@ Bases: \code{django.core.exceptions.ObjectDoesNotExist}
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.Territory.MultipleObjectsReturned}\pysigline{\strong{exception }\code{Territory.}\bfcode{MultipleObjectsReturned}}
 Bases: \code{django.core.exceptions.MultipleObjectsReturned}
+
+\end{fulllineitems}
+
+\index{data\_source (webapp.models.Territory attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Territory.data_source}\pysigline{\code{Territory.}\bfcode{data\_source}\strong{ = None}}
+A simple URL field that links to the source of the data for this {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+
+\end{fulllineitems}
+
+\index{description (webapp.models.Territory attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Territory.description}\pysigline{\code{Territory.}\bfcode{description}\strong{ = None}}
+A short description for the user when selecting their {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
 
 \end{fulllineitems}
 
@@ -2387,6 +3286,40 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.Territory.rate_plan}\pysigline{\code{Territory.}\bfcode{rate\_plan}}
+This object is related to a {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+
+\end{fulllineitems}
+
+\index{summer\_rate (webapp.models.Territory attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Territory.summer_rate}\pysigline{\code{Territory.}\bfcode{summer\_rate}\strong{ = None}}
+The base rate for the summer season.
+
+\end{fulllineitems}
+
+\index{summer\_start (webapp.models.Territory attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Territory.summer_start}\pysigline{\code{Territory.}\bfcode{summer\_start}\strong{ = None}}
+A month of the year that specifies the start of summer. 1-12.
+
+\end{fulllineitems}
+
+\index{winter\_rate (webapp.models.Territory attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Territory.winter_rate}\pysigline{\code{Territory.}\bfcode{winter\_rate}\strong{ = None}}
+The base rate for the winter season.
+
+\end{fulllineitems}
+
+\index{winter\_start (webapp.models.Territory attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Territory.winter_start}\pysigline{\code{Territory.}\bfcode{winter\_start}\strong{ = None}}
+A month of the year that specifies the start of winter. 1-12.
+
 \end{fulllineitems}
 
 
@@ -2395,8 +3328,14 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{Tier (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.Tier}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{Tier}}{\emph{id}, \emph{rate\_plan\_id}, \emph{tier\_level}, \emph{max\_percentage\_of\_baseline}, \emph{rate}, \emph{chart\_color}}{}
+\phantomsection\label{modules/webapp:webapp.models.Tier}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{Tier}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+A class that defines the cost and threshold of a {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+
+A {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}} typically has 4-5 {\hyperref[modules/webapp:webapp.models.Tier]{\emph{\code{webapp.models.Tier}}}} objects
+as a relation. These objects keep track of the cost modifier as well as the KWh threshold
+for a given device.
 \index{Tier.DoesNotExist}
 
 \begin{fulllineitems}
@@ -2413,10 +3352,26 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \end{fulllineitems}
 
+\index{chart\_color (webapp.models.Tier attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Tier.chart_color}\pysigline{\code{Tier.}\bfcode{chart\_color}\strong{ = None}}
+Color used by charts when graphing a {\hyperref[modules/webapp:webapp.models.Tier]{\emph{\code{webapp.models.Tier}}}}.
+
+\end{fulllineitems}
+
 \index{devicewebsettings\_set (webapp.models.Tier attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.Tier.devicewebsettings_set}\pysigline{\code{Tier.}\bfcode{devicewebsettings\_set}}
+\end{fulllineitems}
+
+\index{max\_percentage\_of\_baseline (webapp.models.Tier attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Tier.max_percentage_of_baseline}\pysigline{\code{Tier.}\bfcode{max\_percentage\_of\_baseline}\strong{ = None}}
+This defines the threshold for a given {\hyperref[modules/webapp:webapp.models.Tier]{\emph{\code{webapp.models.Tier}}}}. I.e. 100\% - 130\%
+
 \end{fulllineitems}
 
 \index{objects (webapp.models.Tier attribute)}
@@ -2425,10 +3380,28 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \phantomsection\label{modules/webapp:webapp.models.Tier.objects}\pysigline{\code{Tier.}\bfcode{objects}\strong{ = \textless{}django.db.models.manager.Manager object\textgreater{}}}
 \end{fulllineitems}
 
+\index{rate (webapp.models.Tier attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Tier.rate}\pysigline{\code{Tier.}\bfcode{rate}\strong{ = None}}
+The actual cost of a KWh at this level.
+
+\end{fulllineitems}
+
 \index{rate\_plan (webapp.models.Tier attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.Tier.rate_plan}\pysigline{\code{Tier.}\bfcode{rate\_plan}}
+This object is related to a {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+
+\end{fulllineitems}
+
+\index{tier\_level (webapp.models.Tier attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.Tier.tier_level}\pysigline{\code{Tier.}\bfcode{tier\_level}\strong{ = None}}
+An Integer, starting at 1, indicating the current level of the device.
+
 \end{fulllineitems}
 
 
@@ -2437,8 +3410,12 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{UserSettings (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.UserSettings}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{UserSettings}}{\emph{id}, \emph{user\_id}}{}
+\phantomsection\label{modules/webapp:webapp.models.UserSettings}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{UserSettings}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+An encapsulating module that links a user's settings together.
+
+This model can be extended to include new settings that may come to be in the future.
 \index{UserSettings.DoesNotExist}
 
 \begin{fulllineitems}
@@ -2459,12 +3436,16 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.UserSettings.event_notification}\pysigline{\code{UserSettings.}\bfcode{event\_notification}}
+A list of event notifications that the user has opted in to. Default to none.
+
 \end{fulllineitems}
 
 \index{interval\_notification (webapp.models.UserSettings attribute)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.UserSettings.interval_notification}\pysigline{\code{UserSettings.}\bfcode{interval\_notification}}
+A list of interval notifications that the user has opted in to. Default to none.
+
 \end{fulllineitems}
 
 \index{objects (webapp.models.UserSettings attribute)}
@@ -2477,6 +3458,8 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.UserSettings.user}\pysigline{\code{UserSettings.}\bfcode{user}}
+The related model for a settings model.
+
 \end{fulllineitems}
 
 
@@ -2485,8 +3468,15 @@ Bases: \code{django.core.exceptions.MultipleObjectsReturned}
 \index{UtilityCompany (class in webapp.models)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.models.UtilityCompany}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{UtilityCompany}}{\emph{id}, \emph{description}}{}
+\phantomsection\label{modules/webapp:webapp.models.UtilityCompany}\pysiglinewithargsret{\strong{class }\code{webapp.models.}\bfcode{UtilityCompany}}{\emph{*args}, \emph{**kwargs}}{}
 Bases: \code{django.db.models.base.Model}
+
+A placeholder class to describe a Utility Company.
+
+Since PG\&E is the only company that was developed on during the proof-of-concept phase,
+it is the company that was used to model the pricing structures. In the future, in order
+to integrate new types of companies, a Utility Company model should reflect how the Utility
+Company calculates cost.
 \index{UtilityCompany.DoesNotExist}
 
 \begin{fulllineitems}
@@ -2500,6 +3490,14 @@ Bases: \code{django.core.exceptions.ObjectDoesNotExist}
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.models.UtilityCompany.MultipleObjectsReturned}\pysigline{\strong{exception }\code{UtilityCompany.}\bfcode{MultipleObjectsReturned}}
 Bases: \code{django.core.exceptions.MultipleObjectsReturned}
+
+\end{fulllineitems}
+
+\index{description (webapp.models.UtilityCompany attribute)}
+
+\begin{fulllineitems}
+\phantomsection\label{modules/webapp:webapp.models.UtilityCompany.description}\pysigline{\code{UtilityCompany.}\bfcode{description}\strong{ = None}}
+A label that describes what company this is. Used for selection.
 
 \end{fulllineitems}
 
@@ -2590,7 +3588,7 @@ Bases: \code{django.forms.forms.Form}
 \index{base\_fields (webapp.views.SettingsForm attribute)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.views.SettingsForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`new\_username': \textless{}django.forms.fields.CharField object at 0x2ba7e26077d0\textgreater{}, `password1': \textless{}django.forms.fields.CharField object at 0x2ba7e26176d0\textgreater{}, `password2': \textless{}django.forms.fields.CharField object at 0x2ba7e2617750\textgreater{}, `first\_name': \textless{}django.forms.fields.CharField object at 0x2ba7e26177d0\textgreater{}, `last\_name': \textless{}django.forms.fields.CharField object at 0x2ba7e26178d0\textgreater{}, `email': \textless{}django.forms.fields.EmailField object at 0x2ba7e26179d0\textgreater{}, `notifications': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617a50\textgreater{}, `share\_with': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617b10\textgreater{}, `new\_name': \textless{}django.forms.fields.CharField object at 0x2ba7e2617b90\textgreater{}, `channel\_1': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617c50\textgreater{}, `channel\_2': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617cd0\textgreater{}, `channel\_3': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617d50\textgreater{}, `utility\_companies': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617dd0\textgreater{}, `rate\_plans': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617e50\textgreater{}, `territories': \textless{}django.forms.fields.ChoiceField object at 0x2ba7e2617ed0\textgreater{}, `stack': \textless{}django.forms.fields.BooleanField object at 0x2ba7e2617f10\textgreater{}\}}}
+\phantomsection\label{modules/webapp:webapp.views.SettingsForm.base_fields}\pysigline{\bfcode{base\_fields}\strong{ = \{`new\_username': \textless{}django.forms.fields.CharField object at 0x2b744b114310\textgreater{}, `password1': \textless{}django.forms.fields.CharField object at 0x2b744b12a8d0\textgreater{}, `password2': \textless{}django.forms.fields.CharField object at 0x2b744b12a950\textgreater{}, `first\_name': \textless{}django.forms.fields.CharField object at 0x2b744b12a9d0\textgreater{}, `last\_name': \textless{}django.forms.fields.CharField object at 0x2b744b12aad0\textgreater{}, `email': \textless{}django.forms.fields.EmailField object at 0x2b744b12abd0\textgreater{}, `notifications': \textless{}django.forms.fields.ChoiceField object at 0x2b744b12ac50\textgreater{}, `share\_with': \textless{}django.forms.fields.ChoiceField object at 0x2b744b12ad10\textgreater{}, `new\_name': \textless{}django.forms.fields.CharField object at 0x2b744b12ad90\textgreater{}, `channel\_1': \textless{}django.forms.fields.ChoiceField object at 0x2b744b12ae90\textgreater{}, `channel\_2': \textless{}django.forms.fields.ChoiceField object at 0x2b744b12af10\textgreater{}, `channel\_3': \textless{}django.forms.fields.ChoiceField object at 0x2b744b12af90\textgreater{}, `utility\_companies': \textless{}django.forms.fields.ChoiceField object at 0x2b744b132050\textgreater{}, `rate\_plans': \textless{}django.forms.fields.ChoiceField object at 0x2b744b1320d0\textgreater{}, `territories': \textless{}django.forms.fields.ChoiceField object at 0x2b744b132150\textgreater{}, `stack': \textless{}django.forms.fields.BooleanField object at 0x2b744b132190\textgreater{}\}}}
 \end{fulllineitems}
 
 \index{channel\_1\_choices (webapp.views.SettingsForm attribute)}
@@ -2690,6 +3688,56 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.billing_information}\pysiglinewithargsret{\code{webapp.views.}\bfcode{billing\_information}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+Dashboard function called via AJAX.
+
+This gives the user live information about their bill status
+as it stands from within the server's calculations. The current
+tier is returned as well as the total KWh consumed for this month.
+
+\textbf{Context}
+\begin{quote}
+\begin{quote}
+
+\code{device}
+\begin{quote}
+
+The {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} object that the
+request was completed for.
+\end{quote}
+
+\code{tier\_progress\_list}
+\begin{quote}
+
+A tuple containing a {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}}
+object as well as a percentage of the progess the
+{\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} is to reaching the next
+{\hyperref[modules/webapp:webapp.models.Tier]{\emph{\code{webapp.models.Tier}}}} level.
+\end{quote}
+
+\code{territory}
+\begin{quote}
+\begin{quote}
+
+This returns the current {\hyperref[modules/webapp:webapp.models.Territory]{\emph{\code{webapp.models.Territory}}}}
+which assists in client-side calculations.
+\end{quote}
+
+\code{tiers}
+\begin{quote}
+
+A list of all the {\hyperref[modules/webapp:webapp.models.Tier]{\emph{\code{webapp.models.Tier}}}} objects
+associated with the chosen {\hyperref[modules/webapp:webapp.models.RatePlan]{\emph{\code{webapp.models.RatePlan}}}}.
+\end{quote}
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/billing\_information.html.html}
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{chartify() (in module webapp.views)}
@@ -2702,18 +3750,76 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.charts_deprecated}\pysiglinewithargsret{\code{webapp.views.}\bfcode{charts\_deprecated}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+DEPRECATED
+
 \end{fulllineitems}
 
 \index{circuits\_information() (in module webapp.views)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.circuits_information}\pysiglinewithargsret{\code{webapp.views.}\bfcode{circuits\_information}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+Dashboard function called via AJAX.
+
+This function provides the data necessary to render a simple
+donut chart showing the breakdown of a circuit by the amount
+of energy it has consumed relative to other circuits.
+
+\textbf{Context}
+\begin{quote}
+\begin{quote}
+
+\code{circuits}
+\begin{quote}
+
+A list of tuples of the form:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{[}
+    \PYG{n}{microdata}\PYG{o}{.}\PYG{n}{models}\PYG{o}{.}\PYG{n}{Device}\PYG{o}{.}\PYG{n}{channel\PYGZus{}1}\PYG{p}{,}
+    \PYG{n}{channel\PYGZus{}1\PYGZus{}kwh}
+\PYG{p}{]}
+\end{Verbatim}
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/base/circuits\_information.html}
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{dashboard() (in module webapp.views)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.dashboard}\pysiglinewithargsret{\code{webapp.views.}\bfcode{dashboard}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+The first function called when a user has logged in and accesses the Dashboard.
+
+\textbf{Context}
+\begin{quote}
+
+\code{my\_devices}
+\begin{quote}
+
+A list of {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} that either belong to the user or are shared with the user.
+This list is used to generate markers on the graph.
+\end{quote}
+
+\code{server\_time}
+\begin{quote}
+
+The current time as reported by the server. This is used as a time offset for the graph.
+\end{quote}
+\end{quote}
+
+\textbf{Templates:}
+\begin{quote}
+
+\emph{base/dashboard.html}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{dashboard\_update() (in module webapp.views)}
@@ -2726,18 +3832,126 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.default_chart}\pysiglinewithargsret{\code{webapp.views.}\bfcode{default\_chart}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+The first function called when a user has logged in and accesses the Dashboard.
+
+\textbf{Context}
+\begin{quote}
+
+\code{my\_devices}
+\begin{quote}
+
+A list of {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} that either belong to the user or are shared with the user.
+This list is used to generate markers on the graph.
+\end{quote}
+
+\code{server\_time}
+\begin{quote}
+
+The current time as reported by the server. This is used as a time offset for the graph.
+\end{quote}
+\end{quote}
+
+\textbf{Templates:}
+
+{}`   base/dashboard.html{}`
+
 \end{fulllineitems}
 
 \index{device\_chart() (in module webapp.views)}
 
 \begin{fulllineitems}
-\phantomsection\label{modules/webapp:webapp.views.device_chart}\pysiglinewithargsret{\code{webapp.views.}\bfcode{device\_chart}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+\phantomsection\label{modules/webapp:webapp.views.device_chart}\pysiglinewithargsret{\code{webapp.views.}\bfcode{device\_chart}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}~\begin{quote}
+
+Return an HTML/Javascript chart ready to be rendered to the client.
+No data is preloaded. However, a chart will have a unique endpoint
+to retrieve data based on device serial.
+
+\textbf{Context}
+\begin{quote}
+
+\code{device}
+\begin{quote}
+
+A {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} object for the serial provided.
+\end{quote}
+
+\code{circuit\_pk}
+\begin{quote}
+\begin{quote}
+
+If a \code{circuit\_pk} is specified, then this function will return a chart
+with just the circuit specified by the primary key. This returns the pk.
+\end{quote}
+
+\code{circuit\_name}
+\begin{quote}
+
+If a \code{circuit\_pk} is specified, then this function will return a chart
+with just the circuit specified by the primary key. This returns the name.
+\end{quote}
+\end{quote}
+
+\code{circuits}
+\begin{quote}
+
+A list of circuits that relate to the channels of the device.
+\end{quote}
+
+\code{server\_time}
+\begin{quote}
+
+The time as seen by the server right now. Used to synchronize the chart.
+\end{quote}
+
+\code{stack}
+\begin{quote}
+
+This is used to specify whether the chart is stacked or unstacked. This
+was intended to be a setting that a user could toggle via the settings page.
+\end{quote}
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/chart.html}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{device\_data() (in module webapp.views)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.device_data}\pysiglinewithargsret{\code{webapp.views.}\bfcode{device\_data}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+Get the cost today, average wattage, and current wattage associated with the specified device.
+Should be called through AJAX and is expected to take a couple seconds to complete.
+
+\textbf{Context}
+\begin{quote}
+
+\code{cost\_today}
+\begin{quote}
+
+A simple lookup from the device itself. This could be transformed to a template
+variable instead in the future.
+\end{quote}
+
+\code{average\_wattage}
+\begin{quote}
+
+This is done by simply selecting the newest mean value from the 1 day series. This
+is probably cheating but it's really fast compared to computing a new average
+at every lookup.
+\end{quote}
+
+\code{current\_wattage}
+\begin{quote}
+
+This is simply the sum of the newest wattages from each channel of the device.
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{device\_is\_online() (in module webapp.views)}
@@ -2756,6 +3970,22 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.device_status}\pysiglinewithargsret{\code{webapp.views.}\bfcode{device\_status}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+Check to see if a device is connected to the system or not.
+
+This is done by checking to see how recent the newest data point in
+the database is. If it's not older than 40 seconds, assume the device
+is currently connected.
+
+\textbf{Context}
+\begin{quote}
+
+\code{connected}
+\begin{quote}
+
+Boolean. True if device has data not older than 40 seconds.
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{export\_data() (in module webapp.views)}
@@ -2768,6 +3998,34 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.generate_average_wattage_usage}\pysiglinewithargsret{\code{webapp.views.}\bfcode{generate\_average\_wattage\_usage}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+Get the cost today, average wattage, and current wattage associated with the specified device.
+Should be called through AJAX and is expected to take a couple seconds to complete.
+
+\textbf{Context}
+\begin{quote}
+
+\code{cost\_today}
+\begin{quote}
+
+A simple lookup from the device itself. This could be transformed to a template
+variable instead in the future.
+\end{quote}
+
+\code{average\_wattage}
+\begin{quote}
+
+This is done by simply selecting the newest mean value from the 1 day series. This
+is probably cheating but it's really fast compared to computing a new average
+at every lookup.
+\end{quote}
+
+\code{current\_wattage}
+\begin{quote}
+
+This is simply the sum of the newest wattages from each channel of the device.
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{generate\_heatmap\_data() (in module webapp.views)}
@@ -2780,6 +4038,8 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.get_wattage_usage}\pysiglinewithargsret{\code{webapp.views.}\bfcode{get\_wattage\_usage}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+Wrapper function that calls \emph{webapp.views.generate\_average\_wattage\_usage}.
+
 \end{fulllineitems}
 
 \index{group\_by\_mean() (in module webapp.views)}
@@ -2798,6 +4058,25 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.landing}\pysiglinewithargsret{\code{webapp.views.}\bfcode{landing}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+The first function called when a user has logged in and accesses the Dashboard.
+
+\textbf{Context}
+\begin{quote}
+
+\code{my\_devices}
+\begin{quote}
+
+A list of {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} objects that either belong to the user or are shared with the user.
+This list is used to populate the sidebar with {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} links.
+\end{quote}
+\end{quote}
+
+\textbf{Templates:}
+\begin{quote}
+
+\emph{base/dashboard.html}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{make\_choices() (in module webapp.views)}
@@ -2822,18 +4101,205 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.settings}\pysiglinewithargsret{\code{webapp.views.}\bfcode{settings}}{\emph{*args}, \emph{**kwargs}}{}
+The main function to handle settings requests. This module interprets
+where on the settings page the user is and provides correct context
+corresponding to their state.
+
+There are three possible states:
+\begin{enumerate}
+\item {} 
+Device
+
+\end{enumerate}
+
+\textbf{Context}
+\begin{quote}
+
+\code{devices}
+\begin{quote}
+
+A list of devices the user owns. These are the devices
+this user is allowed to modify in a restricted way.
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/settings\_device\_base.html}
+\end{quote}
+\begin{enumerate}
+\setcounter{enumi}{1}
+\item {} 
+Account
+
+\end{enumerate}
+
+\textbf{Context}
+\begin{quote}
+
+\code{form}
+\begin{quote}
+
+A {\hyperref[modules/webapp:webapp.views.SettingsForm]{\emph{\code{webapp.views.SettingsForm}}}} object that provides the
+fields to a user necessary to make custom modifications to their
+account.
+\end{quote}
+
+\code{notification\_choices}
+\begin{quote}
+
+A confirmation of the notification choices the user is
+subscribed to. Used for client side verification.
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/settings\_account.html}
+\end{quote}
+\begin{enumerate}
+\setcounter{enumi}{2}
+\item {} 
+Dashboard
+
+\end{enumerate}
+
+\textbf{Context}
+\begin{quote}
+
+\code{form}
+\begin{quote}
+
+A {\hyperref[modules/webapp:webapp.views.SettingsForm]{\emph{\code{webapp.views.SettingsForm}}}} object that provides the
+fields to a user necessary to make custom modifications to their
+dashboard.
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/settings\_dashboard.html}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{settings\_account() (in module webapp.views)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.settings_account}\pysiglinewithargsret{\code{webapp.views.}\bfcode{settings\_account}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+This class deals with the actual modification of an account
+via the account settings.
+
+\textbf{Context}
+\begin{quote}
+\begin{quote}
+
+\code{errors}
+\begin{quote}
+
+A list of errors that were encountered while processing the
+request. This is used to present to the user if one of their
+actions did not validate.
+\end{quote}
+
+\code{success}
+\begin{quote}
+
+Boolean specifying whether or not the action was successful.
+This would be false if a user's action did not verify.
+\end{quote}
+
+\code{notifications}
+\begin{quote}
+
+A list of notifications that a user is subscribed to
+after updating the list.
+\end{quote}
+
+\code{username}
+\begin{quote}
+
+If the user opted to change their username, then the new
+username verified by the system is returned to update the
+HTML.
+\end{quote}
+
+\code{first\_name}
+\begin{quote}
+
+If the user opted to change their first name, then the new
+first name verified by the system is returned to update the
+HTML.
+\end{quote}
+
+\code{last\_name}
+\begin{quote}
+
+If the user opted to change their last name, then the new
+last name verified by the system is returned to update the
+HTML.
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/settings\_account.html}
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{settings\_change\_device() (in module webapp.views)}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.settings_change_device}\pysiglinewithargsret{\code{webapp.views.}\bfcode{settings\_change\_device}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+This class is called when a user is ready to modify a device.
+Since there are custom fields being displayed, some extra context
+must be returned to properly serve the form.
+
+\textbf{Context}
+\begin{quote}
+\begin{quote}
+
+\code{device}
+\begin{quote}
+
+The {\hyperref[modules/microdata:microdata.models.Device]{\emph{\code{microdata.models.Device}}}} being modified
+\end{quote}
+
+\code{form}
+\begin{quote}
+
+A {\hyperref[modules/webapp:webapp.views.SettingsForm]{\emph{\code{webapp.views.SettingsForm}}}} with values populated
+by specifying a device.
+\end{quote}
+
+\code{utility\_company\_choices} \code{rate\_plan\_choices} \code{territory\_choices}
+\begin{quote}
+
+The various checkbox/dropdown choices for a user to customize
+the device's settings.
+\end{quote}
+
+\code{farmer\_installed}
+\begin{quote}
+
+A proof-of-concept variable that will enable certain
+functionality on the HTML page if this application is installed.
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/settings\_device.html}
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 \index{settings\_dashboard() (in module webapp.views)}
@@ -2846,321 +4312,49 @@ Bases: \code{django.forms.forms.Form}
 
 \begin{fulllineitems}
 \phantomsection\label{modules/webapp:webapp.views.settings_device}\pysiglinewithargsret{\code{webapp.views.}\bfcode{settings\_device}}{\emph{request}, \emph{*args}, \emph{**kwargs}}{}
+This class deals with the actual modification of a device
+via the device settings.
+
+\textbf{Context}
+\begin{quote}
+\begin{quote}
+
+\code{success}
+\begin{quote}
+
+Boolean specifying whether or not the action was successful.
+This would be false if a user's action did not verify.
+\end{quote}
+
+\code{appliances}
+\begin{quote}
+
+This is a list of appliance that the user requests to be
+associated with their custom circuit.
+\end{quote}
+
+\code{utility\_companies} \code{rate\_plan} \code{territory}
+\begin{quote}
+
+If the user opted to alter any of these fields,
+we make the alterations if they are verified
+and return the response for client side verification.
+\end{quote}
+\end{quote}
+
+\textbf{Template}
+\begin{quote}
+
+\emph{base/settings\_device.html}
+\end{quote}
+\end{quote}
+
 \end{fulllineitems}
 
 
 
 \subsection{Module contents}
 \label{modules/webapp:module-webapp}\label{modules/webapp:module-contents}\index{webapp (module)}
-
-\section{farmer package}
-\label{modules/farmer:farmer-package}\label{modules/farmer::doc}
-
-\subsection{Submodules}
-\label{modules/farmer:submodules}
-
-\subsection{farmer.admin module}
-\label{modules/farmer:module-farmer.admin}\label{modules/farmer:farmer-admin-module}\index{farmer.admin (module)}\index{DeviceSettingsAdmin (class in farmer.admin)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsAdmin}\pysiglinewithargsret{\strong{class }\code{farmer.admin.}\bfcode{DeviceSettingsAdmin}}{\emph{model}, \emph{admin\_site}}{}
-Bases: \code{django.contrib.admin.options.ModelAdmin}
-\index{media (farmer.admin.DeviceSettingsAdmin attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsAdmin.media}\pysigline{\bfcode{media}}
-\end{fulllineitems}
-
-\index{verbose\_name\_plural (farmer.admin.DeviceSettingsAdmin attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsAdmin.verbose_name_plural}\pysigline{\bfcode{verbose\_name\_plural}\strong{ = `devicesettings'}}
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-\index{DeviceSettingsInline (class in farmer.admin)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline}\pysiglinewithargsret{\strong{class }\code{farmer.admin.}\bfcode{DeviceSettingsInline}}{\emph{parent\_model}, \emph{admin\_site}}{}
-Bases: \code{django.contrib.admin.options.StackedInline}
-\index{can\_delete (farmer.admin.DeviceSettingsInline attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline.can_delete}\pysigline{\bfcode{can\_delete}\strong{ = False}}
-\end{fulllineitems}
-
-\index{media (farmer.admin.DeviceSettingsInline attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline.media}\pysigline{\bfcode{media}}
-\end{fulllineitems}
-
-\index{model (farmer.admin.DeviceSettingsInline attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.admin.DeviceSettingsInline.model}\pysigline{\bfcode{model}}
-alias of \code{DeviceSettings}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-
-\subsection{farmer.models module}
-\label{modules/farmer:module-farmer.models}\label{modules/farmer:farmer-models-module}\index{farmer.models (module)}\index{DeviceSettings (class in farmer.models)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings}\pysiglinewithargsret{\strong{class }\code{farmer.models.}\bfcode{DeviceSettings}}{\emph{device\_id}, \emph{device\_serial}, \emph{main\_channel}, \emph{adc\_sample\_rate}, \emph{transmission\_rate\_milliseconds}, \emph{date\_now}}{}
-Bases: \code{django.db.models.base.Model}
-\index{CHANNEL\_CHOICES (farmer.models.DeviceSettings attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.CHANNEL_CHOICES}\pysigline{\bfcode{CHANNEL\_CHOICES}\strong{ = ((1, `Channel 1'), (2, `Channel 2'), (3, `Channel 3'), (4, `Channel 4'))}}
-\end{fulllineitems}
-
-\index{DeviceSettings.DoesNotExist}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.DoesNotExist}\pysigline{\strong{exception }\bfcode{DoesNotExist}}
-Bases: \code{django.core.exceptions.ObjectDoesNotExist}
-
-\end{fulllineitems}
-
-\index{DeviceSettings.MultipleObjectsReturned}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.MultipleObjectsReturned}\pysigline{\strong{exception }\code{DeviceSettings.}\bfcode{MultipleObjectsReturned}}
-Bases: \code{django.core.exceptions.MultipleObjectsReturned}
-
-\end{fulllineitems}
-
-\index{SAMPLE\_RATE\_CHOICES (farmer.models.DeviceSettings attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.SAMPLE_RATE_CHOICES}\pysigline{\code{DeviceSettings.}\bfcode{SAMPLE\_RATE\_CHOICES}\strong{ = ((0, 125000), (1, 62500), (2, 31250), (3, 15625), (4, 7812.5), (5, 3906.25), (6, 1953.125), (7, 976.5625))}}
-\end{fulllineitems}
-
-\index{device (farmer.models.DeviceSettings attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.device}\pysigline{\code{DeviceSettings.}\bfcode{device}}
-\end{fulllineitems}
-
-\index{get\_adc\_sample\_rate\_display() (farmer.models.DeviceSettings method)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.get_adc_sample_rate_display}\pysiglinewithargsret{\code{DeviceSettings.}\bfcode{get\_adc\_sample\_rate\_display}}{\emph{*moreargs}, \emph{**morekwargs}}{}
-\end{fulllineitems}
-
-\index{get\_main\_channel\_display() (farmer.models.DeviceSettings method)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.get_main_channel_display}\pysiglinewithargsret{\code{DeviceSettings.}\bfcode{get\_main\_channel\_display}}{\emph{*moreargs}, \emph{**morekwargs}}{}
-\end{fulllineitems}
-
-\index{objects (farmer.models.DeviceSettings attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.objects}\pysigline{\code{DeviceSettings.}\bfcode{objects}\strong{ = \textless{}django.db.models.manager.Manager object\textgreater{}}}
-\end{fulllineitems}
-
-\index{save() (farmer.models.DeviceSettings method)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.models.DeviceSettings.save}\pysiglinewithargsret{\code{DeviceSettings.}\bfcode{save}}{\emph{**kwargs}}{}
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-
-\subsection{farmer.serializers module}
-\label{modules/farmer:module-farmer.serializers}\label{modules/farmer:farmer-serializers-module}\index{farmer.serializers (module)}\index{DeviceSettingsSerializer (class in farmer.serializers)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer}\pysiglinewithargsret{\strong{class }\code{farmer.serializers.}\bfcode{DeviceSettingsSerializer}}{\emph{instance=None}, \emph{data=\textless{}class rest\_framework.fields.empty\textgreater{}}, \emph{**kwargs}}{}
-Bases: \code{rest\_framework.serializers.ModelSerializer}
-\index{DeviceSettingsSerializer.Meta (class in farmer.serializers)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer.Meta}\pysigline{\strong{class }\bfcode{Meta}}~\index{fields (farmer.serializers.DeviceSettingsSerializer.Meta attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer.Meta.fields}\pysigline{\bfcode{fields}\strong{ = (`device', `device\_serial', `main\_channel', `transmission\_rate\_milliseconds', `adc\_sample\_rate', `date\_now')}}
-\end{fulllineitems}
-
-\index{model (farmer.serializers.DeviceSettingsSerializer.Meta attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.serializers.DeviceSettingsSerializer.Meta.model}\pysigline{\bfcode{model}}
-alias of \code{DeviceSettings}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-
-\subsection{farmer.tests module}
-\label{modules/farmer:farmer-tests-module}\label{modules/farmer:module-farmer.tests}\index{farmer.tests (module)}
-
-\subsection{farmer.views module}
-\label{modules/farmer:farmer-views-module}\label{modules/farmer:module-farmer.views}\index{farmer.views (module)}\index{DeviceSettingsViewSet (class in farmer.views)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet}\pysiglinewithargsret{\strong{class }\code{farmer.views.}\bfcode{DeviceSettingsViewSet}}{\emph{**kwargs}}{}
-Bases: \code{rest\_framework.viewsets.ModelViewSet}
-
-API endpoint that allows devicesettings to be viewed or edited.
-\index{list() (farmer.views.DeviceSettingsViewSet method)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.list}\pysiglinewithargsret{\bfcode{list}}{\emph{request}}{}
-\end{fulllineitems}
-
-\index{queryset (farmer.views.DeviceSettingsViewSet attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.queryset}\pysigline{\bfcode{queryset}}
-\end{fulllineitems}
-
-\index{retrieve() (farmer.views.DeviceSettingsViewSet method)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.retrieve}\pysiglinewithargsret{\bfcode{retrieve}}{\emph{request}, \emph{pk=None}}{}
-\end{fulllineitems}
-
-\index{serializer\_class (farmer.views.DeviceSettingsViewSet attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/farmer:farmer.views.DeviceSettingsViewSet.serializer_class}\pysigline{\bfcode{serializer\_class}}
-alias of \code{DeviceSettingsSerializer}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-
-\subsection{Module contents}
-\label{modules/farmer:module-contents}\label{modules/farmer:module-farmer}\index{farmer (module)}
-
-\section{home package}
-\label{modules/home::doc}\label{modules/home:home-package}
-
-\subsection{Subpackages}
-\label{modules/home:subpackages}
-
-\subsection{Submodules}
-\label{modules/home:submodules}
-
-\subsection{home.admin module}
-\label{modules/home:home-admin-module}\label{modules/home:module-home.admin}\index{home.admin (module)}
-
-\subsection{home.models module}
-\label{modules/home:module-home.models}\label{modules/home:home-models-module}\index{home.models (module)}
-
-\subsection{home.serializers module}
-\label{modules/home:home-serializers-module}\label{modules/home:module-home.serializers}\index{home.serializers (module)}\index{UserSerializer (class in home.serializers)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.serializers.UserSerializer}\pysiglinewithargsret{\strong{class }\code{home.serializers.}\bfcode{UserSerializer}}{\emph{instance=None}, \emph{data=\textless{}class rest\_framework.fields.empty\textgreater{}}, \emph{**kwargs}}{}
-Bases: \code{rest\_framework.serializers.HyperlinkedModelSerializer}
-\index{UserSerializer.Meta (class in home.serializers)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta}\pysigline{\strong{class }\bfcode{Meta}}~\index{fields (home.serializers.UserSerializer.Meta attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta.fields}\pysigline{\bfcode{fields}\strong{ = (`url', `username', `email', `is\_staff')}}
-\end{fulllineitems}
-
-\index{model (home.serializers.UserSerializer.Meta attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.serializers.UserSerializer.Meta.model}\pysigline{\bfcode{model}}
-alias of \code{User}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-
-
-\subsection{home.tests module}
-\label{modules/home:module-home.tests}\label{modules/home:home-tests-module}\index{home.tests (module)}
-
-\subsection{home.views module}
-\label{modules/home:home-views-module}\label{modules/home:module-home.views}\index{home.views (module)}\index{UserViewSet (class in home.views)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.UserViewSet}\pysiglinewithargsret{\strong{class }\code{home.views.}\bfcode{UserViewSet}}{\emph{**kwargs}}{}
-Bases: \code{rest\_framework.viewsets.ModelViewSet}
-\index{queryset (home.views.UserViewSet attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.UserViewSet.queryset}\pysigline{\bfcode{queryset}}
-\end{fulllineitems}
-
-\index{serializer\_class (home.views.UserViewSet attribute)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.UserViewSet.serializer_class}\pysigline{\bfcode{serializer\_class}}
-alias of \code{UserSerializer}
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-\index{account() (in module home.views)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.account}\pysiglinewithargsret{\code{home.views.}\bfcode{account}}{\emph{request}}{}
-\end{fulllineitems}
-
-\index{index() (in module home.views)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.index}\pysiglinewithargsret{\code{home.views.}\bfcode{index}}{\emph{request}}{}
-\end{fulllineitems}
-
-\index{register() (in module home.views)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.register}\pysiglinewithargsret{\code{home.views.}\bfcode{register}}{\emph{request}}{}
-\end{fulllineitems}
-
-\index{signin() (in module home.views)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.signin}\pysiglinewithargsret{\code{home.views.}\bfcode{signin}}{\emph{request}}{}
-\end{fulllineitems}
-
-\index{signout() (in module home.views)}
-
-\begin{fulllineitems}
-\phantomsection\label{modules/home:home.views.signout}\pysiglinewithargsret{\code{home.views.}\bfcode{signout}}{\emph{request}}{}
-\end{fulllineitems}
-
-
-
-\subsection{Module contents}
-\label{modules/home:module-contents}\label{modules/home:module-home}\index{home (module)}
 
 \chapter{Indices and tables}
 \label{index:indices-and-tables}\begin{itemize}
@@ -3179,6 +4373,18 @@ alias of \code{UserSerializer}
 \renewcommand{\indexname}{Python Module Index}
 \begin{theindex}
 \def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+\bigletter{c}
+\item {\texttt{custom\_config}}, \pageref{modules/custom_config:module-custom_config}
+\indexspace
+\bigletter{d}
+\item {\texttt{debug}}, \pageref{modules/debug:module-debug}
+\item {\texttt{debug.admin}}, \pageref{modules/debug:module-debug.admin}
+\item {\texttt{debug.forms}}, \pageref{modules/debug:module-debug.forms}
+\item {\texttt{debug.models}}, \pageref{modules/debug:module-debug.models}
+\item {\texttt{debug.serializers}}, \pageref{modules/debug:module-debug.serializers}
+\item {\texttt{debug.urls}}, \pageref{modules/debug:module-debug.urls}
+\item {\texttt{debug.views}}, \pageref{modules/debug:module-debug.views}
+\indexspace
 \bigletter{f}
 \item {\texttt{farmer}}, \pageref{modules/farmer:module-farmer}
 \item {\texttt{farmer.admin}}, \pageref{modules/farmer:module-farmer.admin}
@@ -3196,6 +4402,7 @@ alias of \code{UserSerializer}
 \item {\texttt{home.views}}, \pageref{modules/home:module-home.views}
 \indexspace
 \bigletter{m}
+\item {\texttt{manage}}, \pageref{modules/manage:module-manage}
 \item {\texttt{microdata}}, \pageref{modules/microdata:module-microdata}
 \item {\texttt{microdata.admin}}, \pageref{modules/microdata:module-microdata.admin}
 \item {\texttt{microdata.management}}, \pageref{modules/microdata.management:module-microdata.management}
@@ -3206,6 +4413,16 @@ alias of \code{UserSerializer}
 \item {\texttt{microdata.serializers}}, \pageref{modules/microdata:module-microdata.serializers}
 \item {\texttt{microdata.tests}}, \pageref{modules/microdata:module-microdata.tests}
 \item {\texttt{microdata.views}}, \pageref{modules/microdata:module-microdata.views}
+\indexspace
+\bigletter{p}
+\item {\texttt{pseudodata}}, \pageref{modules/pseudodata:module-pseudodata}
+\item {\texttt{pseudodevice}}, \pageref{modules/pseudodevice:module-pseudodevice}
+\indexspace
+\bigletter{s}
+\item {\texttt{seads}}, \pageref{modules/seads:module-seads}
+\item {\texttt{seads.settings}}, \pageref{modules/seads:module-seads.settings}
+\item {\texttt{seads.urls}}, \pageref{modules/seads:module-seads.urls}
+\item {\texttt{seads.wsgi}}, \pageref{modules/seads:module-seads.wsgi}
 \indexspace
 \bigletter{w}
 \item {\texttt{webapp}}, \pageref{modules/webapp:module-webapp}

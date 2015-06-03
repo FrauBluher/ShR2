@@ -30,4 +30,5 @@ What follows is the breakdown of each application and how they work.
 	modules/webapp
 	modules/farmer
 	modules/home
+	modules/debug
 

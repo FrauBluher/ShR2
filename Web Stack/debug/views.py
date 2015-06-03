@@ -8,7 +8,6 @@ from django.forms import ModelChoiceField
 from django.core import serializers
 
 from influxdb.influxdb08 import client as influxdb
-from django.contrib.gis.geoip import GeoIP
 
 import git
 import random
@@ -53,6 +52,11 @@ class DevForm(forms.Form):
 
 @csrf_exempt
 def gitupdate(request):
+    """
+    DEPRECATED
+    
+    This could be reinstated by changing the Git directory seen below.
+    """
     if request.method == 'POST':
         try:
             g = git.cmd.Git("/home/ubuntu/seads-git/ShR2/")
@@ -70,6 +74,23 @@ def echo_args(request, args):
    return HttpResponse(status=200)
 
 def generate_points(start, stop, resolution, energy_use, device, channels):
+   """
+   Function to generate random points of data.
+   
+   The goal of this function was to generate data that could maybe pass
+   as being semi-realistic. To do this, each circuit type has its own
+   profile with an average, minumum, maximum, and cutoff wattage.
+   
+   These values are added/subtracted by a random number in a range
+   proportional to the maximum wattage for the circuit. This gives
+   a series that appears to be changing slowly over time.
+   
+   This function works in much the same way as the save() function
+   for an :class:`microdata.models.Event`. It keeps track of the
+   cumulative KWh consumed and will advance the tier level if
+   the threshold is passed.
+   """
+   
    multiplier = 1
    if energy_use == 2: multiplier = 2
    if energy_use == 3: multiplier = .3
@@ -186,7 +207,7 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
       kwh = 0.0
       point_list = [i]
       for channel in channels:
-         wattage = wattages[channel.name]['avg'] + random.uniform(-wattages[channel.name]['avg']*0.1,wattages[channel.name]['avg']*0.1)
+         wattage = wattages[channel.name]['avg'] + random.uniform(-wattages[channel.name]['max']*0.1,wattages[channel.name]['max']*0.1)
          wattage_to_append = 0
          if wattage > wattages[channel.name]['max']:
             wattage_to_append = wattages[channel.name]['max']
@@ -266,6 +287,11 @@ def influxgen(request):
    return render(request, 'debug.html', {'title':title,'description':description,'form':form, 'success':success})
 
 def datagen(request):
+   """
+   DEPRECATED
+   
+   See `influxgen <debug.html#debug.views.influxgen>`_.
+   """
    success = ""
    if request.method == 'POST':
       form = DatagenForm(request.POST)
@@ -354,6 +380,11 @@ def influxdel(request):
    
 
 def datadel(request):
+   """
+   DEPRECATED
+   
+   See `influxdel <debug.html#debug.views.influxdel>`_.
+   """
    success = ""
    if request.method == 'POST':
       form = DatadelForm(request.POST)
