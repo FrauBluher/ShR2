@@ -27,6 +27,6 @@ bool check(const char *, bool);
 
 sentence_id get_sentence(const char *);
 talker_id get_talker(const char *);
-bool process_message(char *, uint16_t *, uint64_t *);
+bool process_message(char *, uint16_t *, uint32_t *);
 
 #endif

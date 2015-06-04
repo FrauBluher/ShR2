@@ -13,7 +13,7 @@
 
 #define max_uart_buff_size 255
 //malloc goes to the heap, and so does this (be careful)
-#define max_send_buff_size 300
+#define max_send_buff_size 200
 
 //character buffer for uart
 typedef struct {
@@ -25,8 +25,7 @@ typedef struct {
 
 //exact data to populate
 typedef struct {
-   //change back to 32bit because of offset, only need 32 bit number
-	uint64_t timestamp;
+	uint32_t timestamp;
 	uint16_t wattage;
 	uint16_t vrms;
 	uint16_t irms;

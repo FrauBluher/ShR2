@@ -54,7 +54,15 @@ HttpdBuiltInUrl builtInUrls[]={
 void ICACHE_FLASH_ATTR
 user_init(void) {
 	uart_init(BIT_RATE_115200);
-	httpdInit(builtInUrls, 80);
-	send_recv_init();
+	//handle function callbacks dependeing on opmode
+	if (wifi_get_opmode() == 1) {
+		//callback initialization to receive and store uart data
+		send_recv_init();
+	} else {
+		//callback initialization to serve the http pages
+		httpdInit(builtInUrls, 80);
+		//callback to check to reset back into STA mode
+		resetTimerCb(0);
+	}
 	os_printf("\r\nready\r\n");
 }
