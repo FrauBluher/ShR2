@@ -21,7 +21,7 @@ class DeviceSettingsViewSet(viewsets.ModelViewSet):
       queryset = DeviceSettings.objects.all()
       setting = get_object_or_404(queryset, pk=pk)
       setting.date_now = int(time.time()*1000)
-      setting.save()
+      #setting.save()
       serializer = DeviceSettingsSerializer(setting)
       return Response(serializer.data)
    
@@ -29,6 +29,6 @@ class DeviceSettingsViewSet(viewsets.ModelViewSet):
       queryset = DeviceSettings.objects.all()
       for setting in queryset:
          setting.date_now = int(time.time()*1000)
-         setting.save()
+         #setting.save()
       serializer = DeviceSettingsSerializer(queryset, many=True)
       return Response(serializer.data)

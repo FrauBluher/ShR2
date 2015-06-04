@@ -305,8 +305,8 @@ class Event(models.Model):
       timestamp /= 1000 # convert to seconds. We don't care that much about accuracy at this point.
       existing_queries = db.query('list continuous queries')[0]['points']
       new_queries = []
-      if timestamp < now - 1:
-         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
+      #if timestamp < now - 1:
+      #   new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
       if timestamp < now - 60:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
       if timestamp < now - 3600:

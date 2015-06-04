@@ -6,6 +6,7 @@ from django import forms
 from django.shortcuts import render, render_to_response
 from django.forms import ModelChoiceField
 from django.core import serializers
+from django.conf import settings
 
 from influxdb.influxdb08 import client as influxdb
 
