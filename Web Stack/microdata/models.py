@@ -305,20 +305,20 @@ class Event(models.Model):
       timestamp /= 1000 # convert to seconds. We don't care that much about accuracy at this point.
       existing_queries = db.query('list continuous queries')[0]['points']
       new_queries = []
-      if timestamp < now:
+      if timestamp < now - 1:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
       if timestamp < now - 60:
-         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
       if timestamp < now - 3600:
-         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1h) into 1h.:series_name')
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1h) into 1h.:series_name')
       if timestamp < now - 86400:
-         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1d) into 1d.:series_name')
-      if timestamp < now - 604800:
-         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1w) into 1w.:series_name')
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1d) into 1d.:series_name')
+      if timestamp < now - 86400*7:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1w) into 1w.:series_name')
       if timestamp < now - 86400*days_this_month:
-         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1M) into 1M.:series_name')
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1M) into 1M.:series_name')
       if timestamp < now - 86400*days_this_month*12:
-         new_queries.append('select mean(mean) from /^device.'+str(self.device.serial)+'.*/ group by time(1y) into 1y.:series_name')
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1y) into 1y.:series_name')
       # drop old continuous query, add new one. Essentially a refresh.
       for new_query in new_queries:
          for existing_query in existing_queries:
