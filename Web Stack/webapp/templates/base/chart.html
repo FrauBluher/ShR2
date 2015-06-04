@@ -1,11 +1,12 @@
 <script>
-   function {% if circuit_pk %}render_circuitChart(){% else %}render_chart(){% endif %} {
-   {% if device %}
+
+   $(function () {
+     {% if device %}
      
      {% if circuit_pk %}
-     var circuitChart = new TimeChart({
+     circuitChart = new TimeChart({
      {% else %}
-     var chart = new TimeChart({
+     chart = new TimeChart({
      {% endif %}
         {% if circuit_pk %}
         container: document.getElementById("circuit-line-chart"),
@@ -17,19 +18,35 @@
             units:["y","M","d","h","m","s"],
             timestampInSeconds: true,
             urlByUnit:{
-               "m":"/charts/device/{{ device.serial }}/data/?{% if circuit_pk %}circuit_pk={{ circuit_pk }}&{% endif %}localtime="+(new Date())/1000,
-               "M":"/charts/device/{{ device.serial }}/data/?{% if circuit_pk %}circuit_pk={{ circuit_pk }}&{% endif %}localtime="+(new Date())/1000,
-               "d":"/charts/device/{{ device.serial }}/data/?{% if circuit_pk %}circuit_pk={{ circuit_pk }}&{% endif %}localtime="+(new Date())/1000,
-               "h":"/charts/device/{{ device.serial }}/data/?{% if circuit_pk %}circuit_pk={{ circuit_pk }}&{% endif %}localtime="+(new Date())/1000,
-               "y":"/charts/device/{{ device.serial }}/data/?{% if circuit_pk %}circuit_pk={{ circuit_pk }}&{% endif %}localtime="+(new Date())/1000,
-               "s":"/charts/device/{{ device.serial }}/data/?{% if circuit_pk %}circuit_pk={{ circuit_pk }}&{% endif %}localtime="+(new Date())/1000,
-            }
+               "s":"/charts/device/{{ device.serial }}/data/",
+               "m":"/charts/device/{{ device.serial }}/data/",
+               "M":"/charts/device/{{ device.serial }}/data/",
+               "d":"/charts/device/{{ device.serial }}/data/",
+               "h":"/charts/device/{{ device.serial }}/data/",
+               "y":"/charts/device/{{ device.serial }}/data/",
+            },
+            urlParameters: [
+              {% if circuit_pk %}
+              {
+                name: 'circuit_pk',
+                value: {{ circuit_pk }}
+              },
+              {% endif %}
+              {
+                name: 'localtime',
+                value: +(new Date())/1000
+              },
+              {
+                name: 'chart_load',
+                value: true
+              }
+            ]
         },
         legend: { enabled: true },
         valueAxis:{
            "default":{
               title: "Power (W)"
-           }
+           },
         },
         localization: {
           dataRequestFailed: "No Data to Show",
@@ -42,51 +59,69 @@
               data:{
                 index:1,
                 aggregation:"avg",
-                noDataPolicy:"skip"
+                //noDataPolicy:"skip"
               },
               style:{
                 lineWidth: 1,
                 smoothing: true
               }
             },
-           {% for appliance in appliances %}
+           {% for circuit in circuits %}
            {
-              name: "{{ appliance }}",
+              name: "{{ circuit }}",
               id:"event{{ forloop.counter }}",
               type:"line",
               data:{
                  index:{{ forloop.counter }}+1,
                  aggregation:"avg",
-                 noDataPolicy:"skip"
+                 //noDataPolicy:"skip"
               },
               {% if stack %}stack: "default",{% endif %}
               style:{
-                 fillColor:"{{ appliance.chart_color }}",
+                 fillColor:"{{ circuit.chart_color }}",
                  lineColor:""
               }
            },
            {% endfor %}
         ],
         area: {
-           initialDisplayUnit: "5 m",
+           initialDisplayUnit: "1 m",
            initialDisplayPeriod: "1 d",
            initialDisplayAnchor:"now",
-           followAnchor: true,
+           followAnchor: false,
         },
         currentTime: {
            enabled: true,
         },
         advanced: {
-          logging:true,
-          timeUpdateInterval: 300
+          logging: true,
+          timeUpdateInterval: 3600,
         },
         events: {
           onChartUpdate: function(event){
             changeRealTime();
-          }
-        }
+          },
+          onError: function(message) {
+            console.log(message);
+          },
+          onClick: function(message) {
+            toggle_chart_realtime()
+          },
+        },
+        toolbar: {
+          periods: [
+            {"name":"Last second","displayAnchor":"now","displayPeriod":"1 s","displayUnit":"25 ms"},
+            {"name":"Last minute","displayAnchor":"now","displayPeriod":"1 m","displayUnit":"1 s"},
+            {"name":"Last hour","displayAnchor":"now","displayPeriod":"1 h","displayUnit":"1 s"},
+            {"name":"Last day","displayAnchor":"now","displayPeriod":"1 d","displayUnit":"15 m"},
+            {"name":"Last week","displayAnchor":"now","displayPeriod":"1 w","displayUnit":"6 h"},
+            {"name":"Last month","displayAnchor":"now","displayPeriod":"1 M","displayUnit":"1 d"},
+            {"name":"Last year","displayAnchor":"now","displayPeriod":"1 y","displayUnit":"1 M"},
+          ]
+        },
      });
-   {% endif %}
+   {% endif %} // if device
+ });
 
 var timeoutHandler{{ circuit_pk }};
 
@@ -103,13 +138,13 @@ function changeRealTime() {
 function updateInfoWindow(data) {
     var current_wattage, average_wattage, cost_today;
     if (data.average_wattage > data.current_wattage) {
-        current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+        current_wattage = '<p><strong>Current Usage: </strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
     } else {
-        current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+        current_wattage = '<p><strong>Current Usage: </strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
     }
     average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
-    cost_today = data.cost_today;
-    contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Cost Today:</strong>$'                                       +cost_today+'</p>'+ current_wattage +'</div></div>';
+    cost_today = '<p><strong>Cost Today: </strong><span id=cost-today-{{ device.serial }}>'+data.cost_today+'</span></p>';
+    contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p>'+cost_today+'</p>'+ current_wattage +'</div></div>';
     infowindow{{ device.serial }}.setContent(contentArray['{{ device.serial }}']);
 }
 
@@ -125,7 +160,7 @@ function updateBillingInformation() {
 }
 
 // Function to update realtime-reliant features of dashboard every minute
-function updateDashboard() {
+function updateDashboard{{ device.serial }}() {
     $.get('/dashboard/update/',
         {
             'current_device': {{ device.serial }}
@@ -136,59 +171,69 @@ function updateDashboard() {
         }
     );
     updateBillingInformation();
-    setTimeout(updateDashboard, 60000);
+    updateDashboardTimeout{{ device.serial }} = setTimeout(updateDashboard{{ device.serial }}, 60000);
 }
 {% endif %}
 
-
 function realTimeData{{ circuit_pk }}() {
-   try {
-      {% if circuit_pk %}
-      var chart_var = circuitChart;
-      {% else %}
-      var chart_var = chart;
-      {% endif %}
-      var interval = chart_var.displayUnit().split(' ')[0];
-      var displayUnit = chart_var.displayUnit().slice(-1);
-      var period;
-      var timeout = 250;
-      if (displayUnit == 'm') {
-         period = 'now - ' + interval + ' minutes'
-         timeout = interval * 60 * 900
-      }
-      else if (displayUnit == 's') {
-         //var delay = (2 + parseInt(interval)).toString();
-         period = 'now - ' + interval + ' seconds'
-         timeout = interval * 900
-      }
-      else {
-         // Update everything on the hour. Fix later.
-         period = 'now - ' + interval + ' hours'
-         timeout = interval * 60 * 60 * 900
-      }
-      var start = +Date.parse(period)/1000;
-      var stop = +Date.parse('now')/1000;
-      var get_url = '/charts/device/{{ device.serial }}/data/'
-      $.get(get_url,
-         {
-            'unit':displayUnit,
-            'from':start,
-            'to':stop,
-            'localtime': +(new Date)/1000,
-            {% if circuit_pk %}
-            'circuit_pk': {{ circuit_pk }},
-            {% endif %}
-         },
-         function (ajax_data) {
-            if (ajax_data.data[0][0] != null) {
-               chart_var.addData({unit: displayUnit, values: ajax_data.data});
-            }
+  if (realtime_status) {
+      try {
+         {% if circuit_pk %}
+         var chart_var = circuitChart;
+         {% else %}
+         var chart_var = chart;
+         {% endif %}
+         chart_var.settings.area.followAnchor = true;
+         var interval = chart_var.displayUnit().split(' ')[0];
+         var displayUnit = chart_var.displayUnit().slice(-1);
+         var period;
+         var timeout = 250;
+         if (displayUnit == 'm') {
+            period = 'now - ' + interval + ' minutes'
+            timeout = interval * 60 * 900
          }
-      );
-    } catch (e) {
-       console.info("Chart not defined yet");
-    }
-    console.info("timeout = "+timeout)
+         else if (displayUnit == 's') {
+            //var delay = (2 + parseInt(interval)).toString();
+            period = 'now - ' + parseInt(interval)*20 + ' seconds'
+            timeout = interval * 900
+         }
+         else {
+            // Update everything on the hour. Fix later.
+            period = 'now - ' + interval + ' hours'
+            timeout = interval * 60 * 60 * 900
+         }
+         if (timeout < 6*900) timeout = 6 * 900;
+         //var start = (+Date.parse(period)/1000-25200);
+         var start = (+Date.parse('now')/1000-25200) - 100;
+         var stop = (+Date.parse('now')/1000-25200);
+         var get_url = '/charts/device/{{ device.serial }}/data/'
+         $.get(get_url,
+            {
+               'unit':displayUnit,
+               'from':start,
+               'to':stop,
+               'localtime': +(new Date)/1000,
+               {% if circuit_pk %}
+               'circuit_pk': {{ circuit_pk }},
+               {% endif %}
+            },
+            function (ajax_data) {
+               if (ajax_data.data[0][0] != null) {
+                  chart_var.addData({unit: displayUnit, values: ajax_data.data});
+                  var data = {
+                     average_wattage: $('#average-wattage-{{ device.serial }}').html(),
+                     current_wattage: parseInt(ajax_data.data[ajax_data.data.length-1][1]),
+                     cost_today: $('#cost-today-{{ device.serial }}').html()
+                  }
+                  updateInfoWindow(data);
+               }
+            }
+         );
+        } catch (e) {
+          console.info("Chart not defined yet");
+       }
+       console.info("timeout = "+timeout)
+  }
     timeoutHandler{{ circuit_pk }} = setTimeout(realTimeData{{ circuit_pk }}, timeout);
 }
 
@@ -213,10 +258,7 @@ $(function() {
    $('#circuit-heading').html("{{ circuit_name }}");
    {% endif %}
    {% if circuit_pk == None %}
-   updateDashboard();
+   updateDashboard{{ device.serial }}();
    {% endif %}
 });
-
-
-}
 </script>

@@ -19,13 +19,15 @@ WUNDERGROUND_KEY = '24e5a1d55557f6d5'
 OWM_KEY = 'b19ab21f2b0f046b8ec430fae9e28a84'
 GOOGLE_API_KEY = 'AIzaSyAZvP6Z9ia_oCJjmFORgVyVTnQMkJMbFTw'
 
+INFLUXDB_URI = 'db.seads.io'
+
 SES_EMAIL = 'seadsystems@gmail.com'
 S3_BUCKET = 'elasticbeanstalk-us-west-2-062302560606'
 GLACIER_VAULT_NAME = 'seads_archive'
 AWS_ACCOUNT_ID = '0623-0256-0606'
 
 ORG_NAME = 'SEADS'
-BASE_URL = 'seads.brabsmit.com'
+BASE_URL = 'seads.io'
 
 TEMPLATE_DIRS = (
     BASE_DIR + '/home/templates/',
@@ -99,14 +101,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'django.contrib.gis',
-    'dbbackup',
+    #'django.contrib.gis',
     'restless',
     'recurrence',
     'rest_framework.authtoken',
     'rest_framework',
     'rest_framework_swagger',
-    'gmapi',
     'geoposition',
     'paintstore',
     'microdata',
@@ -121,7 +121,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -137,8 +136,12 @@ WSGI_APPLICATION = 'seads.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',
+        'USER': 'django',
+        'PASSWORD': 'teammantey',
+        'HOST': 'django.seads.io',
+        'PORT': '3306',
     }
 }
 

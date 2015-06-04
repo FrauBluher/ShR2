@@ -36,8 +36,10 @@
 #define MAX32
 
 #include <stdint.h>
+#include <stdbool.h>
 //changed buffer length to satisfy 1hz because it's configured for 3.90625Ksamples/sec
-#define BUFFERLENGTH 13*3906
+#define WINDOW_SIZE 976
+#define BUFFERLENGTH 13*WINDOW_SIZE
 #define END_MESSAGE 8
 
 enum {
@@ -69,6 +71,10 @@ uint8_t CurrentBuffer(void);
 void BufferToPMP_Init(void);
 void StartSPIAcquisition(uint8_t buffer);
 void DMAStartUARTRX(void);
+
+void SetReadyForConfigure();
+// returns true if config is valid
+bool GetConfig(uint32_t *config);
 
 #endif	/* SPI_DMA_TRANSFER_H */
 

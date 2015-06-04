@@ -1,0 +1,409 @@
+\indexentry{custom\_config (module)|hyperpage}{11}
+\indexentry{main() (in module custom\_config)|hyperpage}{11}
+\indexentry{debug.admin (module)|hyperpage}{11}
+\indexentry{debug.forms (module)|hyperpage}{11}
+\indexentry{debug.models (module)|hyperpage}{11}
+\indexentry{TestEvent (class in debug.models)|hyperpage}{11}
+\indexentry{TestEvent.DoesNotExist|hyperpage}{11}
+\indexentry{TestEvent.MultipleObjectsReturned|hyperpage}{11}
+\indexentry{device (debug.models.TestEvent attribute)|hyperpage}{11}
+\indexentry{objects (debug.models.TestEvent attribute)|hyperpage}{11}
+\indexentry{save() (debug.models.TestEvent method)|hyperpage}{11}
+\indexentry{debug.serializers (module)|hyperpage}{11}
+\indexentry{TestEventSerializer (class in debug.serializers)|hyperpage}{11}
+\indexentry{TestEventSerializer.Meta (class in debug.serializers)|hyperpage}{11}
+\indexentry{fields (debug.serializers.TestEventSerializer.Meta attribute)|hyperpage}{12}
+\indexentry{model (debug.serializers.TestEventSerializer.Meta attribute)|hyperpage}{12}
+\indexentry{debug.urls (module)|hyperpage}{12}
+\indexentry{debug.views (module)|hyperpage}{12}
+\indexentry{DatadelForm (class in debug.views)|hyperpage}{12}
+\indexentry{base\_fields (debug.views.DatadelForm attribute)|hyperpage}{12}
+\indexentry{media (debug.views.DatadelForm attribute)|hyperpage}{12}
+\indexentry{DatagenForm (class in debug.views)|hyperpage}{12}
+\indexentry{ENERGY\_CHOICES (debug.views.DatagenForm attribute)|hyperpage}{12}
+\indexentry{base\_fields (debug.views.DatagenForm attribute)|hyperpage}{12}
+\indexentry{media (debug.views.DatagenForm attribute)|hyperpage}{12}
+\indexentry{DevForm (class in debug.views)|hyperpage}{12}
+\indexentry{base\_fields (debug.views.DevForm attribute)|hyperpage}{12}
+\indexentry{media (debug.views.DevForm attribute)|hyperpage}{12}
+\indexentry{DeviceModelChoiceField (class in debug.views)|hyperpage}{12}
+\indexentry{label\_from\_instance() (debug.views.DeviceModelChoiceField method)|hyperpage}{12}
+\indexentry{TestEventViewSet (class in debug.views)|hyperpage}{12}
+\indexentry{queryset (debug.views.TestEventViewSet attribute)|hyperpage}{12}
+\indexentry{serializer\_class (debug.views.TestEventViewSet attribute)|hyperpage}{12}
+\indexentry{datadel() (in module debug.views)|hyperpage}{12}
+\indexentry{datagen() (in module debug.views)|hyperpage}{12}
+\indexentry{echo() (in module debug.views)|hyperpage}{13}
+\indexentry{echo\_args() (in module debug.views)|hyperpage}{13}
+\indexentry{generate\_points() (in module debug.views)|hyperpage}{13}
+\indexentry{gitupdate() (in module debug.views)|hyperpage}{13}
+\indexentry{influxdel() (in module debug.views)|hyperpage}{13}
+\indexentry{influxgen() (in module debug.views)|hyperpage}{13}
+\indexentry{debug (module)|hyperpage}{13}
+\indexentry{farmer.admin (module)|hyperpage}{14}
+\indexentry{DeviceSettingsAdmin (class in farmer.admin)|hyperpage}{14}
+\indexentry{media (farmer.admin.DeviceSettingsAdmin attribute)|hyperpage}{14}
+\indexentry{verbose\_name\_plural (farmer.admin.DeviceSettingsAdmin attribute)|hyperpage}{14}
+\indexentry{DeviceSettingsInline (class in farmer.admin)|hyperpage}{14}
+\indexentry{can\_delete (farmer.admin.DeviceSettingsInline attribute)|hyperpage}{14}
+\indexentry{media (farmer.admin.DeviceSettingsInline attribute)|hyperpage}{14}
+\indexentry{model (farmer.admin.DeviceSettingsInline attribute)|hyperpage}{14}
+\indexentry{farmer.models (module)|hyperpage}{14}
+\indexentry{DeviceSettings (class in farmer.models)|hyperpage}{14}
+\indexentry{CHANNEL\_CHOICES (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{DeviceSettings.DoesNotExist|hyperpage}{14}
+\indexentry{DeviceSettings.MultipleObjectsReturned|hyperpage}{14}
+\indexentry{SAMPLE\_RATE\_CHOICES (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{adc\_sample\_rate (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{date\_now (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{device (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{device\_serial (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{get\_adc\_sample\_rate\_display() (farmer.models.DeviceSettings method)|hyperpage}{14}
+\indexentry{get\_main\_channel\_display() (farmer.models.DeviceSettings method)|hyperpage}{14}
+\indexentry{main\_channel (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{objects (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{save() (farmer.models.DeviceSettings method)|hyperpage}{14}
+\indexentry{transmission\_rate\_milliseconds (farmer.models.DeviceSettings attribute)|hyperpage}{14}
+\indexentry{farmer.serializers (module)|hyperpage}{15}
+\indexentry{DeviceSettingsSerializer (class in farmer.serializers)|hyperpage}{15}
+\indexentry{DeviceSettingsSerializer.Meta (class in farmer.serializers)|hyperpage}{15}
+\indexentry{fields (farmer.serializers.DeviceSettingsSerializer.Meta attribute)|hyperpage}{15}
+\indexentry{model (farmer.serializers.DeviceSettingsSerializer.Meta attribute)|hyperpage}{15}
+\indexentry{farmer.tests (module)|hyperpage}{15}
+\indexentry{farmer.views (module)|hyperpage}{15}
+\indexentry{DeviceSettingsViewSet (class in farmer.views)|hyperpage}{15}
+\indexentry{list() (farmer.views.DeviceSettingsViewSet method)|hyperpage}{15}
+\indexentry{queryset (farmer.views.DeviceSettingsViewSet attribute)|hyperpage}{15}
+\indexentry{retrieve() (farmer.views.DeviceSettingsViewSet method)|hyperpage}{15}
+\indexentry{serializer\_class (farmer.views.DeviceSettingsViewSet attribute)|hyperpage}{15}
+\indexentry{farmer (module)|hyperpage}{15}
+\indexentry{home.admin (module)|hyperpage}{16}
+\indexentry{home.models (module)|hyperpage}{16}
+\indexentry{home.serializers (module)|hyperpage}{16}
+\indexentry{UserSerializer (class in home.serializers)|hyperpage}{16}
+\indexentry{UserSerializer.Meta (class in home.serializers)|hyperpage}{16}
+\indexentry{fields (home.serializers.UserSerializer.Meta attribute)|hyperpage}{16}
+\indexentry{model (home.serializers.UserSerializer.Meta attribute)|hyperpage}{16}
+\indexentry{home.tests (module)|hyperpage}{16}
+\indexentry{home.views (module)|hyperpage}{16}
+\indexentry{UserViewSet (class in home.views)|hyperpage}{16}
+\indexentry{queryset (home.views.UserViewSet attribute)|hyperpage}{16}
+\indexentry{serializer\_class (home.views.UserViewSet attribute)|hyperpage}{16}
+\indexentry{account() (in module home.views)|hyperpage}{16}
+\indexentry{index() (in module home.views)|hyperpage}{16}
+\indexentry{register() (in module home.views)|hyperpage}{16}
+\indexentry{signin() (in module home.views)|hyperpage}{16}
+\indexentry{signout() (in module home.views)|hyperpage}{17}
+\indexentry{home (module)|hyperpage}{17}
+\indexentry{manage (module)|hyperpage}{17}
+\indexentry{microdata.management.commands.archive\_database (module)|hyperpage}{17}
+\indexentry{Command (class in microdata.management.commands.archive\_database)|hyperpage}{17}
+\indexentry{args (microdata.management.commands.archive\_database.Command attribute)|hyperpage}{17}
+\indexentry{handle() (microdata.management.commands.archive\_database.Command method)|hyperpage}{17}
+\indexentry{help (microdata.management.commands.archive\_database.Command attribute)|hyperpage}{17}
+\indexentry{safe\_list\_get() (in module microdata.management.commands.archive\_database)|hyperpage}{17}
+\indexentry{microdata.management.commands.check\_glacier\_jobs (module)|hyperpage}{18}
+\indexentry{Command (class in microdata.management.commands.check\_glacier\_jobs)|hyperpage}{18}
+\indexentry{handle() (microdata.management.commands.check\_glacier\_jobs.Command method)|hyperpage}{18}
+\indexentry{microdata.management.commands (module)|hyperpage}{18}
+\indexentry{microdata.management (module)|hyperpage}{18}
+\indexentry{microdata.admin (module)|hyperpage}{18}
+\indexentry{ApplianceAdmin (class in microdata.admin)|hyperpage}{18}
+\indexentry{list\_display (microdata.admin.ApplianceAdmin attribute)|hyperpage}{18}
+\indexentry{media (microdata.admin.ApplianceAdmin attribute)|hyperpage}{18}
+\indexentry{CircuitAdmin (class in microdata.admin)|hyperpage}{18}
+\indexentry{list\_display (microdata.admin.CircuitAdmin attribute)|hyperpage}{18}
+\indexentry{media (microdata.admin.CircuitAdmin attribute)|hyperpage}{18}
+\indexentry{CircuitTypeAdmin (class in microdata.admin)|hyperpage}{18}
+\indexentry{list\_display (microdata.admin.CircuitTypeAdmin attribute)|hyperpage}{18}
+\indexentry{media (microdata.admin.CircuitTypeAdmin attribute)|hyperpage}{18}
+\indexentry{DeviceAdmin (class in microdata.admin)|hyperpage}{18}
+\indexentry{inlines (microdata.admin.DeviceAdmin attribute)|hyperpage}{18}
+\indexentry{list\_display (microdata.admin.DeviceAdmin attribute)|hyperpage}{18}
+\indexentry{media (microdata.admin.DeviceAdmin attribute)|hyperpage}{18}
+\indexentry{readonly\_fields (microdata.admin.DeviceAdmin attribute)|hyperpage}{18}
+\indexentry{search\_fields (microdata.admin.DeviceAdmin attribute)|hyperpage}{18}
+\indexentry{DeviceWebSettingsInline (class in microdata.admin)|hyperpage}{18}
+\indexentry{can\_delete (microdata.admin.DeviceWebSettingsInline attribute)|hyperpage}{19}
+\indexentry{media (microdata.admin.DeviceWebSettingsInline attribute)|hyperpage}{19}
+\indexentry{model (microdata.admin.DeviceWebSettingsInline attribute)|hyperpage}{19}
+\indexentry{verbose\_name\_plural (microdata.admin.DeviceWebSettingsInline attribute)|hyperpage}{19}
+\indexentry{microdata.models (module)|hyperpage}{19}
+\indexentry{Appliance (class in microdata.models)|hyperpage}{19}
+\indexentry{Appliance.DoesNotExist|hyperpage}{19}
+\indexentry{Appliance.MultipleObjectsReturned|hyperpage}{19}
+\indexentry{chart\_color (microdata.models.Appliance attribute)|hyperpage}{19}
+\indexentry{circuittype\_set (microdata.models.Appliance attribute)|hyperpage}{19}
+\indexentry{eventnotification\_set (microdata.models.Appliance attribute)|hyperpage}{19}
+\indexentry{objects (microdata.models.Appliance attribute)|hyperpage}{19}
+\indexentry{Circuit (class in microdata.models)|hyperpage}{19}
+\indexentry{Circuit.DoesNotExist|hyperpage}{19}
+\indexentry{Circuit.MultipleObjectsReturned|hyperpage}{19}
+\indexentry{circuittype (microdata.models.Circuit attribute)|hyperpage}{19}
+\indexentry{objects (microdata.models.Circuit attribute)|hyperpage}{19}
+\indexentry{CircuitType (class in microdata.models)|hyperpage}{19}
+\indexentry{CircuitType.DoesNotExist|hyperpage}{19}
+\indexentry{CircuitType.MultipleObjectsReturned|hyperpage}{19}
+\indexentry{appliances (microdata.models.CircuitType attribute)|hyperpage}{19}
+\indexentry{chart\_color (microdata.models.CircuitType attribute)|hyperpage}{19}
+\indexentry{circuit\_set (microdata.models.CircuitType attribute)|hyperpage}{20}
+\indexentry{objects (microdata.models.CircuitType attribute)|hyperpage}{20}
+\indexentry{Device (class in microdata.models)|hyperpage}{20}
+\indexentry{Device.DoesNotExist|hyperpage}{20}
+\indexentry{Device.MultipleObjectsReturned|hyperpage}{20}
+\indexentry{channel\_1 (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{channel\_2 (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{channel\_3 (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{cost\_daily (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{data\_retention\_policy (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{delete() (microdata.models.Device method)|hyperpage}{20}
+\indexentry{devicesettings (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{devicewebsettings (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{event\_set (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{fanout\_query\_registered (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{ip\_address (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{kilowatt\_hours\_daily (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{kilowatt\_hours\_monthly (microdata.models.Device attribute)|hyperpage}{20}
+\indexentry{name (microdata.models.Device attribute)|hyperpage}{21}
+\indexentry{objects (microdata.models.Device attribute)|hyperpage}{21}
+\indexentry{owner (microdata.models.Device attribute)|hyperpage}{21}
+\indexentry{registered (microdata.models.Device attribute)|hyperpage}{21}
+\indexentry{save() (microdata.models.Device method)|hyperpage}{21}
+\indexentry{secret\_key (microdata.models.Device attribute)|hyperpage}{21}
+\indexentry{serial (microdata.models.Device attribute)|hyperpage}{21}
+\indexentry{share\_with (microdata.models.Device attribute)|hyperpage}{21}
+\indexentry{Event (class in microdata.models)|hyperpage}{21}
+\indexentry{Event.DoesNotExist|hyperpage}{21}
+\indexentry{Event.MultipleObjectsReturned|hyperpage}{21}
+\indexentry{dataPoints (microdata.models.Event attribute)|hyperpage}{21}
+\indexentry{device (microdata.models.Event attribute)|hyperpage}{21}
+\indexentry{frequency (microdata.models.Event attribute)|hyperpage}{21}
+\indexentry{objects (microdata.models.Event attribute)|hyperpage}{22}
+\indexentry{query (microdata.models.Event attribute)|hyperpage}{22}
+\indexentry{save() (microdata.models.Event method)|hyperpage}{22}
+\indexentry{start (microdata.models.Event attribute)|hyperpage}{22}
+\indexentry{microdata.serializers (module)|hyperpage}{22}
+\indexentry{ApplianceSerializer (class in microdata.serializers)|hyperpage}{22}
+\indexentry{ApplianceSerializer.Meta (class in microdata.serializers)|hyperpage}{22}
+\indexentry{fields (microdata.serializers.ApplianceSerializer.Meta attribute)|hyperpage}{22}
+\indexentry{model (microdata.serializers.ApplianceSerializer.Meta attribute)|hyperpage}{22}
+\indexentry{CircuitSerializer (class in microdata.serializers)|hyperpage}{22}
+\indexentry{CircuitSerializer.Meta (class in microdata.serializers)|hyperpage}{22}
+\indexentry{fields (microdata.serializers.CircuitSerializer.Meta attribute)|hyperpage}{22}
+\indexentry{model (microdata.serializers.CircuitSerializer.Meta attribute)|hyperpage}{22}
+\indexentry{DeviceSerializer (class in microdata.serializers)|hyperpage}{22}
+\indexentry{DeviceSerializer.Meta (class in microdata.serializers)|hyperpage}{23}
+\indexentry{fields (microdata.serializers.DeviceSerializer.Meta attribute)|hyperpage}{23}
+\indexentry{model (microdata.serializers.DeviceSerializer.Meta attribute)|hyperpage}{23}
+\indexentry{EventSerializer (class in microdata.serializers)|hyperpage}{23}
+\indexentry{EventSerializer.Meta (class in microdata.serializers)|hyperpage}{23}
+\indexentry{fields (microdata.serializers.EventSerializer.Meta attribute)|hyperpage}{23}
+\indexentry{model (microdata.serializers.EventSerializer.Meta attribute)|hyperpage}{23}
+\indexentry{microdata.tests (module)|hyperpage}{23}
+\indexentry{microdata.views (module)|hyperpage}{23}
+\indexentry{ApplianceViewSet (class in microdata.views)|hyperpage}{23}
+\indexentry{queryset (microdata.views.ApplianceViewSet attribute)|hyperpage}{23}
+\indexentry{serializer\_class (microdata.views.ApplianceViewSet attribute)|hyperpage}{23}
+\indexentry{CircuitViewSet (class in microdata.views)|hyperpage}{23}
+\indexentry{queryset (microdata.views.CircuitViewSet attribute)|hyperpage}{23}
+\indexentry{serializer\_class (microdata.views.CircuitViewSet attribute)|hyperpage}{23}
+\indexentry{DeviceViewSet (class in microdata.views)|hyperpage}{23}
+\indexentry{create() (microdata.views.DeviceViewSet method)|hyperpage}{23}
+\indexentry{queryset (microdata.views.DeviceViewSet attribute)|hyperpage}{23}
+\indexentry{serializer\_class (microdata.views.DeviceViewSet attribute)|hyperpage}{23}
+\indexentry{EventViewSet (class in microdata.views)|hyperpage}{23}
+\indexentry{create() (microdata.views.EventViewSet method)|hyperpage}{23}
+\indexentry{queryset (microdata.views.EventViewSet attribute)|hyperpage}{24}
+\indexentry{serializer\_class (microdata.views.EventViewSet attribute)|hyperpage}{24}
+\indexentry{KeyForm (class in microdata.views)|hyperpage}{24}
+\indexentry{base\_fields (microdata.views.KeyForm attribute)|hyperpage}{24}
+\indexentry{media (microdata.views.KeyForm attribute)|hyperpage}{24}
+\indexentry{initiate\_job\_to\_glacier() (in module microdata.views)|hyperpage}{24}
+\indexentry{new\_device() (in module microdata.views)|hyperpage}{24}
+\indexentry{timestamp() (in module microdata.views)|hyperpage}{24}
+\indexentry{microdata (module)|hyperpage}{24}
+\indexentry{pseudodata (module)|hyperpage}{24}
+\indexentry{Appliance (class in pseudodata)|hyperpage}{24}
+\indexentry{C (class in pseudodata)|hyperpage}{24}
+\indexentry{compute() (in module pseudodata)|hyperpage}{25}
+\indexentry{get\_appliances() (in module pseudodata)|hyperpage}{25}
+\indexentry{pseudodevice (module)|hyperpage}{25}
+\indexentry{Device (class in pseudodevice)|hyperpage}{25}
+\indexentry{main() (in module pseudodevice)|hyperpage}{25}
+\indexentry{seads.settings (module)|hyperpage}{25}
+\indexentry{seads.urls (module)|hyperpage}{25}
+\indexentry{seads.wsgi (module)|hyperpage}{25}
+\indexentry{seads (module)|hyperpage}{26}
+\indexentry{webapp.management.commands.reset\_kilowatt\_accumulations (module)|hyperpage}{26}
+\indexentry{Command (class in webapp.management.commands.reset\_kilowatt\_accumulations)|hyperpage}{26}
+\indexentry{args (webapp.management.commands.reset\_kilowatt\_accumulations.Command attribute)|hyperpage}{26}
+\indexentry{handle() (webapp.management.commands.reset\_kilowatt\_accumulations.Command method)|hyperpage}{26}
+\indexentry{help (webapp.management.commands.reset\_kilowatt\_accumulations.Command attribute)|hyperpage}{26}
+\indexentry{webapp.management.commands (module)|hyperpage}{26}
+\indexentry{webapp.management (module)|hyperpage}{26}
+\indexentry{webapp.admin (module)|hyperpage}{26}
+\indexentry{DashboardSettingsInline (class in webapp.admin)|hyperpage}{26}
+\indexentry{can\_delete (webapp.admin.DashboardSettingsInline attribute)|hyperpage}{26}
+\indexentry{media (webapp.admin.DashboardSettingsInline attribute)|hyperpage}{27}
+\indexentry{model (webapp.admin.DashboardSettingsInline attribute)|hyperpage}{27}
+\indexentry{verbose\_name\_plural (webapp.admin.DashboardSettingsInline attribute)|hyperpage}{27}
+\indexentry{RatePlanAdmin (class in webapp.admin)|hyperpage}{27}
+\indexentry{inlines (webapp.admin.RatePlanAdmin attribute)|hyperpage}{27}
+\indexentry{list\_display (webapp.admin.RatePlanAdmin attribute)|hyperpage}{27}
+\indexentry{media (webapp.admin.RatePlanAdmin attribute)|hyperpage}{27}
+\indexentry{TerritoryAdmin (class in webapp.admin)|hyperpage}{27}
+\indexentry{list\_display (webapp.admin.TerritoryAdmin attribute)|hyperpage}{27}
+\indexentry{media (webapp.admin.TerritoryAdmin attribute)|hyperpage}{27}
+\indexentry{TierInline (class in webapp.admin)|hyperpage}{27}
+\indexentry{media (webapp.admin.TierInline attribute)|hyperpage}{27}
+\indexentry{model (webapp.admin.TierInline attribute)|hyperpage}{27}
+\indexentry{UserAdmin (class in webapp.admin)|hyperpage}{27}
+\indexentry{inlines (webapp.admin.UserAdmin attribute)|hyperpage}{27}
+\indexentry{media (webapp.admin.UserAdmin attribute)|hyperpage}{27}
+\indexentry{UserSettingsInline (class in webapp.admin)|hyperpage}{27}
+\indexentry{can\_delete (webapp.admin.UserSettingsInline attribute)|hyperpage}{27}
+\indexentry{media (webapp.admin.UserSettingsInline attribute)|hyperpage}{27}
+\indexentry{model (webapp.admin.UserSettingsInline attribute)|hyperpage}{27}
+\indexentry{verbose\_name\_plural (webapp.admin.UserSettingsInline attribute)|hyperpage}{27}
+\indexentry{UtilityCompanyAdmin (class in webapp.admin)|hyperpage}{27}
+\indexentry{list\_display (webapp.admin.UtilityCompanyAdmin attribute)|hyperpage}{27}
+\indexentry{media (webapp.admin.UtilityCompanyAdmin attribute)|hyperpage}{27}
+\indexentry{webapp.device\_dictionary (module)|hyperpage}{28}
+\indexentry{webapp.models (module)|hyperpage}{28}
+\indexentry{DashboardSettings (class in webapp.models)|hyperpage}{28}
+\indexentry{DashboardSettings.DoesNotExist|hyperpage}{28}
+\indexentry{DashboardSettings.MultipleObjectsReturned|hyperpage}{28}
+\indexentry{objects (webapp.models.DashboardSettings attribute)|hyperpage}{28}
+\indexentry{user (webapp.models.DashboardSettings attribute)|hyperpage}{28}
+\indexentry{DeviceWebSettings (class in webapp.models)|hyperpage}{28}
+\indexentry{DeviceWebSettings.DoesNotExist|hyperpage}{28}
+\indexentry{DeviceWebSettings.MultipleObjectsReturned|hyperpage}{28}
+\indexentry{current\_tier (webapp.models.DeviceWebSettings attribute)|hyperpage}{28}
+\indexentry{device (webapp.models.DeviceWebSettings attribute)|hyperpage}{28}
+\indexentry{objects (webapp.models.DeviceWebSettings attribute)|hyperpage}{28}
+\indexentry{rate\_plans (webapp.models.DeviceWebSettings attribute)|hyperpage}{28}
+\indexentry{territories (webapp.models.DeviceWebSettings attribute)|hyperpage}{28}
+\indexentry{utility\_companies (webapp.models.DeviceWebSettings attribute)|hyperpage}{28}
+\indexentry{EventNotification (class in webapp.models)|hyperpage}{28}
+\indexentry{EventNotification.DoesNotExist|hyperpage}{28}
+\indexentry{EventNotification.MultipleObjectsReturned|hyperpage}{28}
+\indexentry{appliances\_to\_watch (webapp.models.EventNotification attribute)|hyperpage}{28}
+\indexentry{description (webapp.models.EventNotification attribute)|hyperpage}{28}
+\indexentry{email\_subject (webapp.models.EventNotification attribute)|hyperpage}{28}
+\indexentry{keyword (webapp.models.EventNotification attribute)|hyperpage}{29}
+\indexentry{objects (webapp.models.EventNotification attribute)|hyperpage}{29}
+\indexentry{period\_of\_time (webapp.models.EventNotification attribute)|hyperpage}{29}
+\indexentry{usersettings\_set (webapp.models.EventNotification attribute)|hyperpage}{29}
+\indexentry{watts\_above\_average (webapp.models.EventNotification attribute)|hyperpage}{29}
+\indexentry{IntervalNotification (class in webapp.models)|hyperpage}{29}
+\indexentry{IntervalNotification.DoesNotExist|hyperpage}{29}
+\indexentry{IntervalNotification.MultipleObjectsReturned|hyperpage}{29}
+\indexentry{description (webapp.models.IntervalNotification attribute)|hyperpage}{29}
+\indexentry{email\_subject (webapp.models.IntervalNotification attribute)|hyperpage}{29}
+\indexentry{notification\_set (webapp.models.IntervalNotification attribute)|hyperpage}{29}
+\indexentry{objects (webapp.models.IntervalNotification attribute)|hyperpage}{29}
+\indexentry{usersettings\_set (webapp.models.IntervalNotification attribute)|hyperpage}{29}
+\indexentry{Notification (class in webapp.models)|hyperpage}{29}
+\indexentry{Notification.DoesNotExist|hyperpage}{29}
+\indexentry{Notification.MultipleObjectsReturned|hyperpage}{29}
+\indexentry{interval\_notification (webapp.models.Notification attribute)|hyperpage}{29}
+\indexentry{objects (webapp.models.Notification attribute)|hyperpage}{29}
+\indexentry{user (webapp.models.Notification attribute)|hyperpage}{29}
+\indexentry{RatePlan (class in webapp.models)|hyperpage}{29}
+\indexentry{RatePlan.DoesNotExist|hyperpage}{30}
+\indexentry{RatePlan.MultipleObjectsReturned|hyperpage}{30}
+\indexentry{california\_climate\_credit (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{data\_source (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{description (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{devicewebsettings\_set (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{min\_charge\_rate (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{objects (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{territory\_set (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{tier\_set (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{utility\_company (webapp.models.RatePlan attribute)|hyperpage}{30}
+\indexentry{Territory (class in webapp.models)|hyperpage}{30}
+\indexentry{Territory.DoesNotExist|hyperpage}{30}
+\indexentry{Territory.MultipleObjectsReturned|hyperpage}{30}
+\indexentry{data\_source (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{description (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{devicewebsettings\_set (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{objects (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{rate\_plan (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{summer\_rate (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{summer\_start (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{winter\_rate (webapp.models.Territory attribute)|hyperpage}{30}
+\indexentry{winter\_start (webapp.models.Territory attribute)|hyperpage}{31}
+\indexentry{Tier (class in webapp.models)|hyperpage}{31}
+\indexentry{Tier.DoesNotExist|hyperpage}{31}
+\indexentry{Tier.MultipleObjectsReturned|hyperpage}{31}
+\indexentry{chart\_color (webapp.models.Tier attribute)|hyperpage}{31}
+\indexentry{devicewebsettings\_set (webapp.models.Tier attribute)|hyperpage}{31}
+\indexentry{max\_percentage\_of\_baseline (webapp.models.Tier attribute)|hyperpage}{31}
+\indexentry{objects (webapp.models.Tier attribute)|hyperpage}{31}
+\indexentry{rate (webapp.models.Tier attribute)|hyperpage}{31}
+\indexentry{rate\_plan (webapp.models.Tier attribute)|hyperpage}{31}
+\indexentry{tier\_level (webapp.models.Tier attribute)|hyperpage}{31}
+\indexentry{UserSettings (class in webapp.models)|hyperpage}{31}
+\indexentry{UserSettings.DoesNotExist|hyperpage}{31}
+\indexentry{UserSettings.MultipleObjectsReturned|hyperpage}{31}
+\indexentry{event\_notification (webapp.models.UserSettings attribute)|hyperpage}{31}
+\indexentry{interval\_notification (webapp.models.UserSettings attribute)|hyperpage}{31}
+\indexentry{objects (webapp.models.UserSettings attribute)|hyperpage}{31}
+\indexentry{user (webapp.models.UserSettings attribute)|hyperpage}{31}
+\indexentry{UtilityCompany (class in webapp.models)|hyperpage}{31}
+\indexentry{UtilityCompany.DoesNotExist|hyperpage}{32}
+\indexentry{UtilityCompany.MultipleObjectsReturned|hyperpage}{32}
+\indexentry{description (webapp.models.UtilityCompany attribute)|hyperpage}{32}
+\indexentry{devicewebsettings\_set (webapp.models.UtilityCompany attribute)|hyperpage}{32}
+\indexentry{objects (webapp.models.UtilityCompany attribute)|hyperpage}{32}
+\indexentry{rateplan\_set (webapp.models.UtilityCompany attribute)|hyperpage}{32}
+\indexentry{webapp.tests (module)|hyperpage}{32}
+\indexentry{webapp.timeseries (module)|hyperpage}{32}
+\indexentry{smooth() (in module webapp.timeseries)|hyperpage}{32}
+\indexentry{webapp.views (module)|hyperpage}{32}
+\indexentry{Object (class in webapp.views)|hyperpage}{32}
+\indexentry{SettingsForm (class in webapp.views)|hyperpage}{32}
+\indexentry{base\_fields (webapp.views.SettingsForm attribute)|hyperpage}{32}
+\indexentry{channel\_1\_choices (webapp.views.SettingsForm attribute)|hyperpage}{32}
+\indexentry{channel\_2\_choices (webapp.views.SettingsForm attribute)|hyperpage}{32}
+\indexentry{channel\_3\_choices (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{clean\_password2() (webapp.views.SettingsForm method)|hyperpage}{33}
+\indexentry{error\_messages (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{get\_notifications() (webapp.views.SettingsForm method)|hyperpage}{33}
+\indexentry{get\_rate\_plans() (webapp.views.SettingsForm method)|hyperpage}{33}
+\indexentry{get\_territories() (webapp.views.SettingsForm method)|hyperpage}{33}
+\indexentry{get\_utility\_companies() (webapp.views.SettingsForm method)|hyperpage}{33}
+\indexentry{media (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{notification\_choices (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{rate\_plan\_choices (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{share\_with\_choices (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{territory\_choices (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{utility\_company\_choices (webapp.views.SettingsForm attribute)|hyperpage}{33}
+\indexentry{billing\_information() (in module webapp.views)|hyperpage}{33}
+\indexentry{chartify() (in module webapp.views)|hyperpage}{33}
+\indexentry{charts\_deprecated() (in module webapp.views)|hyperpage}{33}
+\indexentry{circuits\_information() (in module webapp.views)|hyperpage}{33}
+\indexentry{dashboard() (in module webapp.views)|hyperpage}{34}
+\indexentry{dashboard\_update() (in module webapp.views)|hyperpage}{34}
+\indexentry{default\_chart() (in module webapp.views)|hyperpage}{34}
+\indexentry{device\_chart() (in module webapp.views)|hyperpage}{34}
+\indexentry{device\_data() (in module webapp.views)|hyperpage}{35}
+\indexentry{device\_is\_online() (in module webapp.views)|hyperpage}{35}
+\indexentry{device\_location() (in module webapp.views)|hyperpage}{35}
+\indexentry{device\_status() (in module webapp.views)|hyperpage}{35}
+\indexentry{export\_data() (in module webapp.views)|hyperpage}{35}
+\indexentry{generate\_average\_wattage\_usage() (in module webapp.views)|hyperpage}{35}
+\indexentry{generate\_heatmap\_data() (in module webapp.views)|hyperpage}{36}
+\indexentry{get\_wattage\_usage() (in module webapp.views)|hyperpage}{36}
+\indexentry{group\_by\_mean() (in module webapp.views)|hyperpage}{36}
+\indexentry{heatmap() (in module webapp.views)|hyperpage}{36}
+\indexentry{landing() (in module webapp.views)|hyperpage}{36}
+\indexentry{make\_choices() (in module webapp.views)|hyperpage}{36}
+\indexentry{merge\_subs() (in module webapp.views)|hyperpage}{36}
+\indexentry{remove\_device() (in module webapp.views)|hyperpage}{36}
+\indexentry{settings() (in module webapp.views)|hyperpage}{36}
+\indexentry{settings\_account() (in module webapp.views)|hyperpage}{37}
+\indexentry{settings\_change\_device() (in module webapp.views)|hyperpage}{37}
+\indexentry{settings\_dashboard() (in module webapp.views)|hyperpage}{38}
+\indexentry{settings\_device() (in module webapp.views)|hyperpage}{38}
+\indexentry{webapp (module)|hyperpage}{38}

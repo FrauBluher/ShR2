@@ -1,0 +1,410 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.4. Home Application &mdash; SEADS 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="SEADS 1.0 documentation" href="../index.html"/>
+        <link rel="up" title="3. Web Stack" href="modules.html"/>
+        <link rel="next" title="3.5. manage module" href="manage.html"/>
+        <link rel="prev" title="3.3. Farmer Application" href="farmer.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> SEADS
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#basic-server-outline">1.2.1. Basic Server Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#influxdb-server-setup">1.2.2. InfluxDB Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateful-server-setup">1.2.3. Django Web Application Stateful Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#django-web-application-stateless-server-setup">1.2.4. Django Web Application Stateless Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#finishing-up">1.2.5. Finishing Up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-atomic-server">1.3. Installing Atomic Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#id2">1.3.1. Basic Server Outline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">2. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#api-documentation">2.1. API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">3. Web Stack</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="custom_config.html">3.1. custom_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html">3.2. Debug Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#submodules">3.2.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.admin">3.2.2. debug.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.forms">3.2.3. debug.forms module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.models">3.2.4. debug.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.serializers">3.2.5. debug.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.urls">3.2.6. debug.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug.views">3.2.7. debug.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debug.html#module-debug">3.2.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="farmer.html">3.3. Farmer Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#submodules">3.3.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.admin">3.3.2. farmer.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.models">3.3.3. farmer.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.serializers">3.3.4. farmer.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">3.4. Home Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-home">3.4.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="manage.html">3.5. manage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="microdata.html">3.6. Microdata Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#subpackages">3.6.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="microdata.management.html">3.6.1.1. microdata.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#submodules">3.6.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-admin-module">3.6.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-models-module">3.6.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.serializers">3.6.5. microdata.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.tests">3.6.6. microdata.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.views">3.6.7. microdata.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata">3.6.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pseudodata.html">3.7. pseudodata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pseudodevice.html">3.8. pseudodevice module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seads.html">3.9. SEADS Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#submodules">3.9.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.settings">3.9.2. seads.settings module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.urls">3.9.3. seads.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.wsgi">3.9.4. seads.wsgi module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads">3.9.5. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.10. Webapp Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#subpackages">3.10.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="webapp.management.html">3.10.1.1. webapp.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#submodules">3.10.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.admin">3.10.3. webapp.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.device_dictionary">3.10.4. webapp.device_dictionary module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#webapp-models-module">3.10.5. webapp.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.tests">3.10.6. webapp.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.timeseries">3.10.7. webapp.timeseries module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.views">3.10.8. webapp.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp">3.10.9. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">SEADS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">3. Web Stack</a> &raquo;</li>
+      
+    <li>3.4. Home Application</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/home.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="home-application">
+<h1>3.4. Home Application<a class="headerlink" href="#home-application" title="Permalink to this headline">¶</a></h1>
+<p>This simple application handles logins and logouts as well as new
+user registration. This application should probably be rolled in with
+<a class="reference external" href="webapp.html">webapp</a> for the sake of portability.</p>
+<div class="section" id="subpackages">
+<h2>3.4.1. Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>3.4.2. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-home.admin">
+<span id="home-admin-module"></span><h2>3.4.3. home.admin module<a class="headerlink" href="#module-home.admin" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-home.models">
+<span id="home-models-module"></span><h2>3.4.4. home.models module<a class="headerlink" href="#module-home.models" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-home.serializers">
+<span id="home-serializers-module"></span><h2>3.4.5. home.serializers module<a class="headerlink" href="#module-home.serializers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="home.serializers.UserSerializer">
+<em class="property">class </em><code class="descclassname">home.serializers.</code><code class="descname">UserSerializer</code><span class="sig-paren">(</span><em>instance=None</em>, <em>data=&lt;class rest_framework.fields.empty&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#home.serializers.UserSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.serializers.HyperlinkedModelSerializer</span></code></p>
+<dl class="class">
+<dt id="home.serializers.UserSerializer.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="headerlink" href="#home.serializers.UserSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="home.serializers.UserSerializer.Meta.fields">
+<code class="descname">fields</code><em class="property"> = ('url', 'username', 'email', 'is_staff')</em><a class="headerlink" href="#home.serializers.UserSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="home.serializers.UserSerializer.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#home.serializers.UserSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">User</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-home.tests">
+<span id="home-tests-module"></span><h2>3.4.6. home.tests module<a class="headerlink" href="#module-home.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-home.views">
+<span id="home-views-module"></span><h2>3.4.7. home.views module<a class="headerlink" href="#module-home.views" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="home.views.UserViewSet">
+<em class="property">class </em><code class="descclassname">home.views.</code><code class="descname">UserViewSet</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#home.views.UserViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<dl class="attribute">
+<dt id="home.views.UserViewSet.queryset">
+<code class="descname">queryset</code><a class="headerlink" href="#home.views.UserViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="home.views.UserViewSet.serializer_class">
+<code class="descname">serializer_class</code><a class="headerlink" href="#home.views.UserViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">UserSerializer</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="home.views.account">
+<code class="descclassname">home.views.</code><code class="descname">account</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#home.views.account" title="Permalink to this definition">¶</a></dt>
+<dd><p>A view that returns the account page of the requesting user. This
+is barebones, but could be expanded to provide the user with
+information on their own account. This is not the settings page.</p>
+<p><strong>Templates:</strong></p>
+<blockquote>
+<div><cite>base/account.html</cite></div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="home.views.index">
+<code class="descclassname">home.views.</code><code class="descname">index</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#home.views.index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="home.views.register">
+<code class="descclassname">home.views.</code><code class="descname">register</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#home.views.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>A view that renders the register page for new users. This can only
+be access by users that are not currently signed in.</p>
+<p><strong>Context</strong></p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">form</span></code></p>
+<blockquote>
+<div>Registration form for new users</div></blockquote>
+</div></blockquote>
+<p><strong>Templates:</strong></p>
+<blockquote>
+<div><cite>base/register.html</cite></div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="home.views.signin">
+<code class="descclassname">home.views.</code><code class="descname">signin</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#home.views.signin" title="Permalink to this definition">¶</a></dt>
+<dd><p>A view that renders the sign-in page for existing users. All
+verification is done on the server side.</p>
+<p><strong>Context</strong></p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">form</span></code></p>
+<blockquote>
+<div>Sign-in form for existing users</div></blockquote>
+</div></blockquote>
+<p><strong>Templates:</strong></p>
+<blockquote>
+<div><cite>base/signin.html</cite></div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="home.views.signout">
+<code class="descclassname">home.views.</code><code class="descname">signout</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="headerlink" href="#home.views.signout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-home">
+<span id="module-contents"></span><h2>3.4.8. Module contents<a class="headerlink" href="#module-home" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="manage.html" class="btn btn-neutral float-right" title="3.5. manage module" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="farmer.html" class="btn btn-neutral" title="3.3. Farmer Application" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Bryan Smith.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

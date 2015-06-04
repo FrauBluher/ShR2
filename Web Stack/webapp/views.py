@@ -2,7 +2,7 @@ from django.shortcuts import render, render_to_response
 from django.contrib.auth.decorators import login_required
 from microdata.models import Device, Event, Appliance, Circuit, CircuitType
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django import forms
 from django.http import HttpResponse
 from django.conf import settings as django_settings
@@ -15,6 +15,7 @@ from django.core.servers.basehttp import FileWrapper
 import cStringIO as StringIO
 from microdata.views import initiate_job_to_glacier
 from webapp.models import Tier
+from django.core import serializers
 
 
 from django.db import IntegrityError
@@ -92,20 +93,9 @@ class SettingsForm(forms.Form):
                               'class' : 'form-control input-md'
                               })
                             )
-  channel_0_choices = []
   channel_1_choices = []
   channel_2_choices = []
-  channel_0 = forms.ChoiceField(
-    widget=forms.Select(attrs={
-          'class':'form-control',
-          'id':'channel_0-dropdown'
-          }
-        ),
-    choices=(
-      channel_0_choices
-    ),
-    required=False
-  )
+  channel_3_choices = []
   channel_1 = forms.ChoiceField(
     widget=forms.Select(attrs={
           'class':'form-control',
@@ -125,6 +115,17 @@ class SettingsForm(forms.Form):
         ),
     choices=(
       channel_2_choices
+    ),
+    required=False
+  )
+  channel_3 = forms.ChoiceField(
+    widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_3-dropdown'
+          }
+        ),
+    choices=(
+      channel_3_choices
     ),
     required=False
   )
@@ -186,10 +187,10 @@ class SettingsForm(forms.Form):
       #  default = DashboardSettings.objects.get(user=user),
       #)
     if device:
-      self.share_with_choices = make_choices([User.objects.all(),])
-      self.channel_0_choies = make_choices([CircuitType.objects.all(),])
+      self.share_with_choices = make_choices([User.objects.all().exclude(username=device.owner.username),])
       self.channel_1_choies = make_choices([CircuitType.objects.all(),])
       self.channel_2_choies = make_choices([CircuitType.objects.all(),])
+      self.channel_3_choies = make_choices([CircuitType.objects.all(),])
 
       self.fields['share_with'] = forms.ChoiceField(
         widget=forms.SelectMultiple(attrs={
@@ -203,17 +204,6 @@ class SettingsForm(forms.Form):
         required=False
       )
       
-      self.fields['channel_0'] = forms.ChoiceField(
-        widget=forms.Select(attrs={
-          'class':'form-control',
-          'id':'channel_0-dropdown'
-          }
-        ),
-        choices=(
-          self.channel_0_choies
-        ),
-        required=False
-      )
       self.fields['channel_1'] = forms.ChoiceField(
         widget=forms.Select(attrs={
           'class':'form-control',
@@ -233,6 +223,17 @@ class SettingsForm(forms.Form):
         ),
         choices=(
           self.channel_2_choies
+        ),
+        required=False
+      )
+      self.fields['channel_3'] = forms.ChoiceField(
+        widget=forms.Select(attrs={
+          'class':'form-control',
+          'id':'channel_3-dropdown'
+          }
+        ),
+        choices=(
+          self.channel_3_choies
         ),
         required=False
       )
@@ -315,6 +316,21 @@ def chartify(data):
 
 @login_required(login_url='/signin/')
 def landing(request):
+   """
+      The first function called when a user has logged in and accesses the Dashboard.
+
+      **Context**
+
+         ``my_devices``
+
+            A list of :class:`microdata.models.Device` objects that either belong to the user or are shared with the user.
+            This list is used to populate the sidebar with :class:`microdata.models.Device` links.
+
+      **Templates:**
+
+         `base/dashboard.html`
+
+   """
    user = request.user.id
    my_devices = Device.objects.filter(owner=user)
    my_devices = my_devices | Device.objects.filter(share_with=user)
@@ -324,17 +340,38 @@ def landing(request):
 
 @login_required(login_url='/signin/')
 def dashboard(request):
+   """
+      The first function called when a user has logged in and accesses the Dashboard.
+
+      **Context**
+
+         ``my_devices``
+
+            A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
+            This list is used to generate markers on the graph.
+
+
+         ``server_time``
+
+            The current time as reported by the server. This is used as a time offset for the graph.
+
+
+      **Templates:**
+
+         `base/dashboard.html`
+
+   """
    user = request.user.id
    if request.user.is_authenticated():
       my_devices = Device.objects.filter(owner=user)
       my_devices = my_devices | Device.objects.filter(share_with=user)
    else: my_devices = None
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
    for device in my_devices:
       device.circuits = []
-      device.circuits.append(device.channel_0)
       device.circuits.append(device.channel_1)
       device.circuits.append(device.channel_2)
+      device.circuits.append(device.channel_3)
    context = {'my_devices': my_devices,
               'server_time': time.time()*1000,
               }
@@ -354,34 +391,35 @@ def merge_subs(lst_of_lsts):
 
 
 def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
+   query = ''
    if unit == 'y': unit = 'm'
-   if (start == ''): start = 'now(  ) - 1d'
-   else: start = '\''+datetime.fromtimestamp(int(float(start))).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   if (start == ''): start = 'now() - 1d'
+   else: start = '\''+datetime.fromtimestamp(start).strftime('%Y-%m-%d %H:%M:%S')+'\''
    if (stop == ''): stop = 'now()'
-   else: stop = '\''+datetime.fromtimestamp(int(float(stop))).strftime('%Y-%m-%d %H:%M:%S')+'\''
-   db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+   else: stop = '\''+datetime.fromtimestamp(stop+25200).strftime('%Y-%m-%d %H:%M:%S')+'\''
+   db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
    result = db.query('list series')[0]
-   appliances = Set()
+   channels = Set()
    for series in result['points']:
       rg = re.compile('device.'+str(serial))
       if re.match(rg, series[1]):
-         appliance = series[1].split('device.'+str(serial)+'.')
-         if (len(appliance) < 2): continue
-         else: appliances.add(appliance[-1])
+         channel_pk = series[1].split('device.'+str(serial)+'.')
+         if (len(channel_pk) < 2): continue
+         else: channels.add(channel_pk[-1])
    mean = {}
    to_merge = []
-   for appliance in appliances:
-      # Specifying a circuit_pk filters the query based on appliances in the circuit.
-      query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop
+   for circuit in channels:
+      # Specifying a circuit_pk filters the query based on circuits on the device.
+      query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+str(circuit)+' where time > '+start+' and time < '+stop
       if circuit_pk:
-        query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+appliance+' where time > '+start+' and time < '+stop+' where channel = '+str(circuit_pk)
+        query = 'select * from 1'+unit+'.device.'+str(serial)+'.'+str(circuit_pk)+' where time > '+start+' and time < '+stop
       group = []
       try:
         group = db.query(query)
       except:
-        continue
+        pass
       if (len(group)): group = group[0]['points']
-      #else: return None
+      # else: return None
       # hack. Remove sequence_number and timezone offset for GMT
       new_group = []
       for s in group:
@@ -402,16 +440,38 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
            'unit': unit,
            'dataLimitFrom': data[len(data)-1][0],
            'dataLimitTo': data[0][0],
+           'query': query
           }
    return data
 
 @login_required(login_url='/signin/')
 def default_chart(request):
+   """
+      The first function called when a user has logged in and accesses the Dashboard.
+
+      **Context**
+
+         ``my_devices``
+
+            A list of :class:`microdata.models.Device` that either belong to the user or are shared with the user.
+            This list is used to generate markers on the graph.
+
+
+         ``server_time``
+
+            The current time as reported by the server. This is used as a time offset for the graph.
+
+
+      **Templates:**
+
+      `   base/dashboard.html`
+
+   """
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       devices = Device.objects.filter(owner=user)
       devices = devices | Device.objects.filter(share_with=user)
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
       for device in devices:
         device.circuits = []
         device.circuits.append(device.channel_1)
@@ -424,30 +484,56 @@ def default_chart(request):
 
 @login_required(login_url='/signin/')
 def generate_average_wattage_usage(request, serial):
+    """
+        Get the cost today, average wattage, and current wattage associated with the specified device.
+        Should be called through AJAX and is expected to take a couple seconds to complete.
+
+        **Context**
+
+            ``cost_today``
+
+                A simple lookup from the device itself. This could be transformed to a template
+                variable instead in the future.
+
+
+            ``average_wattage``
+
+                This is done by simply selecting the newest mean value from the 1 day series. This
+                is probably cheating but it's really fast compared to computing a new average
+                at every lookup.
+
+
+            ``current_wattage``
+
+                This is simply the sum of the newest wattages from each channel of the device.
+    """
+    
     context = {}
     user = User.objects.get(username=request.user)
     device = Device.objects.get(serial=serial)
-    if device.owner == user:
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+    if device.owner == user or user in device.share_with.all():
+      db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
       result = db.query('list series')[0]
-      appliances = Set()
+      channels = Set()
       for series in result['points']:
          rg = re.compile('device.'+str(device.serial))
          if re.match(rg, series[1]):
-            appliance = series[1].split('device.'+str(device.serial)+'.')
-            if (len(appliance) < 2): continue
+            channel = series[1].split('device.'+str(device.serial)+'.')
+            if (len(channel) < 2): continue
             else:
-               appliances.add(appliance[-1])
+               channels.add(channel[-1])
       average_wattage = 0
+      try:
+        average_wattage = db.query('select mean from 1d.device.'+str(device.serial)+' limit 1')[0]['points'][0][2]
+      except:
+        pass
       current_wattage = 0
-      cost_today = 0.0
-      for appliance in appliances:
+      cost_today = device.cost_daily
+      for circuit in channels:
          try:
-            average_wattage += db.query('select mean(wattage) from device.'+str(device.serial)+'.'+appliance)[0]['points'][0][1]
-            this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+appliance+' limit 1')[0]['points'][0]
+            this_wattage = db.query('select * from 1m.device.'+str(device.serial)+'.'+str(circuit)+' limit 1')[0]['points'][0]
             if this_wattage[0] > time.time() - 1000:
                current_wattage += this_wattage[2]
-            cost_today = float(db.query('select sum(cost) from device.'+str(device.serial)+' where time < now() and time > now() - 1d')[0]['points'][0][1])
          except:
             pass
       context['cost_today'] = float("{0:.2f}".format(cost_today))
@@ -457,6 +543,10 @@ def generate_average_wattage_usage(request, serial):
       
 @login_required(login_url='/signin/')
 def get_wattage_usage(request):
+   """
+   Wrapper function that calls `webapp.views.generate_average_wattage_usage`.
+   """
+   
    context = {}
    if request.method == 'GET':
        serial = request.GET.get('serial')
@@ -466,15 +556,42 @@ def get_wattage_usage(request):
    
 @login_required(login_url='/signin/')
 def device_data(request, serial):
+   """
+       Get the cost today, average wattage, and current wattage associated with the specified device.
+       Should be called through AJAX and is expected to take a couple seconds to complete.
+
+       **Context**
+
+           ``cost_today``
+
+               A simple lookup from the device itself. This could be transformed to a template
+               variable instead in the future.
+
+
+           ``average_wattage``
+
+               This is done by simply selecting the newest mean value from the 1 day series. This
+               is probably cheating but it's really fast compared to computing a new average
+               at every lookup.
+
+
+           ``current_wattage``
+
+               This is simply the sum of the newest wattages from each channel of the device.
+   """
+   
    context = {}
    if request.method == 'GET':
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
       localtime = int(float(request.GET.get('localtime', time.time())))
-      if device.owner == user:
+      chart_load = request.GET.get('chart_load', False)
+      if device.owner == user or user in device.share_with.all():
          unit = request.GET.get('unit','')
-         start = request.GET.get('from','')
-         stop = request.GET.get('to','')
+         start = int(float(request.GET.get('from','')))
+         stop = int(float(request.GET.get('to','')))
+         #if chart_load: stop = time.time()
+         if start < stop: start += 25200
          circuit_pk = request.GET.get('circuit_pk')
          context = group_by_mean(serial,unit,start,stop,localtime,circuit_pk)
    return HttpResponse(json.dumps(context), content_type="application/json")
@@ -482,6 +599,47 @@ def device_data(request, serial):
 
 @login_required(login_url='/signin/')
 def device_chart(request, serial):
+   """
+       Return an HTML/Javascript chart ready to be rendered to the client.
+       No data is preloaded. However, a chart will have a unique endpoint
+       to retrieve data based on device serial.
+
+       **Context**
+
+           ``device``
+
+               A :class:`microdata.models.Device` object for the serial provided.
+
+
+           ``circuit_pk``
+
+               If a ``circuit_pk`` is specified, then this function will return a chart
+               with just the circuit specified by the primary key. This returns the pk.
+               
+            ``circuit_name``
+            
+                If a ``circuit_pk`` is specified, then this function will return a chart
+                with just the circuit specified by the primary key. This returns the name.
+
+
+           ``circuits``
+
+               A list of circuits that relate to the channels of the device.
+               
+           ``server_time``
+
+              The time as seen by the server right now. Used to synchronize the chart.
+
+           ``stack``
+
+               This is used to specify whether the chart is stacked or unstacked. This
+               was intended to be a setting that a user could toggle via the settings page.
+
+      **Template**
+ 
+         `base/chart.html`
+
+   """
    context = {}
    if request.method == 'GET':
       circuit_pk = request.GET.get('circuit_pk')
@@ -489,42 +647,43 @@ def device_chart(request, serial):
       user = User.objects.get(username=request.user)
       device = Device.objects.get(serial=serial)
 
-      if device.owner == user:
+      if device.owner == user or user in device.share_with.all():
          context['device'] = device
 
-         appliance_names = Set()
+         channel_names = Set()
          if circuit_pk:
-            circuit = Circuit.objects.get(pk=circuit_pk)
-            appliance_names = Set(circuit.circuittype.appliances.all())
+            circuit = CircuitType.objects.get(pk=circuit_pk)
+            channel_names = [circuit.name]
             context['circuit_pk'] = circuit_pk
             context['circuit_name'] = circuit.name
          else:
-             db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+             db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
              result = db.query('list series')[0]
              for series in result['points']:
                 rg = re.compile('device.'+str(device.serial))
                 if re.match(rg, series[1]):
-                   appliance_name = series[1].split('device.'+str(device.serial)+'.')
-                   if (len(appliance_name) < 2): continue
-                   else: appliance_names.add(appliance_name[-1])
+                   circuit_pk = series[1].split('device.'+str(device.serial)+'.')
+                   if (len(circuit_pk) < 2): continue
+                   else: channel_names.add(circuit_pk[-1])
 
-         context['appliances'] = []
-         # place Unknown appliance at front of list
-         unknown_appliance = Appliance.objects.get(serial=0)
-         if unknown_appliance.name in appliance_names:
-            context['appliances'].append(unknown_appliance)
-         for name in appliance_names:
-            appliance = Appliance.objects.get(name=name)
-            if appliance != unknown_appliance:
-               context['appliances'].append(Appliance.objects.get(name=name));
+         context['circuits'] = []
+         for circuit in channel_names:
+            try:
+               circuit = CircuitType.objects.get(pk=circuit)
+            except:
+               pass
+            context['circuits'].append(circuit);
 
          context['server_time'] = time.time()*1000
-         context['stack'] = stack == 'true'
+         context['stack'] = True #stack == 'true'
    return render(request, 'base/chart.html', context)
    
 
 @login_required(login_url='/signin/')
 def charts_deprecated(request, serial, unit):
+   """
+   DEPRECATED
+   """
    warnings.warn("Generating chart data from sqlite deprecated. See new charts() using InfluxDB.", DeprecationWarning)
    if request.method == 'GET':
       user = request.user.id
@@ -547,7 +706,7 @@ def charts_deprecated(request, serial, unit):
 
 def device_is_online(device):
   if device:
-    db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+    db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
     result = [0,]
     try:
       result = db.query('select * from device.'+str(device.serial)+' limit 1;')[0]['points'][0]
@@ -562,6 +721,20 @@ class Object:
     
 @login_required(login_url='/signin/')
 def device_status(request):
+   """
+       Check to see if a device is connected to the system or not.
+       
+       This is done by checking to see how recent the newest data point in
+       the database is. If it's not older than 40 seconds, assume the device
+       is currently connected.
+
+       **Context**
+
+           ``connected``
+
+               Boolean. True if device has data not older than 40 seconds.
+
+   """
    connected = False
    if request.method == 'GET':
       serial = request.GET.get('serial', None)
@@ -576,6 +749,60 @@ def device_status(request):
 @csrf_exempt
 @login_required(login_url='/signin/')
 def settings(request):
+  """
+      The main function to handle settings requests. This module interprets
+      where on the settings page the user is and provides correct context
+      corresponding to their state.
+      
+      There are three possible states:
+      
+      1. Device
+
+      **Context**
+      
+        ``devices``
+        
+            A list of devices the user owns. These are the devices
+            this user is allowed to modify in a restricted way.
+      
+      **Template**
+      
+            `base/settings_device_base.html`
+      
+      2. Account
+      
+      **Context**
+      
+        ``form``
+        
+            A :class:`webapp.views.SettingsForm` object that provides the
+            fields to a user necessary to make custom modifications to their
+            account.
+            
+        ``notification_choices``
+        
+            A confirmation of the notification choices the user is
+            subscribed to. Used for client side verification.
+            
+      **Template**
+      
+        `base/settings_account.html`
+      
+      3. Dashboard
+      
+      **Context**
+      
+        ``form``
+        
+            A :class:`webapp.views.SettingsForm` object that provides the
+            fields to a user necessary to make custom modifications to their
+            dashboard.
+      
+      **Template**
+      
+        `base/settings_dashboard.html`
+
+  """
   context = {}
   user = request.user.id
   template = 'base/settings.html'
@@ -609,6 +836,37 @@ def settings(request):
 
 @login_required(login_url='/signin/')
 def settings_change_device(request):
+   """
+       This class is called when a user is ready to modify a device.
+       Since there are custom fields being displayed, some extra context
+       must be returned to properly serve the form.
+
+       **Context**
+
+           ``device``
+           
+              The :class:`microdata.models.Device` being modified
+              
+           ``form``
+           
+              A :class:`webapp.views.SettingsForm` with values populated
+              by specifying a device.
+              
+           ``utility_company_choices`` ``rate_plan_choices`` ``territory_choices``
+           
+              The various checkbox/dropdown choices for a user to customize
+              the device's settings.
+
+           ``farmer_installed``
+           
+              A proof-of-concept variable that will enable certain
+              functionality on the HTML page if this application is installed.
+              
+        **Template**
+        
+           `base/settings_device.html`
+
+   """
    context = {}
    if request.method == 'GET':
       serial = request.GET.get('serial')
@@ -634,10 +892,59 @@ def settings_change_device(request):
 
 @login_required(login_url='/signin/')
 def settings_account(request):
+  """
+      This class deals with the actual modification of an account
+      via the account settings. 
+
+      **Context**
+
+          ``errors``
+
+             A list of errors that were encountered while processing the
+             request. This is used to present to the user if one of their
+             actions did not validate.
+
+          ``success``
+
+             Boolean specifying whether or not the action was successful.
+             This would be false if a user's action did not verify.
+
+          ``notifications``
+
+             A list of notifications that a user is subscribed to
+             after updating the list.
+
+          ``username``
+
+             If the user opted to change their username, then the new
+             username verified by the system is returned to update the
+             HTML.
+
+          ``first_name``
+
+             If the user opted to change their first name, then the new
+             first name verified by the system is returned to update the
+             HTML.
+
+          ``last_name``
+
+             If the user opted to change their last name, then the new
+             last name verified by the system is returned to update the
+             HTML.
+
+       **Template**
+
+          `base/settings_account.html`
+
+  """
   context = {}
   errors = Set()
   user = User.objects.get(username = request.user)
   if request.method == 'POST':
+    sandbox_group = Group.objects.get(name='Sandbox')
+    if sandbox_group in user.groups.all():
+      context['errors'] = 'Sandbox user unable to change settings'
+      return HttpResponse(json.dumps(context), content_type="application/json")
     context['success'] = False
     form = SettingsForm(request.POST)
     notifications = request.POST.getlist('notifications', False)
@@ -708,6 +1015,33 @@ def settings_account(request):
 @login_required(login_url='/signin/')
 @csrf_exempt
 def settings_device(request, serial):
+  """
+      This class deals with the actual modification of a device
+      via the device settings. 
+
+      **Context**
+
+          ``success``
+
+             Boolean specifying whether or not the action was successful.
+             This would be false if a user's action did not verify.
+
+          ``appliances``
+
+             This is a list of appliance that the user requests to be
+             associated with their custom circuit.
+
+          ``utility_companies`` ``rate_plan`` ``territory``
+
+             If the user opted to alter any of these fields,
+             we make the alterations if they are verified
+             and return the response for client side verification.
+
+       **Template**
+
+          `base/settings_device.html`
+
+  """
   context = {}
   if request.method == 'POST':
     context['success'] = False
@@ -716,27 +1050,34 @@ def settings_device(request, serial):
     if device.owner == user:
        form = SettingsForm(request.POST)
        
+       new_name = request.POST.get('new_name')
+       
+       if new_name:
+         device.name = new_name
+         device.save()
+         context['success'] = True
+         device_obj = {
+           'name': device.name,
+           'serial': device.serial
+         }
+         context['device'] = device_obj
+       
        custom_channel = request.POST.get('custom_channel', False)
        appliance = request.POST.get('appliance', False)
        add = request.POST.get('add', None)
        if custom_channel and appliance:
-         device.channel_0 = CircuitType.objects.get(pk=6)
+         device.channel_1 = CircuitType.objects.get(pk=6)
          if add is True:
-            device.channel_0.appliances.add(Appliance.objects.get(pk=int(appliance)))
+            device.channel_1.appliances.add(Appliance.objects.get(pk=int(appliance)))
          elif add is False:
-            device.channel_0.appliances.remove(Appliance.objects.get(pk=int(appliance)))
+            device.channel_1.appliances.remove(Appliance.objects.get(pk=int(appliance)))
          device.save()
          context['success'] = True
          return HttpResponse(json.dumps(context), content_type="application/json")
-       channel_0 = request.POST.get('channel_0', False)
        channel_1 = request.POST.get('channel_1', False)
        channel_2 = request.POST.get('channel_2', False)
+       channel_3 = request.POST.get('channel_3', False)
        context['appliances'] = {}
-       if channel_0:
-         device.channel_0 = CircuitType.objects.get(pk=channel_0)
-         device.save()
-         context['appliances']['channel_0'] = [x.name for x in device.channel_0.appliances.all()]
-         context['success'] = True
        if channel_1:
          device.channel_1 = CircuitType.objects.get(pk=channel_1)
          device.save()
@@ -746,6 +1087,11 @@ def settings_device(request, serial):
          device.channel_2 = CircuitType.objects.get(pk=channel_2)
          device.save()
          context['appliances']['channel_2'] = [x.name for x in device.channel_2.appliances.all()]
+         context['success'] = True
+       if channel_3:
+         device.channel_3 = CircuitType.objects.get(pk=channel_3)
+         device.save()
+         context['appliances']['channel_3'] = [x.name for x in device.channel_3.appliances.all()]
          context['success'] = True
        
        utility_company = request.POST.get('utility_company', False)
@@ -872,11 +1218,14 @@ def export_data(request):
       status_code = initiate_job_to_glacier(request, user, int(end))
       return render(request, 'base/glacier_status.html', {'glacier':True})
     elif device.owner == user:
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
-      if start is not 0 and end is not 0:
-        data = db.query('select * from device.'+str(device.serial)+' where time > '+start+'s and time < '+end+'s')
-      else:
-        data = db.query('select * from device.'+str(device.serial))
+      try:
+        db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
+        if start is not 0 and end is not 0:
+          data = db.query('select * from device.'+str(device.serial)+' where time > '+start+'s and time < '+end+'s')
+        else:
+          data = db.query('select * from device.'+str(device.serial))
+      except:
+        pass
     response = HttpResponse(content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename="export.txt"'
     response.write(data)
@@ -884,17 +1233,53 @@ def export_data(request):
 
 @login_required(login_url='/signin/')
 def billing_information(request):
+   """
+       Dashboard function called via AJAX.
+
+       This gives the user live information about their bill status
+       as it stands from within the server's calculations. The current
+       tier is returned as well as the total KWh consumed for this month.
+
+       **Context**
+
+           ``device``
+
+              The :class:`microdata.models.Device` object that the
+              request was completed for.
+
+           ``tier_progress_list``
+
+              A tuple containing a :class:`microdata.models.Device`
+              object as well as a percentage of the progess the
+              :class:`microdata.models.Device` is to reaching the next
+              :class:`webapp.models.Tier` level.
+
+           ``territory``
+
+               This returns the current :class:`webapp.models.Territory`
+               which assists in client-side calculations.
+               
+            ``tiers``
+
+               A list of all the :class:`webapp.models.Tier` objects
+               associated with the chosen :class:`webapp.models.RatePlan`.
+
+        **Template**
+
+           `base/billing_information.html.html`
+
+   """
    context = {}
    if request.method == 'GET':
       serial = request.GET.get('serial')
-      db = influxdb.InfluxDBClient('localhost',8086,'root','root','seads')
+      db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
       user = User.objects.get(username=request.user)
       context['tier_progress_list'] = []
       device_tier_progress = {}
       this_month = datetime.now().month
       this_year = datetime.now().year
       days_this_month = monthrange(this_year,this_month)[1]
-      for device in Device.objects.filter(owner=user):
+      for device in Device.objects.filter(owner=user) | Device.objects.filter(share_with=user):
          current_tier_level = 1
          try:
             current_tier_level = db.query('select * from tier.device.'+str(device.serial)+' limit 1')[0]['points'][0][2]
@@ -914,13 +1299,93 @@ def billing_information(request):
             context['current_device'] = {'device':device, 'progress':progress}
          device_tier_progress[device.serial] = progress
       device = Device.objects.get(serial=int(serial))
-      if device.owner == user:
+      if device.owner == user or user in device.share_with.all():
          context['territory'] = territory
          context['tiers'] = Tier.objects.filter(rate_plan=device.devicewebsettings.rate_plans.all()[0])
          context['device'] = device
          return render(request, 'base/billing_information.html', context)
    return render(status_code=400)
+   
+@login_required(login_url='/signin/')
+def circuits_information(request):
+   """
+       Dashboard function called via AJAX.
 
+       This function provides the data necessary to render a simple
+       donut chart showing the breakdown of a circuit by the amount
+       of energy it has consumed relative to other circuits.
+
+       **Context**
+
+           ``circuits``
+
+              A list of tuples of the form::
+              
+                  [
+                      microdata.models.Device.channel_1,
+                      channel_1_kwh
+                  ]
+
+        **Template**
+
+           `base/base/circuits_information.html`
+
+   """
+   if request.method == 'GET':
+      serial = request.GET.get('serial')
+      device = Device.objects.get(serial=serial)
+      db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
+      user = User.objects.get(username=request.user)
+      if device.owner == user or user in device.share_with.all():
+         kilowatt_hours_monthly = device.kilowatt_hours_monthly
+         channel_1_kwh = 0
+         channel_2_kwh = 0
+         channel_3_kwh = 0
+         try:
+           channel_1_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_1.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except: pass
+         try:
+           channel_2_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_2.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except: pass
+         try:
+           channel_3_kwh = db.query('select sum(wattage) from device.'+str(serial)+'.'+str(device.channel_3.pk)+' where time > now() - 1M')[0]['points'][0][1]
+         except: pass
+         context = {
+            'circuits': [
+               [device.channel_1, channel_1_kwh],
+               [device.channel_2, channel_2_kwh],
+               [device.channel_3, channel_3_kwh],
+            ],
+            'kilowatt_hours_monthly': kilowatt_hours_monthly
+         }
+         return render(request, 'base/circuits_information.html', context)
+   return render(status_code=400)
+
+def generate_heatmap_data(serial):
+   db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
+   start_date = datetime.now()
+   day_count = 365
+   for single_date in (start_date - timedelta(n) for n in range(day_count)):
+      print single_date
+   
+
+@login_required(login_url='/signin/')
+def heatmap(request):
+   context = {}
+   if request.method == 'GET':
+      serial = request.GET.get('serial')
+      device = Device.objects.get(serial=serial)
+      user = User.objects.get(username=request.user)
+      if device.owner == user or user in device.share_with.all():
+         context = generate_heatmap_data(serial)
+         #[timestamp, total, min, max]
+         now = int(time.time())
+         context['data_points'] = [[now,0,-1,1],[now+1,0,-2,2],[now+2,0,-3,3],[now+3,0,-4,4]]
+         context['dataLimitFrom'] = now
+         context['dataLimitTo'] = now+4
+         return render(request, 'base/heatmap.html', context)
+   return render(status_code=400)
+   
 @login_required(login_url='/signin/')
 def dashboard_update(request):
     context = {}

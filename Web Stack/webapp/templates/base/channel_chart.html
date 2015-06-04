@@ -2,7 +2,7 @@
    function render_chart() {
    {% if device %}
      
-     var chart = new TimeChart({
+     var channel_chart = new TimeChart({
         container: document.getElementById("line-chart"),
         data:
         {
@@ -124,7 +124,7 @@ function realTimeData() {
 
 function waitForChart() {
    console.info("Waiting for chart");
-   if (chart.displayUnit() != null) {
+   if (channel_chart.displayUnit() != null) {
       console.info("Chart ready");
       realTimeData();
    } else {

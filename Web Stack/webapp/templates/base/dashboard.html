@@ -9,12 +9,12 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel panel-default">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                <div id='chart-title' value='{{ my_devices.0.serial }}'>{{ my_devices.0.name }} at a glance</div>
                 <div class="pull-right">
                     <div class="btn-group">
-                        <button type="button" id="chart-type-lable" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" id="chart-type-label" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             Unstacked
                             <span class="caret"></span>
                         </button>
@@ -23,6 +23,9 @@
                             <li><a class="chart-stack" id="unstack" href='javascript:refresh_chart(false)'>Unstacked</a></li>
                         </ul>
                     </div>
+                    <button type="button" class="btn btn-default btn-sm" id="btn-realtime">
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true" id="span-realtime"></span> Realtime
+                    </button>
                 </div>
             </div>
             <!-- /.panel-heading -->
@@ -34,8 +37,8 @@
         <!-- /.panel -->
     
     <div id='ajax-container1'></div>
-    
-        <div class="panel panel-default">
+        {% if render_circuit_charts %}
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 Charts by Circuit: <span id="circuit-heading"></span>
                 <div class="pull-right">
@@ -49,10 +52,11 @@
         </div>
         <div id='ajax-container2'></div>
         <!-- /.panel panel-default -->
+        {% endif %}
     </div>
     <!-- /.col-lg-12 -->
     <div class="col-lg-6">
-      <div class="panel panel-default">
+      <div class="panel panel-primary">
             <div class="panel-heading">
                 Billing Information
             </div>
@@ -64,13 +68,13 @@
     </div>
     <!-- /.col-lg-6 -->
     <div class="col-lg-6">
-      <div class="panel panel-default">
+      <div class="panel panel-primary">
             <div class="panel-heading">
                 Circuit Statistics
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <div>Placeholder</div>
+                <div id="ajax-circuits-information"></div>
             </div>
         </div>
     </div>
@@ -94,8 +98,20 @@
 
 <script>
 
-var device_serial;
+$(function() {
+  $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
+      {
+          'stack': 'true',
+          'localtime': +(new Date()/1000),
+      },
+      function(data) {
+          $('#ajax-container1').html(data);
+      }
+  );
+});
 
+var device_serial;
+{% if render_circuit_chart %}
 {% for device in my_devices %}
     function get_circuit_chart{{ device.serial }}() {
         var circuits = [
@@ -133,8 +149,18 @@ var device_serial;
 {% endfor %}
 
 $(function() {
+    $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
+        {
+            'stack': 'true',
+            'localtime': +(new Date()/1000),
+        },
+        function(data) {
+            $('#ajax-container1').html(data);
+        }
+    );
     get_circuit_chart{{ my_devices.0.serial}}();
 });
+{% endif %}
 
 function refresh_chart(stack) {
   var device_name = $('#chart-title').html().split(' at a glance')[0]
@@ -146,12 +172,12 @@ function refresh_chart(stack) {
     function(data) {
       $('#ajax-container1').html(data);
       //TODO: blocks other ajax. Move to worker thread?
-      render_chart();
+      //render_chart();
       $('#chart-title').html(device_name+" at a glance");
       if (stack) {
-        $('#chart-type-lable').html('Stacked <span class="caret"></span>');
+        $('#chart-type-label').html('Stacked <span class="caret"></span>');
       } else {
-        $('#chart-type-lable').html('Unstacked <span class="caret"></span>');
+        $('#chart-type-label').html('Unstacked <span class="caret"></span>');
       }
     }
   );
@@ -162,7 +188,7 @@ var contentArray = {}
 contentArray['{{ device.serial }}'] = '';
 var marker{{ device.serial }};
 var infowindow{{ device.serial }} = new google.maps.InfoWindow();
-
+var dataDimensions{{ device.serial }} = [0,0]
 {% endfor %}
 
 function get_wattage_usage() {
@@ -173,25 +199,20 @@ function get_wattage_usage() {
            var current_wattage, average_wattage, cost_today;
            if (data.average_wattage !== null) {
                if (data.average_wattage > data.current_wattage) {
-                  current_wattage = '<p><strong>Current Usage:</strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
+                   current_wattage = '<p><strong>Current Usage: </strong><span style="color: green;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
                } else {
-                  current_wattage = '<p><strong>Current Usage:</strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
-                  
+                   current_wattage = '<p><strong>Current Usage: </strong><span style="color: red;" id="current-wattage-{{ device.serial }}">'+data.current_wattage+'</span></p>'
                }
                average_wattage = '<p><strong>Average Usage:</strong><span id=average-wattage-{{ device.serial }}>'+data.average_wattage+'</span></p>'
-               cost_today = data.cost_today;
-           }
-           contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p><strong>Cost Today:</strong>$'+cost_today+'</p>'+ current_wattage +'</div></div>';
+               cost_today = '<p><strong>Cost Today: </strong><span id=cost-today-{{ device.serial }}>$'+data.cost_today+'</span></p>';
+            }
+            contentArray['{{ device.serial }}'] = '<div id="content"><h3 id="device-name">{{ device.name }}</h3><div id="body-content-{{ device.serial }}">'+ average_wattage +'<p>'+cost_today+'</p>'+ current_wattage +'</div></div>';
            infowindow{{ device.serial }}.setContent(contentArray['{{ device.serial }}']);
            {% if forloop.first %}
            infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
            {% endif %}
 
            google.maps.event.addListener(marker{{ device.serial }}, 'click', function() {
-             {% for device2 in my_devices %}
-              infowindow{{ device2.serial }}.close();
-             {% endfor %}
-             infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
              change_dashboard_device{{ device.serial }}();
            });
         }
@@ -200,10 +221,20 @@ function get_wattage_usage() {
 }
 
 {% for device in my_devices %}
+    var updateDashboardTimeout{{ device.serial }};
     // Function to update device-specific elements on the dashboard for device with serial {{ device.serial }}
-    function change_dashboard_device{{ device.serial }}() {
+    function change_dashboard_device{{ device.serial }}(infowindow, marker) {
         console.log("Device change");
+        {% for device in my_devices %}
+        infowindow{{ device.serial }}.close();
+        try {
+          clearTimeout(updateDashboardTimeout{{ device.serial }});
+        } catch (e) { console.log(e); }
+        {% endfor %}
+        infowindow{{ device.serial }}.open(map, marker{{ device.serial }});
+        {% if render_circuit_chart %}
         get_circuit_chart{{ device.serial }}();
+        {% endif %}
         $.get('/charts/device/{{ device.serial }}/chart/',
             {
                 'stack': true,
@@ -211,16 +242,79 @@ function get_wattage_usage() {
             },
             function(data) {
                 $('#ajax-container1').html(data);
-                render_chart();
+                //render_chart();
                 $('#chart-title').html("{{ device.name }} at a glance");
                 $('#chart-title').val("{{ device.serial }}");
                 device_serial = {{ device.serial }};
             }
         );
+         $.get('/charts/billing_information/',
+            {
+               'serial': {{ device.serial }}
+            },
+            function(data) {
+               $('#ajax-billing-information').html(data);
+            }
+         );
+
+         $.get('/charts/circuits_information/',
+            {
+               'serial': {{ device.serial }}
+            },
+            function(data) {
+               if (device_serial == {{ device.serial }})
+                 $('#ajax-circuits-information').html(data);
+            }
+         );
     }
 {% endfor %}
 
 var map_open = true;
+var realtime_status = true;
+
+var last_timestamp;
+
+var chart, circuitChart;
+
+function getChartData(from, to, serial) {
+  try {
+   var displayUnit = chart.displayUnit().slice(-1);
+   var start = from;
+   var stop = to;
+   var get_url = '/charts/device/'+serial+'/data/'
+   $.get(get_url,
+      {
+         'unit':displayUnit,
+         'from':start,
+         'to':stop,
+         'localtime': +(new Date)/1000,
+      },
+      function (ajax_data) {
+         if (ajax_data.data[0][0] != null) {
+            chart.addData({unit: displayUnit, values: ajax_data.data});
+         }
+      }
+   );
+  } catch (e) {
+    console.info("Chart not defined yet");
+ }
+}
+
+function toggle_chart_realtime() {
+  if (realtime_status) {
+       $('#span-realtime').removeClass('glyphicon-pause');
+       $('#span-realtime').addClass('glyphicon-play');
+       chart.settings.area.followAnchor = false;
+       last_timestamp = +(new Date())/1000;
+    } else {
+       $('#span-realtime').removeClass('glyphicon-play');
+       $('#span-realtime').addClass('glyphicon-pause');
+       chart.settings.area.followAnchor = true;
+       getChartData(last_timestamp, +(new Date()/1000), device_serial);
+    }
+    realtime_status = !realtime_status;
+    console.log("realtime_status: "+realtime_status)
+}
 
 $(function() {
    get_wattage_usage();
@@ -239,15 +333,28 @@ $(function() {
       }
       map_open = !map_open;
    });
+   
+   $('#btn-realtime').on('click', function() {
+      toggle_chart_realtime();
+   });
 
    $.get('/charts/billing_information/',
-    {
-      'serial': {{ my_devices.0.serial }}
-    },
-    function(data) {
-      $('#ajax-billing-information').html(data);
-    }
-  );
+       {
+         'serial': {{ my_devices.0.serial }}
+       },
+       function(data) {
+         $('#ajax-billing-information').html(data);
+       }
+   );
+   
+   $.get('/charts/circuits_information/',
+       {
+         'serial': {{ my_devices.0.serial }}
+       },
+       function(data) {
+         $('#ajax-circuits-information').html(data);
+       }
+   );
 
 });
 
@@ -272,6 +379,12 @@ function initialize() {
        position: pos,
        title: '{{ device.name }}',
        label: '{{ device.name }}',
+       // http://stackoverflow.com/questions/7095574/google-maps-api-3-custom-marker-color-for-default-dot-marker
+       {% if device.owner != user %}
+       icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|F38630'
+       {% else %}
+       icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FF6B6B'
+       {% endif %}
      });
 
      

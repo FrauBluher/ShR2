@@ -60,7 +60,21 @@
 #define UART_MODULE_ID 1
 #endif
 
+// Let compile time pre-processor calculate the CORE_TICK_PERIOD
+#define TOGGLES_PER_SEC 1000
+#define CORE_TICK_RATE  (SYS_FREQ/2/TOGGLES_PER_SEC)
+uint32_t counter = 0;
 int i;
+
+void __ISR(_CORE_TIMER_VECTOR, ipl2) CoreTimerHandler(void) {
+    // Clear the interrupt flag
+    INTClearFlag(INT_CT);
+
+    // Update the period
+    UpdateCoreTimer(CORE_TICK_RATE);
+
+    counter++;
+}
 
 /**
  * @brief Sets up the board with the peripherals defined in the header.
@@ -108,7 +122,7 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	A0_TRIS = 0;
 	RD_TRIS = 0;
 	WR_LAT = 0;
-	
+
 	//Status LED
 	TRISBbits.TRISB6 = 0;
 
@@ -135,7 +149,17 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 		Nop();
 	}
 
-	MCP391x_Init(MCPInfo);
+	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
+	INTEnableInterrupts();
+	uint32_t config;
+	SetReadyForConfigure();
+	LATBbits.LATB6 = 1;
+	while (!GetConfig(&config)) {
+		
+	}
+	INTDisableInterrupts();
+	LATBbits.LATB6 = 0;
+	MCP391x_Init(MCPInfo, &config);
 
 	for (i = 0; i < 400; i++) {
 		Nop();
@@ -149,6 +173,14 @@ uint8_t ADCModuleBoard_Init(SampleBuffer *BufferA, SampleBuffer *BufferB, MCP391
 	temp = mPORTFRead();
 	ConfigIntCN(CHANGE_INT_PRI_3 | CHANGE_INT_ON);
 	mCNClearIntFlag();
+
+	// timer
+	OpenCoreTimer(CORE_TICK_RATE);
+
+	// Set up the core timer interrupt with a priority of 2 and zero sub-priority
+	INTEnable(INT_CT, INT_ENABLED);
+	INTSetVectorPriority(INT_CORE_TIMER_VECTOR, INT_PRIORITY_LEVEL_2);
+	INTSetVectorSubPriority(INT_CORE_TIMER_VECTOR, INT_SUB_PRIORITY_LEVEL_0);
 
 	INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 	INTEnableInterrupts();

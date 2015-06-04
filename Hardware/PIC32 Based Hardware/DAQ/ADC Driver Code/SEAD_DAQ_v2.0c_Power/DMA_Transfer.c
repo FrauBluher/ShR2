@@ -39,6 +39,7 @@
 #include "DMA_Transfer.h"
 #include "ADCModuleBoard.h"
 #include <plib.h>
+#include <stdbool.h>
 
 #define SYS_FREQ (80000000L)
 #define	GetPeripheralClock()		(SYS_FREQ/(1 << OSCCONbits.PBDIV))
@@ -50,6 +51,9 @@ SampleBuffer *BufA;
 SampleBuffer *BufB;
 
 uint8_t testBuffer[] = "hello world!\r\n";
+
+bool wait_for_config = false;
+bool config_ready = false;
 
 DmaChannel uartRxChn = DMA_CHANNEL0;
 DmaChannel spiTxChn = DMA_CHANNEL1;
@@ -64,7 +68,7 @@ uint8_t BufferToUART_Init(void)
 {
 	UARTConfigure(UART3, UART_ENABLE_PINS_TX_RX_ONLY | UART_ENABLE_HIGH_SPEED);
 	UARTSetLineControl(UART3, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
-	UARTSetDataRate(UART3, GetPeripheralClock(), 921600);
+	UARTSetDataRate(UART3, GetPeripheralClock(), 115200);
 	UARTEnable(UART3, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX));
 
 	DmaChnOpen(uartTxChn, DMA_CHN_PRI2, DMA_OPEN_DEFAULT);
@@ -168,7 +172,7 @@ void DMAStartUARTRX(void)
 {
 	DmaChnOpen(uartRxChn, DMA_CHN_PRI1, DMA_OPEN_MATCH); //High priority for control.
 
-	DmaChnSetMatchPattern(uartRxChn, '\r');
+	DmaChnSetMatchPattern(uartRxChn, '\n');
 
 	DmaChnSetEventControl(uartRxChn, DMA_EV_START_IRQ_EN | DMA_EV_MATCH_EN | DMA_EV_START_IRQ(_UART3_RX_IRQ));
 
@@ -230,10 +234,37 @@ uint8_t BufferToUART_Transfer(uint8_t *buffer, uint16_t transferSize)
 	DmaChnStartTxfer(uartTxChn, DMA_WAIT_NOT, 0);
 }
 
+// bool wait_for_config = false;
+// bool config_ready = false;
+void SetReadyForConfigure() {
+	if (!config_ready) {
+		wait_for_config = true;
+	}
+}
+
+// If the data is ready to configure sets up the struct and then returns true
+// If the data is not ready return false
+bool GetConfig(uint32_t *OSR) {
+	if (!config_ready) return false;
+
+	//if (memcmp(dmaBuff, "$SECNF,", 7)) return false;
+	*OSR = atoi(dmaBuff+7);
+	//memcpy(config, dmaBuff, sizeof(daq_config));
+	return true;
+}
+
 void __ISR(_DMA0_VECTOR) DmaHandler0(void)
 {
 	//StartSPIAcquisition(BUFFER_A);
 
+	if (wait_for_config && !memcmp(dmaBuff, "$SECNF,", 7)) {
+		config_ready = true;
+	}
+	else {
+		//Didn't get what we want keep waiting
+		DMAStartUARTRX();
+	}
+	
 	//PUT CONTROLS FOR THE DAQ HERE.  CONFIG, ETC.
 
 	DmaChnClrEvFlags(DMA_CHANNEL0, DMA_EV_BLOCK_DONE);
@@ -254,7 +285,7 @@ void __ISR(_DMA1_VECTOR) DmaHandler1(void)
 
 void __ISR(_DMA2_VECTOR) DmaHandler2(void)
 {
-	LATBbits.LATB6 ^= 1;
+	//LATBbits.LATB6 ^= 1;
         //starts the DMA transfer over uart from the current buffer
 
 	if (currentBuffer == BUFFER_A) {

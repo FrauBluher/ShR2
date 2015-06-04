@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Getting Started &mdash; SEADS 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="SEADS 1.0 documentation" href="index.html"/>
+        <link rel="next" title="3. Web Stack" href="modules/modules.html"/>
+        <link rel="prev" title="1. Installation" href="installation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> SEADS
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#basic-server-outline">1.2.1. Basic Server Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#influxdb-server-setup">1.2.2. InfluxDB Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#django-web-application-stateful-server-setup">1.2.3. Django Web Application Stateful Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#django-web-application-stateless-server-setup">1.2.4. Django Web Application Stateless Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#finishing-up">1.2.5. Finishing Up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-atomic-server">1.3. Installing Atomic Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#id2">1.3.1. Basic Server Outline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">2. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#api-documentation">2.1. API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/modules.html">3. Web Stack</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/custom_config.html">3.1. custom_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/debug.html">3.2. Debug Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#submodules">3.2.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.admin">3.2.2. debug.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.forms">3.2.3. debug.forms module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.models">3.2.4. debug.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.serializers">3.2.5. debug.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.urls">3.2.6. debug.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.views">3.2.7. debug.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug">3.2.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html">3.3. Farmer Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#submodules">3.3.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.admin">3.3.2. farmer.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.models">3.3.3. farmer.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.serializers">3.3.4. farmer.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html">3.4. Home Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home">3.4.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/manage.html">3.5. manage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html">3.6. Microdata Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#subpackages">3.6.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/microdata.management.html">3.6.1.1. microdata.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#submodules">3.6.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#microdata-admin-module">3.6.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#microdata-models-module">3.6.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.serializers">3.6.5. microdata.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.tests">3.6.6. microdata.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.views">3.6.7. microdata.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata">3.6.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pseudodata.html">3.7. pseudodata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pseudodevice.html">3.8. pseudodevice module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/seads.html">3.9. SEADS Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#submodules">3.9.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads.settings">3.9.2. seads.settings module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads.urls">3.9.3. seads.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads.wsgi">3.9.4. seads.wsgi module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads">3.9.5. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">SEADS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>2. Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/getting-started.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="getting-started">
+<span id="id1"></span><h1>2. Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The SEAD Light will henceforth be referred to as a &#8220;Device&#8221; for sake of generalizing. This framework was built with the SEAD Light in mind, however any type of &#8220;device&#8221; is compatible if they follow the <a class="reference external" href="http://seads.io/docs">API Guidelines</a>.</p>
+</div>
+<p>At this point, the project is now ready to begin accepting clients and devices.</p>
+<p>To get devices connected to your project, simply point their database address at the server that faces the internet (for the scalable framework, this is the stateless server or load balancer). This will cause the devices to attempt to find themselves in the server, fail, then register themselves in the system.</p>
+<p>From here, users can register to the website and pair to devices via their serial number.</p>
+<div class="section" id="api-documentation">
+<h2>2.1. API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
+<p>You can interact with the server&#8217;s API by navigating to /docs. This interface was designed to allow developers easy access to the framework so that they can learn it rapidly and integrate new types of devices into the database.</p>
+<img alt="http://i.imgur.com/C8xDg4s.png" class="align-center" src="http://i.imgur.com/C8xDg4s.png" />
+<p>The REST API is set up to be very trusting. There are no checks for malicious behavior and we assume all users are benign. It is possible to alter any and all properties of a device such as changing the owner via the API. In the future, it is recommended to include API token authentication to prevent malicious attacks.</p>
+</div>
+<div class="section" id="administrative-interface">
+<h2>2.2. Administrative Interface<a class="headerlink" href="#administrative-interface" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the front facing web interface, there is an administrative interface for managing database models directly. This interface was designed to allow an administrator the ability to alter the way the website functions without having to interface with the source code directly.</p>
+<p>An administrator can use this interface to create/modify devices, circuit types, and appliance directly. This would presumably become useful when the algorithms on the SEAD Light mature to the point where disaggregation by appliance is feasable.</p>
+<p>In addition, an administrator can also interface with the facets of the web application, including how event notifications are handled as well as add/modify interval notifications. These are the emails sent to users after a certain event has been detected or an interval has elapsed.</p>
+<p>There is the ability to add/modify rate plans, territories, and utility companies to the web application, giving more realistic cost predictions for a user&#8217;s device.</p>
+</div>
+<div class="section" id="connecting-devices-to-the-framework">
+<h2>2.3. Connecting Devices to the Framework<a class="headerlink" href="#connecting-devices-to-the-framework" title="Permalink to this headline">¶</a></h2>
+<p>With the new framework in place, we are now ready to begin connecting devices to the database. The general outline on how this is done is as follows:</p>
+<ol class="arabic simple">
+<li>Point device at the API Endpoint for your framework.</li>
+</ol>
+<p>The endpoint of your system depends on whether or not the scalable framework is in place. If it is, then the endpoint is the address of the Load Balancer. If this is an atomic installation, then the endpoint is the address of the machine running the applications.</p>
+<p>For the API already in place, this would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>http://seads.io/api/
+</pre></div>
+</div>
+<ol class="arabic" start="2">
+<li><p class="first">Query the devices database to check if the serial of the device is registered:</p>
+<div class="highlight-python"><div class="highlight"><pre>GET http://seads.io/api/device-api/{serial}/
+</pre></div>
+</div>
+</li>
+</ol>
+<p>If the response is 404 (not found), continue to the next step. If the response is 302 (found), then the device is already connected and ready to transmit.</p>
+<ol class="arabic" start="3">
+<li><p class="first">Register the device with the framework:</p>
+<div class="highlight-python"><div class="highlight"><pre>POST http://seads.io/api/device-api/?serial={serial}
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This POST request will register the device within the server, allocating database series and instantiating web application models that will relate to this device.</p>
+<p>At this point, the device is ready to start transmitting packets. The device can transmit packets to the server without an owner. It is assumed that the owner is interested in seeing all data even before the device is paired, so the data is stored regardless of if the device is an orphan or not.</p>
+<ol class="arabic" start="4">
+<li><p class="first">Begin data transmission:</p>
+<div class="highlight-python"><div class="highlight"><pre>POST http://seads.io/api/device-api/
+        {
+                &quot;device&quot;: &quot;/api/device-api/{serial}/&quot;,
+                &quot;time&quot;  : [&quot;0x14d95894815&quot;, &quot;0x1&quot;],
+                &quot;dataPoints&quot;:[
+                                        {&quot;wattage&quot;: 170},
+                                        {&quot;wattage&quot;: 169},
+                                        ...
+                ]
+        }
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This is a typical packet that could be sent to the server from the device. Here is a breakdown of the fields:</p>
+<ul class="simple">
+<li>Device: The hyperlinked device sending the data.</li>
+<li>Time: A tuple of the format <cite>[start_time, period]</cite> in hexadecimal describing the packet&#8217;s timing in milliseconds.</li>
+<li>dataPoints: An array of undefined size containing measured values for the server. The data points are numbered <cite>0 ... n ... j</cite> where nth data point has a timestamp of <cite>start_time + n * period</cite> and <cite>j</cite> is undefined.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules/modules.html" class="btn btn-neutral float-right" title="3. Web Stack" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="1. Installation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Bryan Smith.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

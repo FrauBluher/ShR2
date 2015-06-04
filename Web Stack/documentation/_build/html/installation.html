@@ -1,0 +1,605 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1. Installation &mdash; SEADS 1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="SEADS 1.0 documentation" href="index.html"/>
+        <link rel="next" title="2. Getting Started" href="getting-started.html"/>
+        <link rel="prev" title="Smart Energy Analysis and Disaggregation - Web Components" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="index.html" class="icon icon-home"> SEADS
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">1. Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">1.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-server-outline">1.2.1. Basic Server Outline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#influxdb-server-setup">1.2.2. InfluxDB Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#django-web-application-stateful-server-setup">1.2.3. Django Web Application Stateful Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#django-web-application-stateless-server-setup">1.2.4. Django Web Application Stateless Server Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#finishing-up">1.2.5. Finishing Up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-atomic-server">1.3. Installing Atomic Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">1.3.1. Basic Server Outline</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">2. Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#api-documentation">2.1. API Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#administrative-interface">2.2. Administrative Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/modules.html">3. Web Stack</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/custom_config.html">3.1. custom_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/debug.html">3.2. Debug Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#submodules">3.2.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.admin">3.2.2. debug.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.forms">3.2.3. debug.forms module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.models">3.2.4. debug.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.serializers">3.2.5. debug.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.urls">3.2.6. debug.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug.views">3.2.7. debug.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/debug.html#module-debug">3.2.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html">3.3. Farmer Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#submodules">3.3.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.admin">3.3.2. farmer.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.models">3.3.3. farmer.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.serializers">3.3.4. farmer.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.tests">3.3.5. farmer.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer.views">3.3.6. farmer.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/farmer.html#module-farmer">3.3.7. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/home.html">3.4. Home Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#subpackages">3.4.1. Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#submodules">3.4.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.admin">3.4.3. home.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.models">3.4.4. home.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.serializers">3.4.5. home.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.tests">3.4.6. home.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home.views">3.4.7. home.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/home.html#module-home">3.4.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/manage.html">3.5. manage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html">3.6. Microdata Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#subpackages">3.6.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modules/microdata.management.html">3.6.1.1. microdata.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#submodules">3.6.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#microdata-admin-module">3.6.3. microdata.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#microdata-models-module">3.6.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.serializers">3.6.5. microdata.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.tests">3.6.6. microdata.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata.views">3.6.7. microdata.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/microdata.html#module-microdata">3.6.8. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pseudodata.html">3.7. pseudodata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pseudodevice.html">3.8. pseudodevice module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/seads.html">3.9. SEADS Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#submodules">3.9.1. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads.settings">3.9.2. seads.settings module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads.urls">3.9.3. seads.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads.wsgi">3.9.4. seads.wsgi module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/seads.html#module-seads">3.9.5. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">SEADS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>1. Installation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/installation.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="installation">
+<span id="id1"></span><h1>1. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>1.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The SEADS web infrastructure provieds a simple API to read/write the data gathered by the SEAD Light.In addition, this framework is designed to provide in-house visualization and cost analysis of the energy usage. Built on Django, it is encouraged that this environment be augmented with new and improved applications that can interface with the data.</p>
+<p>The current setup has all the necessary infrastructure in place for SEAD Lights to send their data. In addition, a proof-of-concept application has been created to interface with the data in a meaningful way.</p>
+<p>There are two ways to deploy this system:</p>
+<ol class="arabic simple">
+<li>Scalable framework based in the Amazon Cloud Computing Services (recommended)</li>
+<li>Atomic install on a single machine (easy)</li>
+</ol>
+</div>
+<div class="section" id="installing-scalable-framework-in-amazon-compute-cloud-ubuntu">
+<h2>1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)<a class="headerlink" href="#installing-scalable-framework-in-amazon-compute-cloud-ubuntu" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This project was developed entirely on a Ubuntu build (14.04.2) so these instructions will be tailored towards that build. However, this framework should install semi-peacefully on any OS that can run python/nginx/uwsgi.</p>
+<p class="last">These instructions will assume you know how to interface with the amazon AWS console to create new instances. Refer to the <a class="reference external" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html">Getting Started Guide</a> for more information.</p>
+</div>
+<div class="section" id="basic-server-outline">
+<h3>1.2.1. Basic Server Outline<a class="headerlink" href="#basic-server-outline" title="Permalink to this headline">¶</a></h3>
+<p>For the scalable framework to work correctly, there is a bare minimum of 3 servers that need to be always running. Each server has a unique purpose:</p>
+<ol class="arabic simple">
+<li>Influxdb Server - A medium/large instance that houses the data from the SEAD Light. Needs to be large to handle the calculations that go into the fanout queries of the database.</li>
+<li>Webapp Stateful Server - A server that houses the Django database that holds state information about the web application, such as user credentials and model relations.</li>
+<li>Webapp Stateless Server - A skeleton server that serves as the frontend for users connecting to the web interface. This server is a clone of an image used in the auto scaling group.</li>
+</ol>
+<p>The servers are setup with the following hierarchy:</p>
+<img alt="http://i.imgur.com/SCdI31d.png" class="align-center" src="http://i.imgur.com/SCdI31d.png" />
+<p>The infrastructure is set up in this way to deal with a scalable load in an intelligent way. If there is little to no traffic to the website/REST API, the servers will spin down to a minimal state. However, if load increases, the infrastructure is designed to automatically spin up new instances of the web application so that no single instance is overloaded.</p>
+</div>
+<div class="section" id="influxdb-server-setup">
+<h3>1.2.2. InfluxDB Server Setup<a class="headerlink" href="#influxdb-server-setup" title="Permalink to this headline">¶</a></h3>
+<p>To get started, create a medium/large instance for the InfluxDB database. The operating system is recommended to be Ubuntu, but this is not a requirement. This server will only be interfaced by the stateless web servers under the following circumstances: 1) A user requests device data via the web application, 2) A user/device interacts with the REST API to read/write device data.</p>
+<p>The following ports should be opened for the InfluxDB instance:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="9%" />
+<col width="11%" />
+<col width="10%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Protocol</th>
+<th class="head">Port Range</th>
+<th class="head">Source</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>SSH</td>
+<td>TCP</td>
+<td>22</td>
+<td>0.0.0.0/0</td>
+<td>Self explanatory</td>
+</tr>
+<tr class="row-odd"><td>Custom TCP Rule</td>
+<td>TCP</td>
+<td>8083</td>
+<td>0.0.0.0/0</td>
+<td>Exposes the database web API for interactive use</td>
+</tr>
+<tr class="row-even"><td>Custom TCP Rule</td>
+<td>TCP</td>
+<td>8086</td>
+<td>0.0.0.0/0</td>
+<td>Exposes the database REST port for the python interface</td>
+</tr>
+</tbody>
+</table>
+<p>Once the server has booted, connect to it via ssh and do the following:</p>
+<ol class="arabic">
+<li><p class="first">Install Git:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install git
+</pre></div>
+</div>
+</li>
+<li><p class="first">Clone the SEADS repository:</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/Fraubluher/ShR2/
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the deploy script for influxdb:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd ShR2/Web\ Stack/
+sudo ./deploy_database.sh
+</pre></div>
+</div>
+</li>
+<li><p class="first">Reboot the server:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo reboot
+</pre></div>
+</div>
+</li>
+<li><p class="first">Configure the database:</p>
+<div class="highlight-python"><div class="highlight"><pre>curl -X POST &#39;http://localhost:8086/db?u=&lt;username&gt;&amp;p=&lt;password&gt;&#39; \
+         -d &#39;{&quot;name&quot;: &quot;seads&quot;}&#39;
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The InfluxDB server is now ready to respond to requests.</p>
+</div>
+<div class="section" id="django-web-application-stateful-server-setup">
+<h3>1.2.3. Django Web Application Stateful Server Setup<a class="headerlink" href="#django-web-application-stateful-server-setup" title="Permalink to this headline">¶</a></h3>
+<p>This process will walk you through the process of installing a stateful server for the Django web application.</p>
+<p>Create a tiny/small instance running Ubuntu (the operating system is recommended to be Ubuntu, but this is not a requirement).</p>
+<p>The following ports should be opened for the stateful server:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="9%" />
+<col width="11%" />
+<col width="10%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Protocol</th>
+<th class="head">Port Range</th>
+<th class="head">Source</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>SSH</td>
+<td>TCP</td>
+<td>22</td>
+<td>0.0.0.0/0</td>
+<td>Self explanatory</td>
+</tr>
+<tr class="row-odd"><td>MYSQL</td>
+<td>TCP</td>
+<td>3306</td>
+<td>0.0.0.0/0</td>
+<td>Port for remotely interfacing with Django database</td>
+</tr>
+</tbody>
+</table>
+<p>Once the server has booted, connect to it via ssh and do the following:</p>
+<ol class="arabic">
+<li><p class="first">Install Git:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install git
+</pre></div>
+</div>
+</li>
+<li><p class="first">Clone the SEADS repository:</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/Fraubluher/ShR2/
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the deploy script for influxdb:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd ShR2/Web\ Stack/
+sudo ./deploy_webapp_stateful.sh
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This script will take you through the process of creating the MySQL database to be used by the stateless servers in the future. You will be prompted to create a root user on the database, remember the credentials for later.</p>
+<p>This script will install all the necessary dependencies for the Django project. This will take a while, grab a beverage.</p>
+<p>Near the end, several prompts will appear. You will be prompted to create the Django user in the MySQL database that is used to interface with the stateless servers. Leaving prompts blank will roll over to their default values indicated in the parentheses.</p>
+<ol class="arabic" start="4">
+<li><p class="first">Reboot the server:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo reboot
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This server should now be properly configured to run as a stateful implementation of the web application.</p>
+</div>
+<div class="section" id="django-web-application-stateless-server-setup">
+<h3>1.2.4. Django Web Application Stateless Server Setup<a class="headerlink" href="#django-web-application-stateless-server-setup" title="Permalink to this headline">¶</a></h3>
+<p>The final step in assembling the server infrastructure is to create a stateless instance of the web application. This will provide the basis for which an auto scaler can instantiate more/less instances of the web application automatically.</p>
+<p>Create a tiny/small instance running Ubuntu (the operating system is recommended to be Ubuntu, but this is not a requirement).</p>
+<p>The following ports should be opened for the stateful server:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="9%" />
+<col width="11%" />
+<col width="10%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Protocol</th>
+<th class="head">Port Range</th>
+<th class="head">Source</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>SSH</td>
+<td>TCP</td>
+<td>22</td>
+<td>0.0.0.0/0</td>
+<td>Self explanatory</td>
+</tr>
+<tr class="row-odd"><td>HTTP</td>
+<td>TCP</td>
+<td>80</td>
+<td>0.0.0.0/0</td>
+<td>Self explanatory</td>
+</tr>
+</tbody>
+</table>
+<p>Since this is the forward-facing instance, the HTTP port is opened for clients to connect to. This allows both end users and SEAD Lights to connect and interact.</p>
+<p>Once the server has booted, connect to it via ssh and do the following:</p>
+<ol class="arabic">
+<li><p class="first">Install Git:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install git
+</pre></div>
+</div>
+</li>
+<li><p class="first">Clone the SEADS repository:</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/Fraubluher/ShR2/
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the deploy script for influxdb:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd ShR2/Web\ Stack/
+sudo ./deploy_webapp_stateless.sh
+</pre></div>
+</div>
+</li>
+</ol>
+<p>When this script runs, it will prompt for the address for the remote database (Django database host address). This is the address of the server created in the previous step.</p>
+<ol class="arabic" start="4">
+<li><p class="first">Reboot the server:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo reboot
+</pre></div>
+</div>
+</li>
+</ol>
+<p>When the server reboots, you should now be able to connect to it from a web browser and test out the functionality. The stateless server is the address in which clients and SEAD Lights should connect.</p>
+</div>
+<div class="section" id="finishing-up">
+<h3>1.2.5. Finishing Up<a class="headerlink" href="#finishing-up" title="Permalink to this headline">¶</a></h3>
+<p>At this point, you have a functioning server framework that is eligible for load balancing and auto scaling. This guide does not get into the specifics since it is unique to the cloud service being used.</p>
+<p>In general, these are the steps you should follow:</p>
+<ol class="arabic simple">
+<li>Create an image from the fully-configured webapp stateful server.</li>
+<li>Configure and auto scaling group based on the image.</li>
+<li>Configure a load balancer based off the auto scaling group.</li>
+</ol>
+<p>If you choose to link the server&#8217;s address to a domain name after configuring a load balancer, a CNAME record must be created with the DNS provider with the load balancer&#8217;s address.</p>
+</div>
+</div>
+<div class="section" id="installing-atomic-server">
+<h2>1.3. Installing Atomic Server<a class="headerlink" href="#installing-atomic-server" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This project was developed entirely on a Ubuntu build (14.04.2) so these instructions will be tailored towards that build. However, this framework should install semi-peacefully on any OS that can run python/nginx/uwsgi.</p>
+<p class="last">These instructions will not focus on deploying in the Amazon Compute Cloud, however it is certainly possible to do so.</p>
+</div>
+<div class="section" id="id2">
+<h3>1.3.1. Basic Server Outline<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>This server will comprise all aspects of the project on a single machine. This type of setup is intended for a small user base on the order of 10&#8217;s of users. Any more and you should consider adopting the scalable approach above. It is recommended to use Ubuntu simply because this platform was developed and tested solely on Ubuntu.</p>
+<p>To get started, open up the following ports on your machine:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="9%" />
+<col width="11%" />
+<col width="10%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Protocol</th>
+<th class="head">Port Range</th>
+<th class="head">Source</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>SSH</td>
+<td>TCP</td>
+<td>22</td>
+<td>0.0.0.0/0</td>
+<td>Self explanatory</td>
+</tr>
+<tr class="row-odd"><td>Custom TCP Rule</td>
+<td>TCP</td>
+<td>8083</td>
+<td>0.0.0.0/0</td>
+<td>Exposes the database web API for interactive use</td>
+</tr>
+<tr class="row-even"><td>Custom TCP Rule</td>
+<td>TCP</td>
+<td>8086</td>
+<td>0.0.0.0/0</td>
+<td>Exposes the database REST port for the python interface</td>
+</tr>
+<tr class="row-odd"><td>MYSQL</td>
+<td>TCP</td>
+<td>3306</td>
+<td>0.0.0.0/0</td>
+<td>Port for remotely interfacing with Django database</td>
+</tr>
+<tr class="row-even"><td>HTTP</td>
+<td>TCP</td>
+<td>80</td>
+<td>0.0.0.0/0</td>
+<td>Self explanatory</td>
+</tr>
+</tbody>
+</table>
+<ol class="arabic">
+<li><p class="first">Install Git:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install git
+</pre></div>
+</div>
+</li>
+<li><p class="first">Clone the SEADS repository:</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/Fraubluher/ShR2/
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the deploy script for influxdb:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd ShR2/Web\ Stack/
+sudo ./deploy_webapp_stateful.sh
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This script will walk you through creating and configuring the databases needed. For any prompt asking for an address, enter &#8216;localhost&#8217;.</p>
+<ol class="arabic" start="4">
+<li><p class="first">Reboot the server:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo reboot
+</pre></div>
+</div>
+</li>
+</ol>
+<p>When the server reboots, verify it works by visiting the server from a webpage. All basic functionality should now exist.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="getting-started.html" class="btn btn-neutral float-right" title="2. Getting Started" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Smart Energy Analysis and Disaggregation - Web Components" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Bryan Smith.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

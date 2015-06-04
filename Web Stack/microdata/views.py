@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 
@@ -14,8 +14,8 @@ from rest_framework import permissions, authentication
 from rest_framework.response import Response
 from rest_framework import viewsets
 
-from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer
-from microdata.models import Device, Event, Appliance
+from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer, CircuitSerializer
+from microdata.models import Device, Event, Appliance, CircuitType
 
 from influxdb.influxdb08 import client as influxdb
 
@@ -44,7 +44,17 @@ class KeyForm(forms.Form):
 """
 
 class KeyForm(forms.Form):
+   """
+   Form class used to generate a simple key form. Currently used when a user intends to add a new device via the webapp interface.
+   """
    serial = forms.IntegerField()
+
+class CircuitViewSet(viewsets.ModelViewSet):
+   """
+   API endpoint that allows circuits to be viewed or edited.
+   """
+   queryset = CircuitType.objects.all()
+   serializer_class = CircuitSerializer
 
 class ApplianceViewSet(viewsets.ModelViewSet):
    """
@@ -52,6 +62,7 @@ class ApplianceViewSet(viewsets.ModelViewSet):
    """
    queryset = Appliance.objects.all()
    serializer_class = ApplianceSerializer
+
 
 
 class DeviceViewSet(viewsets.ModelViewSet):
@@ -64,9 +75,12 @@ class DeviceViewSet(viewsets.ModelViewSet):
    def create(self, request):
       ip_address = request.META.get('REMOTE_ADDR')
       serial = request.DATA.get('serial')
-      device = Device.objects.create(ip_address=ip_address, serial=serial)
-      data = serializers.serialize('json', [device,], fields=('owner', 'ip_address', 'secret_key', 'serial', 'name', 'registered','fanout_query_registered'))
-      return HttpResponse(data, content_type="application/json", status=201)
+      if serial:
+         device = Device.objects.create(ip_address=ip_address, serial=serial)
+         data = serializers.serialize('json', [device,], fields=('owner', 'ip_address', 'secret_key', 'serial', 'name', 'registered','fanout_query_registered'))
+         return HttpResponse(data, content_type="application/json", status=201)
+      return HttpResponse("No serial provided", status=400)
+
 
 class EventViewSet(viewsets.ModelViewSet):
    """
@@ -76,22 +90,62 @@ class EventViewSet(viewsets.ModelViewSet):
    serializer_class = EventSerializer
    
    def create(self, request):
-      query = request.DATA.keys()[0]
-      query = json.loads(query)
+      """
+      Custom create method.
+
+      Used to parse the packets sent via the REST API. Since the packets are in a JSON array,
+      the Django REST Framework has no native way of handling these, so we do it ourselves.
+      """
       try:
+         # request is formed correctly
+         if len(request.DATA.keys()) > 1:
+            query = request.DATA
+         # request is formed specifc to the ESP (bad)
+         else:
+            query = json.loads(request.DATA.keys()[0])
          serial = query.get('device').split('/')[-2:-1][0]
-         device = Device.objects.get(serial=serial)
+         device = get_object_or_404(Device, serial=serial)
          start = int(query.get('time')[0], 16)
          frequency = int(query.get('time')[1], 16)
          event = Event.objects.create(device=device, start=start, frequency=frequency, dataPoints=json.dumps(query.get('dataPoints')))
          device.ip_address = request.META.get('REMOTE_ADDR')
          device.save()
-         data = serializers.serialize('json', [event,], fields=('device', 'dataPoints'))
-         return HttpResponse(data, content_type="application/json", status=201)
+         return HttpResponse(content_type="application/json", status=201)
       except:
-         return HttpResponse("Bad Request: {0} {1}\n".format(type(query),query), status=400)
+         return HttpResponse("Bad Request: {0} {1}\n".format(type(query),request.DATA), status=400)
     
 def new_device(request):
+   """
+      Function used to service a user's request to add a new :class:`microdata.models.Device`.
+
+      **Context**
+
+         ``form``
+         :class:`microdata.views.KeyForm` object if user requests the form
+
+         ``error``
+         string - error description if present
+
+         ``created``
+         true/false if device is created
+
+         ``Device``
+         serialized :class:`microdata.models.Device` object if :class:`microdata.models.Device` is created
+
+
+      **Templates:**
+
+      `base/new_device/key.html`
+
+      `base/new_device/help.html`
+
+      `base/new_device/first.html`
+      
+      `base/new_device/result.html`
+
+
+   """
+
    error = False
    created = False
    device = None
@@ -150,10 +204,21 @@ def new_device(request):
              })
 
 def timestamp(request):
+   """
+   Function to return the server's time in milliseconds.
+
+   This function is possibly deprecated. Devices should now get the server time
+   from :class:`farmer.DeviceSettingsViewSet`.
+   """
    milliseconds = time.time()*1000
    return HttpResponse(json.dumps(milliseconds), content_type="application/json")
 
 def initiate_job_to_glacier(request, requester, end_time):
+   """
+   Experimental class to demonstrate the possibility to archive old data to Amazon Glacier.
+
+   Requires an Amazon AWS key to be set in the environment variables.
+   """
    glacier = boto3.client('glacier', region_name='us-west-2')
    with open(settings.STATIC_PATH+'archive_ids.log', 'r') as f:
       archives = f.read()

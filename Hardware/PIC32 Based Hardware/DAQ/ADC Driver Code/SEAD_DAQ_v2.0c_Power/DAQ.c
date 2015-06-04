@@ -40,6 +40,7 @@ SampleBuffer BufferA;
 SampleBuffer BufferB;
 
 static MCP391x_Info ADCInfo;
+extern uint32_t counter;
 
 /**
  * @brief  Takes the buffer not used, and does useful computations on it
@@ -56,19 +57,19 @@ void ComputeBuffer(uint8_t currentBuffer)
 	if (currentBuffer == BUFFER_A) {
 		//compute things on the buffer!
 		RMS_Value = SB_RMS(&BufferB);
-		write_len = sprintf(send_buf, "b=%014d\r\n", RMS_Value);
-		BufferToPMP_Transfer(send_buf, write_len);
+		//write_len = sprintf(send_buf, "b=%014d\r\n", RMS_Value);
+		//BufferToPMP_Transfer(send_buf, write_len);
 		char *message = create_message(TALKER, MESSAGE_TYPE,
-			2, RMS_Value, 1424982789);
-		BufferToPMP_Transfer(message, strlen(message));
+			2, RMS_Value, counter);
+		BufferToUART_Transfer(message, strlen(message));
 		destroy_message(message);
 	} else if (currentBuffer == BUFFER_B) {
 		//compute things on the buffer!
 		RMS_Value = SB_RMS(&BufferA);
-		write_len = sprintf(send_buf, "a=%014d\r\n", RMS_Value);
-		BufferToPMP_Transfer(send_buf, write_len);
+		//write_len = sprintf(send_buf, "a=%014d\r\n", RMS_Value);
+		//BufferToPMP_Transfer(send_buf, write_len);
 		char *message = create_message(TALKER, MESSAGE_TYPE,
-			2, RMS_Value, 1424982789);
+			2, RMS_Value, counter);
 		BufferToPMP_Transfer(message, strlen(message));
 		destroy_message(message);
 	}
@@ -76,11 +77,19 @@ void ComputeBuffer(uint8_t currentBuffer)
 
 int main(void)
 {
+	//memset(BufferA.BufferArray, 'A', BUFFERLENGTH);
 	ADCModuleBoard_Init(&BufferA, &BufferB, &ADCInfo);
 	uint8_t prevBuffer = CurrentBuffer();
 	uint8_t currentBuffer;
+	//LATBbits.LATB6 = 1;
+	//for(;;);
 	while (1) {
-		
+		/*
+		uint32_t i;
+		for (i = 0; i < 40000000; i++) { //Don't go too fast
+			Nop();
+		}
+		 */
 		//grabs the buffer that isn't being DMA'D at that point
 		//does copmutations with it
 
@@ -89,6 +98,5 @@ int main(void)
 			prevBuffer = currentBuffer;
 			ComputeBuffer(currentBuffer);
 		}
-
 	}
 }

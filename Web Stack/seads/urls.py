@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 from rest_framework import routers, serializers, viewsets
-from microdata.views import ApplianceViewSet, DeviceViewSet, EventViewSet
+from microdata.views import ApplianceViewSet, DeviceViewSet, EventViewSet, CircuitViewSet
 from farmer.views import DeviceSettingsViewSet
 from home.views import UserViewSet
 from django.contrib import admin
@@ -12,6 +12,7 @@ router.register(r'device-api', DeviceViewSet)
 router.register(r'event-api', EventViewSet)
 router.register(r'settings-api', DeviceSettingsViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'circuit-api', CircuitViewSet)
 
 router.register(r'testevent', TestEventViewSet)
 
@@ -38,8 +39,10 @@ urlpatterns = [
     url(r'^dashboard/update/$', 'webapp.views.dashboard_update'),
     url(r'^charts/device/(?P<serial>\d+)/data/$', 'webapp.views.device_data'),
     url(r'^charts/device/(?P<serial>\d+)/chart/$', 'webapp.views.device_chart'),
+    #url(r'^charts/heatmap/$', 'webapp.views.heatmap'),
     url(r'^charts/default_chart/$', 'webapp.views.default_chart'),
     url(r'^charts/billing_information/$', 'webapp.views.billing_information'),
+    url(r'^charts/circuits_information/$', 'webapp.views.circuits_information'),
     url(r'^new_device/', 'microdata.views.new_device'),
     url(r'^api/timestamp/$', 'microdata.views.timestamp'),
     url(r'^device/get_wattage_usage/', 'webapp.views.get_wattage_usage'),
@@ -54,6 +57,4 @@ urlpatterns = [
     url(r'^datadel/$', 'debug.views.datadel'),
     url(r'^influxgen/$', 'debug.views.influxgen'),
     url(r'^influxdel/$', 'debug.views.influxdel'),
-    url(r'^gmapi/$', 'debug.views.gmapi'),
-    url(r'^debug/position/$', 'debug.views.position'),
 ]

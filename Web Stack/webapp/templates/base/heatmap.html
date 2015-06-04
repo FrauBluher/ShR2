@@ -1,0 +1,71 @@
+<div id="heatmap-container"></div>
+
+<script>
+   var heatmap_data = {
+      "unit":"d",
+      "from": {{ dataLimitFrom }},
+      "to": {{ dataLimitTo }},
+      "data": [
+         {% for point in data_points %}
+         [{{ point.0 }}, {{ point.1 }}, {{ point.2 }}, {{ point.3 }}],
+         {% endfor %}
+      ]
+   }
+
+   var heatmap = new TimeChart({
+      container: document.getElementById("heatmap-container"),
+      data:
+      {
+         units:["d"],
+         preloaded: heatmap_data
+      },
+      valueAxis:{
+         "default":{
+            title:"Wattage"
+         }
+      },
+      series:[
+         {
+            name:"Minimum",
+            id:"series3",
+            type:"line",
+            stack: "default",
+            data:{
+               index:3,
+               aggregation:"min"
+            },
+            style:{
+               lineColor:"rgb(120,120,255)",
+               lineWidth: 2,
+               smoothing: true
+            }
+         },
+         {
+            name:"Maximum",
+            id:"series2",
+            type:"line",
+            stack: "default",
+            data:{
+               index:2,
+               aggregation:"max"
+            },
+            style:{
+               lineColor:"rgb(255,120,120)",
+               fillGradient:[[20,"rgba(255,0,0,0.7)"], [-20, "rgba(0,0,255,0.4)"]],
+               lineWidth: 2,
+               smoothing: true
+            }
+         }
+      ],
+      stacks: {
+         "default": {type: "based", separateNegativeValues: true}
+      },
+      area: {
+         initialDisplayUnit: "1 M",
+         initialDisplayPeriod: "3 y",
+         initialDisplayAnchor: "newestData",
+      },
+      currentTime: {enabled: false},
+      info: {aggregations: ["avg"]}
+   });
+</script>

@@ -1,0 +1,24 @@
+<div id="circuits-chart"></div>
+
+<script>
+var circuits_information_chart = c3.generate({
+   bindto: '#circuits-chart',
+   data: {
+      columns: [
+         {% for circuit in circuits %}
+            ["{{ circuit.0.name }}",{{ circuit.1 }}],
+         {% endfor %}
+      ],
+      type : 'donut',
+      colors: {
+         {% for circuit in circuits %}
+         "{{ circuit.0.name }}": '{{ circuit.0.chart_color }}',
+         {% endfor %}
+      },
+      color: function (color, d) {
+         // d will be 'id' when called for legends
+         return d.id && d.id === 'data3' ? d3.rgb(color).darker(d.value / 150) : color;
+      }
+   }
+});
+</script>
