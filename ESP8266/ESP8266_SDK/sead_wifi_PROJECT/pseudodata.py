@@ -14,9 +14,10 @@ def main(args):
 		ts = int(time.time() * 1000) - starttime
 		watt = random.randint(20,100)
 		writestring = '$SEDAT,' +str(watt)+','+str(ts)+'\r\n'
+		#sys.stdout.write(writestring)
 		ser.write(writestring)
 		sys.stdout.write(ser.read(ser.inWaiting()))
-		time.sleep(0.01666666666)
+		time.sleep(.1)
 	ser.close()
 
 if __name__ == "__main__":

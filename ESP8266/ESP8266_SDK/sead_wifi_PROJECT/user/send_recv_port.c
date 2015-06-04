@@ -29,7 +29,7 @@ void case_recv_store(char);
 void case_recv_send(char);
 
 //default sending timer value to be possibly modified later
-uint16_t sending_timer = 4000;
+uint16_t sending_timer = 6000;
 
 //os event queues for function priority queue
 os_event_t    recv_messageQueue[recv_messageQueueLen];
@@ -270,14 +270,11 @@ send_timer_cb(void *arg) {
 		}
 	//checks to see if we should send
 	} else if (sending == FALSE && size_send_buffer() > 0) {
-		DEBUG_PRINT(("\r\nsending\r\n"));
 		sending = TRUE;
 		//we can't tell when it's done sending after this, so 
 		//the sending flag will be false after the command
-		//to send the data has been issued
-		if (!send_pop_buffer()) {
-			sending = FALSE;
-		}
+		//to send the data has been issued through done_sending()
+		send_pop_buffer();
 	}
 	os_timer_disarm(&send_timer);
 	os_timer_setfn(&send_timer, send_timer_cb, NULL);

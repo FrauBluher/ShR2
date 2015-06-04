@@ -20,26 +20,26 @@
 #include "extralib.h"
 
 //server name and device ID number
-#define SERVER_NAME "seads.brabsmit.com"
-#define DEVICE_ID	"3"
+#define SERVER_NAME "www.seads.io"
+#define DEVICE_ID	"9"
 
 //test string to send to server
 #define GET_ECHO 	"GET /echo/ HTTP/1.1\r\n"\
 					"User-Agent: ESP8266\r\n"\
-					"Host: seads.brabsmit.com\r\n"\
+					"Host: www.seads.io\r\n"\
 					"Accept: */*\r\n\r\n"
 
 //"Authorization: Token 0d1e0f4b56e4772fdb440abf66da8e2c1df799c0\r\n"
 
 #define GET_SETTINGS 	"GET /api/settings-api/%s/ HTTP/1.1\r\n"\
 						"User-Agent: ESP8266\r\n"\
-						"Host: seads.brabsmit.com\r\n"\
+						"Host: www.seads.io\r\n"\
 						"Accept: */*\r\n\r\n"
 
 // http request to create the device
 #define POST_DEVICE	"POST /api/device-api/ HTTP/1.1\r\n"\
 					"User-Agent: ESP8266\r\n"\
-					"Host: seads.brabsmit.com\r\n"\
+					"Host: www.seads.io\r\n"\
 					"Accept: */*\r\n"\
 					"Content-Type: application/json\r\n"\
 					"Content-Length: %u\r\n\r\n"\
@@ -48,7 +48,7 @@
 //the preamble of the post request
 #define POST_REQUEST "POST /api/event-api/ HTTP/1.1\r\n"\
 					 "User-Agent: ESP8266\r\n"\
-					 "Host: seads.brabsmit.com\r\n"\
+					 "Host: www.seads.io\r\n"\
 					 "Accept: */*\r\n"\
 					 "Content-Type: application/x-www-form-urlencoded\r\n"\
 					 "Content-Length: %u\r\n\r\n%s"
@@ -74,7 +74,7 @@ uint8_t connect_try = 0;
 //time offset
 uint64_t offset = 0;
 
-uint16_t frequency = 60;
+uint16_t frequency = 10;
 //len 81
 //AT+CIPSEND=81
 
@@ -126,6 +126,7 @@ package_send(espconn *serv_conn) {
 	char *data_ptr = data_points;
 	inttohexstring(send_buffer_ptr->buffer[send_buffer_ptr->tail].
 		timestamp + offset, timebuffer);
+	DEBUG_PRINT(("\r\nFirst Timestamp: %s\r\n", timebuffer));
 	//loop over all available data to send
 	chars_written = os_sprintf(data_ptr, DATA_POINT,
 		send_buffer_ptr->buffer[send_buffer_ptr->tail].wattage);
@@ -145,8 +146,7 @@ package_send(espconn *serv_conn) {
 	//concatonates the data to send with the http header
 	chars_written = os_sprintf(send_data, POST_REQUEST, chars_written,
 		json_data);
-	DEBUG_PRINT(("Final Buf Len: %d\r\nActual Data Len: %d\r\n",
-		300 + i * 16, strlen(send_data)));
+	DEBUG_PRINT(("Data Len: %d\r\n", strlen(send_data)));
 	//DEBUG_PRINT(("%s\r\n", send_data));
 	//send the data.
 	sint8 retvalue = espconn_sent(serv_conn, (uint8 *)send_data,
@@ -180,10 +180,12 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 	espconn *serv_conn=(espconn *)arg;
 	//if we received a 404, then create the device
 	if (strncmp(data, "HTTP/1.1 404", 12) == 0) {
+		DEBUG_PRINT(("Not Found\r\n"));
 		//set the create device flag true
 		create_device = TRUE;
 	//received a 200, then we successfully got settings
 	} else if(strncmp(data, "HTTP/1.1 200", 12) == 0) {
+		DEBUG_PRINT(("OK\r\n"));
 		char *temp_ptr;
 		for (temp_ptr = data;
 			strncmp(temp_ptr, "seconds", 7) != 0;
@@ -217,10 +219,16 @@ networkRecvCb(void *arg, char *data, unsigned short len) {
 		done_config();
 	//received a 201, then we successfully posted data
 	} else if(strncmp(data, "HTTP/1.1 201", 12) == 0) {
-		DEBUG_PRINT(("CREATED\r\n"));
+		DEBUG_PRINT(("Created\r\n"));
+	} else if(strncmp(data, "HTTP/1.1 500", 12) == 0) {
+		DEBUG_PRINT(("Internal Server Error\r\n"));
 	} else {
+		DEBUG_PRINT(("other http\r\n"));
+		for (i = 0; i < 12; i++) {
+			DEBUG_PRINT(("%c", data[i]));
+		}
+		DEBUG_PRINT(("\r\n"));
 		//DEBUG_PRINT((data));
-		DEBUG_PRINT(("%s\r\n", data));
 	}
 	print_espconn_state(serv_conn);
 	return;
@@ -379,13 +387,16 @@ send_http_request(circular_send_buffer_t *temp) {
 				   create_device == TRUE) {
 			create_device = FALSE;
 			//post the device
+			DEBUG_PRINT(("posting device\r\n"));
 			sint8 d = post_device(&serv_conn);
 		} else if (serv_conn.state == ESPCONN_CONNECT &&
 				   send_buffer_ptr == NULL) {
 			//send get config request
+			DEBUG_PRINT(("getting config\r\n"));
 			sint8 d = get_config(&serv_conn);
 		} else if (serv_conn.state == ESPCONN_CONNECT) {
 			//send data function
+			DEBUG_PRINT(("sending data\r\n"));
 			sint8 d = package_send(&serv_conn);
 		} else if (serv_conn.state == ESPCONN_CLOSE) {
 			//not sure if this is right?

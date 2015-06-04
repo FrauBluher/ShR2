@@ -72,8 +72,8 @@ check(const char *string, bool strict) {
 		string += 2;
 		//debug getting hex value
 		char str[15];
-		os_sprintf(str, "e:%d\r\n", expected);
-		os_printf(str);
+		DEBUG_PRINT((str, "e:%d\r\n", expected));
+		DEBUG_PRINT((str));
 		if (expected == 0) {
 			return false;
 		}
@@ -129,7 +129,7 @@ get_talker(const char *string) {
   * @retval Success or failure
   */
 bool ICACHE_FLASH_ATTR
-process_message(char *string, uint16_t *wattage, uint64_t *timestamp) {
+process_message(char *string, uint16_t *wattage, uint32_t *timestamp) {
 	char *buff_ptr = NULL;
 	bool return_value = true;
 	//check preamble for talker type, and message type
@@ -153,7 +153,7 @@ process_message(char *string, uint16_t *wattage, uint64_t *timestamp) {
 			*timestamp = stringtoint(buff_ptr);
 			break;
 		case SENTENCE_UNKNOWN:
-			uart0_sendStr("sentence unknown\r\n");
+			DEBUG_PRINT(("sentence unknown\r\n"));
 			return_value = false;
 			break;
 		default:
@@ -161,10 +161,13 @@ process_message(char *string, uint16_t *wattage, uint64_t *timestamp) {
 			break;
 		}
 	} else if (talker == TALKER_UNKNOWN) {
-		uart0_sendStr("talker unknown\r\n");
+		DEBUG_PRINT(("talker unknown\r\n"));
 		return_value = false;
 	}
 	//os_printf("time: %s\r\n", timestamp);
+   if (*wattage > 2000) {
+      DEBUG_PRINT(("string was %s\r\n", string));
+   }
 	//os_printf("watt: %d\r\n", *wattage);
 	return return_value;
 }

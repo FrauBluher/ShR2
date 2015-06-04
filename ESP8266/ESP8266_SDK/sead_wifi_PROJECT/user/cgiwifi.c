@@ -42,7 +42,7 @@ ScanResultData cgiWifiAps;
 void ICACHE_FLASH_ATTR wifiScanDoneCb(void *arg, STATUS status) {
 	int n;
 	struct bss_info *bss_link = (struct bss_info *)arg;
-	os_printf("wifiScanDoneCb %d\n", status);
+	DEBUG_PRINT(("wifiScanDoneCb %d\n", status));
 	if (status!=OK) {
 		cgiWifiAps.scanInProgress=0;
 		return;
@@ -63,7 +63,7 @@ void ICACHE_FLASH_ATTR wifiScanDoneCb(void *arg, STATUS status) {
 	//Allocate memory for access point data
 	cgiWifiAps.apData=(ApData **)os_malloc(sizeof(ApData *)*n);
 	cgiWifiAps.noAps=n;
-	os_printf("Scan done: found %d APs\n", n);
+	DEBUG_PRINT(("Scan done: found %d APs\n", n));
 
 	//Copy access point data to the static struct
 	n=0;
@@ -72,7 +72,7 @@ void ICACHE_FLASH_ATTR wifiScanDoneCb(void *arg, STATUS status) {
 		if (n>=cgiWifiAps.noAps) {
 			//This means the bss_link changed under our nose. Shouldn't happen!
 			//Break because otherwise we will write in unallocated memory.
-			os_printf("Huh? I have more than the allocated %d aps!\n", cgiWifiAps.noAps);
+			DEBUG_PRINT(("Huh? I have more than the allocated %d aps!\n", cgiWifiAps.noAps));
 			break;
 		}
 		//Save the ap data.
@@ -138,36 +138,28 @@ static struct station_config stconf;
 
 //This routine is ran some time after a connection attempt to an access point. If
 //the connect succeeds, this gets the module in STA-only mode.
-static void ICACHE_FLASH_ATTR resetTimerCb(void *arg) {
+void ICACHE_FLASH_ATTR resetTimerCb(void *arg) {
+   static ETSTimer resetTimer;
 	int x=wifi_station_get_connect_status();
 	if (x==STATION_GOT_IP) {
 		//Go to STA mode. This needs a reset, so do that.
-		os_printf("Got IP. Going into STA mode..\n");
+		DEBUG_PRINT(("Got IP. Going into STA mode..\n"));
 		wifi_set_opmode(1);
 		system_restart();
-	} else {
-		os_printf("Connect fail. Not going into STA-only mode.\n");
-		//Maybe also pass this through on the webpage?
 	}
+   os_timer_disarm(&resetTimer);
+   os_timer_setfn(&resetTimer, resetTimerCb, NULL);
+   os_timer_arm(&resetTimer, 5000, 0);
 }
 
 //Actually connect to a station. This routine is timed because I had problems
 //with immediate connections earlier. It probably was something else that caused it,
 //but I can't be arsed to put the code back :P
 static void ICACHE_FLASH_ATTR reassTimerCb(void *arg) {
-	int x;
-	static ETSTimer resetTimer;
-	os_printf("Try to connect to AP....\n");
+	DEBUG_PRINT(("Trying to connect to AP\n"));
 	wifi_station_disconnect();
 	wifi_station_set_config(&stconf);
 	wifi_station_connect();
-	x=wifi_get_opmode();
-	if (x!=1) {
-		//Schedule disconnect/connect
-		os_timer_disarm(&resetTimer);
-		os_timer_setfn(&resetTimer, resetTimerCb, NULL);
-		os_timer_arm(&resetTimer, 4000, 0);
-	}
 }
 
 
@@ -188,13 +180,13 @@ int ICACHE_FLASH_ATTR cgiWiFiConnect(HttpdConnData *connData) {
 
 	os_strncpy((char*)stconf.ssid, essid, 32);
 	os_strncpy((char*)stconf.password, passwd, 64);
-	os_printf("Try to connect to AP %s pw %s\n", essid, passwd);
+	DEBUG_PRINT(("Try to connect to AP %s pw %s\n", essid, passwd));
 
 	//Schedule disconnect/connect
 	os_timer_disarm(&reassTimer);
 	os_timer_setfn(&reassTimer, reassTimerCb, NULL);
 //Set to 0 if you want to disable the actual reconnecting bit
-#if 1 
+#if 0
 	os_timer_arm(&reassTimer, 1000, 0);
 	httpdRedirect(connData, "connecting.html");
 #else
@@ -216,7 +208,7 @@ int ICACHE_FLASH_ATTR cgiWifiSetMode(HttpdConnData *connData) {
 
 	len=httpdFindArg(connData->getArgs, "mode", buff, sizeof(buff));
 	if (len!=0) {
-		os_printf("cgiWifiSetMode: %s\n", buff);
+		DEBUG_PRINT(("cgiWifiSetMode: %s\n", buff));
 		wifi_set_opmode(atoi(buff));
 		system_restart();
 	}
