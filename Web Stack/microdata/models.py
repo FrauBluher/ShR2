@@ -121,8 +121,8 @@ class Device(models.Model):
       if self.fanout_query_registered == False:
          db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
          serial = str(self.serial)
-         db.query('select * from device.'+serial+' into device.'+serial+'.[channel_pk]')
-         db.query('select sum(cost) from device.'+serial+' into cost.device.'+serial+'.[channel_pk]')
+         db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
+         db.query('select sum(cost) from device.'+serial+' into cost.device.'+serial+'.[circuit_pk]')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
          db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
@@ -305,8 +305,8 @@ class Event(models.Model):
       timestamp /= 1000 # convert to seconds. We don't care that much about accuracy at this point.
       existing_queries = db.query('list continuous queries')[0]['points']
       new_queries = []
-      #if timestamp < now - 1:
-      #   new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
+      if timestamp < now - 1:
+         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
       if timestamp < now - 60:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
       if timestamp < now - 3600:
@@ -322,9 +322,9 @@ class Event(models.Model):
       # drop old continuous query, add new one. Essentially a refresh.
       for new_query in new_queries:
          for existing_query in existing_queries:
-            if new_query in existing_query[2]:
+            if new_query == existing_query[2]:
                db.query('drop continuous query '+str(existing_query[1]))
-               db.query(new_query)
+         db.query(new_query)
       
       # Check to see if the tier series has been initialized. This should only need to happen once ever.
       try:
