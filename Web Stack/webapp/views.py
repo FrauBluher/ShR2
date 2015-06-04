@@ -832,7 +832,7 @@ def settings(request):
       context['form'] = form
       template = 'base/settings_dashboard.html'
     context['farmer_installed'] = 'farmer' in django_settings.INSTALLED_APPS
-    return render(request, template, context)
+  return render(request, template, context)
 
 @login_required(login_url='/signin/')
 def settings_change_device(request):

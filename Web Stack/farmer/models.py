@@ -40,10 +40,10 @@ class DeviceSettings(models.Model):
       (7, 976.5625)
    )
    adc_sample_rate = models.IntegerField(choices=SAMPLE_RATE_CHOICES,
-                                         default=5)
+                                         default=7)
    """ The sample rates that can be chosen from the admin interface"""
    
-   transmission_rate_milliseconds = models.IntegerField(default=1000)
+   transmission_rate_milliseconds = models.IntegerField(default=5000)
    """ The period of time in milliseconds before packet transmission"""
    
    date_now = models.IntegerField(null=True,blank=True)
