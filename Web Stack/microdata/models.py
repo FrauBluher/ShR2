@@ -135,8 +135,8 @@ class Device(models.Model):
       if self.name == '':
          self.name = "Device "+str(self.serial)
       from farmer.models import DeviceSettings
-      settings = DeviceSettings.objects.filter(device=self)
-      if not settings:
+      device_settings = DeviceSettings.objects.filter(device=self)
+      if not device_settings:
          DeviceSettings.objects.create(device=self)
       from webapp.models import DeviceWebSettings, Tier, UtilityCompany, RatePlan, Territory
       websettings = DeviceWebSettings.objects.filter(device=self)

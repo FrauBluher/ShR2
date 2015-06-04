@@ -15,6 +15,7 @@ from django.core.servers.basehttp import FileWrapper
 import cStringIO as StringIO
 from microdata.views import initiate_job_to_glacier
 from webapp.models import Tier
+from django.core import serializers
 
 
 from django.db import IntegrityError
@@ -667,7 +668,10 @@ def device_chart(request, serial):
 
          context['circuits'] = []
          for circuit in channel_names:
-            circuit = CircuitType.objects.get(pk=circuit)
+            try:
+               circuit = CircuitType.objects.get(pk=circuit)
+            except:
+               pass
             context['circuits'].append(circuit);
 
          context['server_time'] = time.time()*1000
@@ -1052,7 +1056,11 @@ def settings_device(request, serial):
          device.name = new_name
          device.save()
          context['success'] = True
-         context['new_name'] = new_name
+         device_obj = {
+           'name': device.name,
+           'serial': device.serial
+         }
+         context['device'] = device_obj
        
        custom_channel = request.POST.get('custom_channel', False)
        appliance = request.POST.get('appliance', False)
@@ -1210,11 +1218,14 @@ def export_data(request):
       status_code = initiate_job_to_glacier(request, user, int(end))
       return render(request, 'base/glacier_status.html', {'glacier':True})
     elif device.owner == user:
-      db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
-      if start is not 0 and end is not 0:
-        data = db.query('select * from device.'+str(device.serial)+' where time > '+start+'s and time < '+end+'s')
-      else:
-        data = db.query('select * from device.'+str(device.serial))
+      try:
+        db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
+        if start is not 0 and end is not 0:
+          data = db.query('select * from device.'+str(device.serial)+' where time > '+start+'s and time < '+end+'s')
+        else:
+          data = db.query('select * from device.'+str(device.serial))
+      except:
+        pass
     response = HttpResponse(content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename="export.txt"'
     response.write(data)

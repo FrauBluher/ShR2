@@ -98,6 +98,18 @@
 
 <script>
 
+$(function() {
+  $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
+      {
+          'stack': 'true',
+          'localtime': +(new Date()/1000),
+      },
+      function(data) {
+          $('#ajax-container1').html(data);
+      }
+  );
+});
+
 var device_serial;
 {% if render_circuit_chart %}
 {% for device in my_devices %}

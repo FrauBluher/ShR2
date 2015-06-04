@@ -172,8 +172,8 @@ $(function() {
         span.removeClass('glyphicon-refresh glyphicon-refresh-animate');
         if (data.success) {
           span.addClass("glyphicon glyphicon-ok");
-          $('#id_new_name').val(data.new_name);
-          $('#12').html(data.new_name+'<span class="caret"></span>');
+          $('#id_new_name').val(data.device.name);
+          $('#'+data.device.serial).html(data.device.name+'<span class="caret"></span>');
         } else {
           span.addClass("glyphicon glyphicon-remove");
         }
