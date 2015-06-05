@@ -100,6 +100,7 @@
         events: {
           onChartUpdate: function(event){
             changeRealTime();
+            backfillData();
           },
           onError: function(message) {
             console.log(message);
@@ -125,8 +126,26 @@
 
 var timeoutHandler{{ circuit_pk }};
 
+function backfillData() {
+    if (chart._scene.mainData.dataFrom !== null &&
+        chart._scene.mainData.chart.timeStart !== null &&
+        chart._scene.mainData.dataTo !== null &&
+        chart._scene.mainData.chart.timeEnd !== null) {
+        
+        // Fill the graph to the left of the existing data to timeStart
+        if (chart._scene.mainData.dataFrom > chart._scene.mainData.chart.timeStart) {
+            console.log("<<< Backfilling "+chart._scene.mainData.dataFrom+" to "+chart._scene.mainData.chart.timeStart);
+            getChartData(chart._scene.mainData.chart.timeStart/1000, chart._scene.mainData.dataFrom/1000, {{ device.serial }});
+        }
+        // Fill the graph to the right of the existing data to timeEnd
+        else if (chart._scene.mainData.dataTo < chart._scene.mainData.chart.timeEnd) {
+            console.log(">>> Backfilling "+chart._scene.mainData.dataTo+" to "+chart._scene.mainData.chart.timeEnd);
+            getChartData(chart._scene.mainData.dataTo/1000, chart._scene.mainData.chart.timeEnd/1000, {{ device.serial }});
+        }
+    }
+}
+
 function changeRealTime() {
-  console.info("Chart update");
   clearTimeout(timeoutHandler{{ circuit_pk }});
   realTimeData{{ circuit_pk }}();
 }
@@ -166,7 +185,6 @@ function updateDashboard{{ device.serial }}() {
             'current_device': {{ device.serial }}
         },
         function(data) {
-            console.log("dashboard update");
             updateInfoWindow(data.average_usage);
         }
     );
@@ -232,7 +250,6 @@ function realTimeData{{ circuit_pk }}() {
         } catch (e) {
           console.info("Chart not defined yet");
        }
-       console.info("timeout = "+timeout)
   }
     timeoutHandler{{ circuit_pk }} = setTimeout(realTimeData{{ circuit_pk }}, timeout);
 }
