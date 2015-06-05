@@ -98,17 +98,6 @@
 
 <script>
 
-$(function() {
-  $.get('/charts/device/{{ my_devices.0.serial }}/chart/',
-      {
-          'stack': 'true',
-          'localtime': +(new Date()/1000),
-      },
-      function(data) {
-          $('#ajax-container1').html(data);
-      }
-  );
-});
 
 var device_serial;
 {% if render_circuit_chart %}
@@ -319,6 +308,7 @@ function toggle_chart_realtime() {
 $(function() {
    get_wattage_usage();
    initialize();
+   change_dashboard_device{{ my_devices.0.serial }}();
    $('#map-slide-toggle').on('click', function() {
       if (map_open) {
          $('#map-canvas').slideUp();
@@ -337,24 +327,7 @@ $(function() {
    $('#btn-realtime').on('click', function() {
       toggle_chart_realtime();
    });
-
-   $.get('/charts/billing_information/',
-       {
-         'serial': {{ my_devices.0.serial }}
-       },
-       function(data) {
-         $('#ajax-billing-information').html(data);
-       }
-   );
    
-   $.get('/charts/circuits_information/',
-       {
-         'serial': {{ my_devices.0.serial }}
-       },
-       function(data) {
-         $('#ajax-circuits-information').html(data);
-       }
-   );
 
 });
 

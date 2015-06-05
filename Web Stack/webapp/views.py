@@ -590,7 +590,7 @@ def device_data(request, serial):
          unit = request.GET.get('unit','')
          start = int(float(request.GET.get('from','')))
          stop = int(float(request.GET.get('to','')))
-         #if chart_load: stop = time.time()
+         if chart_load: stop += 25200
          if start < stop: start += 25200
          circuit_pk = request.GET.get('circuit_pk')
          context = group_by_mean(serial,unit,start,stop,localtime,circuit_pk)
