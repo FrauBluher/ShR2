@@ -10,7 +10,7 @@ import numpy as np
 from django.template import Context, Template
 import os
 from time import gmtime, strftime
-from influxdb.influxdb08 import client as influxdb
+from influxdb import client as influxdb
 from microdata.models import Device
 from sets import Set
 import re
@@ -42,7 +42,7 @@ def get_average_usage(user, notification):
       
    stop = 'now()'
    db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
-   result = db.query('list series')[0]
+   result = db.query('show series')[0]
    averages = {}
    for device in Device.objects.filter(owner=user):
       appliances = Set()
@@ -95,7 +95,7 @@ def render_chart(user, notification):
    plt.ylabel('Watts')
    for device in Device.objects.filter(owner=user):
       points = {}
-      result = db.query('list series')[0]
+      result = db.query('show series')[0]
       appliances = Set()
       for series in result['points']:
          rg = re.compile('device.'+str(device.serial))

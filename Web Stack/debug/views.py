@@ -8,7 +8,8 @@ from django.forms import ModelChoiceField
 from django.core import serializers
 from django.conf import settings
 
-from influxdb.influxdb08 import client as influxdb
+from influxdb import client as influxdb
+from influxdb import SeriesHelper
 
 import git
 import random
@@ -22,6 +23,36 @@ from debug.models import TestEvent
 from rest_framework import viewsets
 from debug.serializers import TestEventSerializer
 from webapp.models import Tier
+
+class EventSeriesHelper(SeriesHelper):
+    # Meta class stores time series helper configuration.
+    class Meta:
+        # The client should be an instance of InfluxDBClient.
+        client = influxdb.InfluxDBClient(settings.INFLUXDB_URI, 8086, "root", "root", "seads")
+        # The series name must be a string. Add dependent fields/tags in curly brackets.
+        series_name = 'device.{serial}'
+        tags = ['serial', 'circuit_pk']
+        precision = "s"
+        # Defines all the fields in this time series.
+        fields = ['time', 'wattage', 'cost']
+        # Defines the number of data points to store prior to writing on the wire.
+        bulk_size = 100000
+        # autocommit must be set to True when using bulk_size
+        autocommit = True
+        
+class TierSeriesHelper(SeriesHelper):
+    # Meta class stores time series helper configuration.
+    class Meta:
+        # The client should be an instance of InfluxDBClient.
+        client = influxdb.InfluxDBClient(settings.INFLUXDB_URI, 8086, "root", "root", "seads")
+        # The series name must be a string. Add dependent fields/tags in curly brackets.
+        series_name = 'tier.device.{serial}'
+        tags = ['serial']
+        precision = "s"
+        # Defines all the fields in this time series.
+        fields = ['time', 'level']
+        # autocommit must be set to True when using bulk_size
+        autocommit = True
 
 class TestEventViewSet(viewsets.ModelViewSet):
     queryset = TestEvent.objects.all()
@@ -177,16 +208,6 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
          value *= multiplier
    db = influxdb.InfluxDBClient(settings.INFLUXDB_URI, 8086, "root", "root", "seads")
    count = 0
-   data = []
-   data_dict = {}
-   data_dict['name'] = "device."+str(device.serial)
-   data_dict['columns'] = ['time','wattage','circuit_pk','cost']
-   data_dict['points'] = []
-
-   tier_dict = {}
-   tier_dict['name'] = "tier.device."+str(device.serial)
-   tier_dict['columns'] = ['time','tier_level']
-   tier_dict['points'] = []
 
    kilowatt_hours_monthly = device.kilowatt_hours_monthly
    kilowatt_hours_daily = device.kilowatt_hours_daily
@@ -202,8 +223,8 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
    if (summer_start <= datetime.now() < winter_start) == False:
       current_season = 'winter'
       
-   tier_dict['points'] = [[start,device.devicewebsettings.current_tier.tier_level]]
-   db.write_points([tier_dict])
+   TierSeriesHelper(serial=str(device.serial), time=start, level=int(device.devicewebsettings.current_tier.tier_level))
+   
    for i in numpy.arange(start, stop, resolution):
       kwh = 0.0
       point_list = [i]
@@ -234,34 +255,26 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
              tier_dict['points'] = [[i,device.devicewebsettings.current_tier.tier_level]]
              db.write_points([tier_dict])
          cost = current_tier.rate * kwh
-         channel_pk = wattages[channel.name]['pk']
-         point_list = [i, wattage_to_append, channel_pk, cost]
-         count += 1
-         data_dict['points'].append(point_list)
-         if count % 100000 == 0:
-            data.append(data_dict)
-            db.write_points(data)
-            data = []
-            data_dict['points'] = []
-   data.append(data_dict)
-   if (db.write_points(data)):
-       queries = db.query('list continuous queries')[0]['points']
-       # drop old queries
-       serial = str(device.serial)
-       for q in queries:
-         if 'device.'+serial in q[2]:
-             db.query('drop continuous query '+str(q[1]))
-       # add new queries
-       db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
-       db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
-       db.query('select sum(cost) from "device.'+serial+'" into cost.device.'+serial)
-       success = "Added {0} points successfully".format(count)
+         circuit_pk = wattages[channel.name]['pk']
+         EventSeriesHelper(serial=str(device.serial), time=i, wattage=wattage_to_append, circuit_pk=str(circuit_pk), cost=cost)
+   EventSeriesHelper.commit()
+   queries = db.query('show continuous queries')[0]['points']
+   # drop old queries
+   serial = str(device.serial)
+   for q in queries:
+     if 'device.'+serial in q[2]:
+         db.query('drop continuous query '+str(q[1]))
+   # add new queries
+   db.query('select * from device.'+serial+' into device.'+serial+'.[circuit_pk]')
+   db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1y) into 1y.:series_name')
+   db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1M) into 1M.:series_name')
+   db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1w) into 1w.:series_name')
+   db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1d) into 1d.:series_name')
+   db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1h) into 1h.:series_name')
+   db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1m) into 1m.:series_name')
+   db.query('select mean(wattage) from /^device.'+serial+'.*/ group by time(1s) into 1s.:series_name')
+   db.query('select sum(cost) from "device.'+serial+'" into cost.device.'+serial)
+   success = "Added {0} points successfully".format(count)
    device.kilowatt_hours_monthly = kilowatt_hours_monthly
    device.kilowatt_hours_daily = kilowatt_hours_daily
    device.save()
@@ -343,20 +356,20 @@ def influxdel(request):
             tier_dict['columns'] = ['tier_level']
             tier_dict['points'] = [[1]]
             db.write_points([tier_dict])
-            series = db.query('list series')[0]['points']
+            series = db.query('show series')[0]['points']
             rg = re.compile('device.'+serial)
             for s in series:
                if rg.search(s[1]):
                     db.query('drop series "'+s[1]+'"')
             events = Event.objects.filter(device=device)
             events.delete()
-            queries = db.query('list continuous queries')[0]['points']
+            queries = db.query('show continuous queries')[0]['points']
             # drop old queries
             for q in queries:
                if 'device.'+serial in q[2]:
                   db.query('drop continuous query '+str(q[1]))
          else:
-            queries = db.query('list continuous queries')[0]['points']
+            queries = db.query('show continuous queries')[0]['points']
             # drop old queries
             for q in queries:
               if 'device.'+serial in q[2]:

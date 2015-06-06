@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
 import json
 import time
 import re
-from influxdb.influxdb08 import client as influxdb
+from influxdb import client as influxdb
 from calendar import monthrange
 
 # Create your views here.
@@ -398,7 +398,7 @@ def group_by_mean(serial, unit, start, stop, localtime, circuit_pk):
    if (stop == ''): stop = 'now()'
    else: stop = '\''+datetime.fromtimestamp(stop+25200).strftime('%Y-%m-%d %H:%M:%S')+'\''
    db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
-   result = db.query('list series')[0]
+   result = db.query('show series')[0]
    channels = Set()
    for series in result['points']:
       rg = re.compile('device.'+str(serial))
@@ -513,7 +513,7 @@ def generate_average_wattage_usage(request, serial):
     device = Device.objects.get(serial=serial)
     if device.owner == user or user in device.share_with.all():
       db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
-      result = db.query('list series')[0]
+      result = db.query('show series')[0]
       channels = Set()
       for series in result['points']:
          rg = re.compile('device.'+str(device.serial))
@@ -658,7 +658,7 @@ def device_chart(request, serial):
             context['circuit_name'] = circuit.name
          else:
              db = influxdb.InfluxDBClient(django_settings.INFLUXDB_URI,8086,'root','root','seads')
-             result = db.query('list series')[0]
+             result = db.query('show series')[0]
              for series in result['points']:
                 rg = re.compile('device.'+str(device.serial))
                 if re.match(rg, series[1]):

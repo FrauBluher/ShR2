@@ -17,7 +17,7 @@ from rest_framework import viewsets
 from microdata.serializers import DeviceSerializer, EventSerializer, ApplianceSerializer, CircuitSerializer
 from microdata.models import Device, Event, Appliance, CircuitType
 
-from influxdb.influxdb08 import client as influxdb
+from influxdb import client as influxdb
 
 from geoposition import Geoposition
 import json

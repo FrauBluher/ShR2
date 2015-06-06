@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from microdata.models import Device
 from django.conf import settings
-from influxdb.influxdb08 import client as influxdb
+from influxdb import client as influxdb
 import boto3
 import json
 from datetime import datetime, timedelta
@@ -75,7 +75,7 @@ class Command(BaseCommand):
          print "Successfully uploaded "+str(bytes_sent)+" bytes to Glacier"
          print "Deleting points from database..."
          # drop from fanout series as well
-         series = db.query('list series')[0]['points']
+         series = db.query('show series')[0]['points']
          rg = re.compile('device.'+str(device.serial))
          for s in series:
             if rg.search(s[1]):

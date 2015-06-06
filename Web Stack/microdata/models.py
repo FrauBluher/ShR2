@@ -3,7 +3,7 @@ from django.conf import settings
 import random
 import string
 from django.core.exceptions import SuspiciousOperation
-from influxdb.influxdb08 import client as influxdb
+from influxdb import client as influxdb
 from geoposition.fields import GeopositionField
 from paintstore.fields import ColorPickerField
 import json
@@ -163,13 +163,13 @@ class Device(models.Model):
       """
       db = influxdb.InfluxDBClient(settings.INFLUXDB_URI,8086,'root','root','seads')
       serial = str(self.serial)
-      series = db.query('list series')[0]['points']
+      series = db.query('show series')[0]['points']
       # delete series
       for s in series:
          if 'device.'+serial in s[1]:
             db.query('drop series '+s[1])
       # delete continuous queries
-      queries = db.query('list continuous queries')[0]['points']
+      queries = db.query('show continuous queries')[0]['points']
       for q in queries:
          if 'device.'+serial in q[2]:
             db.query('drop continuous query '+str(q[1]))
@@ -307,7 +307,7 @@ class Event(models.Model):
       # https://github.com/influxdb/influxdb/issues/510
       now = time.time()
       last_timestamp = (self.start + ((1.0/self.frequency)*count*1000))/1000
-      existing_queries = db.query('list continuous queries')[0]['points']
+      existing_queries = db.query('show continuous queries')[0]['points']
       new_queries = []
       #if last_timestamp < now - 1:
       #   new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')

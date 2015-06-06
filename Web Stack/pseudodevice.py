@@ -57,7 +57,7 @@ def main():
       sys.exit(1)
       
    print "Checking if device exists on server..."
-   url = 'http://seads.io/api/device-api/'+str(serial)+'/'
+   url = 'http://ec2-52-24-127-93.us-west-2.compute.amazonaws.com/api/device-api/'+str(serial)+'/'
    r = requests.get(url)
    device = Device()
    if r.status_code == 200:
@@ -86,7 +86,7 @@ def main():
       print "ETA: "+datetime.datetime.fromtimestamp(
             int(time.time()+duration-28800)
          ).strftime('%Y-%m-%d %H:%M:%S')
-      url = 'http://seads.io/api/event-api/'
+      url = 'http://ec2-52-24-127-93.us-west-2.compute.amazonaws.com/api/event-api/'
       headers = {'content-type': 'application/json'}
       dataPoints = []
       for i in range(size):
@@ -106,6 +106,7 @@ def main():
          r = requests.post(url, data=json.dumps(payload), headers=headers)
          if r.status_code != 201:
             print 'Error: event not created'
+            print r.text
             continue
          time.sleep(1)
 

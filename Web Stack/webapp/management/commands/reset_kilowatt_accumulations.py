@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from microdata.models import Device
 from webapp.models import Tier, RatePlan
-from influxdb.influxdb08 import client as influxdb
+from influxdb import client as influxdb
 from django.conf import settings
 
 
