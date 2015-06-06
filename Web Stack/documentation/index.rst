@@ -9,6 +9,7 @@ Smart Energy Analysis and Disaggregation - Web Components
 
    Official API documentation is available `here
    <http://seads.io/docs/>`_.
+   `Paper Work in Progress <https://www.overleaf.com/read/zcfzbdmrzzrr>`_.
 
 .. toctree::
    :numbered:
