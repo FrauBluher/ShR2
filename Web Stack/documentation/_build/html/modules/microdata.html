@@ -141,7 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">3.6.2. Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#microdata-admin-module">3.6.3. microdata.admin module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#microdata-models-module">3.6.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-microdata.models">3.6.4. microdata.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-microdata.serializers">3.6.5. microdata.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-microdata.tests">3.6.6. microdata.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-microdata.views">3.6.7. microdata.views module</a></li>
@@ -363,9 +363,9 @@ on the web application, but this interface gives the administrator direct contro
 </dd></dl>
 
 </div>
-<div class="section" id="microdata-models-module">
-<h2>3.6.4. microdata.models module<a class="headerlink" href="#microdata-models-module" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-microdata.models"></span><dl class="class">
+<div class="section" id="module-microdata.models">
+<span id="microdata-models-module"></span><h2>3.6.4. microdata.models module<a class="headerlink" href="#module-microdata.models" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
 <dt id="microdata.models.Appliance">
 <em class="property">class </em><code class="descclassname">microdata.models.</code><code class="descname">Appliance</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.models.Appliance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
@@ -582,6 +582,12 @@ on the web application, but this interface gives the administrator direct contro
 <dt id="microdata.models.Device.owner">
 <code class="descclassname">Device.</code><code class="descname">owner</code><a class="headerlink" href="#microdata.models.Device.owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Foreign key relation. We use this relation to pair a device to a user on the web application.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.models.Device.position">
+<code class="descclassname">Device.</code><code class="descname">position</code><a class="headerlink" href="#microdata.models.Device.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>A position field that essentially translates to coordinates on a map. Automatically generates a map on the admin interface.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -886,12 +892,17 @@ the Django REST Framework has no native way of handling these, so we do it ourse
 
 <dl class="class">
 <dt id="microdata.views.KeyForm">
-<em class="property">class </em><code class="descclassname">microdata.views.</code><code class="descname">KeyForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.KeyForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">microdata.views.</code><code class="descname">KeyForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#microdata.views.KeyForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
 <p>Form class used to generate a simple key form. Currently used when a user intends to add a new device via the webapp interface.</p>
 <dl class="attribute">
 <dt id="microdata.views.KeyForm.base_fields">
-<code class="descname">base_fields</code><em class="property"> = {'serial': &lt;django.forms.fields.IntegerField object at 0x2b275d67e710&gt;}</em><a class="headerlink" href="#microdata.views.KeyForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('serial', &lt;django.forms.fields.IntegerField object at 0x2b88261c6bd0&gt;)])</em><a class="headerlink" href="#microdata.views.KeyForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="microdata.views.KeyForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('serial', &lt;django.forms.fields.IntegerField object at 0x2b88261c6bd0&gt;)])</em><a class="headerlink" href="#microdata.views.KeyForm.declared_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

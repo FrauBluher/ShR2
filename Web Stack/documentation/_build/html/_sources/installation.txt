@@ -188,6 +188,9 @@ In general, these are the steps you should follow:
 
 If you choose to link the server's address to a domain name after configuring a load balancer, a CNAME record must be created with the DNS provider with the load balancer's address.
 
+`A Guide To Amazon Elastic Load Balancing and Auto Scaling <http://www.cardinalpath.com/autoscaling-your-website-with-amazon-web-services-part-2/>`_
+`Another Guide to ELB and Auto Scaling <http://awsadvent.tumblr.com/post/38043683444/using-elb-and-auto-scaling>`_
+
 
 Installing Atomic Server
 ------------------------

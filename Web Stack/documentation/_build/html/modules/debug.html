@@ -141,7 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#submodules">3.6.2. Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-admin-module">3.6.3. microdata.admin module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-models-module">3.6.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.models">3.6.4. microdata.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.serializers">3.6.5. microdata.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.tests">3.6.6. microdata.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.views">3.6.7. microdata.views module</a></li>
@@ -156,6 +156,21 @@
 <li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.urls">3.9.3. seads.urls module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads.wsgi">3.9.4. seads.wsgi module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="seads.html#module-seads">3.9.5. Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webapp.html">3.10. Webapp Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#subpackages">3.10.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="webapp.management.html">3.10.1.1. webapp.management package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#submodules">3.10.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.admin">3.10.3. webapp.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.device_dictionary">3.10.4. webapp.device_dictionary module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#webapp-models-module">3.10.5. webapp.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.tests">3.10.6. webapp.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.timeseries">3.10.7. webapp.timeseries module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp.views">3.10.8. webapp.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webapp.html#module-webapp">3.10.9. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -219,7 +234,7 @@ accuracy of the calculations for billing.</p>
 <span id="debug-models-module"></span><h2>3.2.4. debug.models module<a class="headerlink" href="#module-debug.models" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="debug.models.TestEvent">
-<em class="property">class </em><code class="descclassname">debug.models.</code><code class="descname">TestEvent</code><span class="sig-paren">(</span><em>id</em>, <em>device_id</em>, <em>dataPoints</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.models.TestEvent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">debug.models.</code><code class="descname">TestEvent</code><span class="sig-paren">(</span><em>id</em>, <em>device</em>, <em>dataPoints</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.models.TestEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
 <dl class="exception">
 <dt id="debug.models.TestEvent.DoesNotExist">
@@ -283,11 +298,16 @@ accuracy of the calculations for billing.</p>
 <span id="debug-views-module"></span><h2>3.2.7. debug.views module<a class="headerlink" href="#module-debug.views" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="debug.views.DatadelForm">
-<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DatadelForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DatadelForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DatadelForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DatadelForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
 <dl class="attribute">
 <dt id="debug.views.DatadelForm.base_fields">
-<code class="descname">base_fields</code><em class="property"> = {'device': &lt;debug.views.DeviceModelChoiceField object at 0x2b2768d73a90&gt;, 'refresh_queries': &lt;django.forms.fields.BooleanField object at 0x2b2768d73b50&gt;}</em><a class="headerlink" href="#debug.views.DatadelForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('device', &lt;debug.views.DeviceModelChoiceField object at 0x2b3fe4b36d90&gt;), ('refresh_queries', &lt;django.forms.fields.BooleanField object at 0x2b3fe4b36e50&gt;)])</em><a class="headerlink" href="#debug.views.DatadelForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.DatadelForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('device', &lt;debug.views.DeviceModelChoiceField object at 0x2b3fe4b36d90&gt;), ('refresh_queries', &lt;django.forms.fields.BooleanField object at 0x2b3fe4b36e50&gt;)])</em><a class="headerlink" href="#debug.views.DatadelForm.declared_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -299,7 +319,7 @@ accuracy of the calculations for billing.</p>
 
 <dl class="class">
 <dt id="debug.views.DatagenForm">
-<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DatagenForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DatagenForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DatagenForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DatagenForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
 <dl class="attribute">
 <dt id="debug.views.DatagenForm.ENERGY_CHOICES">
@@ -308,7 +328,12 @@ accuracy of the calculations for billing.</p>
 
 <dl class="attribute">
 <dt id="debug.views.DatagenForm.base_fields">
-<code class="descname">base_fields</code><em class="property"> = {'device': &lt;debug.views.DeviceModelChoiceField object at 0x2b2768d73490&gt;, 'channels': &lt;django.forms.models.ModelMultipleChoiceField object at 0x2b2768d73650&gt;, 'start': &lt;django.forms.fields.IntegerField object at 0x2b2768d73790&gt;, 'stop': &lt;django.forms.fields.IntegerField object at 0x2b2768d73810&gt;, 'resolution': &lt;django.forms.fields.IntegerField object at 0x2b2768d73890&gt;, 'energy_use': &lt;django.forms.fields.ChoiceField object at 0x2b2768d73910&gt;}</em><a class="headerlink" href="#debug.views.DatagenForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('device', &lt;debug.views.DeviceModelChoiceField object at 0x2b3fe4b36810&gt;), ('channels', &lt;django.forms.models.ModelMultipleChoiceField object at 0x2b3fe4b369d0&gt;), ('start', &lt;django.forms.fields.IntegerField object at 0x2b3fe4b36a90&gt;), ('stop', &lt;django.forms.fields.IntegerField object at 0x2b3fe4b36b10&gt;), ('resolution', &lt;django.forms.fields.IntegerField object at 0x2b3fe4b36b90&gt;), ('energy_use', &lt;django.forms.fields.ChoiceField object at 0x2b3fe4b36c10&gt;)])</em><a class="headerlink" href="#debug.views.DatagenForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.DatagenForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('device', &lt;debug.views.DeviceModelChoiceField object at 0x2b3fe4b36810&gt;), ('channels', &lt;django.forms.models.ModelMultipleChoiceField object at 0x2b3fe4b369d0&gt;), ('start', &lt;django.forms.fields.IntegerField object at 0x2b3fe4b36a90&gt;), ('stop', &lt;django.forms.fields.IntegerField object at 0x2b3fe4b36b10&gt;), ('resolution', &lt;django.forms.fields.IntegerField object at 0x2b3fe4b36b90&gt;), ('energy_use', &lt;django.forms.fields.ChoiceField object at 0x2b3fe4b36c10&gt;)])</em><a class="headerlink" href="#debug.views.DatagenForm.declared_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -320,11 +345,16 @@ accuracy of the calculations for billing.</p>
 
 <dl class="class">
 <dt id="debug.views.DevForm">
-<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DevForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.util.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DevForm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DevForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DevForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
 <dl class="attribute">
 <dt id="debug.views.DevForm.base_fields">
-<code class="descname">base_fields</code><em class="property"> = {'method': &lt;django.forms.fields.ChoiceField object at 0x2b2768d73bd0&gt;}</em><a class="headerlink" href="#debug.views.DevForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('method', &lt;django.forms.fields.ChoiceField object at 0x2b3fe4b36ed0&gt;)])</em><a class="headerlink" href="#debug.views.DevForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="debug.views.DevForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('method', &lt;django.forms.fields.ChoiceField object at 0x2b3fe4b36ed0&gt;)])</em><a class="headerlink" href="#debug.views.DevForm.declared_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -336,7 +366,7 @@ accuracy of the calculations for billing.</p>
 
 <dl class="class">
 <dt id="debug.views.DeviceModelChoiceField">
-<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DeviceModelChoiceField</code><span class="sig-paren">(</span><em>queryset</em>, <em>empty_label=u'---------'</em>, <em>cache_choices=False</em>, <em>required=True</em>, <em>widget=None</em>, <em>label=None</em>, <em>initial=None</em>, <em>help_text=u''</em>, <em>to_field_name=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DeviceModelChoiceField" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">debug.views.</code><code class="descname">DeviceModelChoiceField</code><span class="sig-paren">(</span><em>queryset</em>, <em>empty_label=u'---------'</em>, <em>cache_choices=None</em>, <em>required=True</em>, <em>widget=None</em>, <em>label=None</em>, <em>initial=None</em>, <em>help_text=u''</em>, <em>to_field_name=None</em>, <em>limit_choices_to=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#debug.views.DeviceModelChoiceField" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.models.ModelChoiceField</span></code></p>
 <dl class="method">
 <dt id="debug.views.DeviceModelChoiceField.label_from_instance">

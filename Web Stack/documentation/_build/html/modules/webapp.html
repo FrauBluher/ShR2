@@ -141,7 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#submodules">3.6.2. Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-admin-module">3.6.3. microdata.admin module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="microdata.html#microdata-models-module">3.6.4. microdata.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.models">3.6.4. microdata.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.serializers">3.6.5. microdata.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.tests">3.6.6. microdata.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="microdata.html#module-microdata.views">3.6.7. microdata.views module</a></li>
@@ -397,7 +397,7 @@
 <h2>3.10.5. webapp.models module<a class="headerlink" href="#webapp-models-module" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-webapp.models"></span><dl class="class">
 <dt id="webapp.models.DashboardSettings">
-<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">DashboardSettings</code><span class="sig-paren">(</span><em>id</em>, <em>user_id</em>, <em>stack</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.DashboardSettings" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">webapp.models.</code><code class="descname">DashboardSettings</code><span class="sig-paren">(</span><em>id</em>, <em>user</em>, <em>stack</em><span class="sig-paren">)</span><a class="headerlink" href="#webapp.models.DashboardSettings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.db.models.base.Model</span></code></p>
 <dl class="exception">
 <dt id="webapp.models.DashboardSettings.DoesNotExist">
@@ -584,6 +584,12 @@ period.</p>
 <dt id="webapp.models.IntervalNotification.objects">
 <code class="descclassname">IntervalNotification.</code><code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#webapp.models.IntervalNotification.objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.models.IntervalNotification.recurrences">
+<code class="descclassname">IntervalNotification.</code><code class="descname">recurrences</code><a class="headerlink" href="#webapp.models.IntervalNotification.recurrences" title="Permalink to this definition">¶</a></dt>
+<dd><p>This field is treated much like a Google Calendars recurrence field. Provides an easy way for an admin to define new periods of time.</p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="webapp.models.IntervalNotification.usersettings_set">
@@ -971,7 +977,7 @@ NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.forms.Form</span></code></p>
 <dl class="attribute">
 <dt id="webapp.views.SettingsForm.base_fields">
-<code class="descname">base_fields</code><em class="property"> = {'new_username': &lt;django.forms.fields.CharField object at 0x2b275dfa8190&gt;, 'password1': &lt;django.forms.fields.CharField object at 0x2b275dfa8290&gt;, 'password2': &lt;django.forms.fields.CharField object at 0x2b275dfa8310&gt;, 'first_name': &lt;django.forms.fields.CharField object at 0x2b275dfa8350&gt;, 'last_name': &lt;django.forms.fields.CharField object at 0x2b275dfa8410&gt;, 'email': &lt;django.forms.fields.EmailField object at 0x2b275dfa8510&gt;, 'notifications': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa8590&gt;, 'share_with': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa8610&gt;, 'new_name': &lt;django.forms.fields.CharField object at 0x2b275dfa8690&gt;, 'channel_1': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa8750&gt;, 'channel_2': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa87d0&gt;, 'channel_3': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa8850&gt;, 'utility_companies': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa88d0&gt;, 'rate_plans': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa8950&gt;, 'territories': &lt;django.forms.fields.ChoiceField object at 0x2b275dfa89d0&gt;, 'stack': &lt;django.forms.fields.BooleanField object at 0x2b275ddcaa50&gt;}</em><a class="headerlink" href="#webapp.views.SettingsForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('new_username', &lt;django.forms.fields.CharField object at 0x2b88289d6b90&gt;), ('password1', &lt;django.forms.fields.CharField object at 0x2b88289d6b10&gt;), ('password2', &lt;django.forms.fields.CharField object at 0x2b88289d6150&gt;), ('first_name', &lt;django.forms.fields.CharField object at 0x2b88289d6f10&gt;), ('last_name', &lt;django.forms.fields.CharField object at 0x2b88289d6390&gt;), ('email', &lt;django.forms.fields.EmailField object at 0x2b88289d63d0&gt;), ('notifications', &lt;django.forms.fields.ChoiceField object at 0x2b88289d6f50&gt;), ('share_with', &lt;django.forms.fields.ChoiceField object at 0x2b88289d66d0&gt;), ('new_name', &lt;django.forms.fields.CharField object at 0x2b88289d6790&gt;), ('channel_1', &lt;django.forms.fields.ChoiceField object at 0x2b88289d67d0&gt;), ('channel_2', &lt;django.forms.fields.ChoiceField object at 0x2b88289d6850&gt;), ('channel_3', &lt;django.forms.fields.ChoiceField object at 0x2b8824f681d0&gt;), ('utility_companies', &lt;django.forms.fields.ChoiceField object at 0x2b8824ee6a10&gt;), ('rate_plans', &lt;django.forms.fields.ChoiceField object at 0x2b882694f290&gt;), ('territories', &lt;django.forms.fields.ChoiceField object at 0x2b8824fd1150&gt;), ('stack', &lt;django.forms.fields.BooleanField object at 0x2b8824fd1050&gt;)])</em><a class="headerlink" href="#webapp.views.SettingsForm.base_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -992,6 +998,11 @@ NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1
 <dl class="method">
 <dt id="webapp.views.SettingsForm.clean_password2">
 <code class="descname">clean_password2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#webapp.views.SettingsForm.clean_password2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="webapp.views.SettingsForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict([('new_username', &lt;django.forms.fields.CharField object at 0x2b88289d6b90&gt;), ('password1', &lt;django.forms.fields.CharField object at 0x2b88289d6b10&gt;), ('password2', &lt;django.forms.fields.CharField object at 0x2b88289d6150&gt;), ('first_name', &lt;django.forms.fields.CharField object at 0x2b88289d6f10&gt;), ('last_name', &lt;django.forms.fields.CharField object at 0x2b88289d6390&gt;), ('email', &lt;django.forms.fields.EmailField object at 0x2b88289d63d0&gt;), ('notifications', &lt;django.forms.fields.ChoiceField object at 0x2b88289d6f50&gt;), ('share_with', &lt;django.forms.fields.ChoiceField object at 0x2b88289d66d0&gt;), ('new_name', &lt;django.forms.fields.CharField object at 0x2b88289d6790&gt;), ('channel_1', &lt;django.forms.fields.ChoiceField object at 0x2b88289d67d0&gt;), ('channel_2', &lt;django.forms.fields.ChoiceField object at 0x2b88289d6850&gt;), ('channel_3', &lt;django.forms.fields.ChoiceField object at 0x2b8824f681d0&gt;), ('utility_companies', &lt;django.forms.fields.ChoiceField object at 0x2b8824ee6a10&gt;), ('rate_plans', &lt;django.forms.fields.ChoiceField object at 0x2b882694f290&gt;), ('territories', &lt;django.forms.fields.ChoiceField object at 0x2b8824fd1150&gt;), ('stack', &lt;django.forms.fields.BooleanField object at 0x2b8824fd1050&gt;)])</em><a class="headerlink" href="#webapp.views.SettingsForm.declared_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
