@@ -16,6 +16,7 @@ Smart Energy Analysis and Disaggregation - Web Components
 
    installation
    getting-started
+   testing
    modules/modules
 
 
