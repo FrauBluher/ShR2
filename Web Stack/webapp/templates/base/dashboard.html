@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="panel panel-primary">
+        <div class="panel panel-default">
             <div class="panel-heading">
                <div id='chart-title' value='{{ my_devices.0.serial }}'>{{ my_devices.0.name }} at a glance</div>
                 <div class="pull-right">
@@ -23,7 +23,7 @@
                             <li><a class="chart-stack" id="unstack" href='javascript:refresh_chart(false)'>Unstacked</a></li>
                         </ul>
                     </div>
-                    <button type="button" class="btn btn-default btn-sm" id="btn-realtime">
+                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Choose a Preset Period to restart Realtime" id="btn-realtime">
                         <span class="glyphicon glyphicon-pause" aria-hidden="true" id="span-realtime"></span> Realtime
                     </button>
                 </div>
@@ -38,7 +38,7 @@
     
     <div id='ajax-container1'></div>
         {% if render_circuit_charts %}
-        <div class="panel panel-primary">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 Charts by Circuit: <span id="circuit-heading"></span>
                 <div class="pull-right">
@@ -56,7 +56,7 @@
     </div>
     <!-- /.col-lg-12 -->
     <div class="col-lg-6">
-      <div class="panel panel-primary">
+      <div class="panel panel-default">
             <div class="panel-heading">
                 Billing Information
             </div>
@@ -68,7 +68,7 @@
     </div>
     <!-- /.col-lg-6 -->
     <div class="col-lg-6">
-      <div class="panel panel-primary">
+      <div class="panel panel-default">
             <div class="panel-heading">
                 Circuit Statistics
             </div>
@@ -97,6 +97,10 @@
 </script>
 
 <script>
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 
 
 var device_serial;

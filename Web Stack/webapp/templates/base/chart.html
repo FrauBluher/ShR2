@@ -148,6 +148,7 @@ function backfillData() {
 function changeRealTime() {
   clearTimeout(timeoutHandler{{ circuit_pk }});
   realTimeData{{ circuit_pk }}();
+  backfillData();
 }
 
 {% if circuit_pk == None %}

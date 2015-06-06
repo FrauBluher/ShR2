@@ -240,8 +240,11 @@ class Event(models.Model):
       count = 0
       now = time.time()
       timestamp = now*1000
+      query  = {}
+      query['points'] = []
       for point in dataPoints:
          wattage      = point.get('wattage')
+         if wattage == 0xFFFF: continue # Issue where a device sends overflow. Ignore for now.
          current      = point.get('current')
          voltage      = point.get('voltage')
          appliance_pk = point.get('appliance_pk')
@@ -251,7 +254,7 @@ class Event(models.Model):
          if channel == 2: circuit_pk = self.device.channel_2.pk
          elif channel == 3: circuit_pk = self.device.channel_3.pk
          # timestamp is millisecond resolution always
-         timestamp = self.start + ((1.0/1.2)*count*1000)#((1.0/self.frequency)*count*1000)
+         timestamp = self.start + ((1.0/self.frequency)*count*1000)
          count += 1
 
          kwh = 0.0
@@ -290,34 +293,35 @@ class Event(models.Model):
          self.device.cost_daily += cost
          
          if (timestamp and (wattage or current or voltage)):
-            data = []
-            query = {}
-            query['points'] = [[timestamp, wattage, current, voltage, circuit_pk, cost]]
-            query['name'] = 'device.'+str(self.device.serial)
-            query['columns'] = ['time', 'wattage', 'current', 'voltage', 'circuit_pk', 'cost']
-            data.append(query)
-            self.query += str(data)
-            db.write_points(data, time_precision="ms")
+            query['points'].append([timestamp, wattage, current, voltage, circuit_pk, cost])
+            
+      data = []
+      query['name'] = 'device.'+str(self.device.serial)
+      query['columns'] = ['time', 'wattage', 'current', 'voltage', 'circuit_pk', 'cost']
+      data.append(query)
+      self.query += str(data)
+      db.write_points(data, time_precision="ms")
             
       # If data is older than the present, must backfill fanout queries by reloading the continuous query.
+      # Could be fixed with an influxdb update
       # https://github.com/influxdb/influxdb/issues/510
       now = time.time()
-      timestamp /= 1000 # convert to seconds. We don't care that much about accuracy at this point.
+      last_timestamp = (self.start + ((1.0/self.frequency)*count*1000))/1000
       existing_queries = db.query('list continuous queries')[0]['points']
       new_queries = []
-      if timestamp < now - 1:
-         new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
-      if timestamp < now - 60:
+      #if last_timestamp < now - 1:
+      #   new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1s) into 1s.:series_name')
+      if last_timestamp < now - 60:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1m) into 1m.:series_name')
-      if timestamp < now - 3600:
+      if last_timestamp < now - 3600:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1h) into 1h.:series_name')
-      if timestamp < now - 86400:
+      if last_timestamp < now - 86400:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1d) into 1d.:series_name')
-      if timestamp < now - 86400*7:
+      if last_timestamp < now - 86400*7:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1w) into 1w.:series_name')
-      if timestamp < now - 86400*days_this_month:
+      if last_timestamp < now - 86400*days_this_month:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1M) into 1M.:series_name')
-      if timestamp < now - 86400*days_this_month*12:
+      if last_timestamp < now - 86400*days_this_month*12:
          new_queries.append('select mean(wattage) from /^device.'+str(self.device.serial)+'.*/ group by time(1y) into 1y.:series_name')
       # drop old continuous query, add new one. Essentially a refresh.
       for new_query in new_queries:
