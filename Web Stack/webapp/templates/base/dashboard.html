@@ -23,7 +23,7 @@
                             <li><a class="chart-stack" id="unstack" href='javascript:refresh_chart(false)'>Unstacked</a></li>
                         </ul>
                     </div>
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Choose a Preset Period to restart Realtime" id="btn-realtime">
+                    <button type="button" class="btn btn-default btn-sm"id="btn-realtime">
                         <span class="glyphicon glyphicon-pause" aria-hidden="true" id="span-realtime"></span> Realtime
                     </button>
                 </div>
@@ -317,12 +317,12 @@ function toggle_chart_realtime() {
   if (realtime_status) {
        $('#span-realtime').removeClass('glyphicon-pause');
        $('#span-realtime').addClass('glyphicon-play');
-       chart.settings.area.followAnchor = false;
+       chart.updateSettings(chart.settings.area.followAnchor = false);
        last_timestamp = +(new Date())/1000;
     } else {
        $('#span-realtime').removeClass('glyphicon-play');
        $('#span-realtime').addClass('glyphicon-pause');
-       chart.settings.area.followAnchor = true;
+       chart.updateSettings(chart.settings.area.followAnchor = true);
        getChartData(last_timestamp, +(new Date()/1000), device_serial);
     }
     realtime_status = !realtime_status;
