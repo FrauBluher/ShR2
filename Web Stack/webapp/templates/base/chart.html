@@ -121,9 +121,9 @@
             {"name":"Last minute","displayAnchor":"now","displayPeriod":"1 m","displayUnit":"1 s"},
             {"name":"Last hour","displayAnchor":"now","displayPeriod":"1 h","displayUnit":"1 s"},
             {"name":"Last day","displayAnchor":"now","displayPeriod":"1 d","displayUnit":"1 m"},
-            {"name":"Last week","displayAnchor":"now","displayPeriod":"1 w","displayUnit":"1 h"},
-            {"name":"Last month","displayAnchor":"now","displayPeriod":"1 M","displayUnit":"6 h"},
-            {"name":"Last year","displayAnchor":"now","displayPeriod":"1 y","displayUnit":"1 d"},
+            {"name":"Last week","displayAnchor":"now","displayPeriod":"1 w","displayUnit":"10 m"},
+            {"name":"Last month","displayAnchor":"now","displayPeriod":"1 M","displayUnit":"30 m"},
+            {"name":"Last year","displayAnchor":"now","displayPeriod":"1 y","displayUnit":"12 h"},
           ]
         },
      });
@@ -141,12 +141,12 @@ function backfillData() {
         // Fill the graph to the left of the existing data to timeStart
         if (chart._scene.mainData.dataFrom > chart._scene.mainData.chart.timeStart) {
             console.log("<<< Backfilling "+chart._scene.mainData.dataFrom+" to "+chart._scene.mainData.chart.timeStart);
-            getChartData(chart._scene.mainData.chart.timeStart/1000, chart._scene.mainData.dataFrom/1000, {{ device.serial }});
+            getChartData(chart._scene.mainData.chart.timeStart/1000, chart._scene.mainData.dataFrom/1000, {{ device.serial }}, true);
         }
         // Fill the graph to the right of the existing data to timeEnd
         else if (chart._scene.mainData.dataTo < chart._scene.mainData.chart.timeEnd) {
             console.log(">>> Backfilling "+chart._scene.mainData.dataTo+" to "+chart._scene.mainData.chart.timeEnd);
-            getChartData(chart._scene.mainData.dataTo/1000, chart._scene.mainData.chart.timeEnd/1000, {{ device.serial }});
+            getChartData(chart._scene.mainData.dataTo/1000, chart._scene.mainData.chart.timeEnd/1000, {{ device.serial }}, true);
         }
     }
 }

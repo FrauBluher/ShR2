@@ -249,7 +249,6 @@ function get_wattage_usage() {
                $('#ajax-billing-information').html(data);
             }
          );
-
          $.get('/charts/circuits_information/',
             {
                'serial': {{ device.serial }}
@@ -269,11 +268,32 @@ var last_timestamp;
 
 var chart, circuitChart;
 
-function getChartData(from, to, serial) {
+function getChartData(from, to, serial, backfill) {
   try {
    var displayUnit = chart.displayUnit().slice(-1);
-   var start = from;
-   var stop = to;
+   var multiplier = 1;
+   if (backfill) {
+      switch(displayUnit) {
+         case 's':
+            multiplier = 1;
+            break;
+         case 'm':
+            multiplier = 60;
+            break;
+         case 'h':
+            multiplier = 60*60;
+            break;
+         case 'd':
+            multiplier = 60*60*24;
+            break;
+         case 'M':
+            multiplier = 60*60*24*31;
+            break;
+      }
+   }
+   // Request 1000 more points than are shown in the current graph range
+   var start = from - (1000*multiplier);
+   var stop = to + (1000*multiplier);
    var get_url = '/charts/device/'+serial+'/data/'
    $.get(get_url,
       {
