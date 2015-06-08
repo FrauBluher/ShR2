@@ -228,11 +228,13 @@ def generate_points(start, stop, resolution, energy_use, device, channels):
              max_kwh_for_tier = (current_tier.max_percentage_of_baseline/100.0)*winter_rate*31.0
           if (kilowatt_hours_monthly > max_kwh_for_tier):
              current_tier = device.devicewebsettings.current_tier
-             device.devicewebsettings.current_tier = device.devicewebsettings.rate_plans.all()[0].get(tier_level = current_tier.tier_level +1)
-             device.devicewebsettings.save()
-             device.save()
-             tier_dict['points'] = [[i,device.devicewebsettings.current_tier.tier_level]]
-             db.write_points([tier_dict])
+             next_tier = device.devicewebsettings.rate_plans.all()[0].tier_set.all().filter(tier_level = current_tier.tier_level +1)
+             if next_tier:
+                device.devicewebsettings.current_tier = next_tier[0]
+                device.devicewebsettings.save()
+                device.save()
+                tier_dict['points'] = [[i,device.devicewebsettings.current_tier.tier_level]]
+                db.write_points([tier_dict])
          cost = current_tier.rate * kwh
          channel_pk = wattages[channel.name]['pk']
          point_list = [i, wattage_to_append, channel_pk, cost]

@@ -23,7 +23,7 @@
                             <li><a class="chart-stack" id="unstack" href='javascript:refresh_chart(false)'>Unstacked</a></li>
                         </ul>
                     </div>
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="top" title="Choose a Preset Period to restart Realtime" id="btn-realtime">
+                    <button type="button" class="btn btn-default btn-sm"id="btn-realtime">
                         <span class="glyphicon glyphicon-pause" aria-hidden="true" id="span-realtime"></span> Realtime
                     </button>
                 </div>
@@ -249,7 +249,6 @@ function get_wattage_usage() {
                $('#ajax-billing-information').html(data);
             }
          );
-
          $.get('/charts/circuits_information/',
             {
                'serial': {{ device.serial }}
@@ -269,11 +268,32 @@ var last_timestamp;
 
 var chart, circuitChart;
 
-function getChartData(from, to, serial) {
+function getChartData(from, to, serial, backfill) {
   try {
    var displayUnit = chart.displayUnit().slice(-1);
-   var start = from;
-   var stop = to;
+   var multiplier = 1;
+   if (backfill) {
+      switch(displayUnit) {
+         case 's':
+            multiplier = 1;
+            break;
+         case 'm':
+            multiplier = 60;
+            break;
+         case 'h':
+            multiplier = 60*60;
+            break;
+         case 'd':
+            multiplier = 60*60*24;
+            break;
+         case 'M':
+            multiplier = 60*60*24*31;
+            break;
+      }
+   }
+   // Request 1000 more points than are shown in the current graph range
+   var start = from - (1000*multiplier);
+   var stop = to + (1000*multiplier);
    var get_url = '/charts/device/'+serial+'/data/'
    $.get(get_url,
       {
@@ -297,12 +317,12 @@ function toggle_chart_realtime() {
   if (realtime_status) {
        $('#span-realtime').removeClass('glyphicon-pause');
        $('#span-realtime').addClass('glyphicon-play');
-       chart.settings.area.followAnchor = false;
+       chart.updateSettings(chart.settings.area.followAnchor = false);
        last_timestamp = +(new Date())/1000;
     } else {
        $('#span-realtime').removeClass('glyphicon-play');
        $('#span-realtime').addClass('glyphicon-pause');
-       chart.settings.area.followAnchor = true;
+       chart.updateSettings(chart.settings.area.followAnchor = true);
        getChartData(last_timestamp, +(new Date()/1000), device_serial);
     }
     realtime_status = !realtime_status;
