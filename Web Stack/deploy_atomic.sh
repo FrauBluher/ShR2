@@ -43,6 +43,8 @@ dpkg -s influxdb >/dev/null 2>&1 && {
 	sudo dpkg -i influxdb_latest_amd64.deb
 
 	rm influxdb_latest_amd64.deb
+        curl -X POST 'http://localhost:8086/db?u=root&p=root' \
+           -d '{"name": "seads"}'
 }
 
 cd "${GITDIR}"

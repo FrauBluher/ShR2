@@ -142,17 +142,17 @@ class Device(models.Model):
       websettings = DeviceWebSettings.objects.filter(device=self)
       if len(websettings) == 0:
          DeviceWebSettings.objects.create(device=self)
-         self.devicewebsettings.utility_companies.add(UtilityCompany.objects.get(pk=1))
-         self.devicewebsettings.rate_plans.add(RatePlan.objects.get(pk=4))
-         self.devicewebsettings.territories.add(Territory.objects.get(pk=1))
-         self.devicewebsettings.current_tier = Tier.objects.get(pk=1)
-         self.devicewebsettings.save()
-      if self.channel_1 == None:
-         self.channel_1 = CircuitType.objects.get(pk=1)
-      if self.channel_2 == None:
-         self.channel_2 = CircuitType.objects.get(pk=3)
-      if self.channel_3 == None:
-         self.channel_3 = CircuitType.objects.get(pk=4)
+         #self.devicewebsettings.utility_companies.add(UtilityCompany.objects.get(pk=1))
+         #self.devicewebsettings.rate_plans.add(RatePlan.objects.get(pk=4))
+         #self.devicewebsettings.territories.add(Territory.objects.get(pk=1))
+         #self.devicewebsettings.current_tier = Tier.objects.get(pk=1)
+         #self.devicewebsettings.save()
+      #if self.channel_1 == None:
+      #   self.channel_1 = CircuitType.objects.get(pk=1)
+      #if self.channel_2 == None:
+      #   self.channel_2 = CircuitType.objects.get(pk=3)
+      #if self.channel_3 == None:
+      #   self.channel_3 = CircuitType.objects.get(pk=4)
       super(Device, self).save()
 
    def delete(self, *args, **kwargs):
@@ -249,10 +249,12 @@ class Event(models.Model):
          voltage      = point.get('voltage')
          appliance_pk = point.get('appliance_pk')
          event_code   = point.get('event_code')
-         channel      = point.get('channel', 7)
-         circuit_pk = self.device.channel_1.pk
-         if channel == 2: circuit_pk = self.device.channel_2.pk
-         elif channel == 3: circuit_pk = self.device.channel_3.pk
+         channel      = point.get('channel', 1)
+         circuit_pk = 7
+         if self.device.channel_1 and self.device.channel_2 and self.device.channel_3:
+            circuit_pk = self.device.channel_1.pk or 7
+            if channel == 2: circuit_pk = self.device.channel_2.pk or 7
+            elif channel == 3: circuit_pk = self.device.channel_3.pk or 7
          # timestamp is millisecond resolution always
          timestamp = self.start + ((1.0/self.frequency)*count*1000)
          count += 1
@@ -270,31 +272,34 @@ class Event(models.Model):
 
          # Calculate percent of baseline to get tier level
          # Start by determining current time of year
-         this_year = datetime.now().year
-         this_month = datetime.now().month
-         days_this_month = monthrange(this_year,this_month)[1]
-         summer_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].summer_start,day=1)
-         winter_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].winter_start,day=1)
-         current_season = 'summer'
-         if (summer_start <= datetime.now() < winter_start) == False:
-            current_season = 'winter'
-         # check if we need to upgrade a tier. If at max tier, do nothing.
-         if (self.device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
-            max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].summer_rate*days_this_month
-            if current_season == 'winter':
-               max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].winter_rate*days_this_month
-            if (self.device.kilowatt_hours_monthly > max_kwh_for_tier):
-               current_tier = self.device.devicewebsettings.current_tier
-               self.device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
-               self.device.devicewebsettings.save()
-               tier_dict['points'].append([current_tier.tier_level + 1])
-               db.write_points([tier_dict])
-         cost = self.device.devicewebsettings.current_tier.rate * kwh
-         self.device.cost_daily += cost
+         # Only do this if models exist
+         try:
+            this_year = datetime.now().year
+            this_month = datetime.now().month
+            days_this_month = monthrange(this_year,this_month)[1]
+            summer_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].summer_start,day=1)
+            winter_start = datetime(year=this_year,month=self.device.devicewebsettings.territories.all()[0].winter_start,day=1)
+            current_season = 'summer'
+            if (summer_start <= datetime.now() < winter_start) == False:
+               current_season = 'winter'
+            # check if we need to upgrade a tier. If at max tier, do nothing.
+            if (self.device.devicewebsettings.current_tier.max_percentage_of_baseline != None):
+               max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].summer_rate*days_this_month
+               if current_season == 'winter':
+                  max_kwh_for_tier = (self.device.devicewebsettings.current_tier.max_percentage_of_baseline/100.0)*self.device.devicewebsettings.territories.all()[0].winter_rate*days_this_month
+               if (self.device.kilowatt_hours_monthly > max_kwh_for_tier):
+                  current_tier = self.device.devicewebsettings.current_tier
+                  self.device.devicewebsettings.current_tier = Tier.objects.get(tier_level=(current_tier.tier_level + 1))
+                  self.device.devicewebsettings.save()
+                  tier_dict['points'].append([current_tier.tier_level + 1])
+                  db.write_points([tier_dict])
+            cost = self.device.devicewebsettings.current_tier.rate * kwh
+            self.device.cost_daily += cost
          
-         if (timestamp and (wattage or current or voltage)):
-            query['points'].append([timestamp, wattage, current, voltage, circuit_pk, cost])
-            
+            if (timestamp and (wattage or current or voltage)):
+               query['points'].append([timestamp, wattage, current, voltage, circuit_pk, cost])
+         except:
+            pass
       data = []
       query['name'] = 'device.'+str(self.device.serial)
       query['columns'] = ['time', 'wattage', 'current', 'voltage', 'circuit_pk', 'cost']
@@ -334,11 +339,14 @@ class Event(models.Model):
       try:
          db.query('select * from tier.device.'+str(self.device.serial))
       except:
-         tier_dict = {}
-         tier_dict['name'] = "tier.device."+str(self.device.serial)
-         tier_dict['columns'] = ["tier_level"]
-         tier_dict['points'] = [[str(self.device.devicewebsettings.current_tier.tier_level)]]
-         db.write_points([tier_dict])
+         try:
+            tier_dict = {}
+            tier_dict['name'] = "tier.device."+str(self.device.serial)
+            tier_dict['columns'] = ["tier_level"]
+            tier_dict['points'] = [[str(self.device.devicewebsettings.current_tier.tier_level)]]
+            db.write_points([tier_dict])
+         except:
+            pass
 
             
 

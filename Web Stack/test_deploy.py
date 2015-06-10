@@ -59,6 +59,7 @@ def check_rest_functionality():
         sys.stdout.write(green+"\t\t Success\n"+native)
     else:
         sys.stdout.write(red+"\t\t Fail\n"+native)
+        print r.text
 
     sys.stdout.write("\t DELETE /api/device-api/"+str(serial)+"/")
     url = 'http://'+my_ip+'/api/device-api/'+str(serial)+'/'
