@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Applications &mdash; SEADS 1.0 documentation</title>
+  <title>3. Testing &mdash; SEADS 1.0 documentation</title>
   
 
   
@@ -32,7 +32,9 @@
   
 
   
-    <link rel="top" title="SEADS 1.0 documentation" href="index.html"/> 
+    <link rel="top" title="SEADS 1.0 documentation" href="index.html"/>
+        <link rel="next" title="4. Web Stack" href="modules/modules.html"/>
+        <link rel="prev" title="2. Getting Started" href="getting-started.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +73,7 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#introduction">1.1. Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installing-scalable-framework-in-amazon-compute-cloud-ubuntu">1.2. Installing Scalable Framework in Amazon Compute Cloud (Ubuntu)</a><ul>
@@ -95,8 +97,8 @@
 <li class="toctree-l2"><a class="reference internal" href="getting-started.html#connecting-devices-to-the-framework">2.3. Connecting Devices to the Framework</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">3. Testing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#elastic-load-balancer-and-auto-scaling-group">3.1. Elastic Load Balancer and Auto Scaling Group</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">3. Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#elastic-load-balancer-and-auto-scaling-group">3.1. Elastic Load Balancer and Auto Scaling Group</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules/modules.html">4. Web Stack</a><ul>
@@ -201,11 +203,11 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Applications</li>
+    <li>3. Testing</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/applications.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/testing.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -214,87 +216,45 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="applications">
-<span id="id1"></span><h1>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h1>
-<p>Four distinct applications were created that encompass the SEAD web framework:</p>
-<ol class="arabic simple">
-<li>Microdata - Interfaces with the devices</li>
-<li>Webapp - Interfaces with the clients</li>
-<li>Farmer - Manages the devices</li>
-<li>Home - Landing zone for new users</li>
-</ol>
-<p>And (optionally) a fifth:</p>
-<ol class="arabic simple" start="5">
-<li>Debug - Models that assist in debugging the project</li>
-</ol>
-<p>The applications were designed such that the Webapp application is hot-swappable. Since it is a proof of concept, it can either be added to or replaced altogether. Microdata and Farmer are able to run without Webapp, however their data cannot be interfaced with in a meaningful way without a web application.</p>
-<img alt="http://i.imgur.com/uw3BtWt.png" class="align-center" src="http://i.imgur.com/uw3BtWt.png" />
-<p><a class="reference external" href="http://i.imgur.com/uw3BtWt.png">Full Size</a></p>
-<p>What follows is the breakdown of each application and how they work.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules/microdata.html">4.6. Microdata Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#subpackages">4.6.1. Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#submodules">4.6.2. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#microdata-admin-module">4.6.3. microdata.admin module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata.models">4.6.4. microdata.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata.serializers">4.6.5. microdata.serializers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata.tests">4.6.6. microdata.tests module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata.views">4.6.7. microdata.views module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/microdata.html#module-microdata">4.6.8. Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/webapp.html">4.10. Webapp Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#subpackages">4.10.1. Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#submodules">4.10.2. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#module-webapp.admin">4.10.3. webapp.admin module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#module-webapp.device_dictionary">4.10.4. webapp.device_dictionary module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#webapp-models-module">4.10.5. webapp.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#module-webapp.tests">4.10.6. webapp.tests module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#module-webapp.timeseries">4.10.7. webapp.timeseries module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#module-webapp.views">4.10.8. webapp.views module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/webapp.html#module-webapp">4.10.9. Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/farmer.html">4.3. Farmer Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#submodules">4.3.1. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer.admin">4.3.2. farmer.admin module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer.models">4.3.3. farmer.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer.serializers">4.3.4. farmer.serializers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer.tests">4.3.5. farmer.tests module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer.views">4.3.6. farmer.views module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/farmer.html#module-farmer">4.3.7. Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/home.html">4.4. Home Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#subpackages">4.4.1. Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#submodules">4.4.2. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.admin">4.4.3. home.admin module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.models">4.4.4. home.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.serializers">4.4.5. home.serializers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.tests">4.4.6. home.tests module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home.views">4.4.7. home.views module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/home.html#module-home">4.4.8. Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="modules/debug.html">4.2. Debug Application</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#submodules">4.2.1. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#module-debug.admin">4.2.2. debug.admin module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#module-debug.forms">4.2.3. debug.forms module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#module-debug.models">4.2.4. debug.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#module-debug.serializers">4.2.5. debug.serializers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#module-debug.urls">4.2.6. debug.urls module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#module-debug.views">4.2.7. debug.views module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modules/debug.html#module-debug">4.2.8. Module contents</a></li>
-</ul>
-</li>
-</ul>
+  <div class="section" id="testing">
+<span id="id1"></span><h1>3. Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h1>
+<p>There are several facets to this project that can be tested in a variety
+of ways. Because of how different each module is, they all have individual
+ways in which they are stressed.</p>
+<div class="section" id="elastic-load-balancer-and-auto-scaling-group">
+<h2>3.1. Elastic Load Balancer and Auto Scaling Group<a class="headerlink" href="#elastic-load-balancer-and-auto-scaling-group" title="Permalink to this headline">¶</a></h2>
+<p>The most forward-facing module to the framework is the ELB and Auto
+Scaling Group. These two appliances have the responsibility of
+scaling the framework up or down based on necessity.</p>
+<p>The command line tool <cite>siege</cite> can be used to simulate a flood of requests
+to the server framework.</p>
+<p>Siege should be run on a system other than the stateless web server, and
+can be installed with the package manager on your system:</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo apt-get install siege
+</pre></div>
+</div>
+<p>A good test for this framework is the following:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ siege -c100 -t20M seads.io
+</pre></div>
+</div>
+<p>This gives the Auto Scaling Group four chances to instantiate new
+instances. The 100 concurrent connections will assure that our
+tiny instance is overloaded.</p>
 </div>
 </div>
 
 
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules/modules.html" class="btn btn-neutral float-right" title="4. Web Stack" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="getting-started.html" class="btn btn-neutral" title="2. Getting Started" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

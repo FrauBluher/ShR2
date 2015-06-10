@@ -230,10 +230,10 @@ To get started, open up the following ports on your machine:
 	
 	git clone https://github.com/Fraubluher/ShR2/
 
-3. Run the deploy script for influxdb::
+3. Run the deploy script for the atomic setup::
 
 	cd ShR2/Web\ Stack/
-	sudo ./deploy_webapp_stateful.sh
+	sudo ./deploy_atomic.sh
 
 This script will walk you through creating and configuring the databases needed. For any prompt asking for an address, enter 'localhost'.
 
@@ -242,3 +242,11 @@ This script will walk you through creating and configuring the databases needed.
 	sudo reboot
 
 When the server reboots, verify it works by visiting the server from a webpage. All basic functionality should now exist.
+
+
+Testing
+-------
+
+A test script is included in the repository to test some of the main functionality of the system after everything has been installed and configured::
+
+    python ShR2/Web\ Stack/test_deployment.py
