@@ -6,7 +6,7 @@ Installation
 Introduction
 ------------
 
-The SEADS web infrastructure provieds a simple API to read/write the data gathered by the SEAD Light.In addition, this framework is designed to provide in-house visualization and cost analysis of the energy usage. Built on Django, it is encouraged that this environment be augmented with new and improved applications that can interface with the data.
+The SEADS web infrastructure provides a simple API to read/write the data gathered by the SEAD Light.In addition, this framework is designed to provide in-house visualization and cost analysis of the energy usage. Built on Django, it is encouraged that this environment be augmented with new and improved applications that can interface with the data.
 
 The current setup has all the necessary infrastructure in place for SEAD Lights to send their data. In addition, a proof-of-concept application has been created to interface with the data in a meaningful way.
 
