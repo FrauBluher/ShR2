@@ -69,6 +69,8 @@ sudo chown root /srv/uwsgi.ini
 
 sudo chown root /srv/nginx.conf
 
+cd "${GITDIR}"
+
 # Change mysql settings to configure a remote database
 sudo python "${GITDIR}"/custom_mysql.py
 
