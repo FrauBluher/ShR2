@@ -69,8 +69,8 @@ def main():
 
    choice = raw_input("Configure database as server? [y/n]: ").lower()
    if 'y' in choice:
-      import mysql.connector
-      db=_mysql.connect(host='localhost',user='root',passwd=db_root_pswd,db=dn_name)
+      import _mysql
+      db=_mysql.connect(host='localhost',user='root',passwd=db_root_pswd,db=db_name)
       db.query("GRANT ALL ON "+db_name+".* TO "+db_user+"@'%' IDENTIFIED BY '"+db_pswd+"';")
 
 if __name__ == "__main__":

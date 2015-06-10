@@ -84,6 +84,8 @@ sudo python "${GITDIR}"/custom_mysql.py
 
 sudo python "${GITDIR}"/manage.py migrate
 
+sudo python "${GITDIR}"/manage.py migrate
+
 read -p "Create Django superuser? [y/n] " -n 1 -r
 echo    
 if [[ $REPLY =~ ^[Yy]$ ]]
