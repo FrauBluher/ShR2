@@ -43,7 +43,7 @@ cd "${GITDIR}"
 
 pip install -r requirements.txt
 
-python custom_config.py
+python "${GITDIR}"/custom_config.py
 
 cp deploy/uwsgi.conf ~
 
@@ -70,7 +70,7 @@ sudo chown root /srv/uwsgi.ini
 sudo chown root /srv/nginx.conf
 
 # Change mysql settings to configure a remote database
-sudo python custom_mysql.py
+sudo python "${GITDIR}"/custom_mysql.py
 
 sudo python "${GITDIR}"/manage.py migrate
 
