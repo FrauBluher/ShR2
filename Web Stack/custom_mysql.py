@@ -70,9 +70,8 @@ def main():
    choice = raw_input("Configure database as server? [y/n]: ").lower()
    if 'y' in choice:
       import mysql.connector
-      cnx = mysql.connector.connect(user='root', password=db_root_pswd, host='localhost')
+      cnx = mysql.connector.connect(user='root', password=db_root_pswd, host='localhost', db=dn_name)
       cursor = cnx.cursor()
-      cursor.execute("CREATE DATABASE "+db_name+";")
       cursor.execute("GRANT ALL ON "+db_name+".* TO "+db_user+"@'%' IDENTIFIED BY '"+db_pswd+"';")
 
 if __name__ == "__main__":

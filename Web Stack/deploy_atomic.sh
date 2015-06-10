@@ -18,10 +18,16 @@ echo -n "Django Database Username: "
 read username
 echo -n "Django Database Password: "
 read -s password
+echo -n "Django Database Name: "
+read db_name
 
-echo -n "Django Root Database Password: "
+echo -n "Django Root Database Password: \n"
 
 mysql -u root -e "CREATE USER '${username}'@'%' IDENTIFIED BY '${password}'; GRANT ALL PRIVILEGES ON *.* TO '${username}'@'%' WITH GRANT OPTION;" -p
+
+echo -n "Django Root Database Password Again: \n"
+
+mysql -u root -e "CREATE DATABASE ${db_name};" -p
 
 sudo pip install django uwsgi
 
