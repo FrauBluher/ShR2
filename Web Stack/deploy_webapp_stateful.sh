@@ -7,6 +7,7 @@ GITDIR=$(pwd)
 sudo apt-get update --fix-missing
 sudo apt-get install python2.7-dev python-flup python-pip -y
 sudo apt-get install mysql-server python-mysqldb -y
+sudo apt-get build-dep python-matplotlib
 
 # Install django to interface with the database
 sudo pip install django

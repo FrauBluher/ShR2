@@ -8,6 +8,8 @@ sudo apt-get install nginx python2.7-dev python-flup python-pip git -y
 
 sudo apt-get install binutils libproj-dev gdal-bin -y
 
+sudo apt-get build-dep python-matplotlib
+
 sudo apt-get install python-mysqldb -y
 
 sudo pip install django uwsgi
