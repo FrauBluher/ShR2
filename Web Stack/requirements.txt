@@ -8,7 +8,7 @@ Twisted-Core==13.2.0
 jsonpointer==1.0
 pyOpenSSL==0.13
 colorama==0.2.5
-PyYAML==3.10
+PyYAML==5.4
 python-apt==0.9.3.5ubuntu1
 pycurl==7.19.3
 Twisted-Web==13.2.0
