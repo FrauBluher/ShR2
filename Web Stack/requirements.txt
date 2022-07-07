@@ -32,7 +32,7 @@ oauth==1.0.1
 Twisted-Names==13.2.0
 six==1.5.2
 python-debian==0.1.21-nmu2ubuntu2
-requests==2.2.1
+requests==2.20.0
 
 DjangoRestless
 django-recurrence
