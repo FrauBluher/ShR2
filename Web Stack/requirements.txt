@@ -19,7 +19,7 @@ cloud-init==0.7.5
 prettytable==0.7.2
 Cheetah==2.4.4
 apt-xapian-index==0.45
-wheel==0.24.0
+wheel==0.38.1
 chardet==2.0.1
 Landscape-Client==14.12
 zope.interface==4.0.5
